@@ -1,7 +1,4 @@
 
-### `packages/README.md`
-
-```md
 # Packages
 
 This directory contains reusable libraries and shared code used across CareIQ applications.
