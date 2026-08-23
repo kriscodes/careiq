@@ -1,10 +1,14 @@
 {
-  "name": "CareIQ",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "@careiq/root",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.22.0",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --parallel dev",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck"
   },
   "keywords": [],
   "author": "",
