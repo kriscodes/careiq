@@ -1,10 +1,18 @@
 import express from "express"
 import { clerkMiddleware, getAuth } from '@clerk/express'
 import { pool } from "./db/client.js"
+import cors from "cors"
 
 const app = express();
 
 const port = Number(process.env.PORT ?? 3000);
+
+app.use(
+    cors({
+        origin: "http://localhost:3001",
+        credentials: true,
+    }),
+)
 
 app.use(clerkMiddleware());
 app.use(express.json());
