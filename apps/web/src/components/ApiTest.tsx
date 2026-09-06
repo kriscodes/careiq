@@ -14,7 +14,7 @@ export function ApiTest() {
             setError(null);
 
             const token = await getToken();
-            
+
             const res = await fetch("http://localhost:3000/api/v1/me", {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -50,7 +50,7 @@ export function ApiTest() {
             {error && <p>{error}</p>}
 
             {response && (
-                <pre className="rounded bg-gray-100 p-4">
+                <pre className="rounded bg-black-100 p-4">
                     {response}
                 </pre>
             )}
