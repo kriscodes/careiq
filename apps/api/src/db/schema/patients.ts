@@ -1,0 +1,34 @@
+import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+
+import { practices } from "./practices.js";
+
+export const patients = pgTable("patients", {
+    id: uuid("id")
+    .primaryKey()
+    .default(sql`uuidv7()`),
+
+    practiceId: uuid("practice_id")
+    .notNull()
+    .references(() => practices.id),
+
+    firstName: text("first_name").notNull(),
+
+    lastName: text("last_name").notNull(),
+
+    email: text("email"),
+
+    phone: text("phone"),
+
+    createdAt: timestamp("created_at", {
+        withTimezone: true,
+    })
+    .notNull()
+    .defaultNow(),
+
+    updatedAt: timestamp("updated_at", {
+        withTimezone: true,
+    })
+    .notNull()
+    .defaultNow(),
+});

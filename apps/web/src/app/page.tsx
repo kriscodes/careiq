@@ -5,6 +5,7 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { ApiTest } from "@/components/ApiTest"
+import { Patients } from "@/components/Patients";
 
 export default function Home() {
   return (
@@ -22,8 +23,9 @@ export default function Home() {
             <UserButton />
           </Show>
         </div>
-        <ApiTest/>
       </div>
+      <Patients/>
+
     </main>
   );
 }

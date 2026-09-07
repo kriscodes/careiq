@@ -6,6 +6,10 @@ import { provisionPractice } from "./services/practice.service.js";
 import { tenantContextMiddleware } from "./middleware/tenant-context.js";
 import { sql } from "drizzle-orm";
 import { withTenant } from "./db/with-tenant.js";
+import { 
+    createPatient,
+    listPatients,
+} from "./services/patient.service.js";
 
 const app = express();
 
@@ -86,6 +90,87 @@ app.get("/api/v1/me", async (req, res) => {
         });
     }
 });
+
+app.get(
+    "/api/v1/patients",
+    tenantContextMiddleware,
+    async(_req, res) => {
+        try {
+            const patients = await listPatients(res.locals.tenant);
+
+            res.status(200).json({
+                data: patients,
+            });
+        } catch(error) {
+            console.error("Failed to list patients: ", error);
+
+            res.status(500).json({
+                error: {
+                    code: "PATIENT_LIST_FAILED",
+                    message: "Unable to load patients.",
+                },
+            });
+        }
+    },
+);
+
+app.post(
+    "/api/v1/patients",
+    tenantContextMiddleware,
+    async (req, res) => {
+        try {
+            const firstName =
+            typeof req.body.firstName === "string"
+            ? req.body.firstName.trim()
+            : "";
+
+            const lastName =
+            typeof req.body.lastName === "string"
+            ? req.body.lastName.trim()
+            : "";
+
+            const email =
+            typeof req.body.email === "string"
+            ? req.body.email.trim()
+            : undefined;
+
+            const phone =
+            typeof req.body.phone === "string"
+            ? req.body.phone.trim()
+            : undefined;
+
+            if(!firstName || !lastName) {
+                res.status(400).json({
+                    error: {
+                        code: "INVALID_PATIENT",
+                        message: "First name and last name are required.",
+                    },
+                });
+                return;
+            }
+
+            const patient = await createPatient(res.locals.tenant, {
+                firstName,
+                lastName, 
+                email,
+                phone,
+            });
+
+            res.status(201).json({
+                data: patient,
+            });
+        } catch (error) {
+            console.error("Failed to create patient: ", error);
+
+            res.status(500).json({
+                error: {
+                    code: "PATIENT_CREATE_FAILED",
+                    message: "Unable to create patient.",
+                },
+            });
+        }
+    },
+);
 
 app.listen(port, "0.0.0.0", () => {
     console.log(`CareIQ API listening on port ${port}.`);

@@ -15,6 +15,27 @@
       "when": 1788653061125,
       "tag": "0001_oval_hulk",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788721045966,
+      "tag": "0002_smart_stephen_strange",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1788729619021,
+      "tag": "0003_icy_moira_mactaggert",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1788748885950,
+      "tag": "0004_patients-rls",
+      "breakpoints": true
     }
   ]
 }
