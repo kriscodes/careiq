@@ -1,34 +1,50 @@
-import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { 
+    pgTable, 
+    text, 
+    timestamp, 
+    unique,
+    uuid,
+} from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 import { practices } from "./practices.js";
 
-export const patients = pgTable("patients", {
-    id: uuid("id")
-    .primaryKey()
-    .default(sql`uuidv7()`),
 
-    practiceId: uuid("practice_id")
-    .notNull()
-    .references(() => practices.id),
+export const patients = pgTable(
+    "patients",
+    {
+        id: uuid("id")
+        .primaryKey()
+        .default(sql`uuidv7()`),
+        
+        practiceId: uuid("practice_id")
+        .notNull()
+        .references(() => practices.id),
 
-    firstName: text("first_name").notNull(),
+        firstName: text("first_name").notNull(),
 
-    lastName: text("last_name").notNull(),
+        lastName: text("last_name").notNull(),
 
-    email: text("email"),
+        email: text("email"),
 
-    phone: text("phone"),
+        phone: text("phone"),
 
-    createdAt: timestamp("created_at", {
+        createdAt: timestamp("created_at", {
         withTimezone: true,
-    })
-    .notNull()
-    .defaultNow(),
+        })
+        .notNull()
+        .defaultNow(),
 
-    updatedAt: timestamp("updated_at", {
+        updatedAt: timestamp("updated_at", {
         withTimezone: true,
-    })
-    .notNull()
-    .defaultNow(),
-});
+        })
+        .notNull()
+        .defaultNow(),
+  },
+  (table) => [
+    unique("patients_id_practice_id_unique").on(
+      table.id,
+      table.practiceId,
+    ),
+  ],
+);

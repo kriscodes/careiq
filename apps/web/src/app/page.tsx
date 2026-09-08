@@ -4,8 +4,8 @@ import {
   Show,
   UserButton,
 } from "@clerk/nextjs";
-import { ApiTest } from "@/components/ApiTest"
 import { Patients } from "@/components/Patients";
+import { Appointments } from "@/components/Appointments";
 
 export default function Home() {
   return (
@@ -25,6 +25,7 @@ export default function Home() {
         </div>
       </div>
       <Patients/>
+      <Appointments/>
 
     </main>
   );

@@ -10,6 +10,10 @@ import {
     createPatient,
     listPatients,
 } from "./services/patient.service.js";
+import {
+    createAppointment,
+    listAppointments,
+} from "./services/appointment.service.js";
 
 const app = express();
 
@@ -166,6 +170,103 @@ app.post(
                 error: {
                     code: "PATIENT_CREATE_FAILED",
                     message: "Unable to create patient.",
+                },
+            });
+        }
+    },
+);
+
+app.get(
+    "/api/v1/appointments",
+    tenantContextMiddleware,
+    async(_req, res) => {
+        try{
+            const appointments = await listAppointments(
+                res.locals.tenant,
+            );
+
+            res.status(200).json({
+                data: appointments,
+            });
+        } catch (error) {
+            console.error("Failed to list appointments: ", error);
+
+            res.status(500).json({
+                error: {
+                    code: "APPOINTMENT_LIST_FAILED",
+                    message: "Unable to load appointments."
+                },
+            });
+        }
+    },
+);
+
+app.post (
+    "/api/v1/appointments",
+    tenantContextMiddleware,
+    async (req, res) => {
+        try {
+            const patientId = 
+            typeof req.body.patientId === "string"
+            ? req.body.patientId.trim()
+            : "";
+
+            const scheduledAt = 
+            typeof req.body.scheduledAt === "string"
+            ? new Date(req.body.scheduledAt)
+            : null;
+
+            const reason = 
+            typeof req.body.reason === "string"
+            ? req.body.reason.trim()
+            : undefined;
+
+            if(
+                !patientId ||
+                !scheduledAt ||
+                Number.isNaN(scheduledAt.getTime())
+            ) {
+                res.status(400).json({
+                    error: {
+                        code: "INVALID_APPOINTMENT",
+                        message: "Patient and a valid scheduled time are required.",
+                    },
+                });
+                return;
+            }
+
+            const appointment = await createAppointment(
+                res.locals.tenant,
+                {
+                    patientId,
+                    scheduledAt,
+                    reason,
+                },
+            );
+
+            res.status(201).json({
+                data: appointment,
+            });
+        } catch(error) {
+            if(
+                error instanceof Error &&
+                error.message === "PATIENT_NOT_FOUND"
+            ) {
+                res.status(404).json({
+                    error: {
+                        code: "PATIENT_NOT_FOUND",
+                        message: "The selected patient could not be found for this practice.",
+                    },
+                });
+                return;
+            }
+
+            console.error("Failed to create appointment: ", error);
+
+            res.status(500).json({
+                error: {
+                    code: "APPOINTMENT_CREATE_FAILED",
+                    message: "Unable to create appointment",
                 },
             });
         }

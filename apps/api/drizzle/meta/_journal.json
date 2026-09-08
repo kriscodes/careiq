@@ -36,6 +36,62 @@
       "when": 1788748885950,
       "tag": "0004_patients-rls",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1788752443973,
+      "tag": "0005_appointments-rls",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1788752504768,
+      "tag": "0006_lazy_drax",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1788752520350,
+      "tag": "0007_appointments-rls",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1788752628869,
+      "tag": "0008_appointments-rls",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1788753271780,
+      "tag": "0009_fix-appointments-rls",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1788753656396,
+      "tag": "0010_apply-appointments-rls",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1788819513247,
+      "tag": "0011_massive_human_cannonball",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1788834011385,
+      "tag": "0012_remove-tenant-test-records",
+      "breakpoints": true
     }
   ]
 }
