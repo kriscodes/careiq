@@ -16,7 +16,7 @@ export async function apiRequest<T>(
     token: string,
     options: RequestInit = {},
 ): Promise<T> {
-    const response = await fetch(`${API_URL}${path}`, {
+    const response = await fetch(`${API_URL!.replace(/\/$/, "")}${path}`, {
         ...options,
         headers: {
             Authorization: `Bearer ${token}`,
@@ -25,7 +25,10 @@ export async function apiRequest<T>(
         },
     });
 
-    const body = await response.json();
+    const body = await response.json().catch(() => null);
+    if (!body) {
+        throw new Error(`CareIQ API returned an unexpected response (${response.status}).`);
+    }
 
     if(!response.ok) {
         const errorBody = body as ApiErrorBody;

@@ -1,8 +1,12 @@
 # CareIQ Architecture
 
+Implementation status: the working slice covers Clerk organization-based practice resolution, patient and appointment create/list flows, and transaction-scoped PostgreSQL RLS. The v0.1 interview workspace includes a separately labeled, static architecture panel. It explains the implementation; it is not live telemetry. Sections describing roles, audit history, background jobs, storage, and integrations are architectural direction; they are not evidence that those capabilities are implemented.
+
 This document provides a high-level view of the CareIQ platform architecture.
 
 Detailed architectural decisions and their rationale are recorded separately in the Architecture Decision Records under [`docs/decisions`](./decisions).
+
+For the implemented request path, source references, and explicit remaining work, read the [interview architecture notes](interview-architecture.md). The [v0.1 design specification](design/interview-v0.1.md) defines the staff interface and the separate reviewer explanation layer.
 
 ## Architectural Goals
 
@@ -47,7 +51,6 @@ CareIQ currently consists of three primary runtime layers.
 │                              │
 │ Domain Data                  │
 │ Tenant Isolation / RLS       │
-│ Audit Data                   │
 │ Schema Migrations            │
 └──────────────────────────────┘
 ```
@@ -153,19 +156,16 @@ Tenant-scoped domain records contain the tenant identifier necessary to associat
 
 PostgreSQL Row-Level Security is used as a database-level enforcement mechanism for tenant isolation.
 
-The intended request flow is:
+The implemented patient and appointment request flow is:
 
 ```text
-Authenticated User
+Verified Clerk Session and Active Organization
        │
        ▼
-Resolve CareIQ Membership
+Resolve Organization to CareIQ Practice
        │
        ▼
-Resolve Practice / Tenant
-       │
-       ▼
-Establish Database Tenant Context
+Set Transaction-Local Database Tenant Context
        │
        ▼
 Execute Query
@@ -177,6 +177,8 @@ PostgreSQL RLS Enforces Access
 Application authorization remains necessary.
 
 RLS provides an additional security boundary rather than replacing application-level authorization.
+
+The `/api/v1/me` endpoint resolves or provisions the organization-to-practice mapping before tenant-scoped reads. The patient and appointment middleware then looks up that mapping. Domain services use `withTenant`, which sets `app.practice_id` inside the transaction. The runtime role must not be a superuser or have `BYPASSRLS`. A composite patient/practice foreign key also prevents appointments from referencing another practice's patient. Granular role authorization remains future work.
 
 ## Database
 

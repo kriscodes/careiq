@@ -1,6 +1,8 @@
 ALTER TABLE "patients" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "patients" FORCE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "patients_tenant_isolation" ON "patients";
+
 CREATE POLICY "patients_tenant_isolation"
 ON "patients"
 USING (

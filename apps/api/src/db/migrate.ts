@@ -4,18 +4,10 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { Pool } from "pg";
 
-const connectionString = process.env.DATABASE_URL;
+import { fileURLToPath } from "node:url";
+import { connectionOptions } from "./connection.js";
 
-if (!connectionString) {
-  throw new Error("DATABASE_URL is not configured");
-}
-
-const pool = new Pool({
-  connectionString,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+const pool = new Pool(connectionOptions());
 
 const db = drizzle(pool);
 
@@ -24,7 +16,7 @@ async function runMigrations() {
     console.log("Applying database migrations...");
 
     await migrate(db, {
-      migrationsFolder: "./drizzle",
+      migrationsFolder: fileURLToPath(new URL("../../drizzle", import.meta.url)),
     });
 
     console.log("Database migrations applied successfully.");

@@ -10,7 +10,9 @@ The platform is focused on reducing administrative workload around patient intak
 
 CareIQ is currently in the foundation and first vertical-slice stage.
 
-The core platform architecture, authentication model, multi-tenant database foundation, and initial domain models are being established before expanding into complete practice workflows.
+The current slice supports Clerk sign-in, practice selection, patient creation/listing, and appointment creation/listing backed by PostgreSQL tenant isolation. The **v0.1 — Interview Design** adds a light front-desk workspace, patient search, day/week navigation, and centered creation dialogs. A separate reviewer bar opens a static architecture explanation; it does not display live telemetry.
+
+See the [design specification](docs/design/interview-v0.1.md), [interview architecture notes](docs/interview-architecture.md), and [development and deployment guide](docs/development.md). The v0.1 label identifies the interview design, not production readiness. This application writes to the configured API/database; use synthetic demo data.
 
 ## Initial Product Direction
 
@@ -122,7 +124,7 @@ PostgreSQL Row-Level Security provides an additional enforcement boundary for te
 
 Clerk provides user identity and authentication.
 
-CareIQ maintains application-specific concepts such as practices, memberships, roles, permissions, and domain authorization.
+CareIQ maps the authenticated Clerk organization to an internal practice. Role-specific permissions and membership administration remain planned.
 
 ### Auditable Healthcare Workflows
 
@@ -158,7 +160,7 @@ Important database conventions include:
 * Explicit foreign-key relationships
 * Tenant-aware data modeling
 * PostgreSQL Row-Level Security
-* Database-backed audit capabilities
+* Planned database-backed audit capabilities (not implemented in this slice)
 * Version-controlled schema migrations
 
 Database migrations are owned by the API application.
@@ -244,7 +246,10 @@ Formal compliance requirements and controls will evolve as the product approache
 
 * [Product Vision](docs/product-vision.md)
 * [Architecture](docs/architecture.md)
+* [v0.1 — Interview Design](docs/design/interview-v0.1.md)
+* [Interview architecture notes](docs/interview-architecture.md)
 * [Development](docs/development.md)
+* [Verification record](docs/verification.md)
 * [Architecture Decision Records](docs/decisions)
 
 ## Project Philosophy

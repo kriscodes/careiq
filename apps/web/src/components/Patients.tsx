@@ -3,20 +3,17 @@
 import { useAuth } from "@clerk/nextjs";
 import {
   type SubmitEvent,
-  useEffect,
   useState,
 } from "react";
 
 import {
   createPatient,
-  getPatients,
   type Patient,
 } from "@/lib/api/patients";
 
-export function Patients() {
-    const { getToken, isLoaded, isSignedIn } = useAuth();
+export function Patients({ patients, onCreated }: { patients: Patient[]; onCreated: (patient: Patient) => void; }) {
+    const { getToken } = useAuth();
 
-    const [patients, setPatients] = useState<Patient[]>([]);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -24,28 +21,6 @@ export function Patients() {
 
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-
-    async function loadPatients() {
-        try {
-            setError(null);
-
-            const token = await getToken();
-
-            if (!token) {
-                throw new Error("Authentication token unavailable.");
-            }
-
-            const data = await getPatients(token);
-
-            setPatients(data);
-        } catch (err) {
-            setError(
-            err instanceof Error
-                ? err.message
-                : "Unable to load patients.",
-            );
-        }
-    }
 
     async function handleSubmit(
         event: SubmitEvent<HTMLFormElement>,
@@ -62,7 +37,7 @@ export function Patients() {
                 throw new Error("Authentication token unavailable.");
             }
 
-            await createPatient(token, {
+            const patient = await createPatient(token, {
                 firstName: firstName.trim(),
                 lastName: lastName.trim(),
                 email: email.trim() || undefined,
@@ -74,7 +49,7 @@ export function Patients() {
             setEmail("");
             setPhone("");
 
-            await loadPatients();
+            onCreated(patient);
         } catch (err) {
             setError(
             err instanceof Error
@@ -86,26 +61,12 @@ export function Patients() {
         }
     }
 
-    useEffect(() => {
-        if(isLoaded && isSignedIn) {
-            void loadPatients();
-        }
-    }, [isLoaded, isSignedIn]);
-
-    if(!isLoaded) {
-        return <p>Loading...</p>;
-    }
-
-    if(!isSignedIn) {
-        return null;
-    }
-
     return (
         <section className="mt-10 space-y-8">
             <div>
                 <h2 className="text-xl font-semibold">Patients</h2>
                 <p className="text-sm text-gray-600">
-                    Create and view patients for the actice practice.
+                    Create and view patients for the active practice.
                 </p>
             </div>
 
@@ -116,6 +77,7 @@ export function Patients() {
                 <input 
                 value={firstName}
                 onChange={(event) => setFirstName(event.target.value)}
+                aria-label="First name"
                 placeholder="First name"
                 className="rounded border p-2"
                 required
@@ -124,6 +86,7 @@ export function Patients() {
                 <input 
                 value={lastName}
                 onChange={(event) => setLastName(event.target.value)}
+                aria-label="Last name"
                 placeholder="Last name"
                 className="rounded border p-2"
                 required
@@ -132,6 +95,7 @@ export function Patients() {
                 <input 
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
+                aria-label="Email"
                 placeholder="Email"
                 type="email"
                 className="rounded border p-2"
@@ -140,6 +104,7 @@ export function Patients() {
                 <input 
                 value={phone}
                 onChange={(event) => setPhone(event.target.value)}
+                aria-label="Phone"
                 placeholder="Phone"
                 className="rounded border p-2"
                 />
@@ -154,7 +119,7 @@ export function Patients() {
             </form>
 
             {error && (
-                <p className="text-sm text-red-600">
+                <p role="alert" className="text-sm text-red-600">
                     {error}
                 </p>
             )}

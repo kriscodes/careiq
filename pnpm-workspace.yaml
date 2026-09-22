@@ -4,4 +4,5 @@ packages:
 
 allowBuilds:
   esbuild: true
-  unrs-resolver: set this to true or false
+  sharp: true
+  unrs-resolver: true

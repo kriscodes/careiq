@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import { logFailure } from "../logging.js";
 import { getAuth } from "@clerk/express";
 
 import { findPracticeByClerkOrgId } from "../services/practice.service.js";
@@ -57,7 +58,7 @@ export async function tenantContextMiddleware(
 
         next();
     } catch (error) {
-        console.error("Failed to establish tenant context: ", error);
+        logFailure("Failed to establish tenant context", error);
 
         res.status(500).json({
             error: {

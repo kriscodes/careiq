@@ -1,11 +1,3 @@
-ALTER TABLE "appointments" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "appointments" FORCE ROW LEVEL SECURITY;
-
-CREATE POLICY "appointments_tenant_isolation"
-ON "appointments"
-USING (
-  "practice_id" = current_setting('app.practice_id', true)::uuid
-)
-WITH CHECK (
-  "practice_id" = current_setting('app.practice_id', true)::uuid
-);
+-- Appointments are created in 0006; their RLS policy is applied in 0008 and 0010.
+-- This historical entry must remain in the journal for existing databases.
+SELECT 1;

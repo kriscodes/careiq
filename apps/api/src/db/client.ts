@@ -1,18 +1,6 @@
-import "dotenv/config";
-import { drizzle } from "drizzle-orm/node-postgres"
-import { Pool } from "pg"
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import { connectionOptions } from "./connection.js";
 
-const connectionString = process.env.DATABASE_URL;
-
-if(!connectionString) {
-    throw new Error("DATABASE_URL is not configured.");
-}
-
-export const pool = new Pool({
-    connectionString,
-    ssl: {
-        rejectUnauthorized: false,
-    },
-});
-
+export const pool = new Pool(connectionOptions());
 export const db = drizzle(pool);

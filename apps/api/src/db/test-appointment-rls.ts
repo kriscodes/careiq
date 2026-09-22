@@ -127,6 +127,8 @@ async function main() {
     throw new Error("Appointment RLS isolation failed.");
   }
 
+  let crossTenantInsertBlocked = false;
+
   try {
     await withTenant(practiceA.id, async (tx) => {
       await tx.insert(appointments).values({
@@ -137,13 +139,22 @@ async function main() {
       });
     });
 
-    console.error(
-      "ERROR: Practice A created an appointment for Practice B's patient.",
-    );
-  } catch {
+  } catch (error) {
+    // Drizzle wraps the PostgreSQL error in `cause`; only the expected
+    // integrity/security errors count as proof of tenant isolation.
+    const pgError = (error as { cause?: { code?: string } }).cause ?? error;
+    const code = (pgError as { code?: string }).code;
+    if (code !== "23503" && code !== "42501") {
+      throw error;
+    }
+    crossTenantInsertBlocked = true;
     console.log(
       "Cross-tenant patient appointment correctly blocked.",
     );
+  }
+
+  if (!crossTenantInsertBlocked) {
+    throw new Error("Tenant isolation failed: a cross-tenant appointment was created.");
   }
 
   console.log("\nAppointment tenant isolation passed.");

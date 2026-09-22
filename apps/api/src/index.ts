@@ -4,8 +4,6 @@ import cors from "cors";
 import { pool } from "./db/client.js";
 import { provisionPractice } from "./services/practice.service.js";
 import { tenantContextMiddleware } from "./middleware/tenant-context.js";
-import { sql } from "drizzle-orm";
-import { withTenant } from "./db/with-tenant.js";
 import { 
     createPatient,
     listPatients,
@@ -15,13 +13,20 @@ import {
     listAppointments,
 } from "./services/appointment.service.js";
 
+import { logFailure } from "./logging.js";
+import { isUuid, parseScheduledAt } from "./validation.js";
+
 const app = express();
+app.disable("x-powered-by");
 
 const port = Number(process.env.PORT ?? 3000);
 
 app.use(
     cors({
-        origin: "http://localhost:3001",
+        origin: (process.env.CORS_ORIGINS ?? "http://localhost:3001")
+            .split(",")
+            .map((origin) => origin.trim())
+            .filter(Boolean),
         credentials: true,
     }),
 )
@@ -39,7 +44,7 @@ app.get("/health", async (_req, res) => {
             database: "connected",
         });
     } catch(error) {
-        console.error("Database health check failed:", error);
+        logFailure("Database health check failed:", error);
 
         res.status(503).json({
             status: "error",
@@ -84,7 +89,7 @@ app.get("/api/v1/me", async (req, res) => {
             },
         });
     } catch(error) {
-        console.error("Failed to resolve current user: ", error);
+        logFailure("Failed to resolve current user: ", error);
 
         res.status(500).json({
             error: {
@@ -106,7 +111,7 @@ app.get(
                 data: patients,
             });
         } catch(error) {
-            console.error("Failed to list patients: ", error);
+            logFailure("Failed to list patients: ", error);
 
             res.status(500).json({
                 error: {
@@ -124,23 +129,23 @@ app.post(
     async (req, res) => {
         try {
             const firstName =
-            typeof req.body.firstName === "string"
-            ? req.body.firstName.trim()
+            typeof req.body?.firstName === "string"
+            ? req.body?.firstName.trim()
             : "";
 
             const lastName =
-            typeof req.body.lastName === "string"
-            ? req.body.lastName.trim()
+            typeof req.body?.lastName === "string"
+            ? req.body?.lastName.trim()
             : "";
 
             const email =
-            typeof req.body.email === "string"
-            ? req.body.email.trim()
+            typeof req.body?.email === "string"
+            ? req.body?.email.trim()
             : undefined;
 
             const phone =
-            typeof req.body.phone === "string"
-            ? req.body.phone.trim()
+            typeof req.body?.phone === "string"
+            ? req.body?.phone.trim()
             : undefined;
 
             if(!firstName || !lastName) {
@@ -164,7 +169,7 @@ app.post(
                 data: patient,
             });
         } catch (error) {
-            console.error("Failed to create patient: ", error);
+            logFailure("Failed to create patient: ", error);
 
             res.status(500).json({
                 error: {
@@ -189,7 +194,7 @@ app.get(
                 data: appointments,
             });
         } catch (error) {
-            console.error("Failed to list appointments: ", error);
+            logFailure("Failed to list appointments: ", error);
 
             res.status(500).json({
                 error: {
@@ -207,22 +212,20 @@ app.post (
     async (req, res) => {
         try {
             const patientId = 
-            typeof req.body.patientId === "string"
-            ? req.body.patientId.trim()
+            typeof req.body?.patientId === "string"
+            ? req.body?.patientId.trim()
             : "";
 
             const scheduledAt = 
-            typeof req.body.scheduledAt === "string"
-            ? new Date(req.body.scheduledAt)
-            : null;
+            parseScheduledAt(req.body?.scheduledAt);
 
             const reason = 
-            typeof req.body.reason === "string"
-            ? req.body.reason.trim()
+            typeof req.body?.reason === "string"
+            ? req.body?.reason.trim()
             : undefined;
 
             if(
-                !patientId ||
+                !isUuid(patientId) ||
                 !scheduledAt ||
                 Number.isNaN(scheduledAt.getTime())
             ) {
@@ -261,7 +264,7 @@ app.post (
                 return;
             }
 
-            console.error("Failed to create appointment: ", error);
+            logFailure("Failed to create appointment: ", error);
 
             res.status(500).json({
                 error: {
@@ -272,6 +275,16 @@ app.post (
         }
     },
 );
+
+app.use((error: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    const status = (error as { status?: number })?.status;
+    if (status === 400 || status === 413) {
+        res.status(status).json({ error: { code: "INVALID_REQUEST", message: status === 413 ? "Request body is too large." : "Request body must be valid JSON." } });
+        return;
+    }
+    console.error("Unhandled request error");
+    res.status(500).json({ error: { code: "INTERNAL_SERVER_ERROR", message: "Unable to complete request." } });
+});
 
 app.listen(port, "0.0.0.0", () => {
     console.log(`CareIQ API listening on port ${port}.`);

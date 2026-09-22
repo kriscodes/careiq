@@ -1,32 +1,7 @@
-import {
-  SignInButton,
-  SignUpButton,
-  Show,
-  UserButton,
-} from "@clerk/nextjs";
-import { Patients } from "@/components/Patients";
-import { Appointments } from "@/components/Appointments";
+import { PracticeWorkspace } from "@/components/PracticeWorkspace";
 
 export default function Home() {
-  return (
-    <main className="min-h-screen p-8">
-      <div className="mx-auto flex max-w-6xl items-center justify-between">
-        <h1 className="text-2xl font-semibold">CareIQ</h1>
-
-        <div className="flex items-center gap-4">
-          <Show when="signed-out">
-            <SignInButton />
-            <SignUpButton />
-          </Show>
-
-          <Show when="signed-in">
-            <UserButton />
-          </Show>
-        </div>
-      </div>
-      <Patients/>
-      <Appointments/>
-
-    </main>
-  );
+  const interviewMode = process.env.NEXT_PUBLIC_INTERVIEW_MODE === "true" ||
+    (process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_INTERVIEW_MODE !== "false");
+  return <PracticeWorkspace interviewMode={interviewMode} />;
 }

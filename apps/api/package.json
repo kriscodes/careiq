@@ -1,5 +1,5 @@
 {
-  "name": "CareIQ API",
+  "name": "@careiq/api",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
@@ -10,7 +10,9 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/db/migrate.ts",
     "db:studio": "drizzle-kit studio",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tsx --test tests/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",

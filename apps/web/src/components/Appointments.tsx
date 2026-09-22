@@ -3,26 +3,21 @@
 import { useAuth } from "@clerk/nextjs";
 import {
     type SubmitEvent,
-    useEffect,
     useState,
 } from "react";
 
 import {
     createAppointment,
-    getAppointments,
     type Appointment,
 } from "@/lib/api/appointments";
 
 import {
-    getPatients,
-    type Patient,
+      type Patient,
 } from "@/lib/api/patients";
 
-export function Appointments() {
-    const { getToken, isLoaded, isSignedIn } = useAuth();
+export function Appointments({ patients, appointments, onCreated }: { patients: Patient[]; appointments: Appointment[]; onCreated: (appointment: Appointment) => void; }) {
+    const { getToken } = useAuth();
 
-    const [appointments, setAppointments] = useState<Appointment[]>([]);
-    const [patients, setPatients] = useState<Patient[]>([]);
 
     const [patientId, setPatientId] = useState("");
     const [scheduledAt, setScheduledAt] = useState("");
@@ -30,36 +25,6 @@ export function Appointments() {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
-    async function loadData() {
-        try {
-            setError(null);
-
-            const token = await getToken();
-
-            if(!token) {
-                throw new Error("Authentication token unavailable.");
-            }
-
-            const [patientData, appointmentData] = await Promise.all([
-                getPatients(token),
-                getAppointments(token),
-            ]);
-
-            setPatients(patientData);
-            setAppointments(appointmentData);
-
-            if(!patientId && patientData.length > 0) {
-                setPatientId(patientData[0].id);
-            }
-        } catch (err) {
-            setError(
-                err instanceof Error 
-                ? err.message
-                : "Unable to load appointments."
-            );
-        }
-    }
 
     async function handleSubmit(
         event: SubmitEvent<HTMLFormElement>,
@@ -76,7 +41,7 @@ export function Appointments() {
                 throw new Error("Authentication token unavailable.");
             }
 
-            await createAppointment(token, {
+            const appointment = await createAppointment(token, {
                 patientId,
                 scheduledAt: new Date(scheduledAt).toISOString(),
                 reason: reason.trim() || undefined,
@@ -85,7 +50,7 @@ export function Appointments() {
             setScheduledAt("");
             setReason("");
 
-            await loadData();
+            onCreated(appointment);
         } catch (err) {
             setError(
                 err instanceof Error
@@ -95,20 +60,6 @@ export function Appointments() {
         } finally {
             setLoading(false);
         }
-    }
-
-    useEffect(() => {
-        if(isLoaded && isSignedIn) {
-            void loadData();
-        }
-    }, [isLoaded, isSignedIn]);
-
-    if(!isLoaded) {
-        return <p>Loading...</p>;
-    }
-
-    if(!isSignedIn) {
-        return null;
     }
 
     return (
@@ -128,6 +79,7 @@ export function Appointments() {
             className="grid max-w-xl gap-4"
             >
                 <select
+                aria-label="Patient"
                 value={patientId}
                 onChange={(event) =>
                     setPatientId(event.target.value)
@@ -149,6 +101,7 @@ export function Appointments() {
                 </select>
 
                 <input
+                aria-label="Appointment date and time"
                 type="datetime-local"
                 value={scheduledAt}
                 onChange={(event) => 
@@ -163,6 +116,7 @@ export function Appointments() {
                 onChange={(event) => 
                     setReason(event.target.value)
                 }
+                aria-label="Reason for visit"
                 placeholder="Reason for visit"
                 className="rounded border p-2"
                 />
@@ -178,13 +132,13 @@ export function Appointments() {
                 >
                     {loading
                     ? "Scheduling..."
-                    : "Scheduled Appointment"
+                    : "Schedule Appointment"
                     }
                 </button>
             </form>
 
             {error && (
-                <p className="text-sm text-red-600">
+                <p role="alert" className="text-sm text-red-600">
                     {error}
                 </p>
             )}
