@@ -72,7 +72,7 @@ These results supersede the historical source-level limitations above, without c
 - All 13 web tests, 8 marketing tests and 3 shared interview-contract tests passed: 103 tests total, no skips.
 - Workspace lint, type checks and API/web/marketing production builds passed on patched dependencies. `pnpm audit --prod` reported zero known vulnerabilities.
 - All 16 migrations replayed on an empty disposable database; a repeated migration run was a no-op. No production database was migrated.
-- The no-migration hotfix passed GitHub CI before merge in PR #3 and again on main (`82d93cb`). Live web returned the new security headers; API health reported database connected. API health alone cannot verify its running commit.
+- The no-migration hotfix passed GitHub CI before merge in PR #3 and again on main (`82d93cb`). Live web returned the new security headers. Public web and marketing JavaScript both report Next.js 16.3.6 following PR #3/#4. API health reported database connected. API health alone cannot verify its running commit.
 - A scan of the reviewed repository and reachable Git history found no confirmed exposed credentials. This is not a guarantee that accounts or historical external systems contain no leaks.
 
 Still pending: production database identity/role/migration verification; release 2 deployment; signed-in browser and two-practice walkthrough; Clerk production configuration; email receipt/reply testing; backup/restore and retention operations. Browser automation could not initialize its administrator policy, and no workaround was used. Marketing intake/indexing remain disabled. See [current release status](deployment/security-release-status.md) and the [rollout runbook](security-hardening.md).

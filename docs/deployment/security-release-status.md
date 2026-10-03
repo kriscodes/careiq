@@ -4,11 +4,13 @@
 
 [PR #3](https://github.com/kriscodes/careiq/pull/3) merged to `main` as `82d93cb`. It contains the idle-pool crash fix, web framing/security headers, patched Next.js/qs dependencies, a CI workflow and release documentation. GitHub verification succeeded for the reviewed commit. Live HTTPS checks at 07:04 UTC confirmed the web now returns the new CSP/framing/content-type/referrer headers and no powered-by header. API `/health` returned 200 with database connected. The API health response does not expose a release ID, so its exact running commit remains unverified without Render access. Main-branch CI also passed after merge.
 
-Marketing dependencies and the shared verification workflow were merged separately in [PR #4](https://github.com/kriscodes/careiq/pull/4) to `codex/deploy-marketing` as `d0748b5`, after both GitHub verification runs passed. Intake and indexing are still disabled. Exact hosted marketing revision awaits verification.
+Marketing dependencies and the shared verification workflow were merged separately in [PR #4](https://github.com/kriscodes/careiq/pull/4) to `codex/deploy-marketing` as `d0748b5`, after both GitHub verification runs passed. Intake and indexing are still disabled. Fresh public JavaScript on both the Render marketing origin and careiqlabs.com reports Next.js 16.3.6; the disabled form and noindex state were preserved. The web runtime also reports 16.3.6.
 
 ## Release 2: complete clinical-security implementation
 
-The source on `codex/security-fixes` adds administrator/member capabilities, validation, bounded pagination, in-memory client retry attempts, durable tenant-scoped idempotency and append-only clinical audit events. Migration 0015 and checked clinical-runtime/audit-reader grants are included. See [the complete rollout procedure](../security-hardening.md).
+[Draft PR #5](https://github.com/kriscodes/careiq/pull/5), on `codex/security-fixes`, adds administrator/member capabilities, validation, bounded pagination, in-memory client retry attempts, durable tenant-scoped idempotency and append-only clinical audit events. Migration 0015 and checked clinical-runtime/audit-reader grants are included. See [the complete rollout procedure](../security-hardening.md).
+
+All 103 local tests passed without skips, and the branch GitHub verification run passed.
 
 This release must not be promoted until the production migration and restricted runtime role are verified. The available local database configuration points at `careiq_dev`; it is not the recorded production database. Production credentials and current Render service configuration were not accessible in this task. The browser connection could not initialize/verify its administrator policy, and no alternate browser-control workaround was used.
 
