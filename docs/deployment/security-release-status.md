@@ -1,25 +1,41 @@
 # Security release status — October 3, 2026 UTC
 
-## Release 1: no production migration required
+## Deployed and verified
 
-[PR #3](https://github.com/kriscodes/careiq/pull/3) merged to `main` as `82d93cb`. It contains the idle-pool crash fix, web framing/security headers, patched Next.js/qs dependencies, a CI workflow and release documentation. GitHub verification succeeded for the reviewed commit. Live HTTPS checks at 07:04 UTC confirmed the web now returns the new CSP/framing/content-type/referrer headers and no powered-by header. API `/health` returned 200 with database connected. The API health response does not expose a release ID, so its exact running commit remains unverified without Render access. Main-branch CI also passed after merge.
+[PR #5](https://github.com/kriscodes/careiq/pull/5) merged to main as `fe77a653bd4991f42775d331ba2553635d802b7d`. Render shows that commit live for API and WEB. It deploys admin-create/member-view authorization, tenant-scoped durable retry protection, metadata-only audit writes, input limits and bounded pagination. The earlier PR #3 dependency, database-pool and response-header fixes remain included.
 
-Marketing dependencies and the shared verification workflow were merged separately in [PR #4](https://github.com/kriscodes/careiq/pull/4) to `codex/deploy-marketing` as `d0748b5`, after both GitHub verification runs passed. Intake and indexing are still disabled. Fresh public JavaScript on both the Render marketing origin and careiqlabs.com reports Next.js 16.3.6; the disabled form and noindex state were preserved. The web runtime also reports 16.3.6.
+The reviewed release passed 103 tests, lint, type checks, production builds, all 16 migrations and migration replay on PostgreSQL 18.6, with no reported production dependency vulnerabilities. GitHub Actions run 37146456289 passed for reviewed head `12e9266b4bbe4833740261df4d5bc77fd856770c`.
 
-## Release 2: complete clinical-security implementation
+| Component | Evidence |
+| --- | --- |
+| DB | Confirmed hosted database `careiq_n8yp`; migrations 0014 and 0015 applied, 16 total; rerun was a no-op. No reset performed. |
+| API | Code deploy `dep-db0mc37f3r2c73b8b240`; restricted-connection deploy `dep-db0mgr8u01pc73b13mk0`. Live shell query confirms `current_user=careiq_api` and superuser/createdb/createrole/bypassrls are all false. `/health` returns 200 with database connected. |
+| WEB | Deploy `dep-db0mc37f3r2c73b8b200`, commit `fe77a65`, live. Administrator synthetic patient and appointment creation passed; appointment and patient persisted after refresh. Switching to the second existing practice showed zero patients/appointments and cleared the first practice's selected details. |
+| MARKETING | Existing patched static deployment remains live on `codex/deploy-marketing`. Intake and indexing remain disabled. No successful live intake/retry/deletion test is claimed. |
 
-[Draft PR #5](https://github.com/kriscodes/careiq/pull/5), on `codex/security-fixes`, adds administrator/member capabilities, validation, bounded pagination, in-memory client retry attempts, durable tenant-scoped idempotency and append-only clinical audit events. Migration 0015 and checked clinical-runtime/audit-reader grants are included. See [the complete rollout procedure](../security-hardening.md).
+The first environment save did not persist the restricted URL. A live identity check caught the owner login still in use. The owner refreshed the restricted credential, the field was entered using the browser's form controls, its saved value was checked privately, and another deployment plus live SQL verification confirmed the correction. No credentials are included in this report. Preserve `DATABASE_SSL_MODE=require` for the current internal Render connection; it is encryption without full certificate verification, not a claim of verify-full validation.
 
-All 103 local tests passed without skips, and the branch GitHub verification run passed.
+## Backup and migration evidence
 
-This release must not be promoted until the production migration and restricted runtime role are verified. The available local database configuration points at `careiq_dev`; it is not the recorded production database. Production credentials and current Render service configuration were not accessible in this task. The browser connection could not initialize/verify its administrator policy, and no alternate browser-control workaround was used.
+A fresh native export from 20:08 UTC (archive completed 20:09:24 UTC) was restored into isolated PostgreSQL 18.6 with networking disabled and no published ports. Before migrations it contained 2 practices, 1 patient, 1 appointment and 14 migration entries. The owner confirmed those records are synthetic. Forced patient/appointment RLS was present. Migrations 0014–0015 and both checked runtime grants were rehearsed on the restore before production changes. Restricted-role checks deny audit reads, patient deletion and reading marketing email fields; tenant-scoped reads did not cross practices.
 
-## Owner actions and unresolved account work
+Render Hobby currently provides 3-day PITR and 7-day native logical-export retention. This exercise verifies one provider-native export restoration. Independent encrypted storage, daily scheduling, failure alerts, 35-day expiration and restoration with a current external deletion/hold ledger are **not configured or verified**. The owner has no AWS account yet. See [backup and retention](../backup-retention.md).
 
-- **Completed:** the owner confirmed `kristian@careiqlabs.com` is set up and tested on October 3, 2026. Kristian is the intended reviewer/contact. Intake remains disabled pending production configuration, review/deletion procedures and a hosted submission check.
-- The owner has signed back into Render and Clerk. A fresh browser check still failed during browser app-server initialization, so dashboard access is not restored for this task. Once the connection works, verify production database identity, migration credentials, restricted runtime connection, service branches and deployment settings. Do not paste secrets into Git, documentation or chat.
-- Prepare Clerk production authentication, including organization/user mapping and domain/provider configuration. A publishable development key is public configuration, not a secret leak, but it is not a completed production setup.
-- Review and adopt the proposed [backup and retention procedure](../backup-retention.md), then verify the actual production settings and restore evidence. Configure required CI checks/hosting deployment gates if desired.
-- Complete the hosted administrator/member and two-practice walkthrough after release 2 is deployed.
+## Authentication and DNS
 
-The custom marketing apex and www are already reachable over HTTPS; www redirects to apex. Older DNS/certificate-pending statements in the original marketing handoff are historical. Marketing intake and indexing remain intentionally disabled. There is no evidence from this work that these remaining steps are technically impossible; they require working account access and the owner decisions above.
+The approved `app.careiqlabs.com` hostname is registered in Render, verified, and has an issued HTTPS certificate. Namecheap now contains its CNAME plus the five exact Clerk production CNAMEs. Existing apex/www, Google MX, SPF, DKIM and DMARC records were preserved. Clerk verified frontend API, account portal and all three email records.
+
+A separate Clerk production instance was created with owner approval. The running API/WEB still use development Clerk configuration until production provider configuration, user/practice mappings and end-to-end sign-in are tested. Google production OAuth credentials remain a setup dependency. Do not switch keys merely because DNS is verified. Existing mappings are not automatically transferred between Clerk instances.
+
+## Synthetic/demo-only decision and remaining work
+
+The owner explicitly declined a paid HIPAA upgrade for now and chose synthetic/demo use while comparing costs. Render is Hobby with HIPAA disabled. No BAA signature, HIPAA workspace enablement or real-PHI launch approval occurred. See [hosting comparison](hosting-options.md).
+
+- Complete production Clerk provider configuration and map approved users/organizations to the right practices.
+- Finish hosted member-write-denial, deliberate cross-practice API request and same-key retry acceptance. The automated suite covers these cases; the signed-in browser checks above do not replace those live cases.
+- Configure independent backups, alerts, expiration, recovery-key handling and a second restore exercise using that independent storage.
+- Validate practice-specific retention inputs and approved defaults; implement durable external holds/deletion ledger, complete customer exports and safe replay after restoration. No clinical purge is enabled.
+- Marketing: mailbox `kristian@careiqlabs.com` is confirmed tested and Kristian is the intended reviewer. Adopt the review/deletion procedure, verify trusted proxy configuration, configure API CORS/intake and marketing build variables, then test submission/retry/deletion before indexing.
+- Review applicable customer/vendor agreements and appropriate PHI hosting before any real patient information.
+
+No remaining item has been proven technically impossible. Some depend on owner accounts, provider configuration, agreements and practice-specific legal decisions; others remain implementation and acceptance work. Native backup restoration and a healthy release must not be described as complete production readiness.

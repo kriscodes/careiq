@@ -1,6 +1,6 @@
 # CareIQ marketing deployment handoff
 
-> Historical initial deployment record. October 2–3 follow-up: apex and www now resolve over HTTPS, and www redirects to apex. Intake and indexing remain disabled; `kristian@careiqlabs.com` still needs setup/testing. See [current security release status](security-release-status.md) and the [complete rollout guide](../security-hardening.md) before using the older prerequisite checklist below.
+> Historical initial deployment record. October 2–3 follow-up: apex and www now resolve over HTTPS, and www redirects to apex. Intake and indexing remain disabled; `kristian@careiqlabs.com` is now confirmed set up and tested. The API/schema/restricted-runtime security release is deployed; intake configuration and hosted submission/retry/deletion acceptance remain outstanding. See [current security release status](security-release-status.md) and the [complete rollout guide](../security-hardening.md) before using the older prerequisite checklist below.
 
 The marketing application is a separate Next.js static export in `apps/marketing`. The authenticated product remains in `apps/web`, and the existing Express API remains responsible for database access. The initial marketing deployment keeps search indexing and interview submission disabled while the production intake prerequisites are completed.
 

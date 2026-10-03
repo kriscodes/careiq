@@ -6,7 +6,7 @@ Status: proposal for owner and California healthcare counsel review, October 3, 
 
 CareIQ will initially serve practices in greater Los Angeles, California, including practices treating minors. Real patient operations will use identifiable information. Patient identities linked to appointments and care workflows are to be treated as protected health information (PHI); synthetic records remain appropriate for development and demonstrations. See [HHS's definition of protected information](https://www.hhs.gov/hipaa/for-professionals/privacy/laws-regulations/index.html).
 
-The owner confirmed `kristian@careiqlabs.com` is set up and tested. Kristian is the initial operational owner and intended interview/privacy contact. The owner signed back into Render and Clerk, but the task's fresh browser check still failed during app-server initialization. Production settings remain unverified.
+The owner confirmed `kristian@careiqlabs.com` is set up and tested. Kristian is the initial operational owner and intended interview/privacy contact. Dashboard access is restored. Render is Hobby with HIPAA disabled. The owner chose synthetic/demo use only while comparing hosting costs, and confirmed the existing hosted records are synthetic. A native backup restoration and security migration are verified; independent backup storage and automation remain unconfigured.
 
 A universal six-year maximum is not adopted. Keep application records according to their category and the practice's obligations; rotate disaster-recovery backups on a separate short schedule. Legal holds and longer applicable requirements prevent scheduled deletion. This proposal must be validated for each customer's provider type, payer obligations, custody agreement and record categories before automated deletion is activated.
 
@@ -66,7 +66,8 @@ Approved deletions must cover production data, caches, exports and applicable co
 - Mailbox setup/testing: confirmed by owner.
 - Market and PHI scope: California/greater Los Angeles, including minors, real identifiable patient operations.
 - Periods and operational schedule: proposed, awaiting adoption and customer/legal validation.
-- Backup plan, BAA status, production restore and account settings: not verified or changed.
+- Native backup/restore: a fresh October 3 export was restored in network-isolated PostgreSQL 18.6; tenant totals, forced RLS, migration replay and runtime grants were checked. Production migrations through 0015 and the restricted runtime login are deployed. See [release evidence](deployment/security-release-status.md).
+- Render Hobby and HIPAA-disabled status: verified. Applicable signed BAAs, independent backup storage, scheduling, alerts and expiration: incomplete. No AWS account currently exists.
 - Automatic retention deletion, legal-hold workflow, complete customer export and restore/deletion replay: not implemented by the security release.
 - Interview intake/indexing: remain disabled until the separate launch checklist is completed.
 
