@@ -62,3 +62,17 @@ Completed on the final v0.1 checkout before commit:
 Push target is the checkout's existing upstream, `origin/dev`. No Render deployment status or linked service configuration was available from GitHub during this review. Pushing the branch is not evidence of a successful deployment. Confirm the actual Render branch and service settings before treating the deployment as complete.
 
 For the hosted interview build, verify `NEXT_PUBLIC_INTERVIEW_MODE=true`, the hosted API URL and Clerk public settings at build time, allowed CORS origin, verified database TLS settings, and controlled application of migration 0013. Complete the signed-in two-practice and visual walkthrough against the deployed URL. Browser inspection remains pending because the admin security check was unavailable during the UI work.
+
+
+## Security remediation — October 3, 2026 UTC
+
+These results supersede the historical source-level limitations above, without certifying production configuration:
+
+- All 79 API tests passed on disposable PostgreSQL 18.6 with zero skips, including tenant isolation, admin/member permissions, real signed-token verification, safe runtime/reviewer grants, concurrent durable retries, audit metadata, marketing protections and recovery after a database connection is terminated. The final pagination-upgrade regression verifies that older browser tabs receive a refresh error instead of silently losing records.
+- All 13 web tests, 8 marketing tests and 3 shared interview-contract tests passed: 103 tests total, no skips.
+- Workspace lint, type checks and API/web/marketing production builds passed on patched dependencies. `pnpm audit --prod` reported zero known vulnerabilities.
+- All 16 migrations replayed on an empty disposable database; a repeated migration run was a no-op. No production database was migrated.
+- The no-migration hotfix passed GitHub CI before merge in PR #3 and again on main (`82d93cb`). Live web returned the new security headers. Public web and marketing JavaScript both report Next.js 16.3.6 following PR #3/#4. API health reported database connected. API health alone cannot verify its running commit.
+- A scan of the reviewed repository and reachable Git history found no confirmed exposed credentials. This is not a guarantee that accounts or historical external systems contain no leaks.
+
+Still pending: production database identity/role/migration verification; release 2 deployment; signed-in browser and two-practice walkthrough; Clerk production configuration; email receipt/reply testing; backup/restore and retention operations. Browser automation could not initialize its administrator policy, and no workaround was used. Marketing intake/indexing remain disabled. See [current release status](deployment/security-release-status.md) and the [rollout runbook](security-hardening.md).

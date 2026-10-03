@@ -3,6 +3,7 @@ import {
     text, 
     timestamp, 
     unique,
+    index,
     uuid,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
@@ -42,6 +43,7 @@ export const patients = pgTable(
         .defaultNow(),
   },
   (table) => [
+    index("patients_practice_name_idx").on(table.practiceId, table.lastName, table.firstName, table.id),
     unique("patients_id_practice_id_unique").on(
       table.id,
       table.practiceId,

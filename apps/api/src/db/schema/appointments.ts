@@ -1,5 +1,6 @@
 import {
     foreignKey,
+    index,
     pgTable,
     text,
     timestamp,
@@ -47,6 +48,7 @@ export const appointments = pgTable(
     .defaultNow(),
 },
 (table) => [
+    index("appointments_practice_schedule_idx").on(table.practiceId, table.scheduledAt, table.id),
     foreignKey({
       columns: [table.patientId, table.practiceId],
       foreignColumns: [patients.id, patients.practiceId],

@@ -2,7 +2,9 @@
 
 import { OrganizationSwitcher, SignInButton, SignUpButton, UserButton, useAuth, useUser } from "@clerk/nextjs";
 import { useEffect, useRef, useState } from "react";
-import { apiRequest } from "@/lib/api/client";
+import { ApiError, apiRequest } from "@/lib/api/client";
+import { NO_CAPABILITIES, practiceCapabilities, type PracticeCapabilities } from "@/lib/capabilities";
+import { createSubmissionAttempt } from "@/lib/submission-attempt";
 import { createPatient, getPatients, type CreatePatientInput, type Patient } from "@/lib/api/patients";
 import { createAppointment, getAppointments, type Appointment, type CreateAppointmentInput } from "@/lib/api/appointments";
 import { dateFromKey, localDateKey, shiftDate, weekDates } from "@/lib/interview-dates";
@@ -45,6 +47,7 @@ function PracticeData({ orgId }: { orgId: string }) {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [practiceName, setPracticeName] = useState("");
+  const [capabilities, setCapabilities] = useState<PracticeCapabilities>(NO_CAPABILITIES);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -56,6 +59,7 @@ function PracticeData({ orgId }: { orgId: string }) {
   const [modal, setModal] = useState<"patient" | "booking" | null>(null);
   const [busy, setBusy] = useState(false);
   const [continueBooking, setContinueBooking] = useState(false);
+  const [bookingAttempt, setBookingAttempt] = useState(() => createSubmissionAttempt());
   const [draft, setDraft] = useState<BookingDraft>({ patientId: "", date: selectedDate, time: "09:00", reason: "" });
   const [toast, setToast] = useState("");
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -73,11 +77,16 @@ function PracticeData({ orgId }: { orgId: string }) {
         if (!current) return;
         if (!token) throw new Error("Your session has expired. Please sign in again.");
         // Provision the authenticated organization before reading tenant-scoped records.
-        const me = await apiRequest<{ data: { practice: { name: string } } }>("/api/v1/me", token);
+        const me = await apiRequest<{ data: { practice: { name: string }; capabilities?: PracticeCapabilities } }>("/api/v1/me", token);
         if (!current) return;
-        const [patientData, appointmentData] = await Promise.all([getPatients(token), getAppointments(token)]);
+        const access = practiceCapabilities(me.data.capabilities);
+        const [patientData, appointmentData] = await Promise.all([
+          access.patients.read ? getPatients(token) : [],
+          access.appointments.read ? getAppointments(token) : [],
+        ]);
         if (!current) return;
         setPracticeName(me.data.practice.name);
+        setCapabilities(access);
         setPatients(patientData.sort(sortPatients));
         setAppointments(appointmentData.sort(sortAppointments));
         setError(null);
@@ -106,16 +115,24 @@ function PracticeData({ orgId }: { orgId: string }) {
   }
 
   function openBooking(patientId = "") {
+    if (!capabilities.appointments.create || !capabilities.patients.read) return;
+    setBookingAttempt(createSubmissionAttempt());
     setDraft({ patientId, date: selectedDate, time: "09:00", reason: "" });
     setContinueBooking(false);
     setModal("booking");
   }
 
-  function openPatient() { setContinueBooking(false); setModal("patient"); }
+  function openPatient() { if (!capabilities.patients.create) return; setContinueBooking(false); setModal("patient"); }
   function closeModal() { if (!busy) { setModal(null); setContinueBooking(false); } }
 
-  async function savePatient(input: CreatePatientInput) {
-    const patient = await createPatient(await mutationToken(), input);
+  async function savePatient(input: CreatePatientInput, idempotencyKey: string) {
+    if (!capabilities.patients.create) throw new Error("Your practice role cannot create patients. Ask a practice administrator for access.");
+    const patient = await createPatient(await mutationToken(), input, idempotencyKey).catch(cause => {
+      if (active.current && cause instanceof ApiError && cause.status === 403) {
+        setCapabilities(current => ({ ...current, patients: { ...current.patients, create: false } }));
+      }
+      throw cause;
+    });
     if (!active.current) return;
     setPatients(current => [...current, patient].sort(sortPatients));
     setSelectedPatient(patient.id);
@@ -131,8 +148,14 @@ function PracticeData({ orgId }: { orgId: string }) {
     }
   }
 
-  async function saveAppointment(input: CreateAppointmentInput) {
-    const appointment = await createAppointment(await mutationToken(), input);
+  async function saveAppointment(input: CreateAppointmentInput, idempotencyKey: string) {
+    if (!capabilities.appointments.create) throw new Error("Your practice role cannot schedule appointments. Ask a practice administrator for access.");
+    const appointment = await createAppointment(await mutationToken(), input, idempotencyKey).catch(cause => {
+      if (active.current && cause instanceof ApiError && cause.status === 403) {
+        setCapabilities(current => ({ ...current, appointments: { ...current.appointments, create: false } }));
+      }
+      throw cause;
+    });
     if (!active.current) return;
     setAppointments(current => [...current, appointment].sort(sortAppointments));
     setSelectedAppointment(appointment.id);
@@ -149,6 +172,8 @@ function PracticeData({ orgId }: { orgId: string }) {
   const patient = view === "schedule" ? patients.find(item => item.id === visit?.patientId) : filteredPatients.find(item => item.id === selectedPatient) ?? filteredPatients[0];
   const days = weekDates(selectedDate);
   const visibleCount = view === "schedule" ? visits.length : filteredPatients.length;
+  const canSchedule = capabilities.appointments.create && capabilities.patients.read;
+  const canReadView = view === "schedule" ? capabilities.appointments.read : capabilities.patients.read;
 
   return <div className="cq-shell">
     <aside className="cq-sidebar">
@@ -163,20 +188,21 @@ function PracticeData({ orgId }: { orgId: string }) {
       <header className="cq-topbar"><div className="cq-breadcrumb"><Icon name="building" /><span>{practiceName || "Your practice"}</span><span aria-hidden="true">/</span><strong>{view === "schedule" ? "Schedule" : "Patients"}</strong></div></header>
       <main className="cq-main" data-cq-dialog-focus-fallback>
         {loading ? <div className="cq-empty" role="status"><Icon name="calendar" /><h1>Opening your front desk…</h1><p>Loading your practice, patients, and appointments.</p></div> : error ? <div className="cq-empty"><h1>We couldn’t open this practice.</h1><p className="cq-error" role="alert">{error}</p><button className="cq-button" onClick={() => { setLoading(true); setAttempt(value => value + 1); }}>Try again</button></div> : <>
-          <div className="cq-heading"><div><p className="cq-kicker">YOUR FRONT DESK, IN FOCUS</p><h1>{view === "schedule" ? "A little more room to care." : "Good care starts with people."}</h1><p>{view === "schedule" ? dayLabel(selectedDate) : "A familiar face. The right details. All in one place."}</p></div><div className="cq-actions"><button className="cq-button" onClick={openPatient}><Icon name="user-plus" />New patient</button><button className="cq-button cq-primary" onClick={() => openBooking()}><Icon name="plus" />Schedule visit</button></div></div>
+          {!capabilities.patients.create && !capabilities.appointments.create && <p className="cq-access-note" role="status">Read-only access. Practice administrators can create patients and schedule appointments.</p>}
+          <div className="cq-heading"><div><p className="cq-kicker">YOUR FRONT DESK, IN FOCUS</p><h1>{view === "schedule" ? "A little more room to care." : "Good care starts with people."}</h1><p>{view === "schedule" ? dayLabel(selectedDate) : "A familiar face. The right details. All in one place."}</p></div><div className="cq-actions"><button className="cq-button" disabled={!capabilities.patients.create} onClick={openPatient}><Icon name="user-plus" />New patient</button><button className="cq-button cq-primary" disabled={!canSchedule} onClick={() => openBooking()}><Icon name="plus" />Schedule visit</button></div></div>
           {view === "schedule" && <><div className="cq-calendar-tools"><div><button className="cq-iconbutton" aria-label="Previous week" onClick={() => setSelectedDate(shiftDate(selectedDate, -7))}><Icon name="chevron-left" /></button><button className="cq-iconbutton" aria-label="Next week" onClick={() => setSelectedDate(shiftDate(selectedDate, 7))}><Icon name="chevron-right" /></button><button className="cq-button cq-today" onClick={() => setSelectedDate(localDateKey(new Date()))}>Today</button></div><label className="cq-date-jump">Go to date<input className="cq-input" aria-label="Go to date" type="date" value={selectedDate} onChange={event => { if (event.target.value) setSelectedDate(event.target.value); }} /></label></div><div className="cq-days" role="group" aria-label="Choose a day">{days.map(day => <button key={day} className="cq-day" aria-label={dayLabel(day)} aria-pressed={day === selectedDate} onClick={() => setSelectedDate(day)}><span>{dateFromKey(day).toLocaleDateString(undefined, { weekday: "short" })}</span><strong>{dateFromKey(day).getDate()}</strong></button>)}</div></>}
           <div className="cq-contentgrid">
             <section className="cq-surface" aria-label={view === "schedule" ? "Appointments" : "Patient directory"}>
               <div className="cq-section-head"><h2>{view === "schedule" ? "Appointments" : "Your patients"}</h2><span className="cq-muted">{visibleCount} {view === "schedule" ? "appointments" : "patients"}</span></div>
               {view === "patients" && <div className="cq-patient-tools"><label className="cq-field">Find a patient<input type="search" className="cq-input" placeholder="Search name, email, or phone" value={search} onChange={event => setSearch(event.target.value)} /></label></div>}
-              {!visibleCount ? <div className="cq-empty"><Icon name={view === "schedule" ? "calendar" : "users"} /><h3>{view === "schedule" ? "A little breathing room." : query ? "No matching patients." : "Welcome your first patient."}</h3><p>{view === "schedule" ? "No appointments on this day." : query ? "Try a different name, email, or phone number." : "Create a patient to start scheduling visits."}</p>{view === "schedule" ? <button className="cq-button cq-primary" onClick={() => openBooking()}>Schedule a visit</button> : !query && <button className="cq-button cq-primary" onClick={openPatient}>New patient</button>}</div> : view === "schedule" ? visits.map(item => { const person = patients.find(value => value.id === item.patientId); return <button key={item.id} className="cq-row" aria-pressed={visit?.id === item.id} onClick={() => setSelectedAppointment(item.id)}><span className="cq-time">{timeLabel(item.scheduledAt)}</span><span className="cq-avatar" aria-hidden="true">{initials(person)}</span><span><span className="cq-row-name">{fullName(person)}</span><span className="cq-row-reason">{item.reason || "Appointment"}</span></span><Icon name="chevron-right" /></button>; }) : filteredPatients.map(item => <button key={item.id} className="cq-row cq-patient-row" aria-pressed={patient?.id === item.id} onClick={() => setSelectedPatient(item.id)}><span className="cq-avatar" aria-hidden="true">{initials(item)}</span><span><span className="cq-row-name">{fullName(item)}</span><span className="cq-row-reason">{item.email || item.phone || "No contact details added"}</span></span><Icon name="chevron-right" /></button>)}
+              {!canReadView ? <div className="cq-empty"><h3>Access is not available.</h3><p>Your practice role does not have permission to view these records. Ask a practice administrator for access.</p></div> : !visibleCount ? <div className="cq-empty"><Icon name={view === "schedule" ? "calendar" : "users"} /><h3>{view === "schedule" ? "A little breathing room." : query ? "No matching patients." : "Welcome your first patient."}</h3><p>{view === "schedule" ? "No appointments on this day." : query ? "Try a different name, email, or phone number." : "Create a patient to start scheduling visits."}</p>{view === "schedule" ? <button className="cq-button cq-primary" disabled={!canSchedule} onClick={() => openBooking()}>Schedule a visit</button> : !query && <button className="cq-button cq-primary" disabled={!capabilities.patients.create} onClick={openPatient}>New patient</button>}</div> : view === "schedule" ? visits.map(item => { const person = patients.find(value => value.id === item.patientId); return <button key={item.id} className="cq-row" aria-pressed={visit?.id === item.id} onClick={() => setSelectedAppointment(item.id)}><span className="cq-time">{timeLabel(item.scheduledAt)}</span><span className="cq-avatar" aria-hidden="true">{initials(person)}</span><span><span className="cq-row-name">{fullName(person)}</span><span className="cq-row-reason">{item.reason || "Appointment"}</span></span><Icon name="chevron-right" /></button>; }) : filteredPatients.map(item => <button key={item.id} className="cq-row cq-patient-row" aria-pressed={patient?.id === item.id} onClick={() => setSelectedPatient(item.id)}><span className="cq-avatar" aria-hidden="true">{initials(item)}</span><span><span className="cq-row-name">{fullName(item)}</span><span className="cq-row-reason">{item.email || item.phone || "No contact details added"}</span></span><Icon name="chevron-right" /></button>)}
               <div className="cq-list-foot"><Icon name={view === "schedule" ? "clock" : "building"} />{view === "schedule" ? `Local time · ${timeZone}` : practiceName}</div>
             </section>
             <aside className="cq-surface cq-detail" aria-label={view === "schedule" ? "Selected appointment" : "Selected patient"}>
               {patient ? <><div className="cq-detail-top"><span className="cq-kicker">{view === "schedule" ? "VISIT DETAILS" : "PATIENT DETAILS"}</span>{view === "schedule" && visit && <span className="cq-status">{visit.status}</span>}</div><div className="cq-profile-avatar" aria-hidden="true">{initials(patient)}</div><h2 className="cq-profile-name">{fullName(patient)}</h2><p className="cq-muted cq-profile-subtitle">{view === "schedule" ? visit?.reason || "Appointment" : "Patient at " + practiceName}</p>
               {view === "schedule" && visit && <div className="cq-detail-line"><Icon name="calendar" /><div><strong>{dayLabel(selectedDate)}</strong><span>{timeLabel(visit.scheduledAt)} · {timeZone}</span></div></div>}
               <hr /><div className="cq-detail-line"><Icon name="mail" /><div><strong>Email</strong><span>{patient.email || "Not provided"}</span></div></div><div className="cq-detail-line"><Icon name="phone" /><div><strong>Phone</strong><span>{patient.phone || "Not provided"}</span></div></div><hr />
-              {view === "schedule" ? <button className="cq-button cq-widebutton" onClick={() => { setSelectedPatient(patient.id); setSearch(""); setView("patients"); }}>View patient<Icon name="arrow" /></button> : <button className="cq-button cq-widebutton" onClick={() => openBooking(patient.id)}><Icon name="plus" />Schedule a visit</button>}</> : <div className="cq-empty"><Icon name="users" /><h3>A fresh start.</h3><p>Select a patient or schedule a visit.</p></div>}
+              {view === "schedule" ? <button className="cq-button cq-widebutton" onClick={() => { setSelectedPatient(patient.id); setSearch(""); setView("patients"); }}>View patient<Icon name="arrow" /></button> : <button className="cq-button cq-widebutton" disabled={!canSchedule} onClick={() => openBooking(patient.id)}><Icon name="plus" />Schedule a visit</button>}</> : <div className="cq-empty"><Icon name="users" /><h3>A fresh start.</h3><p>Select a patient or schedule a visit.</p></div>}
             </aside>
           </div>
         </>}
@@ -184,7 +210,7 @@ function PracticeData({ orgId }: { orgId: string }) {
       </main>
     </div>
     {modal && <InterviewModal key={modal} title={modal === "patient" ? "A new face. A warm welcome." : "Make room for good care."} description={modal === "patient" ? "Add a patient to your practice." : "Schedule an appointment with the details below."} onClose={closeModal} busy={busy}>
-      {modal === "patient" ? <PatientForm practiceName={practiceName} onSubmit={savePatient} onBusyChange={setBusy} continueBooking={continueBooking} onCancel={() => { if (continueBooking) { setContinueBooking(false); setModal("booking"); } else closeModal(); }} /> : <BookingForm patients={patients} practiceName={practiceName} timeZone={timeZone} draft={draft} onChange={setDraft} onSubmit={saveAppointment} onBusyChange={setBusy} onCancel={closeModal} onAddPatient={() => { setContinueBooking(true); setModal("patient"); }} />}
+      {modal === "patient" ? <PatientForm canCreate={capabilities.patients.create} practiceName={practiceName} onSubmit={savePatient} onBusyChange={setBusy} continueBooking={continueBooking} onCancel={() => { if (continueBooking) { setContinueBooking(false); setModal("booking"); } else closeModal(); }} /> : <BookingForm submissionAttempt={bookingAttempt} canCreate={canSchedule} canAddPatient={capabilities.patients.create} patients={patients} practiceName={practiceName} timeZone={timeZone} draft={draft} onChange={setDraft} onSubmit={saveAppointment} onBusyChange={setBusy} onCancel={closeModal} onAddPatient={() => { if (!capabilities.patients.create) return; setContinueBooking(true); setModal("patient"); }} />}
     </InterviewModal>}
   </div>;
 }

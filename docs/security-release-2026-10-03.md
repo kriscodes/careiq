@@ -20,7 +20,7 @@ Production currently needs a verified non-owning runtime database login. A previ
 
 Clerk production-instance setup and a hosted signed-in, two-practice walkthrough remain required. Existing public development publishable keys are not secret leaks. They do not replace a deliberate production authentication setup.
 
-The marketing website works on `careiqlabs.com` and `www.careiqlabs.com`; www redirects to apex. Its interview form remains disabled. `kristian@careiqlabs.com` is the proposed monitored contact, but the owner still needs to set up or test that inbox. Keep intake and indexing disabled until mailbox, production schema/grants, API/CORS/proxy configuration, and hosted submission checks are complete.
+The marketing website works on `careiqlabs.com` and `www.careiqlabs.com`; www redirects to apex. Its interview form remains disabled. The owner confirmed on October 3, 2026 that `kristian@careiqlabs.com` is set up and tested. Keep intake and indexing disabled until the remaining production schema/grants, API/CORS/proxy configuration, operating procedures and hosted submission checks are complete.
 
 ## Deployment and rollback
 
@@ -40,8 +40,11 @@ The deployment browser was unavailable during preparation because its administra
 
 The owner needs to:
 
-1. Set up/test `kristian@careiqlabs.com`: receive an external test email, reply, and confirm regular monitoring. This address is suitable for initial interview and privacy/deletion requests once operational. No email notifications are sent automatically by the intake form; submissions require operator review.
-2. Restore authorized Render and Clerk access so the production database, restricted runtime login, migrations and authentication setup can be completed. Do not paste passwords or keys into chat, Git or documentation.
+1. Mailbox setup/testing is complete for `kristian@careiqlabs.com`. Monitor it for interview and privacy/deletion requests. No email notifications are sent automatically by the intake form; submissions require operator review.
+2. The owner signed back into Render/Clerk, but the browser connection still fails during initialization. Restore the task’s browser access so the production database, restricted runtime login, migrations and authentication setup can be completed. Do not paste passwords or keys into chat, Git or documentation.
 3. Confirm production organization/user mappings and the backup/restore, request-review, retention and deletion process. Complete the signed-in admin/member and two-practice acceptance checks after deployment.
 
 No remaining issue is known to be inherently unfixable. The outstanding work depends on account access, the production rollout and mailbox/operational setup. Builds, tests and scans do not establish that every live workflow works or guarantee the absence of leaks.
+
+
+Backup and retention decisions are being developed in the [proposed procedure](backup-retention.md). Six years has not been adopted as a universal maximum, and no deletion schedule is enabled.
