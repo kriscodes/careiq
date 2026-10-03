@@ -16,10 +16,10 @@ This release must not be promoted until the production migration and restricted 
 
 ## Owner actions and unresolved account work
 
-- Create or test `kristian@careiqlabs.com`, receive an external test message and send a reply. Confirm regular monitoring for interviews and privacy/deletion requests. Intake remains disabled pending confirmation.
-- Restore authorized Render and Clerk access so production database identity, migration credentials, restricted runtime connection, service branches and deployment settings can be verified. Do not paste secrets into Git, documentation or chat.
+- **Completed:** the owner confirmed `kristian@careiqlabs.com` is set up and tested on October 3, 2026. Kristian is the intended reviewer/contact. Intake remains disabled pending production configuration, review/deletion procedures and a hosted submission check.
+- The owner has signed back into Render and Clerk. A fresh browser check still failed during browser app-server initialization, so dashboard access is not restored for this task. Once the connection works, verify production database identity, migration credentials, restricted runtime connection, service branches and deployment settings. Do not paste secrets into Git, documentation or chat.
 - Prepare Clerk production authentication, including organization/user mapping and domain/provider configuration. A publishable development key is public configuration, not a secret leak, but it is not a completed production setup.
-- Confirm backup/restore and the operating process for data retention, request review and deletion. Configure required CI checks/hosting deployment gates if desired.
+- Review and adopt the proposed [backup and retention procedure](../backup-retention.md), then verify the actual production settings and restore evidence. Configure required CI checks/hosting deployment gates if desired.
 - Complete the hosted administrator/member and two-practice walkthrough after release 2 is deployed.
 
 The custom marketing apex and www are already reachable over HTTPS; www redirects to apex. Older DNS/certificate-pending statements in the original marketing handoff are historical. Marketing intake and indexing remain intentionally disabled. There is no evidence from this work that these remaining steps are technically impossible; they require working account access and the owner decisions above.
