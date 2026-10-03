@@ -6,3 +6,7 @@ allowBuilds:
   esbuild: true
   sharp: true
   unrs-resolver: true
+
+# Pin patched transitive query parsing until upstream minimums catch up.
+overrides:
+  qs: 6.16.0
