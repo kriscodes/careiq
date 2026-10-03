@@ -27,7 +27,7 @@ Local application servers use the database selected by `DATABASE_URL`; local ser
 | API | `DATABASE_URL` | PostgreSQL connection string. Never expose it to the browser. |
 | API | `DATABASE_SSL_MODE` | `verify-full` (default) verifies trusted database certificates; use `require` for Render internal PostgreSQL connections, which use self-signed certificates. `require` encrypts without certificate verification. `disable` is for local PostgreSQL without TLS. SSL/certificate query parameters in `DATABASE_URL` are rejected; configure TLS only through `DATABASE_SSL_MODE`. |
 | API | `CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY` | Backend Clerk authentication. |
-| API | `CORS_ORIGINS` | Comma-separated exact web/marketing origins; trailing slashes are normalized. Local default: `http://localhost:3001,http://localhost:3002`. Explicit origins are required in production. |
+| API | `CORS_ORIGINS` | Comma-separated exact web/marketing origins; trailing slashes are normalized. Local default: `http://localhost:3001,http://localhost:3002`. Explicit origins are required in production; these also allowlist Clerk authorized parties. |
 | API | `PORT` | Listening port, default 3000; hosting providers may supply it. |
 | Web | `NEXT_PUBLIC_API_URL` | API origin, locally `http://localhost:3000`. |
 | Web | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY` | Frontend/server Clerk configuration. |
@@ -52,7 +52,7 @@ Unit tests cover API input validation. The optional `tenant-isolation.test.ts` s
 
 The API owns Drizzle migrations under `apps/api/drizzle`. Generate changes with `pnpm --filter ./apps/api db:generate`; inspect the SQL and journal before applying. Run migrations as a controlled deployment step before starting the new API version. Do not run schema migration commands automatically on every API request or startup.
 
-The runtime database role must not be a superuser or have `BYPASSRLS`. Both tenant tables use forced RLS. Each tenant operation sets `app.practice_id` inside its transaction. A composite foreign key also prevents appointments from referring to another practice's patient.
+The runtime database role must be non-owning, without superuser, `BYPASSRLS`, `CREATEROLE`, `CREATEDB`, replication, privileged memberships or audit-reader access. Use the checked grant scripts described in [security hardening](security-hardening.md). Both tenant tables use forced RLS. Each tenant operation sets `app.practice_id` inside its transaction. A composite foreign key also prevents appointments from referring to another practice's patient.
 
 Migration replay repairs: 0004 now replaces the already-existing patient policy; 0005 is a retained no-op because appointments are not created until 0006. Appointment RLS is applied in 0008/0010. Existing journal identifiers/timestamps are preserved. Migration 0013 makes missing/empty tenant context return no rows rather than fail while casting an empty UUID. The historical repairs affect fresh replay; already migrated databases receive the new 0013 migration.
 
@@ -100,7 +100,7 @@ The static architecture panel is implemented in the separate interview reviewer 
 
 The [v0.1 design specification](design/interview-v0.1.md) includes visual and keyboard acceptance checks. The [interview architecture notes](interview-architecture.md) map the explanation to source files and document scope limits. Browser-local timezone labels must match displayed and submitted appointment dates. Patient search and date navigation operate on the current practice's loaded records.
 
-Live tracing, role-specific authorization, provider availability/conflict prevention, audit history, clinical workflows, and EHR integrations are not implemented by this slice. Local builds and unit tests do not establish production readiness or healthcare compliance. Record checks for the final integrated build in [verification](verification.md); previous results do not certify subsequent changes.
+The security release adds admin/member authorization, durable clinical retry keys and append-only read/create audit metadata. Live tracing, provider availability/conflict prevention, a forensic audit UI, database mutation evidence and EHR integrations remain unimplemented. See [security hardening](security-hardening.md) for implementation scope and [release status](deployment/security-release-status.md) for activation prerequisites. Local builds and unit tests do not establish production readiness or healthcare compliance. Record checks for the final integrated build in [verification](verification.md); previous results do not certify subsequent changes.
 
 ## Public marketing application
 

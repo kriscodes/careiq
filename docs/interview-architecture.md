@@ -51,13 +51,13 @@ The bar says **Interview demo · Developer notes** and **v0.1 — Interview Desi
 
 **Next.js and a separate API.** The web app presents forms and records; the API owns tenant resolution, validation, and data operations. Other clients could use the same versioned endpoints. This slice does not require microservices.
 
-**Clerk identity and CareIQ practice mapping.** External identity handles sign-in and the active organization. CareIQ keeps an internal practice ID for domain relationships. This currently establishes the practice boundary; granular staff roles and CareIQ membership administration are not implemented.
+**Clerk identity and CareIQ practice mapping.** External identity handles sign-in and the active organization. CareIQ keeps an internal practice ID for domain relationships. The API also enforces administrator creation/member read-only rules and explicit custom-role permissions. CareIQ membership administration remains in Clerk.
 
 **Transaction-scoped context.** `withTenant` opens a transaction and calls `set_config('app.practice_id', practiceId, true)`. The final `true` makes the setting transaction-local, so a pooled connection does not retain that tenant context for a later transaction. Tenant-scoped queries must use the provided transaction, not the global database client.
 
 **Database enforcement.** Patients and appointments use forced row-level security. Policies compare each row's practice ID with the transaction context for reads and writes. Migration 0013 treats a missing or empty context as no matching practice. An appointment also has a composite foreign key to `(patient_id, practice_id)`, preventing a patient/practice mismatch at the relational boundary.
 
-RLS must run under a database role without superuser or `BYPASSRLS` privileges. The policy files and UI demonstration are not substitutes for verifying the deployed role and applying migrations.
+RLS must run under a non-owning database role without superuser, `BYPASSRLS`, role/database creation or privileged membership. The policy files and UI demonstration are not substitutes for verifying the deployed role and applying migrations.
 
 ## Current API surface
 
@@ -76,13 +76,13 @@ The API assigns the practice ID. Appointment timestamps are stored with timezone
 
 | Area | Current implementation | Remaining boundary |
 | --- | --- | --- |
-| Authentication | Clerk session and active organization | Granular role permissions and membership administration |
+| Authentication | Clerk session/active organization, admin/member rules and explicit custom-role permissions | Production Clerk configuration and membership administration |
 | Patients | Create/list; UI search over loaded records | Edit/delete, pagination, richer validation and record lifecycle |
 | Appointments | Create/list; UI day/week navigation | Rescheduling/cancellation, provider availability, duration, conflict prevention, reminders |
 | Isolation | Tenant middleware, transaction context, RLS, composite patient relationship | Verify migrations and runtime role in each deployed environment |
 | Time | Timestamp persistence and browser-local presentation | Practice timezone, explicit ambiguous daylight-saving time handling |
 | Reviewer notes | Static, source-backed explanation | Sanitized live tracing or measured timings if a later design requires it |
-| Operations | Connectivity health check and controlled error logging | Domain audit history, background jobs, EHR integrations, and production operational controls |
+| Operations | Connectivity health check, safe pool recovery, sanitized logging and append-only clinical audit metadata | Forensic audit UI/triggers/archival, background jobs, EHR integrations and deployed operational controls |
 
 The UI must not offer actions or status transitions that have no corresponding API behavior. It must not imply that an open appointment time is conflict-free. “Scheduled” reflects the stored appointment status; it does not mean that a provider, room, or external calendar accepted the booking.
 

@@ -1,4 +1,5 @@
 import { apiRequest } from "./client";
+import { getAllPages } from "./pagination";
 
 export type Patient = {
   id: string;
@@ -16,32 +17,25 @@ export type CreatePatientInput = {
   phone?: string;
 };
 
-type PatientListResponse = {
-  data: Patient[];
-};
-
 type PatientResponse = {
   data: Patient;
 };
 
 export async function getPatients(token: string) {
-  const response = await apiRequest<PatientListResponse>(
-    "/api/v1/patients",
-    token,
-  );
-
-  return response.data;
+  return getAllPages<Patient>("/api/v1/patients", token);
 }
 
 export async function createPatient(
   token: string,
   input: CreatePatientInput,
+  idempotencyKey: string = crypto.randomUUID(),
 ) {
   const response = await apiRequest<PatientResponse>(
     "/api/v1/patients",
     token,
     {
       method: "POST",
+      headers: { "Idempotency-Key": idempotencyKey },
       body: JSON.stringify(input),
     },
   );

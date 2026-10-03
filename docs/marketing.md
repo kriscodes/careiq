@@ -157,3 +157,7 @@ References: [Render Next.js static deployment](https://render.com/docs/deploy-ne
 - Confirm an operator will review requests and personally coordinate by email. No automatic notification or booked meeting exists.
 
 Optional founder photo, LinkedIn and public application link are not blockers. No compliance certification, business entity designation, customer outcome, employer endorsement or launch date is claimed.
+
+## October 2026 security rollout
+
+The intended monitored address is `kristian@careiqlabs.com`; the owner must still set up/test it before enabling intake. The API security release also requires migration0015 and checked clinical-runtime grants. Follow [security hardening](security-hardening.md) and [current release status](deployment/security-release-status.md) for the combined production rollout. The custom apex/www now work over HTTPS; this does not prove that intake is enabled.

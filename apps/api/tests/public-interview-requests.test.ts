@@ -168,7 +168,7 @@ test("only exact POST and preflight bypass the next authentication middleware", 
     }
     assert.equal((await fetch(`${base}${INTERVIEW_REQUEST_PATH}`, { method: "DELETE" })).status, 401);
   });
-  const source = await readFile(new URL("../src/index.ts", import.meta.url), "utf8");
-  assert.ok(source.indexOf("registerPublicInterviewRoutes(app") < source.indexOf("app.use(clerkMiddleware())"));
-  assert.ok(source.indexOf("app.use(clerkMiddleware())") < source.indexOf('app.get("/api/v1/me"'));
+  const source = await readFile(new URL("../src/app.ts", import.meta.url), "utf8");
+  assert.ok(source.indexOf("registerPublicInterviewRoutes(app") < source.indexOf("app.use(dependencies.authenticate)"));
+  assert.ok(source.indexOf("app.use(dependencies.authenticate)") < source.indexOf('app.get("/api/v1/me"'));
 });

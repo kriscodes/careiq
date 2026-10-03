@@ -1,5 +1,7 @@
 # CareIQ
 
+Security implementation and rollout: [hardening guide](docs/security-hardening.md) · [release status and owner actions](docs/deployment/security-release-status.md).
+
 CareIQ is a healthcare operations platform being built for small and independent medical practices.
 
 The platform is focused on reducing administrative workload around patient intake, scheduling, referrals, document collection, communication, and other front-office workflows.
@@ -125,7 +127,7 @@ PostgreSQL Row-Level Security provides an additional enforcement boundary for te
 
 Clerk provides user identity and authentication.
 
-CareIQ maps the authenticated Clerk organization to an internal practice. Role-specific permissions and membership administration remain planned.
+CareIQ maps the verified Clerk organization to an internal practice. Administrators can create/read clinical records; members can read only. Custom roles use explicit permissions. See [security hardening](docs/security-hardening.md) for capabilities, retry keys and the controlled rollout; source implementation is separate from live deployment status.
 
 ### Auditable Healthcare Workflows
 
@@ -161,7 +163,7 @@ Important database conventions include:
 * Explicit foreign-key relationships
 * Tenant-aware data modeling
 * PostgreSQL Row-Level Security
-* Planned database-backed audit capabilities (not implemented in this slice)
+* Append-only clinical read/create audit metadata and tenant-scoped retry keys; broader forensic audit architecture remains planned
 * Version-controlled schema migrations
 
 Database migrations are owned by the API application.
