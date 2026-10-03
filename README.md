@@ -10,7 +10,11 @@ The platform is focused on reducing administrative workload around patient intak
 
 🚧 **Active development**
 
-CareIQ is currently in the foundation and first vertical-slice stage.
+**Current release: [v0.1.0 — Interview baseline](docs/releases/0.1.0.md)** · October 3, 2026 · Synthetic/demo use only.
+
+CareIQ is currently in the foundation and first vertical-slice stage. Version 0.1.0 is the initial SDLC baseline for the interview demo, including the security hardening merged before this release.
+
+See the [version history](CHANGELOG.md) and [release process](docs/releasing.md) for future releases.
 
 The current slice supports Clerk sign-in, practice selection, patient creation/listing, and appointment creation/listing backed by PostgreSQL tenant isolation. The **v0.1 — Interview Design** adds a light front-desk workspace, patient search, day/week navigation, and centered creation dialogs. A separate reviewer bar opens a static architecture explanation; it does not display live telemetry.
 
@@ -249,6 +253,8 @@ Formal compliance requirements and controls will evolve as the product approache
 
 * [Public marketing website](docs/marketing.md)
 * [Marketing verification](docs/marketing-verification.md)
+* [Version history](CHANGELOG.md)
+* [Release process and cadence](docs/releasing.md)
 * [Product Vision](docs/product-vision.md)
 * [Architecture](docs/architecture.md)
 * [v0.1 — Interview Design](docs/design/interview-v0.1.md)
