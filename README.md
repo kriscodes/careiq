@@ -85,7 +85,8 @@ Additional clients, including mobile applications, can consume the same backend 
 careiq/
 ├── apps/
 │   ├── api/            # Backend API
-│   └── web/            # Web application
+│   ├── web/            # Authenticated web application
+│   └── marketing/      # Public static website and discovery-interview form
 │
 ├── packages/           # Shared packages and reusable code
 │
@@ -244,6 +245,8 @@ Formal compliance requirements and controls will evolve as the product approache
 
 ## Documentation
 
+* [Public marketing website](docs/marketing.md)
+* [Marketing verification](docs/marketing-verification.md)
 * [Product Vision](docs/product-vision.md)
 * [Architecture](docs/architecture.md)
 * [v0.1 — Interview Design](docs/design/interview-v0.1.md)

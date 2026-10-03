@@ -15,24 +15,29 @@ import {
 
 import { logFailure } from "./logging.js";
 import { isUuid, parseScheduledAt } from "./validation.js";
+import { interviewRequestsEnabled, parseCorsOrigins, parseTrustedProxies } from "./public-config.js";
+import { registerPublicInterviewRoutes } from "./routes/public-interview-requests.js";
+import { createInterviewRequest } from "./services/interview-request.service.js";
 
 const app = express();
 app.disable("x-powered-by");
+app.set("trust proxy", parseTrustedProxies());
 
 const port = Number(process.env.PORT ?? 3000);
+const corsOrigins = parseCorsOrigins();
+
+registerPublicInterviewRoutes(app, {
+    store: createInterviewRequest,
+    origins: corsOrigins,
+    enabled: interviewRequestsEnabled(),
+});
 
 app.use(
     cors({
-        origin: (process.env.CORS_ORIGINS ?? "http://localhost:3001")
-            .split(",")
-            .map((origin) => origin.trim())
-            .filter(Boolean),
+        origin: corsOrigins,
         credentials: true,
     }),
 )
-
-app.use(clerkMiddleware());
-app.use(express.json());
 
 app.get("/health", async (_req, res) => {
     try {
@@ -53,6 +58,9 @@ app.get("/health", async (_req, res) => {
         })
     }
 });
+
+app.use(clerkMiddleware());
+app.use(express.json());
 
 app.get("/api/v1/me", async (req, res) => {
     try {
