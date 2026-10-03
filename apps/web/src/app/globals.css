@@ -35,6 +35,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .careiq h3 { font-size: 14px; font-weight: 600; }
 .cq-icon { width: 18px; height: 18px; flex: 0 0 18px; }
 .cq-muted { color: var(--cq-muted); }
+.cq-access-note { padding: 12px 14px; margin-bottom: 20px !important; border: 1px solid var(--cq-border); border-radius: 10px; background: var(--cq-soft); color: var(--cq-muted); font-size: 12px; }
 .cq-kicker { font-size: 11px; font-weight: 600; letter-spacing: 1.4px; color: var(--cq-muted); }
 .cq-button { display: inline-flex; justify-content: center; align-items: center; gap: 8px; min-height: 40px; padding: 10px 14px; border: 1px solid var(--cq-border); border-radius: 10px; background: var(--cq-panel); color: var(--cq-text); font-size: 12px; font-weight: 600; line-height: 1.4; text-align: center; }
 .cq-button:hover:not(:disabled) { background: var(--cq-hover); }

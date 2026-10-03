@@ -1,6 +1,6 @@
 # CareIQ Architecture
 
-Implementation status: the working slice covers Clerk organization-based practice resolution, patient and appointment create/list flows, and transaction-scoped PostgreSQL RLS. The v0.1 interview workspace includes a separately labeled, static architecture panel. It explains the implementation; it is not live telemetry. Sections describing roles, audit history, background jobs, storage, and integrations are architectural direction; they are not evidence that those capabilities are implemented.
+Implementation status: the working slice covers Clerk organization-based practice resolution, patient and appointment create/list flows, and transaction-scoped PostgreSQL RLS. The v0.1 interview workspace includes a separately labeled, static architecture panel. It explains the implementation; it is not live telemetry. The security release implements baseline admin/member authorization, clinical read/create audit metadata and retry keys. Broader forensic audit, background jobs, storage and integrations remain architectural direction. See [security hardening](security-hardening.md) and [deployment status](deployment/security-release-status.md).
 
 This document provides a high-level view of the CareIQ platform architecture.
 
@@ -178,7 +178,7 @@ Application authorization remains necessary.
 
 RLS provides an additional security boundary rather than replacing application-level authorization.
 
-The `/api/v1/me` endpoint resolves or provisions the organization-to-practice mapping before tenant-scoped reads. The patient and appointment middleware then looks up that mapping. Domain services use `withTenant`, which sets `app.practice_id` inside the transaction. The runtime role must not be a superuser or have `BYPASSRLS`. A composite patient/practice foreign key also prevents appointments from referencing another practice's patient. Granular role authorization remains future work.
+The `/api/v1/me` endpoint resolves or provisions the organization-to-practice mapping before tenant-scoped reads. The patient and appointment middleware then looks up that mapping. Domain services use `withTenant`, which sets `app.practice_id` inside the transaction. The runtime role must be a non-owner without superuser, `BYPASSRLS`, role/database creation or privileged memberships. A composite patient/practice foreign key also prevents appointments from referencing another practice's patient. Baseline admin/member rules and explicit custom-role permissions are enforced by API middleware; the server returns capabilities for the UI.
 
 ## Database
 
