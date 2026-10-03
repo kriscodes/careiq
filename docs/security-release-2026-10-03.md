@@ -14,7 +14,7 @@ The web application sends `Content-Security-Policy: frame-ancestors 'none'; obje
 
 ## Remaining work from the audit
 
-The complete clinical-security release is being prepared separately because it requires a controlled production migration and runtime-role change. It adds durable request retry keys, admin-only patient/appointment creation, bounded list responses, input validation and append-only clinical access/change events. The owner selected: administrators create records; ordinary members view records.
+The complete clinical-security release is implemented in [draft PR #5](https://github.com/kriscodes/careiq/pull/5) and awaits a controlled production migration and runtime-role change. All 103 tests passed without skips, all 16 migrations replayed safely on disposable PostgreSQL 18.6, and GitHub verification passed. Its [rollout runbook](https://github.com/kriscodes/careiq/blob/codex/security-fixes/docs/security-hardening.md) covers grants, coordinated API/web deployment, browser refresh requirements, audit review and rollback limitations. It adds durable request retry keys, admin-only patient/appointment creation, bounded list responses, input validation and append-only clinical access/change events. The owner selected: administrators create records; ordinary members view records.
 
 Production currently needs a verified non-owning runtime database login. A previous deployment inspection recorded `careiq_owner` with database ownership and role/database creation privileges. That historical finding is not a fresh verification of the current API credential. Do not substitute the separate local `careiq_dev` database for the production database.
 
@@ -29,3 +29,19 @@ This release changes no schema, secrets or clinical permissions. Existing Render
 To roll back this first release, redeploy the prior commit through Render. No schema rollback is needed. Do not apply this advice to a later release with new migrations; keep additive schema and audit records when rolling application code back.
 
 The deployment browser was unavailable during preparation because its administrator policy could not be verified. No security bypass was attempted. Owner-only account settings and production credentials must be completed through restored authorized access.
+
+
+## Observed release status and owner actions
+
+- [PR #3](https://github.com/kriscodes/careiq/pull/3) merged to main as `82d93cb`; GitHub verification passed before and after merge. The live web now returns the new security headers, hides the powered-by header and reports Next.js 16.3.6 in its public runtime.
+- [PR #4](https://github.com/kriscodes/careiq/pull/4) merged to the marketing deployment branch as `d0748b5` after passing GitHub checks. Both the Render origin and careiqlabs.com now serve Next.js 16.3.6. The disabled form, noindex and HTTPS behavior remain intact.
+- The live API health endpoint returns 200 with database connected; anonymous clinical requests were denied. Its exact deployed revision and runtime database role cannot be independently verified without Render access.
+- The complete DB/API/WEB permissions, durable retry and audit changes in PR #5 are **not deployed**. No production database was migrated in this task. Production credentials were unavailable, and the accessible local configuration points to the separate development database.
+
+The owner needs to:
+
+1. Set up/test `kristian@careiqlabs.com`: receive an external test email, reply, and confirm regular monitoring. This address is suitable for initial interview and privacy/deletion requests once operational. No email notifications are sent automatically by the intake form; submissions require operator review.
+2. Restore authorized Render and Clerk access so the production database, restricted runtime login, migrations and authentication setup can be completed. Do not paste passwords or keys into chat, Git or documentation.
+3. Confirm production organization/user mappings and the backup/restore, request-review, retention and deletion process. Complete the signed-in admin/member and two-practice acceptance checks after deployment.
+
+No remaining issue is known to be inherently unfixable. The outstanding work depends on account access, the production rollout and mailbox/operational setup. Builds, tests and scans do not establish that every live workflow works or guarantee the absence of leaks.
