@@ -51,6 +51,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .cq-symbol::after { transform: rotate(90deg); }
 .cq-practice-label { display: block; font-size: 11px; color: var(--cq-muted); margin: 0 8px 8px; }
 .cq-practice-picker, .cq-org-root { width: 100%; min-width: 0; }
+.cq-setup { max-width: 820px; margin: 32px auto; display: grid; gap: 22px; padding: 28px; background: var(--cq-panel); border: 1px solid var(--cq-border); border-radius: 16px; }
+.cq-setup-section { display: grid; gap: 16px; padding-top: 24px; border-top: 1px solid var(--cq-border); }
+.cq-setup-fields { display: grid; gap: 16px; border: 0; padding: 0; margin: 16px 0 0; }
+.cq-setup-fields legend { font-weight: 600; margin-bottom: 12px; }
+.cq-check { display: flex; gap: 10px; align-items: baseline; }
+.cq-location-choices { display: grid; gap: 10px; border: 1px solid var(--cq-border); border-radius: 10px; padding: 14px; }
+.cq-location-choices legend { padding: 0 6px; }
+.cq-team-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--cq-border); overflow-wrap: anywhere; }
+.cq-team-member { display: grid; gap: 12px; padding: 18px; background: var(--cq-bg); border: 1px solid var(--cq-border); border-radius: 12px; overflow-wrap: anywhere; }
+.cq-access-toolbar { display: flex; align-items: end; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.cq-access-toolbar .cq-field { min-width: 230px; }
 .cq-org-trigger { display: flex; width: 100%; justify-content: space-between; gap: 8px; padding: 10px 14px; border: 1px solid var(--cq-border); border-radius: 10px; background: var(--cq-panel); box-shadow: none; color: var(--cq-text); }
 .cq-org-trigger:hover { background: var(--cq-hover); }
 .cq-org-trigger > span { min-width: 0; }

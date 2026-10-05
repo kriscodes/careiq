@@ -196,3 +196,48 @@ test("legacy list clients cannot silently receive a truncated directory or calen
     });
   }
 });
+
+test("me is read-only and an arbitrary active organization cannot provision a practice", async () => {
+  await withApi(authenticated(), { findPracticeByClerkOrgId: async () => null }, async (base, calls) => {
+    const response = await fetch(`${base}/api/v1/me`);
+    assert.equal(response.status, 200); const { data } = await response.json();
+    assert.equal(data.practice, null); assert.equal(data.onboarding, "required");
+    assert.equal(data.capabilities.patients.read, false);
+    assert.equal(calls.some((call) => call.operation === "provisionPractice"), false);
+  });
+  await withApi({ isAuthenticated: true, userId: "user_verified", orgId: null }, {}, async (base) => assert.equal((await fetch(`${base}/api/v1/me`)).status, 200));
+});
+
+test("enabled practices reject every legacy clinical endpoint with stable context-required response", async () => {
+  await withApi(authenticated(), { findPracticeByClerkOrgId: async () => ({ id: practiceId, authorizationMode: "location", status: "active" }) }, async (base, calls) => {
+    for (const resource of ["patients", "appointments"]) {
+      for (const method of ["GET", "POST"]) {
+        const response = await fetch(`${base}/api/v1/${resource}`, { method });
+        assert.equal(response.status, 409); assert.equal((await response.json()).error.code, "LOCATION_CONTEXT_REQUIRED");
+      }
+    }
+    assert.equal(calls.filter((call) => /^(list|create)/.test(call.operation)).length, 0);
+  });
+});
+
+test("location HTTP routes use freshly resolved capabilities and validated actor/location, not stale admin claims", async () => {
+  const locationId = randomUUID();
+  const tenant = { userId: "user_verified", orgId: "org_verified", practiceId, locationId, membershipId: "fresh_member" };
+  const denied = { patients: { read: false, create: false }, appointments: { read: false, create: false } };
+  const access = { authorizeLocation: async (_auth: RequestAuthentication, id: string) => { assert.equal(id, locationId); return { tenant, capabilities: denied }; } } as NonNullable<ApiDependencies["practiceAccess"]>;
+  await withApi(authenticated(), { practiceAccess: access }, async (base, calls) => {
+    assert.equal((await fetch(`${base}/api/v1/locations/${locationId}/patients`)).status, 403);
+    assert.equal((await post(base, `locations/${locationId}/patients`, validPatient)).status, 403);
+    assert.equal(calls.some((call) => call.operation === "listPatients" || call.operation === "createPatient"), false);
+  });
+  const allowed = { ...access, authorizeLocation: async () => ({ tenant, capabilities: { ...denied, patients: { read: true, create: true } } }) };
+  await withApi(authenticated("org:custom"), { practiceAccess: allowed }, async (base, calls) => {
+    assert.equal((await post(base, `locations/${locationId}/patients`, { ...validPatient, locationId: randomUUID(), actorUserId: "forged" }, randomUUID())).status, 201);
+    assert.deepEqual(calls.find((call) => call.operation === "createPatient")?.arguments[0], tenant);
+  });
+  const { AccessError } = await import("../src/services/practice-policy.js");
+  await withApi(authenticated(), { practiceAccess: { ...access, authorizeLocation: async () => { throw new AccessError("AUTHORIZATION_UNAVAILABLE", 503); } } }, async (base, calls) => {
+    assert.equal((await fetch(`${base}/api/v1/locations/${locationId}/patients`)).status, 503);
+    assert.equal(calls.some((call) => call.operation === "listPatients"), false);
+  });
+});

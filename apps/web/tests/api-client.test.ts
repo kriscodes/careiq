@@ -28,11 +28,21 @@ test("a stalled save aborts with an actionable, retry-safe timeout message", asy
   t.mock.method(globalThis, "fetch", async (_url: string, options: RequestInit) => new Promise((_resolve, reject) => {
     options.signal?.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")), { once: true });
   }));
-  await assert.rejects(apiRequest("/api/v1/patients", "test-session", { method: "POST", timeoutMs: 5 }), (error: unknown) => {
+  await assert.rejects(apiRequest("/api/v1/patients", "test-session", { method: "POST", headers: { "Idempotency-Key": "patient-attempt" }, timeoutMs: 5 }), (error: unknown) => {
     assert.ok(error instanceof ApiError);
     assert.equal(error.code, "REQUEST_TIMEOUT");
     assert.match(error.message, /may have completed/);
     assert.match(error.message, /without changing the details/);
+    return true;
+  });
+});
+
+test("an uncertain non-idempotent change directs staff to refresh before repeating it", async t => {
+  t.mock.method(globalThis, "fetch", async () => { throw new TypeError("Network unavailable"); });
+  await assert.rejects(apiRequest("/api/v1/locations", "test-session", { method: "POST" }), (error: unknown) => {
+    assert.ok(error instanceof ApiError);
+    assert.match(error.message, /Refresh to check before trying again/);
+    assert.doesNotMatch(error.message, /avoid creating a duplicate/);
     return true;
   });
 });

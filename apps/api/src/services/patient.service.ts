@@ -1,4 +1,4 @@
-import { asc, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { patients } from "../db/schema/patients.js";
 import type { TenantContext } from "../middleware/tenant-context.js";
 import { withTenant } from "../db/with-tenant.js";
@@ -13,17 +13,17 @@ export async function createPatient(tenant: TenantContext, input: CreatePatientI
   };
   return clinicalCreate({ tenant, operation: "patients.create", payload, idempotencyKey,
     create: async (tx) => {
-      const [patient] = await tx.insert(patients).values({ practiceId: tenant.practiceId, ...payload }).returning();
+      const [patient] = await tx.insert(patients).values({ practiceId: tenant.practiceId, locationId: tenant.locationId ?? null, ...payload }).returning();
       return patient;
     },
-    find: async (tx, id) => (await tx.select().from(patients).where(eq(patients.id, id)).limit(1))[0],
+    find: async (tx, id) => (await tx.select().from(patients).where(and(eq(patients.id, id), eq(patients.practiceId, tenant.practiceId), tenant.locationId ? eq(patients.locationId, tenant.locationId) : undefined)).limit(1))[0],
   });
 }
 
 export async function listPatients(tenant: TenantContext, options: ListOptions = {}) {
   const { limit, offset } = pageOptions(options);
-  return withTenant(tenant.practiceId, async (tx) => {
-    const rows = await tx.select().from(patients)
+  return withTenant(tenant, async (tx) => {
+    const rows = await tx.select().from(patients).where(and(eq(patients.practiceId, tenant.practiceId), tenant.locationId ? eq(patients.locationId, tenant.locationId) : undefined))
       .orderBy(asc(patients.lastName), asc(patients.firstName), asc(patients.id)).limit(limit).offset(offset);
     await recordClinicalAudit(tx, tenant, "patients.list");
     await recordClinicalReads(tx, tenant, "patients.read", rows.map((row) => row.id));

@@ -1,8 +1,10 @@
 "use client";
 
-import { OrganizationSwitcher, SignInButton, SignUpButton, UserButton, useAuth, useUser } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, UserButton, useAuth, useUser } from "@clerk/nextjs";
 import { useEffect, useRef, useState } from "react";
-import { ApiError, apiRequest } from "@/lib/api/client";
+import { ApiError } from "@/lib/api/client";
+import type { AccessContext } from "@/lib/api/practice";
+import { PracticeAccess, PracticePicker } from "./PracticeAccess";
 import { NO_CAPABILITIES, practiceCapabilities, type PracticeCapabilities } from "@/lib/capabilities";
 import { createSubmissionAttempt } from "@/lib/submission-attempt";
 import { createPatient, getPatients, type CreatePatientInput, type Patient } from "@/lib/api/patients";
@@ -24,29 +26,26 @@ function Logo() {
   return <div className="cq-logo" aria-label="CareIQ"><span className="cq-symbol" aria-hidden="true" />careiq</div>;
 }
 
-function PracticePicker() {
-  return <div className="cq-practice-picker"><span className="cq-practice-label">YOUR PRACTICE</span><OrganizationSwitcher hidePersonal appearance={{ elements: { rootBox: "cq-org-root", organizationSwitcherTrigger: "cq-org-trigger", organizationPreviewMainIdentifier: "cq-org-name", organizationSwitcherTriggerIcon: "cq-org-chevron" } }} /></div>;
-}
-
 export function PracticeWorkspace({ interviewMode = false }: { interviewMode?: boolean }) {
   const { isLoaded, isSignedIn, userId, orgId } = useAuth();
   const [notesOpen, setNotesOpen] = useState(false);
   return <div className="careiq">
     {interviewMode && <InterviewReviewerBar onOpen={() => setNotesOpen(true)} />}
     {!isLoaded ? <main className="cq-welcome"><Logo /><p role="status">Loading your workspace…</p></main> : !isSignedIn ?
-      <main className="cq-welcome"><Logo /><span className="cq-kicker">A little more room to care</span><h1>A calmer day at the front desk.</h1><p>Your patients and appointments, together in one thoughtful workspace.</p><div className="cq-actions"><SignInButton mode="modal"><button className="cq-button cq-primary">Sign in<Icon name="arrow" /></button></SignInButton><SignUpButton mode="modal"><button className="cq-button">Create an account</button></SignUpButton></div></main> : orgId ?
-        <PracticeData key={`${userId}:${orgId}`} orgId={orgId} /> : <main className="cq-welcome"><Logo /><h1>Welcome to your front desk.</h1><p>Choose or create a practice to get started.</p><PracticePicker /><UserButton /></main>}
+      <main className="cq-welcome"><Logo /><span className="cq-kicker">A little more room to care</span><h1>A calmer day at the front desk.</h1><p>Your patients and appointments, together in one thoughtful workspace.</p><div className="cq-actions"><SignInButton mode="modal"><button className="cq-button cq-primary">Sign in<Icon name="arrow" /></button></SignInButton><SignUpButton mode="modal"><button className="cq-button">Create an account</button></SignUpButton></div></main> :
+        <PracticeAccess key={`${userId}:${orgId ?? "new"}`} orgId={orgId}>{(context, locationId, onAccessDenied) => <PracticeData key={`${userId}:${orgId}:${locationId ?? "legacy"}`} orgId={orgId!} context={context} locationId={locationId} onAccessDenied={onAccessDenied} />}</PracticeAccess>}
     {notesOpen && <InterviewModal title="Behind the front desk" description="Architecture notes for interview reviewers. Separate from the staff application." onClose={() => setNotesOpen(false)} developerNotes><InterviewArchitectureNotes /></InterviewModal>}
   </div>;
 }
 
-function PracticeData({ orgId }: { orgId: string }) {
+function PracticeData({ orgId, context, locationId, onAccessDenied }: { orgId: string; context: AccessContext; locationId?: string; onAccessDenied: () => void }) {
   const { getToken } = useAuth();
   const { user } = useUser();
   const active = useRef(true);
+  const lifetime = useRef<AbortController | null>(null);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [practiceName, setPracticeName] = useState("");
+  const practiceName = context.practice?.name ?? "Your practice";
   const [capabilities, setCapabilities] = useState<PracticeCapabilities>(NO_CAPABILITIES);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -66,39 +65,37 @@ function PracticeData({ orgId }: { orgId: string }) {
 
   useEffect(() => {
     active.current = true;
-    return () => { active.current = false; };
+    const controller = new AbortController(); lifetime.current = controller;
+    return () => { active.current = false; controller.abort(); };
   }, []);
 
   useEffect(() => {
     let current = true;
+    const controller = new AbortController();
     async function load() {
       try {
-        const token = await getToken({ organizationId: orgId });
+        const token = await getToken({ organizationId: orgId, skipCache: true });
         if (!current) return;
         if (!token) throw new Error("Your session has expired. Please sign in again.");
-        // Provision the authenticated organization before reading tenant-scoped records.
-        const me = await apiRequest<{ data: { practice: { name: string }; capabilities?: PracticeCapabilities } }>("/api/v1/me", token);
-        if (!current) return;
-        const access = practiceCapabilities(me.data.capabilities);
+        const access = practiceCapabilities(context.capabilities);
         const [patientData, appointmentData] = await Promise.all([
-          access.patients.read ? getPatients(token) : [],
-          access.appointments.read ? getAppointments(token) : [],
+          access.patients.read ? getPatients(token, locationId, controller.signal) : [],
+          access.appointments.read ? getAppointments(token, locationId, controller.signal) : [],
         ]);
         if (!current) return;
-        setPracticeName(me.data.practice.name);
         setCapabilities(access);
         setPatients(patientData.sort(sortPatients));
         setAppointments(appointmentData.sort(sortAppointments));
         setError(null);
       } catch (cause) {
-        if (current) setError(cause instanceof Error ? cause.message : "Unable to load this practice.");
+        if (current) { setPatients([]); setAppointments([]); setModal(null); setSearch(""); setSelectedPatient(null); setSelectedAppointment(null); setDraft(value => ({ ...value, patientId: "", reason: "" })); setCapabilities(NO_CAPABILITIES); setError(cause instanceof Error ? cause.message : "Unable to load this practice."); }
       } finally {
         if (current) setLoading(false);
       }
     }
     void load();
-    return () => { current = false; };
-  }, [getToken, orgId, attempt]);
+    return () => { current = false; controller.abort(); };
+  }, [getToken, orgId, context.capabilities, locationId, attempt]);
 
   useEffect(() => {
     if (!toast) return;
@@ -107,7 +104,7 @@ function PracticeData({ orgId }: { orgId: string }) {
   }, [toast]);
 
   async function mutationToken() {
-    const token = await getToken({ organizationId: orgId });
+    const token = await getToken({ organizationId: orgId, skipCache: true });
     // A practice change remounts the workspace. Never send its old draft in the new context.
     if (!active.current) throw new Error("The active practice changed. Open the form again.");
     if (!token) throw new Error("Your session has expired. Please sign in again.");
@@ -127,9 +124,9 @@ function PracticeData({ orgId }: { orgId: string }) {
 
   async function savePatient(input: CreatePatientInput, idempotencyKey: string) {
     if (!capabilities.patients.create) throw new Error("Your practice role cannot create patients. Ask a practice administrator for access.");
-    const patient = await createPatient(await mutationToken(), input, idempotencyKey).catch(cause => {
-      if (active.current && cause instanceof ApiError && cause.status === 403) {
-        setCapabilities(current => ({ ...current, patients: { ...current.patients, create: false } }));
+    const patient = await createPatient(await mutationToken(), input, idempotencyKey, locationId, lifetime.current?.signal).catch(cause => {
+      if (active.current && cause instanceof ApiError && [401, 403, 409].includes(cause.status)) {
+        setPatients([]); setAppointments([]); setModal(null); setCapabilities(NO_CAPABILITIES); onAccessDenied();
       }
       throw cause;
     });
@@ -150,9 +147,9 @@ function PracticeData({ orgId }: { orgId: string }) {
 
   async function saveAppointment(input: CreateAppointmentInput, idempotencyKey: string) {
     if (!capabilities.appointments.create) throw new Error("Your practice role cannot schedule appointments. Ask a practice administrator for access.");
-    const appointment = await createAppointment(await mutationToken(), input, idempotencyKey).catch(cause => {
-      if (active.current && cause instanceof ApiError && cause.status === 403) {
-        setCapabilities(current => ({ ...current, appointments: { ...current.appointments, create: false } }));
+    const appointment = await createAppointment(await mutationToken(), input, idempotencyKey, locationId, lifetime.current?.signal).catch(cause => {
+      if (active.current && cause instanceof ApiError && [401, 403, 409].includes(cause.status)) {
+        setPatients([]); setAppointments([]); setModal(null); setCapabilities(NO_CAPABILITIES); onAccessDenied();
       }
       throw cause;
     });
@@ -188,7 +185,7 @@ function PracticeData({ orgId }: { orgId: string }) {
       <header className="cq-topbar"><div className="cq-breadcrumb"><Icon name="building" /><span>{practiceName || "Your practice"}</span><span aria-hidden="true">/</span><strong>{view === "schedule" ? "Schedule" : "Patients"}</strong></div></header>
       <main className="cq-main" data-cq-dialog-focus-fallback>
         {loading ? <div className="cq-empty" role="status"><Icon name="calendar" /><h1>Opening your front desk…</h1><p>Loading your practice, patients, and appointments.</p></div> : error ? <div className="cq-empty"><h1>We couldn’t open this practice.</h1><p className="cq-error" role="alert">{error}</p><button className="cq-button" onClick={() => { setLoading(true); setAttempt(value => value + 1); }}>Try again</button></div> : <>
-          {!capabilities.patients.create && !capabilities.appointments.create && <p className="cq-access-note" role="status">Read-only access. Practice administrators can create patients and schedule appointments.</p>}
+          {!capabilities.patients.create && !capabilities.appointments.create && <p className="cq-access-note" role="status">Your current role does not allow creating patients or appointments. Ask your practice owner to review your permissions and location assignments.</p>}
           <div className="cq-heading"><div><p className="cq-kicker">YOUR FRONT DESK, IN FOCUS</p><h1>{view === "schedule" ? "A little more room to care." : "Good care starts with people."}</h1><p>{view === "schedule" ? dayLabel(selectedDate) : "A familiar face. The right details. All in one place."}</p></div><div className="cq-actions"><button className="cq-button" disabled={!capabilities.patients.create} onClick={openPatient}><Icon name="user-plus" />New patient</button><button className="cq-button cq-primary" disabled={!canSchedule} onClick={() => openBooking()}><Icon name="plus" />Schedule visit</button></div></div>
           {view === "schedule" && <><div className="cq-calendar-tools"><div><button className="cq-iconbutton" aria-label="Previous week" onClick={() => setSelectedDate(shiftDate(selectedDate, -7))}><Icon name="chevron-left" /></button><button className="cq-iconbutton" aria-label="Next week" onClick={() => setSelectedDate(shiftDate(selectedDate, 7))}><Icon name="chevron-right" /></button><button className="cq-button cq-today" onClick={() => setSelectedDate(localDateKey(new Date()))}>Today</button></div><label className="cq-date-jump">Go to date<input className="cq-input" aria-label="Go to date" type="date" value={selectedDate} onChange={event => { if (event.target.value) setSelectedDate(event.target.value); }} /></label></div><div className="cq-days" role="group" aria-label="Choose a day">{days.map(day => <button key={day} className="cq-day" aria-label={dayLabel(day)} aria-pressed={day === selectedDate} onClick={() => setSelectedDate(day)}><span>{dateFromKey(day).toLocaleDateString(undefined, { weekday: "short" })}</span><strong>{dateFromKey(day).getDate()}</strong></button>)}</div></>}
           <div className="cq-contentgrid">

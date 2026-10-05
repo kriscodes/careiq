@@ -9,6 +9,7 @@ import {
 import { sql } from "drizzle-orm";
 
 import { patients } from "./patients.js";
+import { locations } from "./practice-access.js";
 import { practices } from "./practices.js";
 
 export const appointments = pgTable(
@@ -21,6 +22,8 @@ export const appointments = pgTable(
     practiceId: uuid("practice_id")
     .notNull()
     .references(() => practices.id),
+
+    locationId: uuid("location_id"),
 
     patientId: uuid("patient_id")
     .notNull(),
@@ -48,6 +51,9 @@ export const appointments = pgTable(
     .defaultNow(),
 },
 (table) => [
+    foreignKey({name:"appointments_location_practice_fk",columns:[table.locationId,table.practiceId],foreignColumns:[locations.id,locations.practiceId]}),
+    foreignKey({name:"appointments_patient_location_fk",columns:[table.patientId,table.practiceId,table.locationId],foreignColumns:[patients.id,patients.practiceId,patients.locationId]}),
+    index("appointments_location_schedule_idx").on(table.practiceId,table.locationId,table.scheduledAt,table.id),
     index("appointments_practice_schedule_idx").on(table.practiceId, table.scheduledAt, table.id),
     foreignKey({
       columns: [table.patientId, table.practiceId],

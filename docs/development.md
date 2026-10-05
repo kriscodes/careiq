@@ -20,6 +20,10 @@ Run commands from the repository root unless stated otherwise.
 
 Local application servers use the database selected by `DATABASE_URL`; local servers do not imply a local database. Use synthetic demo data.
 
+## Mobile development
+
+Mobile has its own [development guide](mobile-development.md). `pnpm mobile` starts Metro for an installed development build; `pnpm mobile:ios` / `pnpm mobile:android` generate and build native projects locally. `pnpm dev` continues to start the existing web/API/marketing applications. Mobile lint, type checks, tests and JavaScript exports participate in root checks; a successful export is not an installed native build.
+
 ## Configuration
 
 | Application | Variable | Purpose |
@@ -105,3 +109,7 @@ The security release adds admin/member authorization, durable clinical retry key
 ## Public marketing application
 
 See [marketing setup, content, API contract and launch guide](marketing.md) and [marketing verification](marketing-verification.md). `pnpm --filter @careiq/marketing dev` runs on port 3002 independently of Clerk, the API and database. Its static build publishes `apps/marketing/out`; the interview form posts to the existing API only when configured. Migration 0014 and checked runtime-role membership are prerequisites for enabling submissions.
+
+## Practice/location implementation
+
+The [ADR-017 implementation guide](practice-access-implementation.md) documents owner eligibility, Clerk role configuration, invitation handling, the migration gate, and web/mobile boundaries. Migration 0016 expands the schema while keeping existing practices in legacy mode; never enable location mode by assigning every staff member every location. New practices require an approved founding identity and use location mode from creation. `/api/v1/me` now reads context without provisioning. Use the API environment example for the new server-only configuration.

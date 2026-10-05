@@ -47,6 +47,8 @@ jobs:
           node-version: 22.23.2
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Verify mobile SDK dependency alignment
+        run: pnpm --filter @careiq/mobile exec expo install --check
       - run: pnpm --filter ./apps/api db:migrate
       - name: Verify migration replay is safe
         run: pnpm --filter ./apps/api db:migrate

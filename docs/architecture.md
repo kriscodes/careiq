@@ -27,8 +27,8 @@ CareIQ currently consists of three primary runtime layers.
 ┌──────────────────────────────┐
 │          Clients             │
 │                              │
-│  Web App        Future Mobile│
-│  Next.js        Applications │
+│  Web App        Mobile shell │
+│  Next.js        Expo / RN    │
 └──────────────┬───────────────┘
                │
                │ HTTPS
@@ -65,6 +65,8 @@ CareIQ uses a monorepo.
 apps/
     api/
     web/
+    marketing/
+    mobile/
 
 packages/
     shared packages
@@ -80,6 +82,14 @@ Deployable applications live under `apps`.
 Reusable code that is not independently deployed lives under `packages`.
 
 Engineering and product decisions live under `docs`.
+
+## Mobile foundation and practice/location model
+
+`apps/mobile` adds an Expo/React Native iOS and Android client to the existing pnpm workspace. Its initial scope is a runnable setup shell, optional Clerk provider with secure token storage, and a manual public `/health` check. It does not access clinical records, create practices or accept invitations. See the [mobile architecture proposal](design/mobile-architecture.md) for boundaries, navigation, data handling, and release design, and the [mobile development guide](mobile-development.md) for setup.
+
+[ADR-017](decisions/017-practice-location-membership-model.md) establishes one Practice per Clerk Organization, CareIQ Locations beneath it, and explicit location access constrained by fresh Clerk membership and permissions. Pending invitees receive no clinical access until an owner confirms assignments. The implementation extends ADR-004/005/007 with controlled onboarding, web settings, location-scoped clinical endpoints, audit/retry scope and forced RLS. Existing ADR-013 remains the accepted storage decision.
+
+New practices use location enforcement. Existing practices retain legacy access until verified data and grant mappings permit explicit activation; old unscoped clinical routes fail closed for enabled practices. Production has not been migrated by this repository change. Read the [implementation and rollout guide](practice-access-implementation.md) before deployment.
 
 ## Web Application
 

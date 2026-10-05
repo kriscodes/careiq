@@ -1,4 +1,4 @@
--- After migration 0015, run as an authorized operator with -v runtime_role=actual_api_login.
+-- After migration 0016, run as an authorized operator with -v runtime_role=actual_api_login.
 -- This grants only group membership; it never creates credentials or modifies existing roles.
 -- Run grant-marketing-submitter.sql separately for the same login when enabling marketing.
 \set ON_ERROR_STOP on
@@ -31,7 +31,7 @@ BEGIN
        OR pg_has_role(reachable_record.oid, database_owner, 'MEMBER') THEN
       RAISE EXCEPTION 'Runtime role must not have privileged or owning role membership';
     END IF;
-    FOREACH protected_table IN ARRAY ARRAY['practices', 'patients', 'appointments', 'clinical_request_keys', 'clinical_audit_events']
+    FOREACH protected_table IN ARRAY ARRAY['practices', 'patients', 'appointments', 'clinical_request_keys', 'clinical_audit_events', 'practice_admin_events']
     LOOP
       IF EXISTS (SELECT 1 FROM pg_class WHERE oid = format('public.%I', protected_table)::regclass AND pg_has_role(reachable_record.oid, relowner, 'MEMBER')) THEN
         RAISE EXCEPTION 'Runtime role must not own clinical tables or have owner membership';
@@ -42,8 +42,8 @@ BEGIN
       FOR protected_column IN
         SELECT attname FROM pg_attribute WHERE attrelid = format('public.%I', protected_table)::regclass AND attnum > 0 AND NOT attisdropped
       LOOP
-        IF has_column_privilege(reachable_record.oid, format('public.%I', protected_table), protected_column, 'UPDATE, REFERENCES')
-           OR (protected_table = 'clinical_audit_events' AND has_column_privilege(reachable_record.oid, 'public.clinical_audit_events', protected_column, 'SELECT')) THEN
+        IF (has_column_privilege(reachable_record.oid, format('public.%I', protected_table), protected_column, 'UPDATE, REFERENCES') AND NOT (protected_table = 'practices' AND protected_column = 'owner_user_id' AND NOT has_column_privilege(reachable_record.oid, 'public.practices', 'owner_user_id', 'REFERENCES')))
+           OR (protected_table IN ('clinical_audit_events','practice_admin_events') AND has_column_privilege(reachable_record.oid, format('public.%I', protected_table), protected_column, 'SELECT')) THEN
           RAISE EXCEPTION 'Runtime role can read audit data or modify protected clinical columns';
         END IF;
       END LOOP;
