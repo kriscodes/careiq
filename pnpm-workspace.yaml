@@ -3,6 +3,9 @@ packages:
   - "packages/*"
 
 allowBuilds:
+  # These postinstall scripts only print funding messages; no build is needed.
+  browser-tabs-lock: false
+  core-js: false
   esbuild: true
   sharp: true
   unrs-resolver: true
@@ -10,3 +13,6 @@ allowBuilds:
 # Pin patched transitive query parsing until upstream minimums catch up.
 overrides:
   qs: 6.16.0
+  # Compatible published fixes for Expo build-tool transitive dependencies.
+  'brace-expansion@>=5.0.0 <5.0.12': 5.0.12
+  'xcode@3.0.1>uuid': 11.1.1

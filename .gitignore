@@ -1,7 +1,4 @@
 
-### `.gitignore`
-
-```gitignore
 # Dependencies
 node_modules/
 
@@ -41,3 +38,12 @@ Thumbs.db
 .tmp/
 temp/
 .cache/
+
+# Expo generates native projects and local metadata from apps/mobile/app.json.
+apps/mobile/.expo/
+apps/mobile/expo-env.d.ts
+apps/mobile/ios/
+apps/mobile/android/
+*.ipa
+*.aab
+*.apk

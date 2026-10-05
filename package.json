@@ -8,7 +8,13 @@
     "dev": "pnpm -r --parallel dev",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "mobile": "pnpm --filter @careiq/mobile start",
+    "mobile:ios": "pnpm --filter @careiq/mobile ios",
+    "mobile:android": "pnpm --filter @careiq/mobile android",
+    "mobile:check": "pnpm --filter @careiq/mobile typecheck && pnpm --filter @careiq/mobile lint && pnpm --filter @careiq/mobile test",
+    "mobile:export": "pnpm --filter @careiq/mobile build",
+    "mobile:doctor": "pnpm --filter @careiq/mobile run doctor"
   },
   "keywords": [],
   "author": "",

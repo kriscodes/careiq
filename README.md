@@ -70,6 +70,8 @@ Infrastructure: Render
 
 Additional clients, including mobile applications, can consume the same backend API as the platform evolves.
 
+The iOS/Android foundation lives in `apps/mobile` (React Native + Expo). It contains a setup screen and an optional API health check, with no clinical workflows. Review the [mobile architecture proposal](docs/design/mobile-architecture.md) and [ADR-017: Practice, Locations and Membership](docs/decisions/017-practice-location-membership-model.md) before expanding it. Controlled owner onboarding, staff invitations, membership review and location-aware web/API access are implemented for staged rollout. Existing practices require reviewed activation. See the [implementation and rollout guide](docs/practice-access-implementation.md).
+
 ## Technology Stack
 
 | Layer              | Technology                    |
@@ -92,6 +94,7 @@ careiq/
 ├── apps/
 │   ├── api/            # Backend API
 │   ├── web/            # Authenticated web application
+│   ├── mobile/         # Expo iOS/Android foundation
 │   └── marketing/      # Public static website and discovery-interview form
 │
 ├── packages/           # Shared packages and reusable code
@@ -192,6 +195,8 @@ Run the web application:
 pnpm --filter ./apps/web dev
 ```
 
+For mobile, follow the [mobile development guide](docs/mobile-development.md). After installing an iOS/Android development build, run `pnpm mobile`. Use `pnpm mobile:ios` or `pnpm mobile:android` to build locally. Mobile runs separately from the existing `pnpm dev` server/web workflow.
+
 Environment-specific configuration is supplied through local environment files and deployment environment variables.
 
 Secrets must never be committed to the repository.
@@ -257,6 +262,10 @@ Formal compliance requirements and controls will evolve as the product approache
 * [Release process and cadence](docs/releasing.md)
 * [Product Vision](docs/product-vision.md)
 * [Architecture](docs/architecture.md)
+* [Practice/location decision — ADR-017](docs/decisions/017-practice-location-membership-model.md)
+* [Mobile architecture proposal](docs/design/mobile-architecture.md)
+* [Mobile development](docs/mobile-development.md)
+* [Mobile bootstrap review, verification and file inventory](docs/mobile-bootstrap-review.md)
 * [v0.1 — Interview Design](docs/design/interview-v0.1.md)
 * [Interview architecture notes](docs/interview-architecture.md)
 * [Development](docs/development.md)

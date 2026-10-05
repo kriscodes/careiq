@@ -1,4 +1,5 @@
 import { 
+    foreignKey,
     pgTable, 
     text, 
     timestamp, 
@@ -8,6 +9,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
+import { locations } from "./practice-access.js";
 import { practices } from "./practices.js";
 
 
@@ -21,6 +23,8 @@ export const patients = pgTable(
         practiceId: uuid("practice_id")
         .notNull()
         .references(() => practices.id),
+
+        locationId: uuid("location_id"),
 
         firstName: text("first_name").notNull(),
 
@@ -43,6 +47,9 @@ export const patients = pgTable(
         .defaultNow(),
   },
   (table) => [
+    foreignKey({name:"patients_location_practice_fk",columns:[table.locationId,table.practiceId],foreignColumns:[locations.id,locations.practiceId]}),
+    unique("patients_id_practice_location_unique").on(table.id,table.practiceId,table.locationId),
+    index("patients_location_name_idx").on(table.practiceId,table.locationId,table.lastName,table.firstName,table.id),
     index("patients_practice_name_idx").on(table.practiceId, table.lastName, table.firstName, table.id),
     unique("patients_id_practice_id_unique").on(
       table.id,

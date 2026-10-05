@@ -20,10 +20,13 @@ export async function apiRequest<T>(path: string, token: string, options: ApiReq
   const timer = setTimeout(() => { timedOut = true; controller.abort(); }, timeoutMs);
   const saving = !["GET", "HEAD"].includes((options.method ?? "GET").toUpperCase());
   const retryMessage = saving
-    ? "The save may have completed. Retry without changing the details to avoid creating a duplicate."
+    ? new Headers(options.headers).has("Idempotency-Key")
+      ? "The save may have completed. Retry without changing the details to avoid creating a duplicate."
+      : "The change may have completed. Refresh to check before trying again."
     : "Please try again.";
 
   try {
+    signal?.throwIfAborted();
     const headers = new Headers(requestOptions.headers);
     headers.set("Authorization", `Bearer ${token}`);
     headers.set("Content-Type", "application/json");
@@ -35,6 +38,7 @@ export async function apiRequest<T>(path: string, token: string, options: ApiReq
     });
     const body = await response.json().catch(() => null);
     if (timedOut) throw new Error("Timed out while reading response");
+    signal?.throwIfAborted();
     if (!body) throw new ApiError(response.status, "INVALID_RESPONSE", `CareIQ returned an unexpected response. ${retryMessage}`);
     if (!response.ok) {
       const error = (body as ApiErrorBody).error;

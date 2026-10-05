@@ -12,7 +12,8 @@
     "db:studio": "drizzle-kit studio",
     "test": "tsx --test tests/*.test.ts",
     "typecheck": "tsc --noEmit",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "members:reconcile": "tsx src/db/reconcile-practices.ts"
   },
   "keywords": [],
   "author": "",
