@@ -1,6 +1,6 @@
 # CareIQ Architecture
 
-Implementation status: the working slice covers Clerk organization-based practice resolution, patient and appointment create/list flows, and transaction-scoped PostgreSQL RLS. The v0.1 interview workspace includes a separately labeled, static architecture panel. It explains the implementation; it is not live telemetry. Sections describing roles, audit history, background jobs, storage, and integrations are architectural direction; they are not evidence that those capabilities are implemented.
+Implementation status: the working slice covers Clerk organization-based practice resolution, patient and appointment create/list flows, and transaction-scoped PostgreSQL RLS. The v0.1 interview workspace includes a separately labeled, static architecture panel. It explains the implementation; it is not live telemetry. The security release implements baseline admin/member authorization, clinical read/create audit metadata and retry keys. Broader forensic audit, background jobs, storage and integrations remain architectural direction. See [security hardening](security-hardening.md) and [deployment status](deployment/security-release-status.md).
 
 This document provides a high-level view of the CareIQ platform architecture.
 
@@ -27,8 +27,8 @@ CareIQ currently consists of three primary runtime layers.
 ┌──────────────────────────────┐
 │          Clients             │
 │                              │
-│  Web App        Future Mobile│
-│  Next.js        Applications │
+│  Web App        Mobile client│
+│  Next.js        Expo / RN    │
 └──────────────┬───────────────┘
                │
                │ HTTPS
@@ -65,6 +65,8 @@ CareIQ uses a monorepo.
 apps/
     api/
     web/
+    marketing/
+    mobile/
 
 packages/
     shared packages
@@ -80,6 +82,14 @@ Deployable applications live under `apps`.
 Reusable code that is not independently deployed lives under `packages`.
 
 Engineering and product decisions live under `docs`.
+
+## Mobile foundation and practice/location model
+
+`apps/mobile` adds an Expo/React Native iOS and Android client to the existing pnpm workspace. The client now includes branded authentication, session gates, actor-scoped onboarding drafts, practice/location selection and invitation/access states. Secrets remain in provider-managed secure token storage, and API request/cache state is cleared on identity or scope changes. Native device acceptance remains a separate check from browser preview and JavaScript export. See the [mobile architecture proposal](design/mobile-architecture.md) for boundaries, navigation, data handling, and release design, and the [mobile development guide](mobile-development.md) for setup.
+
+[ADR-017](decisions/017-practice-location-membership-model.md) establishes one Practice per Clerk Organization, CareIQ Locations beneath it, and explicit location access constrained by fresh Clerk membership and permissions. Pending invitees receive no clinical access until an owner confirms assignments. The implementation extends ADR-004/005/007 with controlled onboarding, web settings, location-scoped clinical endpoints, audit/retry scope and forced RLS. Existing ADR-013 remains the accepted storage decision.
+
+New practices use location enforcement. Existing practices retain legacy access until verified data and grant mappings permit explicit activation; old unscoped clinical routes fail closed for enabled practices. Production has not been migrated by this repository change. Read the [implementation and rollout guide](practice-access-implementation.md) before deployment.
 
 ## Web Application
 
@@ -178,7 +188,7 @@ Application authorization remains necessary.
 
 RLS provides an additional security boundary rather than replacing application-level authorization.
 
-The `/api/v1/me` endpoint resolves or provisions the organization-to-practice mapping before tenant-scoped reads. The patient and appointment middleware then looks up that mapping. Domain services use `withTenant`, which sets `app.practice_id` inside the transaction. The runtime role must not be a superuser or have `BYPASSRLS`. A composite patient/practice foreign key also prevents appointments from referencing another practice's patient. Granular role authorization remains future work.
+The `/api/v1/me` endpoint reads the organization-to-practice mapping without provisioning. Verified approved founders use the explicit, idempotent onboarding endpoint to create a practice and its first location. The patient and appointment middleware then looks up that mapping. Domain services use `withTenant`, which sets `app.practice_id` inside the transaction. The runtime role must be a non-owner without superuser, `BYPASSRLS`, role/database creation or privileged memberships. A composite patient/practice foreign key also prevents appointments from referencing another practice's patient. Baseline admin/member rules and explicit custom-role permissions are enforced by API middleware; the server returns capabilities for the UI.
 
 ## Database
 

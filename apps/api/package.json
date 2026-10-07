@@ -12,13 +12,17 @@
     "db:studio": "drizzle-kit studio",
     "test": "tsx --test tests/*.test.ts",
     "typecheck": "tsc --noEmit",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "members:reconcile": "tsx src/db/reconcile-practices.ts",
+    "release:verify": "tsx src/db/verify-release.ts",
+    "db:verify": "tsx src/db/verify-release.ts --database-only"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@careiq/interview-contract": "workspace:*",
     "@clerk/backend": "^3.16.13",
     "@clerk/express": "^2.1.64",
     "cors": "^2.8.6",

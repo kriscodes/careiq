@@ -5,10 +5,25 @@
   "packageManager": "pnpm@11.22.0",
   "scripts": {
     "build": "pnpm -r build",
-    "dev": "pnpm -r --parallel dev",
+    "dev": "pnpm --filter ./apps/api --filter ./apps/web --filter ./apps/marketing --parallel dev",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "mobile": "pnpm --filter @careiq/mobile start",
+    "mobile:ios": "pnpm --filter @careiq/mobile ios",
+    "mobile:android": "pnpm --filter @careiq/mobile android",
+    "local:setup": "python3 scripts/local-review.py setup",
+    "local:start": "python3 scripts/local-review.py start",
+    "local:status": "python3 scripts/local-review.py status",
+    "local:stop": "python3 scripts/local-review.py stop",
+    "mobile:check": "pnpm --filter @careiq/mobile lint && pnpm --filter @careiq/mobile typecheck && pnpm --filter @careiq/mobile test",
+    "mobile:doctor": "pnpm --filter @careiq/mobile doctor",
+    "mobile:export": "pnpm --filter @careiq/mobile build",
+    "security:regressions": "node --test scripts/tests/security-dependencies.test.mjs",
+    "security:audit": "pnpm audit --prod",
+    "release:check": "node -e \"if (!process.env.TEST_DATABASE_URL) { console.error('Set TEST_DATABASE_URL to the isolated loopback careiq_test database before release checks.'); process.exit(1); }\" && pnpm lint && pnpm typecheck && pnpm test && pnpm security:regressions && pnpm mobile:links:test && pnpm --fail-if-no-match --filter ./apps/web test:browser && pnpm security:audit",
+    "mobile:links": "node scripts/generate-mobile-associations.mjs",
+    "mobile:links:test": "node --test scripts/tests/mobile-associations.test.mjs"
   },
   "keywords": [],
   "author": "",
@@ -20,5 +35,9 @@
       "onFail": "download"
     }
   },
-  "type": "module"
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0 <23",
+    "pnpm": "11.22.0"
+  }
 }

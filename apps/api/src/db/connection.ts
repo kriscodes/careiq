@@ -25,6 +25,13 @@ export function connectionOptions(environment: NodeJS.ProcessEnv = process.env):
   } catch {
     throw new Error("DATABASE_URL must be a valid PostgreSQL connection URL.");
   }
+  if (!["postgres:", "postgresql:"].includes(url.protocol) || !url.hostname || url.pathname.length < 2) {
+    throw new Error("DATABASE_URL must identify a PostgreSQL host and database.");
+  }
+  const targetParameters = new Set(["host", "hostaddr", "port", "database", "dbname", "user", "password"]);
+  if ([...url.searchParams.keys()].some((key) => targetParameters.has(key.toLowerCase()))) {
+    throw new Error("Database target and credentials must be supplied in the DATABASE_URL authority/path, without query overrides.");
+  }
 
   // pg lets URL parameters override an explicit ssl option. Keep one source of
   // truth so a provider URL cannot silently disable the configured protection.

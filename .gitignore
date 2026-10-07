@@ -41,3 +41,12 @@ Thumbs.db
 .tmp/
 temp/
 .cache/
+
+# Isolated local review credentials, process state and logs
+.local-review/
+
+# Dedicated review build output
+.next-local-review/
+
+# Isolated production build verification output
+.next-production-check/

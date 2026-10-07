@@ -18,7 +18,7 @@ sequenceDiagram
     Clerk-->>Web: Token for authenticated session
     Web->>API: GET /api/v1/me + bearer token
     API->>API: Verify identity and active organization
-    API->>DB: Find or provision mapped practice
+    API->>DB: Read mapped practice and access context
     API-->>Web: Current practice
     Web->>API: Patient or appointment request + bearer token
     API->>API: Derive practice from verified organization
@@ -30,17 +30,17 @@ sequenceDiagram
     Web-->>Staff: Current practice data and feedback
 ```
 
-Clerk middleware verifies request authentication. The web workspace requests tokens for the organization that opened it, so a practice switch cannot reassign an in-flight form to another organization. The application does not accept a browser-supplied practice ID as its tenant authority. `/api/v1/me` provisions a practice when the authenticated Clerk organization has no mapping; subsequent patient/appointment middleware resolves that mapping. The diagram describes normal behavior, not the outcome of any particular demo request.
+Clerk middleware verifies request authentication. The web workspace requests tokens for the organization that opened it, so a practice switch cannot reassign an in-flight form to another organization. The application does not accept a browser-supplied practice ID as its tenant authority. `/api/v1/me` reads session/practice access without provisioning; subsequent patient/appointment middleware resolves an existing authorized mapping. Approved verified founders create their practice and first location through the explicit onboarding API. New practices require assigned-location authorization for clinical routes. The diagram describes normal behavior, not the outcome of any particular demo request.
 
 ## Implemented panel narrative
 
-`apps/web/src/components/InterviewNotes.tsx` defines the reviewer bar and the six static explanation steps. `PracticeWorkspace.tsx` opens them in `InterviewModal.tsx`. `apps/web/src/app/page.tsx` controls visibility through `NEXT_PUBLIC_INTERVIEW_MODE`: on by default in development unless `false`, off in production unless `true` at build time. This flag changes presentation only.
+`apps/web/src/components/InterviewNotes.tsx` defines the reviewer bar and the six static explanation steps. `PracticeWorkspace.tsx` opens them in `InterviewModal.tsx`. `apps/web/src/app/page.tsx` controls visibility through `NEXT_PUBLIC_INTERVIEW_MODE`: on by default in development unless `false`, always disabled in production, regardless of the flag. This flag changes presentation only.
 
 | Step | Explanation | Source |
 | --- | --- | --- |
 | 1. Staff action | React collects the patient or visit details and obtains a Clerk token. The shared API client sends the token as a bearer credential. | `apps/web/src/lib/api/client.ts` |
 | 2. Verified identity | Clerk verifies the session. Protected routes require a signed-in user and an active organization. | `apps/api/src/index.ts`, `apps/api/src/middleware/tenant-context.ts` |
-| 3. Resolved practice | CareIQ maps the verified organization to an internal practice. `/me` can provision the mapping before tenant-scoped reads. | `apps/api/src/services/practice.service.ts` |
+| 3. Resolved practice | CareIQ maps the verified organization to an internal practice. `/me` reads the mapping without creating it; controlled onboarding establishes new practices. | `apps/api/src/services/practice.service.ts` |
 | 4. Validated operation | The API checks required names or the appointment patient ID and timestamp. Appointment creation also looks up the patient within the tenant transaction. | `apps/api/src/index.ts`, `apps/api/src/validation.ts`, `apps/api/src/services/appointment.service.ts` |
 | 5. Isolated transaction | Drizzle executes inside a transaction with local `app.practice_id`. PostgreSQL policies restrict rows; relational constraints preserve patient/practice consistency. | `apps/api/src/db/with-tenant.ts`, `apps/api/drizzle/0013_tenant-context-empty.sql`, `apps/api/src/db/schema/appointments.ts` |
 | 6. Updated workspace | The API returns created/listed records or a controlled error. The UI updates only the current practice workspace. | API route handlers and web workspace components |
@@ -51,20 +51,20 @@ The bar says **Interview demo · Developer notes** and **v0.1 — Interview Desi
 
 **Next.js and a separate API.** The web app presents forms and records; the API owns tenant resolution, validation, and data operations. Other clients could use the same versioned endpoints. This slice does not require microservices.
 
-**Clerk identity and CareIQ practice mapping.** External identity handles sign-in and the active organization. CareIQ keeps an internal practice ID for domain relationships. This currently establishes the practice boundary; granular staff roles and CareIQ membership administration are not implemented.
+**Clerk identity and CareIQ practice mapping.** External identity handles sign-in and the active organization. CareIQ keeps an internal practice ID for domain relationships. The API also enforces administrator creation/member read-only rules and explicit custom-role permissions. Clerk confirms identity and organization roles; CareIQ manages enrollment confirmation and explicit location assignments.
 
 **Transaction-scoped context.** `withTenant` opens a transaction and calls `set_config('app.practice_id', practiceId, true)`. The final `true` makes the setting transaction-local, so a pooled connection does not retain that tenant context for a later transaction. Tenant-scoped queries must use the provided transaction, not the global database client.
 
 **Database enforcement.** Patients and appointments use forced row-level security. Policies compare each row's practice ID with the transaction context for reads and writes. Migration 0013 treats a missing or empty context as no matching practice. An appointment also has a composite foreign key to `(patient_id, practice_id)`, preventing a patient/practice mismatch at the relational boundary.
 
-RLS must run under a database role without superuser or `BYPASSRLS` privileges. The policy files and UI demonstration are not substitutes for verifying the deployed role and applying migrations.
+RLS must run under a non-owning database role without superuser, `BYPASSRLS`, role/database creation or privileged membership. The policy files and UI demonstration are not substitutes for verifying the deployed role and applying migrations.
 
 ## Current API surface
 
 | Endpoint | Behavior |
 | --- | --- |
 | `GET /health` | Checks database connectivity; returns 503 on failure. It is not a full authentication or tenant-isolation test. |
-| `GET /api/v1/me` | Requires authentication and an active organization; resolves or provisions its practice. |
+| `GET /api/v1/me` | Requires authentication; reads current practice/enrollment/location access without provisioning. |
 | `GET /api/v1/patients` | Lists patients within the resolved practice. |
 | `POST /api/v1/patients` | Creates a patient with required first/last name and optional email/phone. |
 | `GET /api/v1/appointments` | Lists appointments within the resolved practice. |
@@ -76,13 +76,13 @@ The API assigns the practice ID. Appointment timestamps are stored with timezone
 
 | Area | Current implementation | Remaining boundary |
 | --- | --- | --- |
-| Authentication | Clerk session and active organization | Granular role permissions and membership administration |
+| Authentication | Clerk session/active organization, admin/member rules and explicit custom-role permissions | Production Clerk configuration and membership administration |
 | Patients | Create/list; UI search over loaded records | Edit/delete, pagination, richer validation and record lifecycle |
 | Appointments | Create/list; UI day/week navigation | Rescheduling/cancellation, provider availability, duration, conflict prevention, reminders |
 | Isolation | Tenant middleware, transaction context, RLS, composite patient relationship | Verify migrations and runtime role in each deployed environment |
 | Time | Timestamp persistence and browser-local presentation | Practice timezone, explicit ambiguous daylight-saving time handling |
 | Reviewer notes | Static, source-backed explanation | Sanitized live tracing or measured timings if a later design requires it |
-| Operations | Connectivity health check and controlled error logging | Domain audit history, background jobs, EHR integrations, and production operational controls |
+| Operations | Connectivity health check, safe pool recovery, sanitized logging and append-only clinical audit metadata | Forensic audit UI/triggers/archival, background jobs, EHR integrations and deployed operational controls |
 
 The UI must not offer actions or status transitions that have no corresponding API behavior. It must not imply that an open appointment time is conflict-free. “Scheduled” reflects the stored appointment status; it does not mean that a provider, room, or external calendar accepted the booking.
 

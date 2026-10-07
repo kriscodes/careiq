@@ -1,0 +1,38 @@
+# Optional Blueprint for a NEW marketing Static Site; does not modify existing services.
+# Review docs/marketing.md and complete launch requirements before deployment.
+services:
+  - type: web
+    runtime: static
+    name: careiq-marketing
+    buildCommand: pnpm install --frozen-lockfile && pnpm --filter @careiq/marketing... build
+    staticPublishPath: apps/marketing/out
+    envVars:
+      - key: NODE_VERSION
+        value: 22.23.2
+      - key: SKIP_INSTALL_DEPS
+        value: 'true'
+      - key: NEXT_PUBLIC_SITE_URL
+        value: https://careiqlabs.com
+      - key: NEXT_PUBLIC_ALLOW_INDEXING
+        value: 'false'
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
+      - key: NEXT_PUBLIC_PRIVACY_EMAIL
+        sync: false
+    routes:
+      - type: rewrite
+        source: /privacy
+        destination: /privacy/index.html
+      - type: rewrite
+        source: /privacy/
+        destination: /privacy/index.html
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: X-Frame-Options
+        value: DENY

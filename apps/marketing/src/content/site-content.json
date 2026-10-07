@@ -1,0 +1,105 @@
+{
+  "brand": { "product": "CareIQ", "business": "CareIQ Labs", "homeLabel": "CareIQ Labs home" },
+  "navigation": {
+    "focus": "Our focus", "founder": "The founder", "faq": "Questions", "cta": "Share your experience", "application": "Open CareIQ", "openMenu": "Open navigation", "closeMenu": "Close navigation", "label": "Main navigation", "skip": "Skip to content"
+  },
+  "hero": {
+    "eyebrow": "Thoughtfully built. Starting with you.",
+    "headline": "A simpler path from new-patient request to scheduled appointment.",
+    "description": "CareIQ is an early-stage software product exploring how independent medical practices can simplify intake, paperwork follow-up, and scheduling coordination.",
+    "supporting": "We’re speaking with practice managers, front-desk staff, and practice owners to understand what creates extra work—and what would actually help.",
+    "primaryCta": "Share your experience", "secondaryCta": "What we’re exploring",
+    "stageNote": "Currently in development. No purchase commitment or patient information required."
+  },
+  "workflow": {
+    "eyebrow": "The moments between",
+    "heading": "One request. Many moving parts.",
+    "description": "We’re exploring how these steps connect in everyday practice.",
+    "steps": [
+      { "title": "New request", "description": "An initial point of contact" },
+      { "title": "Intake information", "description": "The details needed to get started" },
+      { "title": "Follow-up", "description": "The paperwork still outstanding" },
+      { "title": "Scheduling coordination", "description": "Finding the way to an appointment" }
+    ],
+    "caption": "Illustrative workflow · not a product screenshot"
+  },
+  "focus": {
+    "eyebrow": "Our initial focus", "heading": "Less friction in the work around care.",
+    "description": "We’re starting with independent practices of approximately 2–10 providers, and three connected workflows that shape the front-desk day.",
+    "cards": [
+      { "title": "New-patient intake", "description": "How initial requests arrive, what information teams need, and where the process becomes difficult to keep track of.", "question": "What happens after the first request?" },
+      { "title": "Paperwork and follow-up", "description": "How teams identify missing forms, follow up with patients, and keep the next step from getting lost.", "question": "What takes the most chasing?" },
+      { "title": "Scheduling coordination", "description": "How staff move a request toward a scheduled appointment while coordinating details across the team.", "question": "Where does progress slow down?" }
+    ],
+    "note": "These are areas we’re exploring with practices, not a list of features available for purchase."
+  },
+  "founder": {
+    "eyebrow": "A founder, listening first", "heading": "Built by Kristian Salmeron",
+    "background": "Lead software engineer with more than 10 years of software development experience, including building applications used by healthcare teams.",
+    "description": "I’m speaking directly with practice teams before deciding what to build next. I want to understand the handoffs, workarounds, and repeated follow-ups that make an already busy day harder.",
+    "closing": "Your experience can help shape a more useful starting point for CareIQ.", "name": "Kristian Salmeron", "role": "Founder, CareIQ Labs", "linkedin": "Connect on LinkedIn"
+  },
+  "interview": {
+    "eyebrow": "Help shape what comes next", "heading": "A conversation about your everyday work.",
+    "description": "If you work in an independent medical practice, I’d like to hear how your team handles intake and scheduling today.",
+    "details": [
+      { "title": "Approximately 20 minutes", "description": "A focused conversation about your current workflows." },
+      { "title": "Your perspective matters", "description": "For practice owners, practice managers, and front-desk staff." },
+      { "title": "No purchase obligation", "description": "This is a discovery conversation, not a sales presentation." }
+    ],
+    "boundary": "Please keep the discussion about processes, without patient-identifying information. This is not a clinical consultation or a support channel."
+  },
+  "form": {
+    "heading": "Share your experience", "description": "Leave a few details so Kristian can follow up about a discovery interview.",
+    "requiredNote": "All fields are required unless marked optional.",
+    "javascriptRequired": "Enable JavaScript in your browser to use the interview-request form.",
+    "labels": { "name": "Name", "email": "Work email", "role": "Your role", "practiceName": "Practice name", "optional": "optional", "website": "Leave this field empty" },
+    "rolePlaceholder": "Select your role",
+    "roleLabels": { "practice_owner": "Practice owner", "practice_manager": "Practice manager", "administrative_staff": "Front-desk / administrative staff", "provider": "Provider", "other": "Other" },
+    "emailHelp": "Use the email where you’d like to hear from us. Personal email addresses are welcome.",
+    "patientWarning": "Please do not include patient names, records, or other identifying information.",
+    "privacyPrefix": "By submitting, you’re requesting contact about a discovery interview. Read our", "privacyLink": "privacy notice", "privacySuffix": "for how we handle your details. You won’t be subscribed to a newsletter.",
+    "submit": "Request a conversation", "submitting": "Sending your request…", "retry": "Try again", "successHeading": "Thank you for sharing your interest.",
+    "success": "Thank you—your interview request has been received. Kristian will follow up by email to coordinate a conversation.",
+    "successDetail": "This request does not automatically book an appointment.",
+    "error": "We couldn’t confirm your request. Your details are still here; please try again.",
+    "rateLimited": "We’ve received several requests in a short time. Please wait a few minutes before trying again. Your details are still here.",
+    "unavailable": "Interview requests are temporarily unavailable. Please check back soon.",
+    "validationSummary": "Please check the highlighted fields and try again.",
+    "validation": {
+      "name": { "required": "Enter your name.", "invalid": "Enter a name without unusual control characters.", "too_long": "Use 120 characters or fewer for your name." },
+      "email": { "required": "Enter your email address.", "invalid": "Enter a valid email address.", "too_long": "Use 254 characters or fewer for your email address." },
+      "role": { "required": "Select your role.", "invalid": "Select a role from the list.", "too_long": "Select a role from the list." },
+      "practiceName": { "required": "Enter a practice name or leave this field empty.", "invalid": "Enter a practice name without unusual control characters.", "too_long": "Use 160 characters or fewer for the practice name." }
+    }
+  },
+  "faq": {
+    "eyebrow": "A few things to know", "heading": "Before we talk.",
+    "items": [
+      { "question": "Who should participate?", "answer": "Practice owners, practice managers, and front-desk or administrative staff at independent medical practices—especially teams with approximately 2–10 providers. Providers with a perspective on intake and scheduling are welcome, too." },
+      { "question": "Is CareIQ already available?", "answer": "CareIQ is currently in development. We’re learning from practice teams before finalizing the product, and we’re not offering a finished product for purchase." },
+      { "question": "Is this a sales call?", "answer": "No. It’s a discovery conversation about how your practice works today, what creates extra work, and what would be useful. There’s no purchase obligation." },
+      { "question": "Will I need to share patient information?", "answer": "No. Please do not share patient names, records, or other identifying information in the form or the conversation. We’re interested in your processes, not individual patients." },
+      { "question": "What happens after I submit the form?", "answer": "Your request is saved so Kristian can follow up by email to coordinate a conversation. Submitting the form does not automatically book an appointment or subscribe you to marketing." }
+    ]
+  },
+  "footer": { "description": "A more thoughtful starting point for practice workflows.", "stage": "Currently in development.", "privacy": "Privacy", "contact": "Contact", "copyright": "CareIQ Labs. All rights reserved." },
+  "seo": {
+    "homeTitle": "CareIQ Labs | A simpler path from request to appointment", "homeDescription": "CareIQ is exploring simpler intake, paperwork follow-up, and scheduling coordination for independent practices. Share your experience in a discovery interview.",
+    "privacyTitle": "Website privacy notice | CareIQ Labs", "privacyDescription": "How CareIQ Labs handles contact details submitted to request a discovery interview.", "notFoundTitle": "Page not found | CareIQ Labs"
+  },
+  "privacy": {
+    "eyebrow": "Your information", "heading": "Website privacy notice", "versionLabel": "Notice version", "intro": "This notice covers the CareIQ Labs marketing website and its discovery-interview request form. It does not describe a patient portal or clinical service.",
+    "sections": [
+      { "heading": "What the form collects", "paragraphs": ["We collect your name, email address, role, and, if you choose to provide it, practice name. A submission reference, the form’s source, the notice version, and the date received are also stored to manage requests and prevent duplicate retries.", "Please do not include patient names, records, or other identifying information. We do not ask for phone numbers, files, medical details, or an open-ended message."] },
+      { "heading": "Why we use it", "paragraphs": ["Kristian Salmeron uses these details to review your request and follow up by email about a discovery conversation on practice workflows. Submitting the form does not book a meeting or subscribe you to marketing."] },
+      { "heading": "How it is handled", "paragraphs": ["The website sends the form to the CareIQ API, which stores the request in a dedicated PostgreSQL table separate from patient and practice records. Authorized operators can review and delete requests using restricted database access.", "The deployment uses Render for website and API hosting and the existing CareIQ database infrastructure. These services process information needed to deliver and operate the site. If you correspond with Kristian by email, that conversation is also handled by the email services used to send and receive it."] },
+      { "heading": "Browser storage and operational data", "paragraphs": ["This website does not add analytics, advertising pixels, session replay, newsletter tools, or embedded scheduling. The form does not write your details to localStorage or place them in page addresses; it keeps entered values in the current page while you retry.", "Hosting and network services may process technical request data, such as IP addresses, timestamps, and browser information. The API uses request information for abuse protection. Its application logging is designed to exclude the contents of this form. This is not a promise that infrastructure produces no logs or cookies."] },
+      { "heading": "Retention and your choices", "paragraphs": ["You can choose not to submit the form. You can also ask what contact information we hold about your interview request or ask us to delete it. Interview requests are handled separately from any patient or clinical-record retention policy."] }
+    ],
+    "contactHeading": "Privacy questions or deletion requests", "contactText": "Email the address below with your request. Please use the address you submitted where possible so we can identify the request, and do not send patient information.",
+    "contactUnavailable": "The interview-request form is currently unavailable. If you have already corresponded with Kristian about a discovery interview, you can reply to that email with a privacy question or deletion request.",
+    "back": "Back to CareIQ Labs"
+  },
+  "notFound": { "eyebrow": "404 · Page not found", "heading": "Let’s get you back on track.", "description": "This page may have moved, or the address may be incomplete. You can return home to learn about CareIQ or share your experience.", "cta": "Back to the homepage" }
+}

@@ -1,0 +1,103 @@
+name: CareIQ readiness checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: readiness-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_USER: careiq_ci
+          POSTGRES_PASSWORD: disposable_ci_only
+          POSTGRES_DB: careiq_test
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U careiq_ci -d careiq_test"
+          --health-interval 10s --health-timeout 5s --health-retries 10
+    env:
+      CI: true
+      DATABASE_URL: postgresql://careiq_ci:disposable_ci_only@127.0.0.1:5432/careiq_test
+      TEST_DATABASE_URL: postgresql://careiq_ci:disposable_ci_only@127.0.0.1:5432/careiq_test
+      DATABASE_SSL_MODE: disable
+      EXPO_NO_DOTENV: 1
+      EXPO_NO_TELEMETRY: 1
+      CAREIQ_MOBILE_VARIANT: preview
+      NEXT_TELEMETRY_DISABLED: 1
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          version: 11.22.0
+          run_install: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Migration replay on disposable PostgreSQL
+        run: |
+          pnpm --fail-if-no-match --filter @careiq/api db:migrate
+          pnpm --fail-if-no-match --filter @careiq/api db:migrate
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm security:regressions
+      - run: pnpm mobile:links:test
+      - name: Browser harness (synthetic identity and API only)
+        run: |
+          pnpm --fail-if-no-match --filter ./apps/web exec playwright install --with-deps chromium
+          pnpm --fail-if-no-match --filter ./apps/web test:browser
+      - name: Build API and shared contract
+        run: |
+          pnpm --fail-if-no-match --filter @careiq/interview-contract build
+          pnpm --fail-if-no-match --filter @careiq/api build
+      - name: Build web with reserved configuration fixtures
+        env:
+          # Matching live-shaped fixtures encode clerk.release.invalid$.
+          # They are not provider credentials and cannot authenticate a user.
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_live_Y2xlcmsucmVsZWFzZS5pbnZhbGlkJA
+          CLERK_SECRET_KEY: sk_live_release_configuration_fixture
+          NEXT_PUBLIC_API_URL: https://api.release.invalid
+        run: pnpm --fail-if-no-match --filter ./apps/web exec next build --webpack
+      - name: Build marketing
+        run: pnpm --fail-if-no-match --filter @careiq/marketing exec next build --webpack
+      - name: Expo compatibility and JavaScript exports
+        run: |
+          pnpm --fail-if-no-match --filter @careiq/mobile exec expo install --check
+          pnpm --fail-if-no-match --filter @careiq/mobile build
+
+  dependency-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          version: 11.22.0
+          run_install: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm security:regressions
+      # Keep the raw audit gate. Backported versions remain visible to scanners.
+      - run: pnpm security:audit

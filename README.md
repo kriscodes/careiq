@@ -62,7 +62,7 @@ Authentication: Clerk
 Infrastructure: Render
 ```
 
-Additional clients, including mobile applications, can consume the same backend API as the platform evolves.
+The Expo iOS/Android client in `apps/mobile` consumes the same authenticated API. Web and mobile share the practice/location access model.
 
 ## Technology Stack
 
@@ -85,7 +85,8 @@ Additional clients, including mobile applications, can consume the same backend 
 careiq/
 ├── apps/
 │   ├── api/            # Backend API
-│   └── web/            # Web application
+│   ├── web/            # Authenticated web application
+│   └── marketing/      # Public static website and discovery-interview form
 │
 ├── packages/           # Shared packages and reusable code
 │
@@ -124,7 +125,7 @@ PostgreSQL Row-Level Security provides an additional enforcement boundary for te
 
 Clerk provides user identity and authentication.
 
-CareIQ maps the authenticated Clerk organization to an internal practice. Role-specific permissions and membership administration remain planned.
+CareIQ maps the authenticated Clerk organization to an internal practice. The API enforces fresh membership, explicit permissions and assigned-location access. Verified approved founders create practices through controlled onboarding; reading session context does not provision an organization or practice.
 
 ### Auditable Healthcare Workflows
 
@@ -160,10 +161,16 @@ Important database conventions include:
 * Explicit foreign-key relationships
 * Tenant-aware data modeling
 * PostgreSQL Row-Level Security
-* Planned database-backed audit capabilities (not implemented in this slice)
+* Append-only clinical/admin audit metadata with narrow runtime grants; broader forensic review remains planned
 * Version-controlled schema migrations
 
 Database migrations are owned by the API application.
+
+## Authentication and practice onboarding
+
+The current designs and implementation are documented in [the authentication/onboarding guide](docs/auth-onboarding.md). Review [web, iOS and Android designs](docs/design/auth-onboarding/design-handoff.md) and the [interactive prototype](docs/design/auth-onboarding/prototype.html).
+
+Use this existing checkout at `/Users/kristian/Documents/Server/CareIQ`; do not create fresh GitHub checkouts for routine work. The [local review guide](docs/local-review.md) starts isolated environments for these changes. No GitHub push or remote deployment was performed.
 
 ## Local Development
 
@@ -244,11 +251,23 @@ Formal compliance requirements and controls will evolve as the product approache
 
 ## Documentation
 
+* [Public marketing website](docs/marketing.md)
+* [Marketing verification](docs/marketing-verification.md)
 * [Product Vision](docs/product-vision.md)
 * [Architecture](docs/architecture.md)
 * [v0.1 — Interview Design](docs/design/interview-v0.1.md)
 * [Interview architecture notes](docs/interview-architecture.md)
 * [Development](docs/development.md)
+* [Authentication and onboarding](docs/auth-onboarding.md)
+* [Production-readiness status](docs/production-readiness.md)
+* [Web production checks](docs/web-production-readiness.md)
+* [API production checks](docs/api-production-release.md)
+* [Mobile production checks](docs/mobile-production-readiness.md)
+* [Local review environments](docs/local-review.md)
+* [Mobile development](docs/mobile-development.md)
+* [Practice/location access](docs/practice-access-implementation.md)
+* [Security hardening](docs/security-hardening.md)
+* [Releases](docs/releasing.md)
 * [Verification record](docs/verification.md)
 * [Architecture Decision Records](docs/decisions)
 

@@ -1,0 +1,11 @@
+import { createRoot } from "react-dom/client";
+import { AuthScreen } from "../../../src/components/access/AuthScreen";
+import { PracticeOnboarding } from "../../../src/components/access/PracticeOnboarding";
+import { PracticeManagement } from "../../../src/components/access/PracticeManagement";
+import { PracticeWorkspace } from "../../../src/components/PracticeWorkspace";
+import type { AccessContext } from "../../../src/lib/api/practice";
+const params = new URLSearchParams(location.search);
+const owner: AccessContext = { userId: "user_test", orgId: "org_test", practice: { id: "practice_test", name: "Test practice", authorizationMode: "location", status: "active" }, onboarding: "ready", enrollmentStatus: "active", capabilities: { patients: { read: true, create: true }, appointments: { read: true, create: true } }, management: { locations: true, members: true }, locations: [] };
+const component = params.get("component");
+const root = document.getElementById("root")!;
+createRoot(root).render(component === "onboarding" ? <PracticeOnboarding onInvitations={() => { window.__careiqMockCalls.push({ name: "viewInvitations" }); }} /> : component === "owneraccess" || component === "invite" ? <PracticeManagement context={owner} mode={component} onDone={() => { window.__careiqMockCalls.push({ name: "managementDone" }); }} /> : component === "workspace" ? <PracticeWorkspace initialView={params.get("view") === "invitations" ? "invitations" : "entry"} /> : <AuthScreen initialMode={params.get("mode") === "signup" ? "signup" : "signin"} invitation={params.get("scenario") === "signed-invite"} expired={params.get("scenario") === "signed-expired"} />);

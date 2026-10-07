@@ -1,0 +1,270 @@
+import type { Page, Route } from "@playwright/test";
+import { test, expect } from "./harness";
+import type { AccessContext } from "../../src/lib/api/practice";
+import type { OnboardingState, PracticeDraft } from "../../src/lib/access-flow";
+const location = { id: "11111111-1111-4111-8111-111111111111", name: "Main location", timeZone: "America/Los_Angeles", status: "active" as const };
+const access: AccessContext = { userId: "user_test", orgId: "org_test", practice: { id: "practice_test", name: "Test practice", authorizationMode: "location", status: "active" }, onboarding: "ready", enrollmentStatus: "active", capabilities: { patients: { read: true, create: false }, appointments: { read: true, create: false } }, management: { locations: false, members: false }, locations: [] };
+const frozen: PracticeDraft = { practiceName: "Test practice", locationName: "Main location", timeZone: "America/Los_Angeles", address: "", step: 3 };
+const state: OnboardingState = { eligible: true, emailVerified: true, draft: null, operation: null };
+const json = (route: Route, data: unknown, status = 200) => route.fulfill({ status, contentType: "application/json", body: JSON.stringify(data) });
+const calls = (page: Page) => page.evaluate(() => window.__careiqMockCalls || []);
+test.beforeEach(async ({ page }) => {
+  await page.route("**/*", async route => {
+    if (!["localhost", "127.0.0.1", "[::1]"].includes(new URL(route.request().url()).hostname)) return route.abort("blockedbyclient");
+    await route.continue();
+  });
+});
+
+test("custom sign-in reports a safe failure and leaves the form retryable", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=auth&scenario=signin-error`);
+  await page.getByLabel("Email address", { exact: true }).fill("synthetic@example.invalid");
+  await page.getByLabel("Password", { exact: true }).fill("synthetic-password");
+  await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await expect(page.getByRole("alert")).toHaveText("The email or password is incorrect. Try again.");
+  await expect(page.getByRole("button", { name: "Sign in", exact: true })).toBeEnabled();
+  expect((await calls(page)).filter(call => call.name === "signInFinalize")).toHaveLength(0);
+});
+test("MFA failure cannot finalize; a deliberate recovery code can", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=auth&scenario=mfa`);
+  await page.getByLabel("Email address", { exact: true }).fill("synthetic@example.invalid");
+  await page.getByLabel("Password", { exact: true }).fill("synthetic-password");
+  await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "One more step" })).toBeVisible();
+  await page.getByLabel("Verification code", { exact: true }).fill("000000");
+  await page.getByRole("button", { name: /Verify & continue/ }).click();
+  await expect(page.getByRole("alert")).toContainText("incorrect");
+  expect((await calls(page)).filter(call => call.name === "signInFinalize")).toHaveLength(0);
+  await page.getByRole("button", { name: "Use a recovery code", exact: true }).click();
+  await page.getByLabel("Recovery code", { exact: true }).fill("synthetic-backup-code");
+  await page.getByRole("button", { name: /Verify & continue/ }).click();
+  await expect.poll(async () => (await calls(page)).filter(call => call.name === "signInFinalize").length).toBe(1);
+});
+test("password recovery is generic for unknown accounts and reports service outages", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=auth&scenario=unknown-account`);
+  await page.getByRole("button", { name: "Forgot password?" }).click();
+  await page.getByLabel("Email address", { exact: true }).fill("unknown@example.invalid");
+  await page.getByRole("button", { name: /Send reset code/ }).click();
+  await expect(page.getByRole("heading", { name: "Check your email" })).toBeVisible();
+  await expect(page.locator(".cq-a-lead")).toContainText("If an account exists");
+  expect((await calls(page)).filter(call => call.name === "sendResetCode")).toHaveLength(0);
+  await page.goto(`${harnessUrl}/?component=auth&scenario=recovery-offline`);
+  await page.getByRole("button", { name: "Forgot password?" }).click();
+  await page.getByLabel("Email address", { exact: true }).fill("synthetic@example.invalid");
+  await page.getByRole("button", { name: /Send reset code/ }).click();
+  await expect(page.getByRole("heading", { name: "Reset your password" })).toBeVisible();
+  await expect(page.getByRole("alert")).toContainText("Please try again");
+  await expect(page.getByRole("alert")).not.toContainText("secret");
+});
+test("password reset checks confirmation and signs out other sessions only after a valid code", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=auth`);
+  await page.getByRole("button", { name: "Forgot password?" }).click();
+  await page.getByLabel("Email address", { exact: true }).fill("synthetic@example.invalid");
+  await page.getByRole("button", { name: /Send reset code/ }).click();
+  await page.getByLabel("Verification code", { exact: true }).fill("111111");
+  await page.getByRole("button", { name: /Verify & continue/ }).click();
+  await page.getByLabel("New password", { exact: true }).fill("new-synthetic-password");
+  await page.getByLabel("Confirm password", { exact: true }).fill("different-synthetic-password");
+  await page.getByRole("button", { name: /Update password/ }).click();
+  await expect(page.getByRole("alert")).toContainText("don’t match");
+  expect((await calls(page)).filter(call => call.name === "submitNewPassword")).toHaveLength(0);
+  await page.getByLabel("Confirm password", { exact: true }).fill("new-synthetic-password");
+  await page.getByRole("button", { name: /Update password/ }).click();
+  await expect(page.getByRole("heading", { name: "Password updated" })).toBeVisible();
+  expect((await calls(page)).find(call => call.name === "submitNewPassword")?.input).toEqual({ signOutOfOtherSessions: true });
+});
+test("signup verifies email before it can finalize", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=auth&mode=signup`);
+  await page.getByLabel("Full name (optional)").fill("Synthetic Owner");
+  await page.getByLabel("Work email", { exact: true }).fill("synthetic@example.invalid");
+  await page.getByLabel("Password", { exact: true }).fill("synthetic-password");
+  await page.getByRole("button", { name: /Create account/ }).click();
+  await expect(page.getByRole("heading", { name: "Check your email" })).toBeVisible();
+  await page.getByLabel("Verification code", { exact: true }).fill("000000");
+  await page.getByRole("button", { name: /Verify & continue/ }).click();
+  await expect(page.getByRole("alert")).toContainText("incorrect");
+  expect((await calls(page)).filter(call => call.name === "signUpFinalize")).toHaveLength(0);
+  await page.getByLabel("Verification code", { exact: true }).fill("111111");
+  await page.getByRole("button", { name: /Verify & continue/ }).click();
+  await expect.poll(async () => (await calls(page)).filter(call => call.name === "signUpFinalize").length).toBe(1);
+});
+test("failed session refresh is visible and retryable without exposing diagnostics", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=auth&scenario=signed-expired`);
+  await page.getByRole("button", { name: "Sign in again", exact: true }).click();
+  await expect(page.getByRole("alert")).toContainText("Please try again");
+  await expect(page.getByRole("alert")).not.toContainText("secret");
+  await page.getByRole("button", { name: "Sign in again", exact: true }).click();
+  expect((await calls(page)).filter(call => call.name === "signOut")).toHaveLength(2);
+});
+test("switching from a signed-in invitation preserves its ticket until the provider handles it", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=auth&scenario=signed-invite&__clerk_ticket=synthetic-invite-ticket`);
+  await page.getByRole("button", { name: "Use the invited account" }).click();
+  expect((await calls(page)).find(call => call.name === "signOut")?.input).toEqual({ redirectUrl: `${harnessUrl}/?__clerk_ticket=synthetic-invite-ticket` });
+});
+test("saved setup restores its step and saves safely without provisioning", async ({ page, harnessUrl }) => {
+  let draft: PracticeDraft = { ...frozen, step: 2 };
+  let creations = 0;
+  await page.route("**/api/v1/**", async route => {
+    if (route.request().method() === "POST") { creations++; return json(route, { data: {} }); }
+    if (route.request().method() === "PUT") { draft = route.request().postDataJSON(); return json(route, { data: draft }); }
+    return json(route, { data: { ...state, draft } });
+  });
+  await page.goto(`${harnessUrl}/?component=onboarding`);
+  await expect(page.getByRole("heading", { name: "Add your first location" })).toBeVisible();
+  await expect(page.getByLabel("Location name", { exact: true })).toHaveValue("Main location");
+  await page.getByLabel("Location name", { exact: true }).fill("Updated location");
+  await page.getByRole("button", { name: "Save & finish later" }).click();
+  await expect(page.getByRole("heading", { name: "Your setup is saved" })).toBeVisible();
+  await page.reload();
+  await expect(page.getByLabel("Location name", { exact: true })).toHaveValue("Updated location");
+  expect(creations).toBe(0);
+});
+test("an ineligible founder cannot see creation fields or issue a provisioning request", async ({ page, harnessUrl }) => {
+  let writes = 0;
+  await page.route("**/api/v1/**", async route => { if (route.request().method() !== "GET") writes++; await json(route, { data: { ...state, eligible: false } }); });
+  await page.goto(`${harnessUrl}/?component=onboarding`);
+  await expect(page.getByRole("heading", { name: "Practice setup needs approval" })).toBeVisible();
+  await expect(page.getByLabel("Practice name", { exact: true })).toHaveCount(0);
+  expect(writes).toBe(0);
+});
+test("setup requires authority confirmation and submits the minimal deliberate creation payload", async ({ page, harnessUrl }) => {
+  const creates: { body: unknown; key: string | undefined }[] = [];
+  await page.route("**/api/v1/**", async route => {
+    if (route.request().method() === "POST") { creates.push({ body: route.request().postDataJSON(), key: route.request().headers()["idempotency-key"] }); return json(route, { data: { orgId: "org_created" } }); }
+    if (route.request().method() === "PUT") return json(route, { data: route.request().postDataJSON() });
+    return json(route, { data: state });
+  });
+  await page.goto(`${harnessUrl}/?component=onboarding`);
+  await page.getByLabel("Practice name", { exact: true }).fill("  Test practice  ");
+  await page.getByRole("button", { name: /Continue/ }).click();
+  await page.getByLabel("Location name", { exact: true }).fill("Main location");
+  await page.getByLabel("Time zone", { exact: true }).selectOption("America/Los_Angeles");
+  await page.getByRole("button", { name: /Review practice/ }).click();
+  await page.setViewportSize({ width: 320, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.getByRole("button", { name: /Create practice and location/ }).click();
+  expect(creates).toHaveLength(0);
+  await page.getByRole("checkbox", { name: "I’m authorized to set up and manage this practice." }).check();
+  await page.getByRole("button", { name: /Create practice and location/ }).click();
+  await expect(page.getByRole("heading", { name: "Your practice is ready" })).toBeVisible();
+  expect(creates).toHaveLength(1);
+  expect(creates[0].body).toEqual({ name: "Test practice", location: { name: "Main location", timeZone: "America/Los_Angeles" } });
+  expect(creates[0].key).toMatch(/^[0-9a-f-]{14}4[0-9a-f-]{21}$/i);
+  await page.getByRole("button", { name: "Invite a teammate", exact: true }).click();
+  await expect.poll(async () => (await calls(page)).filter(call => call.name === "setActive").length).toBe(1);
+  expect((await calls(page)).find(call => call.name === "setActive")?.input).toEqual({ organization: "org_created", hasNavigate: true });
+});
+test("pending setup freezes the payload and retries the same intent before and after reload", async ({ page, harnessUrl }) => {
+  const attempts: { body: unknown; key: string | undefined }[] = [];
+  let draftWrites = 0;
+  await page.route("**/api/v1/**", async route => {
+    if (route.request().method() === "PUT") { draftWrites++; return json(route, {}, 409); }
+    if (route.request().method() === "POST") { attempts.push({ body: route.request().postDataJSON(), key: route.request().headers()["idempotency-key"] }); return attempts.length < 3 ? json(route, { error: { code: "PENDING", message: "private provider trace" } }, 500) : json(route, { data: { orgId: "org_created" } }); }
+    return json(route, { data: { ...state, eligible: false, emailVerified: false, draft: frozen, operation: { state: "pending", practiceId: null, organizationId: null } } });
+  });
+  await page.goto(`${harnessUrl}/?component=onboarding`);
+  await expect(page.getByRole("heading", { name: "Finishing your setup" })).toBeVisible();
+  await page.getByRole("button", { name: "Check setup status" }).click();
+  await expect(page.getByRole("alert")).toContainText("without changing the details");
+  await expect(page.getByRole("alert")).not.toContainText("private");
+  await page.getByRole("button", { name: "Check setup status" }).click();
+  await expect.poll(() => attempts.length).toBe(2);
+  await page.reload();
+  await page.getByRole("button", { name: "Check setup status" }).click();
+  await expect(page.getByRole("heading", { name: "Your practice is ready" })).toBeVisible();
+  expect(attempts[0].body).toEqual(attempts[1].body);
+  expect(attempts[1].body).toEqual(attempts[2].body);
+  expect(attempts[0].key).toEqual(attempts[1].key);
+  expect(attempts[2].key).not.toEqual(attempts[0].key);
+  expect(draftWrites).toBe(0);
+});
+test("an uncertain invitation keeps its email, role, locations and attempt immutable", async ({ page, harnessUrl }) => {
+  const invitations: { body: unknown; key: string | undefined }[] = [];
+  await page.route("**/api/v1/**", async route => {
+    if (route.request().method() === "POST") { invitations.push({ body: route.request().postDataJSON(), key: route.request().headers()["idempotency-key"] }); return invitations.length === 1 ? json(route, { error: { code: "PROVIDER_PENDING", message: "private provider trace" } }, 500) : json(route, { data: {} }); }
+    return json(route, { data: { locations: [location], members: [], invitations: [], allowedRoles: ["org:member", "org:admin"] } });
+  });
+  await page.goto(`${harnessUrl}/?component=invite`);
+  await page.getByLabel("Work email", { exact: true }).fill("teammate@example.invalid");
+  await page.getByRole("checkbox", { name: /Main location/ }).check();
+  await page.getByRole("button", { name: "Send invitation" }).click();
+  await expect(page.getByLabel("Work email", { exact: true })).toHaveAttribute("readonly", "");
+  await expect(page.getByLabel("Role", { exact: true })).toBeDisabled();
+  await expect(page.getByRole("checkbox", { name: /Main location/ })).toBeDisabled();
+  await page.getByRole("button", { name: "Check invitation status" }).click();
+  await expect(page.getByRole("heading", { name: "Invitation sent" })).toBeVisible();
+  expect(invitations[0]).toEqual(invitations[1]);
+});
+test("owner clinical access starts unassigned and requires explicit location selection", async ({ page, harnessUrl }) => {
+  const grants: unknown[] = [];
+  await page.route("**/api/v1/**", async route => {
+    if (route.request().method() === "POST") { grants.push(route.request().postDataJSON()); return json(route, { data: {} }); }
+    return json(route, { data: { locations: [location], members: [{ userId: "user_test", isOwner: true, role: "org:admin", locationIds: [] }], invitations: [], allowedRoles: ["org:member", "org:admin"] } });
+  });
+  await page.goto(`${harnessUrl}/?component=owneraccess`);
+  const choice = page.getByRole("checkbox", { name: /Main location/ });
+  await expect(choice).not.toBeChecked();
+  expect(grants).toHaveLength(0);
+  await choice.check();
+  await page.getByRole("button", { name: "Save my location access" }).click();
+  await expect.poll(() => grants.length).toBe(1);
+  expect(grants[0]).toEqual({ role: "org:admin", locationIds: [location.id] });
+});
+test("the wrong verified email cannot accept an invitation or open records", async ({ page, harnessUrl }) => {
+  const clinical: string[] = [];
+  await page.route("**/api/v1/**", async route => { const path = new URL(route.request().url()).pathname; if (path !== "/api/v1/me") clinical.push(path); await json(route, { data: access }); });
+  await page.goto(`${harnessUrl}/?component=workspace&scenario=wrong-invite-email&view=invitations`);
+  await page.getByRole("button", { name: "Accept invitation" }).click();
+  await expect(page.getByRole("alert")).toContainText("Use your invited email");
+  expect((await calls(page)).filter(call => call.name === "acceptInvitation")).toHaveLength(0);
+  expect(clinical).toHaveLength(0);
+});
+test("pending membership never dispatches clinical reads even if a role is visible", async ({ page, harnessUrl }) => {
+  const paths: string[] = [];
+  await page.route("**/api/v1/**", async route => { paths.push(new URL(route.request().url()).pathname); await json(route, { data: { ...access, onboarding: "pending", enrollmentStatus: "pending_assignment" } }); });
+  await page.goto(`${harnessUrl}/?component=workspace`);
+  await expect(page.getByRole("heading", { name: "You’ve joined the team" })).toBeVisible();
+  expect(paths).toEqual(["/api/v1/me"]);
+});
+test("in-progress nonclinical setup survives an inbox switch", async ({ page, harnessUrl }) => {
+  await page.route("**/api/v1/**", async route => { await json(route, { data: new URL(route.request().url()).pathname === "/api/v1/me" ? { ...access, practice: null, onboarding: "required" } : state }); });
+  await page.goto(`${harnessUrl}/?component=workspace`);
+  await page.getByRole("button", { name: "Set up a new practice" }).click();
+  await page.getByLabel("Practice name", { exact: true }).fill("Unsubmitted practice draft");
+  await page.evaluate(() => window.dispatchEvent(new Event("blur")));
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  await expect(page.getByLabel("Practice name", { exact: true })).toHaveValue("Unsubmitted practice draft");
+});
+test("an opened clinical scope is discarded on backgrounding and revocation blocks reopening", async ({ page, harnessUrl }) => {
+  let revoked = false;
+  const clinicalPaths: string[] = [];
+  await page.route("**/api/v1/**", async route => {
+    const path = new URL(route.request().url()).pathname;
+    if (path === "/api/v1/me") return json(route, { data: { ...access, locations: [location], enrollmentStatus: revoked ? "revoked" : "active" } });
+    clinicalPaths.push(path);
+    return json(route, { data: path.endsWith("/patients") ? [{ id: "patient_test", firstName: "Synthetic", lastName: "Browser", email: null, phone: null }] : [] });
+  });
+  await page.goto(`${harnessUrl}/?component=workspace`);
+  await expect(page.getByRole("heading", { name: "Where are you working?" })).toBeVisible();
+  expect(clinicalPaths).toHaveLength(0);
+  await page.getByRole("button", { name: /Continue/ }).click();
+  await page.getByRole("button", { name: /^Patients/ }).click();
+  await expect(page.getByRole("button", { name: /Synthetic Browser/ })).toBeVisible();
+  expect(clinicalPaths.every(path => path.startsWith(`/api/v1/locations/${location.id}/`))).toBe(true);
+  const reads = clinicalPaths.length;
+  revoked = true;
+  await page.evaluate(() => window.dispatchEvent(new Event("blur")));
+  await expect(page.getByRole("heading", { name: "Your workspace is paused" })).toBeVisible();
+  await expect(page.getByText("Synthetic Browser", { exact: true })).toHaveCount(0);
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  await expect(page.getByRole("heading", { name: "Your access has changed" })).toBeVisible();
+  expect(clinicalPaths).toHaveLength(reads);
+});
+
+test("onboarding and owner management redact provider token failures and remain retryable", async ({ page, harnessUrl }) => {
+  for (const component of ["onboarding", "invite"]) {
+    await page.goto(`${harnessUrl}/?component=${component}&scenario=token-error`);
+    await expect(page.getByRole("alert")).toContainText("Please try again");
+    await expect(page.getByRole("alert")).not.toContainText("private provider");
+    await expect(page.getByRole("button", { name: "Try again", exact: true })).toBeEnabled();
+  }
+});

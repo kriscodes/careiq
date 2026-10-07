@@ -1,0 +1,13 @@
+{
+  "name": "@careiq/interview-contract",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": { "types": "./index.d.ts", "default": "./index.js" } },
+  "scripts": {
+    "build": "node --check index.js",
+    "lint": "node --check index.js",
+    "typecheck": "node --check index.js",
+    "test": "node --test tests/*.test.js"
+  }
+}

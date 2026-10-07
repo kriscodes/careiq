@@ -1,0 +1,206 @@
+[
+  {
+    "id": "signin",
+    "name": "Sign in",
+    "group": "Authentication",
+    "file": "01-signin.png"
+  },
+  {
+    "id": "signup",
+    "name": "Create account",
+    "group": "Authentication",
+    "file": "02-signup.png"
+  },
+  {
+    "id": "verify",
+    "name": "Verify email",
+    "group": "Authentication",
+    "file": "03-verify.png"
+  },
+  {
+    "id": "forgot",
+    "name": "Forgot password",
+    "group": "Authentication",
+    "file": "04-forgot.png"
+  },
+  {
+    "id": "resetemail",
+    "name": "Reset email sent",
+    "group": "Authentication",
+    "file": "05-resetemail.png"
+  },
+  {
+    "id": "reset",
+    "name": "New password",
+    "group": "Authentication",
+    "file": "06-reset.png"
+  },
+  {
+    "id": "resetdone",
+    "name": "Password updated",
+    "group": "Authentication",
+    "file": "07-resetdone.png"
+  },
+  {
+    "id": "mfa",
+    "name": "Two-step verification",
+    "group": "Authentication",
+    "file": "08-mfa.png"
+  },
+  {
+    "id": "recovery",
+    "name": "Recovery code",
+    "group": "Authentication",
+    "file": "09-recovery.png"
+  },
+  {
+    "id": "expired",
+    "name": "Session expired",
+    "group": "Authentication",
+    "file": "10-expired.png"
+  },
+  {
+    "id": "eligible",
+    "name": "Start practice setup",
+    "group": "New practice",
+    "file": "11-eligible.png"
+  },
+  {
+    "id": "practice",
+    "name": "Practice details",
+    "group": "New practice",
+    "file": "12-practice.png"
+  },
+  {
+    "id": "location",
+    "name": "First location",
+    "group": "New practice",
+    "file": "13-location.png"
+  },
+  {
+    "id": "review",
+    "name": "Review & create",
+    "group": "New practice",
+    "file": "14-review.png"
+  },
+  {
+    "id": "creating",
+    "name": "Setup in progress",
+    "group": "New practice",
+    "file": "15-creating.png"
+  },
+  {
+    "id": "created",
+    "name": "Practice created",
+    "group": "New practice",
+    "file": "16-created.png"
+  },
+  {
+    "id": "invite",
+    "name": "Invite a teammate \u00b7 optional",
+    "group": "New practice",
+    "file": "17-invite.png"
+  },
+  {
+    "id": "invitesent",
+    "name": "Invitation sent",
+    "group": "New practice",
+    "file": "18-invitesent.png"
+  },
+  {
+    "id": "approvemember",
+    "name": "Confirm teammate access",
+    "group": "New practice",
+    "file": "19-approvemember.png"
+  },
+  {
+    "id": "memberactive",
+    "name": "Teammate access confirmed",
+    "group": "New practice",
+    "file": "20-memberactive.png"
+  },
+  {
+    "id": "owneraccess",
+    "name": "Owner location access \u00b7 optional",
+    "group": "New practice",
+    "file": "21-owneraccess.png"
+  },
+  {
+    "id": "resumesetup",
+    "name": "Resume practice setup",
+    "group": "New practice",
+    "file": "22-resumesetup.png"
+  },
+  {
+    "id": "restricted",
+    "name": "Setup approval needed",
+    "group": "New practice",
+    "file": "23-restricted.png"
+  },
+  {
+    "id": "join",
+    "name": "Accept invitation",
+    "group": "Team & access",
+    "file": "24-join.png"
+  },
+  {
+    "id": "pending",
+    "name": "Awaiting owner approval",
+    "group": "Team & access",
+    "file": "25-pending.png"
+  },
+  {
+    "id": "invitationexpired",
+    "name": "Invitation expired",
+    "group": "Team & access",
+    "file": "26-invitationexpired.png"
+  },
+  {
+    "id": "wrongemail",
+    "name": "Different invited email",
+    "group": "Team & access",
+    "file": "27-wrongemail.png"
+  },
+  {
+    "id": "choosepractice",
+    "name": "Choose practice",
+    "group": "Team & access",
+    "file": "28-choosepractice.png"
+  },
+  {
+    "id": "chooselocation",
+    "name": "Choose working location",
+    "group": "Team & access",
+    "file": "29-chooselocation.png"
+  },
+  {
+    "id": "noaccess",
+    "name": "Owner location access needed",
+    "group": "Team & access",
+    "file": "30-noaccess.png"
+  },
+  {
+    "id": "membernoaccess",
+    "name": "Staff location access needed",
+    "group": "Team & access",
+    "file": "31-membernoaccess.png"
+  },
+  {
+    "id": "removed",
+    "name": "Access removed",
+    "group": "Team & access",
+    "file": "32-removed.png"
+  },
+  {
+    "id": "accesserror",
+    "name": "Access check unavailable",
+    "group": "Team & access",
+    "file": "33-accesserror.png"
+  },
+  {
+    "id": "workspace",
+    "name": "Workspace entry",
+    "group": "Team & access",
+    "file": "34-workspace.png"
+  }
+]

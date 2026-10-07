@@ -1,0 +1,10 @@
+.expo/
+dist/
+ios/
+android/
+node_modules/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+expo-env.d.ts

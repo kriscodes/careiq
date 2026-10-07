@@ -1,0 +1,87 @@
+diff --git a/lib/parse.js b/lib/parse.js
+--- a/lib/parse.js
++++ b/lib/parse.js
+@@ -143,6 +143,10 @@
+      */
+ 
+     if (value === CHAR_LEFT_PARENTHESES) {
++      // Bound AST nesting before recursive downstream walkers can overflow.
++      if (stack.length > 100) {
++        throw new SyntaxError('Brace pattern exceeds maximum nesting depth (100)');
++      }
+       block = push({ type: 'paren', nodes: [] });
+       stack.push(block);
+       push({ type: 'text', value });
+@@ -195,6 +199,10 @@
+      */
+ 
+     if (value === CHAR_LEFT_CURLY_BRACE) {
++      // Bound AST nesting before recursive downstream walkers can overflow.
++      if (stack.length > 100) {
++        throw new SyntaxError('Brace pattern exceeds maximum nesting depth (100)');
++      }
+       depth++;
+ 
+       const dollar = prev.value && prev.value.slice(-1) === '$' || block.dollar === true;
+diff --git a/index.js b/index.js
+--- a/index.js
++++ b/index.js
+@@ -4,6 +4,7 @@
+ const compile = require('./lib/compile');
+ const expand = require('./lib/expand');
+ const parse = require('./lib/parse');
++const validateDepth = require('./lib/validate-depth');
+ 
+ /**
+  * Expand the given pattern or create a regex-compatible string.
+@@ -75,6 +76,7 @@
+   if (typeof input === 'string') {
+     return stringify(braces.parse(input, options), options);
+   }
++  validateDepth(input);
+   return stringify(input, options);
+ };
+ 
+@@ -97,6 +99,7 @@
+   if (typeof input === 'string') {
+     input = braces.parse(input, options);
+   }
++  validateDepth(input);
+   return compile(input, options);
+ };
+ 
+@@ -122,6 +125,7 @@
+     input = braces.parse(input, options);
+   }
+ 
++  validateDepth(input);
+   let result = expand(input, options);
+ 
+   // filter out empty strings if specified
+diff --git a/lib/validate-depth.js b/lib/validate-depth.js
+new file mode 100644
+--- /dev/null
++++ b/lib/validate-depth.js
+@@ -0,0 +1,22 @@
++'use strict';
++
++// Parsed patterns are bounded separately. Validate caller-supplied ASTs without
++// recursion so compile/expand/stringify cannot bypass the nesting limit.
++module.exports = input => {
++  const pending = [{ node: input, depth: 0 }];
++  let visited = 0;
++  while (pending.length > 0) {
++    const { node, depth } = pending.pop();
++    if (depth > 128 || ++visited > 20000) {
++      throw new SyntaxError('Brace AST exceeds maximum safe nesting or node count');
++    }
++    if (node && Array.isArray(node.nodes)) {
++      if (visited + pending.length + node.nodes.length > 20000) {
++        throw new SyntaxError('Brace AST exceeds maximum safe nesting or node count');
++      }
++      for (const child of node.nodes) {
++        pending.push({ node: child, depth: depth + 1 });
++      }
++    }
++  }
++};

@@ -1,4 +1,6 @@
 import { apiRequest } from "./client";
+import { getAllPages } from "./pagination";
+import { clinicalPath } from "./practice";
 
 export type Appointment = {
     id: string;
@@ -15,32 +17,28 @@ export type CreateAppointmentInput = {
     reason?: string;
 }
 
-type AppointmentListResponse = {
-    data: Appointment[];
-}
-
 type AppointmentResponse = {
     data: Appointment;
 };
 
-export async function getAppointments(token: string) {
-    const response = await apiRequest<AppointmentListResponse>(
-        "/api/v1/appointments",
-        token,
-    );
-
-    return response.data;
+export async function getAppointments(token: string, locationId?: string, signal?: AbortSignal) {
+    return getAllPages<Appointment>(clinicalPath("appointments", locationId), token, signal);
 }
 
 export async function createAppointment(
     token: string,
     input: CreateAppointmentInput,
+    idempotencyKey: string = crypto.randomUUID(),
+    locationId?: string,
+    signal?: AbortSignal,
 ) {
     const response = await apiRequest<AppointmentResponse>(
-        "/api/v1/appointments",
+        clinicalPath("appointments", locationId),
         token,
         {
             method: "POST",
+            signal,
+            headers: { "Idempotency-Key": idempotencyKey },
             body: JSON.stringify(input),
         },
     );
