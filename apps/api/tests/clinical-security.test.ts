@@ -1,10 +1,11 @@
+import { isolatedTestDatabaseUrl } from "./local-test-database.js";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes, randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { Pool } from "pg";
 
-const url = process.env.TEST_DATABASE_URL;
+const url = isolatedTestDatabaseUrl();
 const readGrant = async (name: string, parameter: string, role: string) =>
   (await readFile(new URL(`../src/db/${name}.sql`, import.meta.url), "utf8"))
     .replace(/^\\set .*$/m, "").replace(`:'${parameter}'`, `'${role}'`);

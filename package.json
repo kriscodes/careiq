@@ -5,10 +5,21 @@
   "packageManager": "pnpm@11.22.0",
   "scripts": {
     "build": "pnpm -r build",
-    "dev": "pnpm -r --parallel dev",
+    "dev": "pnpm --filter ./apps/api --filter ./apps/web --filter ./apps/marketing --parallel dev",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "local:setup": "python3 scripts/local-review.py setup",
+    "local:start": "python3 scripts/local-review.py start",
+    "local:status": "python3 scripts/local-review.py status",
+    "local:stop": "python3 scripts/local-review.py stop",
+    "security:regressions": "node --test scripts/tests/security-dependencies.test.mjs",
+    "security:audit": "pnpm audit --prod",
+    "release:check": "node -e \"try { const url = new URL(process.env.TEST_DATABASE_URL || ''); if (!['postgres:', 'postgresql:'].includes(url.protocol) || !['localhost', '127.0.0.1', '[::1]'].includes(url.hostname) || url.pathname !== '/careiq_test' || url.search || url.hash) throw new Error(); } catch { console.error('Set TEST_DATABASE_URL to an isolated loopback PostgreSQL careiq_test database before release checks.'); process.exit(1); }\" && pnpm lint && pnpm typecheck && pnpm test && pnpm security:regressions && pnpm web:associations:test && pnpm --fail-if-no-match --filter ./apps/web test:browser && pnpm test:browser:api && pnpm security:audit",
+    "web:associations": "node scripts/generate-mobile-associations.mjs",
+    "web:associations:check": "node scripts/generate-mobile-associations.mjs --check",
+    "web:associations:test": "node --test scripts/tests/mobile-associations.test.mjs",
+    "test:browser:api": "CAREIQ_REAL_API_E2E=true pnpm --fail-if-no-match --filter ./apps/web exec playwright test --config playwright.integration.config.ts"
   },
   "keywords": [],
   "author": "",
@@ -20,5 +31,9 @@
       "onFail": "download"
     }
   },
-  "type": "module"
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0 <23",
+    "pnpm": "11.22.0"
+  }
 }

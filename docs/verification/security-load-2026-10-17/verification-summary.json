@@ -1,0 +1,50 @@
+{
+  "reviewDate": "2026-10-17",
+  "runtime": "Node22.23.2",
+  "scope": "canonical local source, owned isolated loopback PostgreSQL and fresh synthetic browser contexts",
+  "api": {
+    "exit_code": 0,
+    "tests": 218,
+    "suites": 0,
+    "pass": 218,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 14325.817125
+  },
+  "webUnits": {
+    "passed": 73,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "passed": 53,
+    "failed": 0,
+    "skipped": 0
+  },
+  "localization": {
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0
+  },
+  "checks": {
+    "apiBuild": true,
+    "apiTypecheck": true,
+    "webProductionBuildWithSyntheticConfiguration": true,
+    "webTypecheck": true,
+    "webEslint": true,
+    "fresh36MigrationReplayAndUnchangedRepeat": true,
+    "restrictedRuntimeReleaseCatalog": true
+  },
+  "dependencyAudit": {
+    "high": 2,
+    "critical": 0,
+    "releaseGateGreen": false,
+    "reviewedBackportRegressionsPassed": 16
+  },
+  "hostedChanges": false,
+  "personalBrowserInspected": false,
+  "realAccountPasswordMfaAcceptance": false,
+  "testCountsOverlapFocusedEvidence": true
+}

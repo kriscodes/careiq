@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-18",
+  "environment": "isolated loopback PostgreSQL 18.6",
+  "migrationCount": 36,
+  "freshReplay": true,
+  "repeatUnchanged": true,
+  "restrictedRuntimeRelease": true,
+  "preservedReviewDatabases": true,
+  "temporaryDatabaseRemoved": true,
+  "pass": true
+}

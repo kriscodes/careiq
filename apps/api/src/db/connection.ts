@@ -1,5 +1,6 @@
 import "dotenv/config";
 import type { PoolConfig } from "pg";
+import { runtimeConnectTimeout } from "./runtime-pool-policy.js";
 
 const sslUrlParameters = new Set([
   "ssl",
@@ -25,6 +26,13 @@ export function connectionOptions(environment: NodeJS.ProcessEnv = process.env):
   } catch {
     throw new Error("DATABASE_URL must be a valid PostgreSQL connection URL.");
   }
+  if (!["postgres:", "postgresql:"].includes(url.protocol) || !url.hostname || url.pathname.length < 2) {
+    throw new Error("DATABASE_URL must identify a PostgreSQL host and database.");
+  }
+  const targetParameters = new Set(["host", "hostaddr", "port", "database", "dbname", "user", "password"]);
+  if ([...url.searchParams.keys()].some((key) => targetParameters.has(key.toLowerCase()))) {
+    throw new Error("Database target and credentials must be supplied in the DATABASE_URL authority/path, without query overrides.");
+  }
 
   // pg lets URL parameters override an explicit ssl option. Keep one source of
   // truth so a provider URL cannot silently disable the configured protection.
@@ -32,9 +40,14 @@ export function connectionOptions(environment: NodeJS.ProcessEnv = process.env):
     throw new Error("Remove SSL parameters from DATABASE_URL and configure TLS with DATABASE_SSL_MODE (disable, require, or verify-full).");
   }
 
+  const runtimeOverrides = new Set(["options", "statement_timeout", "lock_timeout", "idle_in_transaction_session_timeout", "query_timeout"]);
+  if ([...url.searchParams.keys()].some(key => runtimeOverrides.has(key.toLowerCase()))) {
+    throw new Error("Configure runtime database limits with the documented DATABASE_* settings, without URL timeout or startup overrides.");
+  }
+
   return {
     connectionString,
-    connectionTimeoutMillis: 10000,
+    connectionTimeoutMillis: runtimeConnectTimeout(environment),
     ssl: mode === "disable" ? false : { rejectUnauthorized: mode === "verify-full" },
   };
 }

@@ -1,0 +1,105 @@
+{
+  "brand": { "product": "CareIQ", "business": "CareIQ Labs", "homeLabel": "Inicio de CareIQ Labs" },
+  "navigation": {
+    "focus": "Nuestro enfoque", "founder": "El fundador", "faq": "Preguntas", "cta": "Comparta su experiencia", "application": "Abrir CareIQ", "openMenu": "Abrir navegación", "closeMenu": "Cerrar navegación", "label": "Navegación principal", "skip": "Saltar al contenido"
+  },
+  "hero": {
+    "eyebrow": "Diseñado con cuidado. Empezando por usted.",
+    "headline": "Un camino más sencillo de la solicitud de un paciente nuevo a una cita programada.",
+    "description": "CareIQ es un producto de software en fase inicial que explora cómo las consultas médicas independientes pueden simplificar la admisión, el seguimiento de documentos y la coordinación de citas.",
+    "supporting": "Estamos hablando con responsables de consultas, personal de recepción y propietarios para comprender qué genera trabajo adicional y qué les resultaría útil.",
+    "primaryCta": "Comparta su experiencia", "secondaryCta": "Qué estamos explorando",
+    "stageNote": "Actualmente en desarrollo. No se requiere compromiso de compra ni información de pacientes."
+  },
+  "workflow": {
+    "eyebrow": "Los pasos intermedios",
+    "heading": "Una solicitud. Muchos pasos conectados.",
+    "description": "Exploramos cómo se conectan estos pasos en el trabajo cotidiano de una consulta.",
+    "steps": [
+      { "title": "Solicitud nueva", "description": "Un primer punto de contacto" },
+      { "title": "Datos de admisión", "description": "La información necesaria para empezar" },
+      { "title": "Seguimiento", "description": "Los documentos que siguen pendientes" },
+      { "title": "Coordinación de citas", "description": "El camino hacia una cita programada" }
+    ],
+    "caption": "Flujo de trabajo ilustrativo · no es una captura del producto"
+  },
+  "focus": {
+    "eyebrow": "Nuestro enfoque inicial", "heading": "Menos dificultades en el trabajo que rodea la atención.",
+    "description": "Empezamos con consultas independientes de aproximadamente 2 a 10 profesionales y tres flujos de trabajo conectados que marcan el día de la recepción.",
+    "cards": [
+      { "title": "Admisión de pacientes nuevos", "description": "Cómo llegan las solicitudes iniciales, qué información necesitan los equipos y en qué puntos resulta difícil seguir el proceso.", "question": "¿Qué ocurre después de la primera solicitud?" },
+      { "title": "Documentos y seguimiento", "description": "Cómo detectan los equipos los formularios faltantes, hacen seguimiento con los pacientes y evitan que se pierda el siguiente paso.", "question": "¿Qué exige más insistencia?" },
+      { "title": "Coordinación de citas", "description": "Cómo avanza el personal desde una solicitud hasta una cita programada mientras coordina los detalles con el equipo.", "question": "¿En qué punto se ralentiza el proceso?" }
+    ],
+    "note": "Estas son áreas que exploramos con las consultas, no una lista de funciones disponibles para comprar."
+  },
+  "founder": {
+    "eyebrow": "Un fundador que empieza por escuchar", "heading": "Creado por Kristian Salmeron",
+    "background": "Ingeniero principal de software con más de 10 años de experiencia en desarrollo, incluida la creación de aplicaciones utilizadas por equipos de atención médica.",
+    "description": "Estoy hablando directamente con los equipos de las consultas antes de decidir qué crear a continuación. Quiero comprender los traspasos de tareas, las soluciones improvisadas y los seguimientos repetidos que complican un día ya de por sí ocupado.",
+    "closing": "Su experiencia puede ayudar a dar forma a un punto de partida más útil para CareIQ.", "name": "Kristian Salmeron", "role": "Fundador de CareIQ Labs", "linkedin": "Conectar en LinkedIn"
+  },
+  "interview": {
+    "eyebrow": "Ayude a definir el siguiente paso", "heading": "Una conversación sobre su trabajo cotidiano.",
+    "description": "Si trabaja en una consulta médica independiente, me gustaría conocer cómo gestiona hoy su equipo la admisión y las citas.",
+    "details": [
+      { "title": "Aproximadamente 20 minutos", "description": "Una conversación centrada en sus flujos de trabajo actuales." },
+      { "title": "Su perspectiva importa", "description": "Para propietarios, responsables de consultas y personal de recepción." },
+      { "title": "Sin obligación de compra", "description": "Es una conversación para conocer sus necesidades, no una presentación de ventas." }
+    ],
+    "boundary": "Hablemos de procesos, sin información que permita identificar a pacientes. Esta no es una consulta clínica ni un canal de soporte."
+  },
+  "form": {
+    "heading": "Comparta su experiencia", "description": "Deje algunos datos para que Kristian pueda contactar con usted sobre una entrevista para conocer sus necesidades.",
+    "requiredNote": "Todos los campos son obligatorios, salvo los marcados como opcionales.",
+    "javascriptRequired": "Active JavaScript en su navegador para usar el formulario de solicitud de entrevista.",
+    "labels": { "name": "Nombre", "email": "Correo electrónico de trabajo", "role": "Su función", "practiceName": "Nombre de la consulta", "optional": "opcional", "website": "Deje este campo vacío" },
+    "rolePlaceholder": "Seleccione su función",
+    "roleLabels": { "practice_owner": "Propietario de la consulta", "practice_manager": "Responsable de la consulta", "administrative_staff": "Personal de recepción o administración", "provider": "Profesional de atención médica", "other": "Otra" },
+    "emailHelp": "Use el correo en el que desea recibir nuestra respuesta. También puede usar una dirección personal.",
+    "patientWarning": "No incluya nombres de pacientes, expedientes ni otros datos que permitan identificarlos.",
+    "privacyPrefix": "Al enviar el formulario, solicita que contactemos con usted sobre una entrevista para conocer sus necesidades. Lea nuestro", "privacyLink": "aviso de privacidad", "privacySuffix": "para saber cómo tratamos sus datos. No se le suscribirá a un boletín.",
+    "submit": "Solicitar una conversación", "submitting": "Enviando su solicitud…", "retry": "Volver a intentarlo", "successHeading": "Gracias por su interés.",
+    "success": "Gracias. Hemos recibido su solicitud de entrevista. Kristian contactará con usted por correo electrónico para coordinar una conversación.",
+    "successDetail": "Esta solicitud no programa una cita automáticamente.",
+    "error": "No pudimos confirmar su solicitud. Sus datos se conservan; inténtelo de nuevo.",
+    "rateLimited": "Hemos recibido varias solicitudes en poco tiempo. Espere unos minutos antes de volver a intentarlo. Sus datos se conservan.",
+    "unavailable": "Las solicitudes de entrevista no están disponibles temporalmente. Vuelva a consultar pronto.",
+    "validationSummary": "Revise los campos resaltados e inténtelo de nuevo.",
+    "validation": {
+      "name": { "required": "Introduzca su nombre.", "invalid": "Introduzca un nombre sin caracteres de control inusuales.", "too_long": "Use un máximo de 120 caracteres para su nombre." },
+      "email": { "required": "Introduzca su dirección de correo electrónico.", "invalid": "Introduzca una dirección de correo electrónico válida.", "too_long": "Use un máximo de 254 caracteres para su dirección de correo electrónico." },
+      "role": { "required": "Seleccione su función.", "invalid": "Seleccione una función de la lista.", "too_long": "Seleccione una función de la lista." },
+      "practiceName": { "required": "Introduzca el nombre de la consulta o deje este campo vacío.", "invalid": "Introduzca un nombre de consulta sin caracteres de control inusuales.", "too_long": "Use un máximo de 160 caracteres para el nombre de la consulta." }
+    }
+  },
+  "faq": {
+    "eyebrow": "Algunas cosas que debe saber", "heading": "Antes de hablar.",
+    "items": [
+      { "question": "¿Quién debería participar?", "answer": "Propietarios, responsables y personal de recepción o administración de consultas médicas independientes, especialmente equipos de aproximadamente 2 a 10 profesionales. También son bienvenidos los profesionales con una perspectiva sobre la admisión y la programación de citas." },
+      { "question": "¿CareIQ ya está disponible?", "answer": "CareIQ está actualmente en desarrollo. Estamos aprendiendo de los equipos de las consultas antes de definir el producto y no ofrecemos un producto terminado para comprar." },
+      { "question": "¿Es una llamada de ventas?", "answer": "No. Es una conversación para conocer cómo funciona hoy su consulta, qué genera trabajo adicional y qué sería útil. No hay obligación de compra." },
+      { "question": "¿Tendré que compartir información de pacientes?", "answer": "No. No comparta nombres de pacientes, expedientes ni otros datos que permitan identificarlos en el formulario ni durante la conversación. Nos interesan sus procesos, no los datos de pacientes concretos." },
+      { "question": "¿Qué ocurre después de enviar el formulario?", "answer": "Su solicitud se guarda para que Kristian pueda contactar con usted por correo electrónico y coordinar una conversación. Enviar el formulario no programa una cita automáticamente ni le suscribe a comunicaciones de marketing." }
+    ]
+  },
+  "footer": { "description": "Un punto de partida más cuidado para los flujos de trabajo de las consultas.", "stage": "Actualmente en desarrollo.", "privacy": "Privacidad", "contact": "Contacto", "copyright": "CareIQ Labs. Todos los derechos reservados." },
+  "seo": {
+    "homeTitle": "CareIQ Labs | Un camino más sencillo de la solicitud a la cita", "homeDescription": "CareIQ explora formas más sencillas de gestionar la admisión, el seguimiento de documentos y la coordinación de citas en consultas independientes. Comparta su experiencia en una entrevista.",
+    "privacyTitle": "Aviso de privacidad del sitio web | CareIQ Labs", "privacyDescription": "Cómo trata CareIQ Labs los datos de contacto enviados para solicitar una entrevista sobre sus necesidades.", "notFoundTitle": "Página no encontrada | CareIQ Labs"
+  },
+  "privacy": {
+    "eyebrow": "Su información", "heading": "Aviso de privacidad del sitio web", "versionLabel": "Versión del aviso", "intro": "Este aviso se aplica al sitio web de marketing de CareIQ Labs y a su formulario de solicitud de entrevistas para conocer sus necesidades. No describe un portal de pacientes ni un servicio clínico.",
+    "sections": [
+      { "heading": "Qué recopila el formulario", "paragraphs": ["Recopilamos su nombre, dirección de correo electrónico, función y, si decide proporcionarlo, el nombre de la consulta. También se guardan una referencia del envío, el origen del formulario, la versión del aviso y la fecha de recepción para gestionar las solicitudes y evitar duplicados al reintentarlas.", "No incluya nombres de pacientes, expedientes ni otros datos que permitan identificarlos. No solicitamos números de teléfono, archivos, información médica ni mensajes de texto libre."] },
+      { "heading": "Para qué usamos sus datos", "paragraphs": ["Kristian Salmeron utiliza estos datos para revisar su solicitud y contactar con usted por correo electrónico sobre una conversación acerca de los flujos de trabajo de las consultas. Enviar el formulario no programa una reunión ni le suscribe a comunicaciones de marketing."] },
+      { "heading": "Cómo se tratan", "paragraphs": ["El sitio web envía el formulario a la API de CareIQ, que guarda la solicitud en una tabla PostgreSQL específica, separada de los registros de pacientes y consultas. Los operadores autorizados pueden revisar y eliminar solicitudes mediante acceso restringido a la base de datos.", "La implementación usa Render para alojar el sitio web y la API, además de la infraestructura de base de datos existente de CareIQ. Estos servicios procesan la información necesaria para prestar y operar el sitio. Si se comunica con Kristian por correo electrónico, esa conversación también es tratada por los servicios de correo utilizados para enviarla y recibirla."] },
+      { "heading": "Almacenamiento del navegador y datos operativos", "paragraphs": ["Este sitio web no incorpora herramientas de análisis, píxeles publicitarios, grabación de sesiones, herramientas de boletines ni programación de citas integrada. El formulario no escribe sus datos en localStorage ni los incluye en las direcciones de las páginas; mantiene los valores introducidos en la página actual mientras vuelve a intentarlo.", "Los servicios de alojamiento y de red pueden procesar datos técnicos de las solicitudes, como direcciones IP, marcas de tiempo e información del navegador. La API usa datos de las solicitudes para protegerse frente a usos indebidos. El registro de la aplicación está diseñado para excluir el contenido de este formulario. Esto no garantiza que la infraestructura no genere registros ni cookies."] },
+      { "heading": "Conservación y sus opciones", "paragraphs": ["Puede decidir no enviar el formulario. También puede preguntar qué datos de contacto conservamos sobre su solicitud de entrevista o pedirnos que los eliminemos. Las solicitudes de entrevista se gestionan por separado de cualquier política de conservación de registros de pacientes o registros clínicos."] }
+    ],
+    "contactHeading": "Preguntas sobre privacidad o solicitudes de eliminación", "contactText": "Envíe su solicitud por correo electrónico a la dirección que aparece a continuación. Si es posible, use la dirección que indicó en el formulario para que podamos identificar la solicitud y no envíe información de pacientes.",
+    "contactUnavailable": "El formulario de solicitud de entrevista no está disponible actualmente. Si ya ha intercambiado correos con Kristian sobre una entrevista, puede responder a ese mensaje con una pregunta sobre privacidad o una solicitud de eliminación.",
+    "back": "Volver a CareIQ Labs"
+  },
+  "notFound": { "eyebrow": "404 · Página no encontrada", "heading": "Volvamos al camino correcto.", "description": "Es posible que esta página se haya movido o que la dirección esté incompleta. Puede volver al inicio para conocer CareIQ o compartir su experiencia.", "cta": "Volver a la página de inicio" }
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@/i18n/provider";
 import { useAuth } from "@clerk/nextjs";
 import {
   type SubmitEvent,
@@ -12,6 +13,7 @@ import {
 } from "@/lib/api/patients";
 
 export function Patients({ patients, onCreated }: { patients: Patient[]; onCreated: (patient: Patient) => void; }) {
+  const { t, uiError } = useI18n();
     const { getToken } = useAuth();
 
     const [firstName, setFirstName] = useState("");
@@ -34,7 +36,7 @@ export function Patients({ patients, onCreated }: { patients: Patient[]; onCreat
             const token = await getToken();
 
             if (!token) {
-                throw new Error("Authentication token unavailable.");
+                throw new Error(t("access.copy.authentication_token_unavailable"));
             }
 
             const patient = await createPatient(token, {
@@ -52,9 +54,7 @@ export function Patients({ patients, onCreated }: { patients: Patient[]; onCreat
             onCreated(patient);
         } catch (err) {
             setError(
-            err instanceof Error
-                ? err.message
-                : "Unable to create patient.",
+            uiError(err, "access.copy.unable_to_create_patient"),
             );
         } finally {
             setLoading(false);
@@ -64,57 +64,56 @@ export function Patients({ patients, onCreated }: { patients: Patient[]; onCreat
     return (
         <section className="mt-10 space-y-8">
             <div>
-                <h2 className="text-xl font-semibold">Patients</h2>
+                <h2 className="text-xl font-semibold">{t("access.copy.patients")}</h2>
                 <p className="text-sm text-gray-600">
-                    Create and view patients for the active practice.
-                </p>
+                    {t("access.copy.create_and_view_patients_for_the_active_practice")} </p>
             </div>
 
             <form
             onSubmit={handleSubmit}
             className="grid max-w-xl gap-4"
             >
-                <input 
+                <input
                 value={firstName}
                 onChange={(event) => setFirstName(event.target.value)}
-                aria-label="First name"
-                placeholder="First name"
+                aria-label={t("access.copy.first_name")}
+                placeholder={t("access.copy.first_name")}
                 className="rounded border p-2"
                 required
                 />
 
-                <input 
+                <input
                 value={lastName}
                 onChange={(event) => setLastName(event.target.value)}
-                aria-label="Last name"
-                placeholder="Last name"
+                aria-label={t("access.copy.last_name")}
+                placeholder={t("access.copy.last_name")}
                 className="rounded border p-2"
                 required
                 />
-                
-                <input 
+
+                <input
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                aria-label="Email"
-                placeholder="Email"
+                aria-label={t("access.copy.email")}
+                placeholder={t("access.copy.email")}
                 type="email"
                 className="rounded border p-2"
                 />
 
-                <input 
+                <input
                 value={phone}
                 onChange={(event) => setPhone(event.target.value)}
-                aria-label="Phone"
-                placeholder="Phone"
+                aria-label={t("access.copy.phone")}
+                placeholder={t("access.copy.phone")}
                 className="rounded border p-2"
                 />
 
-                <button 
+                <button
                 type="submit"
                 disabled={loading}
                 className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
                 >
-                    {loading ? "Creating..." : "Create Patient"}
+                    {loading ? t("access.copy.creating") : t("access.copy.create_patient")}
                 </button>
             </form>
 
@@ -150,8 +149,7 @@ export function Patients({ patients, onCreated }: { patients: Patient[]; onCreat
 
                 {patients.length === 0 && (
                     <p className="text-sm text-gray-600">
-                        No patients yet.
-                    </p>
+                        {t("access.copy.no_patients_yet")} </p>
                 )}
             </div>
         </section>

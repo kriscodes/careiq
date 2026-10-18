@@ -8,6 +8,7 @@ import express from "express";
 import { createInterviewRateLimiter } from "../src/middleware/interview-rate-limit.js";
 import { INTERVIEW_REQUEST_PATH, registerPublicInterviewRoutes, type InterviewRouteOptions, type InterviewRequestLog } from "../src/routes/public-interview-requests.js";
 import type { InterviewRequest } from "@careiq/interview-contract";
+import { DatabaseBusyError } from "../src/db/pool.js";
 
 const valid = () => ({ name: " Example Person ", email: " person@gmail.com ", role: "practice_manager", practiceName: " Example Practice ", website: "", submissionKey: randomUUID() });
 
@@ -75,6 +76,16 @@ test("success waits for the store promise; failure responses and logs are generi
     assert.equal(body.error.code, "INTERVIEW_REQUEST_FAILED");
     assert.doesNotMatch(JSON.stringify({ body, logs }), /secret@example|private-name|SQL|DB_PASSWORD/);
     assert.equal(logs[0]?.outcome, "failed");
+  });
+});
+
+test("bounded database admission returns a safe retryable503 and the same intake can later succeed", async () => {
+  let attempts = 0; const input = valid();
+  await withApi({ store: async () => { if (++attempts === 1) { const error = new DatabaseBusyError(); error.message = "private SQL secret@example.invalid DB_PASSWORD"; throw error; } } }, async (base, _records, logs) => {
+    const busy = await send(base, input); assert.equal(busy.status, 503); assert.equal(busy.headers.get("Retry-After"), "1");
+    const body = await busy.json(); assert.equal(body.error.code, "DATABASE_BUSY"); assert.equal(body.error.retryable, true); assert.equal(body.error.requestId, busy.headers.get("X-Request-Id")); assert.equal(logs[0]?.outcome, "unavailable");
+    assert.equal((await send(base, input)).status, 200); assert.equal(attempts, 2);
+    assert.doesNotMatch(JSON.stringify({ body, logs }), /private SQL|secret@example|DB_PASSWORD|Example Person|gmail/);
   });
 });
 

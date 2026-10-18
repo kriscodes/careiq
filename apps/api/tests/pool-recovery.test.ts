@@ -1,3 +1,4 @@
+import { isolatedTestDatabaseUrl } from "./local-test-database.js";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { once } from "node:events";
@@ -22,8 +23,10 @@ test("idle pool errors are handled and logs omit raw errors and client details",
   }
 });
 
-test("terminating an idle connection does not stop the pool and a later query reconnects", { skip: !process.env.TEST_DATABASE_URL }, async () => {
-  const url = new URL(process.env.TEST_DATABASE_URL!);
+const testDatabaseUrl = isolatedTestDatabaseUrl();
+
+test("terminating an idle connection does not stop the pool and a later query reconnects", { skip: !testDatabaseUrl }, async () => {
+  const url = new URL(testDatabaseUrl!);
   assert.ok(["localhost", "127.0.0.1"].includes(url.hostname), "Use a disposable local database.");
   assert.ok(["/careiq_test", "/careiq_review"].includes(url.pathname), "Use careiq_test or careiq_review.");
   const failures: string[] = [];

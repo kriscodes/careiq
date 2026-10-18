@@ -1,0 +1,68 @@
+{
+  "checkedAt": "2026-10-18",
+  "scope": "Actual exported marketing files served by task-owned loopback preview. Browser context blocks non-loopback and non-read requests; no identity/provider/form mutation; no screenshots/traces/video.",
+  "checks": [
+    {
+      "name": "export-http/",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "export-http/privacy",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "export-http/privacy/",
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "export-http/missing-release-check",
+      "status": 404,
+      "pass": true
+    },
+    {
+      "name": "intake-and-indexing-remain-disabled",
+      "pass": true
+    },
+    {
+      "name": "viewport-no-overflow",
+      "width": 1440,
+      "pass": true
+    },
+    {
+      "name": "viewport-no-overflow",
+      "width": 390,
+      "pass": true
+    },
+    {
+      "name": "viewport-no-overflow",
+      "width": 320,
+      "pass": true
+    },
+    {
+      "name": "keyboard-mobile-navigation-and-focus-return",
+      "pass": true
+    },
+    {
+      "name": "light-color-scheme-and-no-page-errors",
+      "pass": true
+    },
+    {
+      "name": "no-javascript-form-remains-disabled",
+      "pass": true
+    }
+  ],
+  "server": {
+    "port": 3192,
+    "taskOwned": true,
+    "existingServicesStopped": false,
+    "started": true,
+    "ready": true,
+    "browserExitCode": 0,
+    "stopped": true,
+    "exitCode": -15
+  },
+  "harnessCorrection": "Initial temporary-script assertion used Playwright isDisabled on fieldset itself; corrected to assert the disabled attribute and actual descendant input disabled state. Application source was correct."
+}

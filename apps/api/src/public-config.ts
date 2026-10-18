@@ -42,3 +42,23 @@ export function interviewRequestsEnabled(value = process.env.INTERVIEW_REQUESTS_
   if (value === "true") return true;
   throw new Error("INTERVIEW_REQUESTS_ENABLED must be true or false.");
 }
+
+export type ClerkAuthenticationPolicy = {
+  browserOrigins: string[];
+  nativeEnabled: boolean;
+  nativeAuthorizedParties: string[];
+};
+
+/** Native JWT parties are deliberate server configuration and do not alter browser CORS. */
+export function parseClerkAuthenticationPolicy(environment: NodeJS.ProcessEnv = process.env): ClerkAuthenticationPolicy {
+  const enabled = environment.CLERK_NATIVE_AUTH_ENABLED;
+  if (enabled !== undefined && !["", "false", "true"].includes(enabled)) throw new Error("CLERK_NATIVE_AUTH_ENABLED must be true or false.");
+  const nativeEnabled = enabled === "true";
+  const parties = environment.CLERK_NATIVE_AUTHORIZED_PARTIES?.trim();
+  if (parties && !nativeEnabled) throw new Error("Native authorized parties require explicitly enabled native authentication.");
+  return {
+    browserOrigins: parseCorsOrigins(environment),
+    nativeEnabled,
+    nativeAuthorizedParties: parties ? parseCorsOrigins({ CORS_ORIGINS: parties }) : [],
+  };
+}

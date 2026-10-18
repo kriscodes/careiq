@@ -1,0 +1,111 @@
+{
+  "verifiedAt": "2026-10-18T16:42:05.701163+00:00",
+  "checks": [
+    {
+      "name": "restricted-review-database-preflight",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@careiq/api",
+        "db:verify"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 0.672,
+      "counts": {},
+      "pass": true
+    },
+    {
+      "name": "local-review-ledger",
+      "command": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "const {createRequire}=await import('node:module');const require=createRequire(process.cwd()+'/apps/api/package.json');const {Pool}=require('pg');const {migrationManifest,readMigrationLedger,assertMigrationLedger}=await import('./apps/api/dist/db/migration-safety.js');const pool=new Pool({connectionString:process.env.DATABASE_URL,ssl:false,max:1});try{const client=await pool.connect();try{await client.query('BEGIN READ ONLY');const manifest=await migrationManifest();const ledger=await readMigrationLedger(client);assertMigrationLedger(manifest,ledger,true);await client.query('COMMIT');if(manifest.length!==36)throw new Error('UNEXPECTED_MIGRATION_COUNT');console.log('LEDGER_MATCHES_36');}finally{client.release();}}finally{await pool.end();}"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 0.065,
+      "counts": {},
+      "pass": true
+    },
+    {
+      "name": "production-reject-missing-private-storage",
+      "command": [
+        "node",
+        "apps/api/dist/index.js"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "durationSeconds": 0.441,
+      "counts": {},
+      "pass": true
+    },
+    {
+      "name": "production-reject-application-public-storage",
+      "command": [
+        "node",
+        "apps/api/dist/index.js"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "durationSeconds": 0.378,
+      "counts": {},
+      "pass": true
+    },
+    {
+      "name": "production-reject-missing-stable-cursor",
+      "command": [
+        "node",
+        "apps/api/dist/index.js"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "durationSeconds": 0.405,
+      "counts": {},
+      "pass": true
+    },
+    {
+      "name": "production-reject-unprovisioned-volume",
+      "command": [
+        "node",
+        "apps/api/dist/index.js"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "durationSeconds": 0.435,
+      "counts": {},
+      "pass": true
+    },
+    {
+      "name": "production-reject-plaintext-audit-transport",
+      "command": [
+        "node",
+        "apps/api/dist/index.js"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "durationSeconds": 0.418,
+      "counts": {},
+      "pass": true
+    },
+    {
+      "name": "production-reject-unwritable-volume",
+      "command": [
+        "node",
+        "apps/api/dist/index.js"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "durationSeconds": 0.391,
+      "counts": {},
+      "pass": true
+    }
+  ],
+  "sqlFilesUnchangedFromHead": true,
+  "sqlCount": 36,
+  "compiledReleaseAssetsPresent": true,
+  "priorFreshReplay": "The36-entry fresh-empty/repeat replay from docs/verification/pr-10-main-2026-10-18/migration-replay.json is retained evidence for unchangedSQL, not rerun or hosted restore proof.",
+  "pass": true,
+  "scope": "Isolated local review catalog/ledger checks and deliberately invalid production configuration. No hosted database, migrations, provider credentials or listening API."
+}

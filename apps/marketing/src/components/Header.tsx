@@ -6,6 +6,7 @@ import { useRef, useState } from "react";
 import type { SiteContent } from "../content/content";
 import { Brand } from "./Brand";
 import { Icon } from "./Icon";
+import { LanguageSelector } from "../../../web/src/i18n/LanguageSelector";
 
 export function Header({ brand, copy, appUrl }: { brand: SiteContent["brand"]; copy: SiteContent["navigation"]; appUrl?: string }) {
   const [open, setOpen] = useState(false);
@@ -15,6 +16,7 @@ export function Header({ brand, copy, appUrl }: { brand: SiteContent["brand"]; c
   }}>
     <div className="container header-inner">
       <Brand copy={brand} />
+      <LanguageSelector />
       <button ref={button} className="menu-toggle cq-button" aria-expanded={open} aria-controls="main-navigation" aria-label={open ? copy.closeMenu : copy.openMenu} onClick={() => setOpen(!open)}>
         <span className={`menu-lines ${open ? "is-open" : ""}`} aria-hidden="true"><span /><span /></span>
       </button>

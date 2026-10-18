@@ -1,0 +1,872 @@
+{
+  "runId": "af2065c8-12c1-415e-81c1-494d35ccf4cc",
+  "role": {
+    "nonOwner": true,
+    "superuser": false,
+    "bypassRls": false,
+    "poolMax": 1
+  },
+  "checks": [
+    {
+      "name": "restricted runtime complete release catalog verifies forced RLS, policies, role/column grants and immutable/audit guards",
+      "passed": true
+    },
+    {
+      "name": "patients cross-practice known-ID read denied",
+      "passed": true
+    },
+    {
+      "name": "documents cross-practice known-ID read denied",
+      "passed": true
+    },
+    {
+      "name": "document_versions cross-practice known-ID read denied",
+      "passed": true
+    },
+    {
+      "name": "document_requests cross-practice known-ID read denied",
+      "passed": true
+    },
+    {
+      "name": "cross-practice patient update changes zero rows",
+      "passed": true
+    },
+    {
+      "name": "same-scope document cannot reference another practice patient",
+      "passed": true
+    },
+    {
+      "name": "forged other practice/location with wrong actor reads nothing",
+      "passed": true
+    },
+    {
+      "name": "unassigned same-practice location authorization helper denies matching claimed scope",
+      "passed": true
+    },
+    {
+      "name": "authorized own known patient is visible before rollback",
+      "passed": true
+    },
+    {
+      "name": "pooled connection loses transaction-local scope after rollback",
+      "passed": true
+    },
+    {
+      "name": "practice 0 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 1 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 2 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 3 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 4 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 5 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 6 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 7 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 8 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 9 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 10 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 11 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 12 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 13 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 14 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 15 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 16 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 17 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 18 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 19 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 20 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 21 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 22 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 23 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 24 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 25 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 26 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 27 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 28 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 29 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 30 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 31 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 32 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 33 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 34 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 35 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 36 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 37 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 38 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 39 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 40 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 41 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 42 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 43 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 44 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 45 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 46 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 47 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 48 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 49 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 50 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 51 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 52 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 53 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 54 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 55 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 56 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 57 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 58 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 59 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 60 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 61 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 62 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 63 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 64 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 65 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 66 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 67 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 68 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 69 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 70 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 71 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 72 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 73 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 74 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 75 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 76 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 77 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 78 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 79 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 80 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 81 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 82 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 83 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 84 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 85 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 86 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 87 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 88 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 89 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 90 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 91 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 92 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 93 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 94 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 95 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 96 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 97 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 98 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "practice 99 sees only its patients through reused pool",
+      "passed": true
+    },
+    {
+      "name": "malformed/missing context fails closed",
+      "passed": true
+    }
+  ],
+  "catalog": [
+    {
+      "schema": "public",
+      "table": "appointments",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "clinical_audit_events",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "clinical_request_keys",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "delivery_attempts",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "document_access_grants",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "document_holds",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "document_request_items",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "document_requests",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "document_retention",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "document_reviews",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "document_templates",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "document_types",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "document_versions",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "documents",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "file_access_observations",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "file_objects",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "file_scan_runs",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "form_change_candidates",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "form_change_decisions",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "form_submissions",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "job_runs",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "location_assignments",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "locations",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "outbox_events",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "paperwork_library_items",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "paperwork_notifications",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "patient_access_grants",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "patient_portal_grants",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "patient_sessions",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "patients",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "practice_admin_events",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "practice_asset_objects",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "practice_invitation_attempts",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "practice_invitations",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "practice_member_access",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "practice_onboarding",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "practice_provider_events",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "prepared_documents",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "provider_availability_exceptions",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "provider_availability_rules",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "provider_locations",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "provider_webhook_receipts",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "providers",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "requirement_evidence",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "requirement_rule_sets",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "requirement_rules",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "signature_events",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "signature_fields",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "signature_packets",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "template_field_bindings",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "template_publication_checks",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "template_versions",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "upload_sessions",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "visit_requirements",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "visit_types",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "work_items",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "1"
+    },
+    {
+      "schema": "public",
+      "table": "workflow_operations",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    },
+    {
+      "schema": "public",
+      "table": "workflow_request_keys",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "policy_count": "2"
+    }
+  ],
+  "notes": [
+    "Known synthetic IDs were supplied directly; reads did not rely on UUID secrecy.",
+    "API/file delivery negative cases are covered by the separate adversarial API suite.",
+    "Scope is transaction-local; reused connections were exercised across all 100 practices."
+  ]
+}

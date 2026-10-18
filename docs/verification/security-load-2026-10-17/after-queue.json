@@ -1,0 +1,15 @@
+{
+  "runId": "af2065c8-12c1-415e-81c1-494d35ccf4cc",
+  "requests": 60,
+  "heldConnections": 1,
+  "poolMax": 1,
+  "waitingObservedBeforeRelease": 40,
+  "outcomes": {
+    "accepted": 40,
+    "DATABASE_BUSY": 20
+  },
+  "notes": [
+    "Synthetic connection admission probe only; no patient rows or files accessed.",
+    "One connection deliberately held, then60simultaneous checkouts; connection released after25ms."
+  ]
+}

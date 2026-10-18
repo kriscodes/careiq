@@ -1,0 +1,78 @@
+{
+  "reviewDate": "2026-10-18",
+  "verified": true,
+  "pages": [
+    {
+      "pageId": "3eee9784-8806-8148-8978-ec97bf100e3e",
+      "title": "📍 Current Implementation & Next Steps",
+      "october18UpdatePresent": true,
+      "status": null,
+      "blocked": null,
+      "truncated": false,
+      "lastEditedAt": "2026-10-18T08:23:49.043Z"
+    },
+    {
+      "pageId": "3eee9784-8806-8177-bf1c-e584868b1b30",
+      "title": "☑️ Complete controlled deployment and migration promotion",
+      "october18UpdatePresent": true,
+      "status": "In progress",
+      "blocked": "__NO__",
+      "truncated": false,
+      "lastEditedAt": "2026-10-18T08:23:51.965Z"
+    },
+    {
+      "pageId": "3eee9784-8806-816e-a1c1-e0233091ab58",
+      "title": "☑️ Publish the release checklist and operator handoff",
+      "october18UpdatePresent": true,
+      "status": "In progress",
+      "blocked": "__NO__",
+      "truncated": false,
+      "lastEditedAt": "2026-10-18T08:23:59.905Z"
+    },
+    {
+      "pageId": "3eee9784-8806-81db-a552-fd29ccc4b4e0",
+      "title": "👤 Detect regressions before release",
+      "october18UpdatePresent": true,
+      "status": "In progress",
+      "blocked": "__NO__",
+      "truncated": false,
+      "lastEditedAt": "2026-10-18T08:24:02.995Z"
+    },
+    {
+      "pageId": "3eee9784-8806-8102-9bc0-ef357dfe1b8e",
+      "title": "☑️ Extend and verify practice isolation across the MVP",
+      "october18UpdatePresent": true,
+      "status": "In progress",
+      "blocked": "__NO__",
+      "truncated": false,
+      "lastEditedAt": "2026-10-18T08:23:54.357Z"
+    },
+    {
+      "pageId": "3fbe9784-8806-81b3-830e-d20c5b0b2bb3",
+      "title": "Verify document signing, access and progressive loading end to end",
+      "october18UpdatePresent": true,
+      "status": "In progress",
+      "blocked": "__NO__",
+      "truncated": false,
+      "lastEditedAt": "2026-10-18T08:23:56.405Z"
+    },
+    {
+      "pageId": "3eee9784-8806-81b7-b019-eae8594cf312",
+      "title": "Run the signed-in v0.1 browser acceptance walkthrough",
+      "october18UpdatePresent": true,
+      "status": "In progress",
+      "blocked": "__NO__",
+      "truncated": false,
+      "lastEditedAt": "2026-10-18T08:22:38.895Z"
+    },
+    {
+      "pageId": "3f0e9784-8806-8181-a09b-d78c02b4c5c2",
+      "title": "☑️ Resolve the mobile dependency audit gate",
+      "october18UpdatePresent": true,
+      "status": "In progress",
+      "blocked": "__YES__",
+      "truncated": false,
+      "lastEditedAt": "2026-10-18T08:22:41.572Z"
+    }
+  ]
+}

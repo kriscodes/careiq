@@ -1,0 +1,146 @@
+{
+  "reviewedAt": "2026-10-18T17:22:44.330669+00:00",
+  "scope": "Independent read-only architecture, import-coupling, archive integrity/privacy and retained native-client support review; no application edits, installs, staging, commits, push or deployment.",
+  "archive": {
+    "path": "/Users/kristian/Documents/Server/CareIQ-mobile-handoff-2026-10-18",
+    "manifestSha256": "b61cc875155575bc56a0d56fcdb251c5740df2d806cce57391feed42ceb62a84",
+    "sourceHead": "11df3349d87d9f36235ec5c4047398d290cb9306",
+    "inventory": {
+      "mobileSource": 62,
+      "sharedI18n": 16,
+      "reference": 15,
+      "total": 93
+    },
+    "allInventorySha256AndSizesMatch": true,
+    "allMobileSourceMatchesStartingHead": true,
+    "unmanifestedCleanFiles": 0,
+    "cleanSourceOrReferenceSymlinks": 0,
+    "sensitiveFilenameCandidates": 0,
+    "credentialPatternCandidates": 0,
+    "credentialScanScope": "All 93 source/reference UTF-8 files; private-key headers, common secret-provider keys, literal credential database URLs and JWT-shaped literals. No matched values printed. Pattern scan is not a guarantee against every secret representation.",
+    "realEnvironmentFilesInCleanHandoff": false,
+    "accessBoundary": {
+      "rootMode": "0700",
+      "sourceMode": "0700",
+      "privateLocalStateMode": "0700",
+      "originalAppDirectoryMode": "0755",
+      "privateParentProtectsOriginal": true
+    },
+    "privateRecoveryContentsRead": false,
+    "recoveryNotesReviewed": true,
+    "readyStandaloneRepository": false,
+    "recoveryLimitations": [
+      "Keep source/apps/mobile plus source/packages/i18n relative layout until localization is deliberately packaged/versioned.",
+      "Shared i18n package scripts currently point at apps/web/node_modules; standalone tooling/manifests must be adapted.",
+      "Reference workspace lock/policy and security patches are historical recovery inputs, not a ready mobile-only dependency graph.",
+      "Never upload private-local-state/original-app-directory; reinstall dependencies instead of copying its generated state/symlinks.",
+      "No new Git repository, provider/store configuration or installed-device acceptance is established by this archive."
+    ]
+  },
+  "coupling": {
+    "remainingApplicationImportsFromMobile": 0,
+    "mobileSharedSourceDependency": "packages/i18n only; relative ../../../packages/i18n imports",
+    "retainedSharedCatalogs": "packages/i18n/index.ts still imports EN/ES mobile catalogs; keeping them avoids breaking shared builds.",
+    "remainingLocalApplications": [
+      "api",
+      "marketing",
+      "web"
+    ],
+    "mobileDirectoryRemoved": true,
+    "remainingRootMobilePackageFilters": 0,
+    "localRunnerContains8082": false,
+    "ownedSupervisorCleanup": "Root and runner owner report the matching supervised mobile8082 process and state record were stopped before removal; no unrelated-process action performed by reviewer."
+  },
+  "retainedContracts": [
+    "API native authentication policy and middleware: explicitly disabled by default, signed session verification, configured issuer/user/session identity, restricted no-browser-metadata Bearer branch, independent browser authorized-party/CORS policy.",
+    "API native-authentication and production-configuration regressions, env example native gates, existing patient/staff APIs and data authorization.",
+    "Web exact owner-supplied .well-known AASA/assetlinks hosting, missing404 behavior without provider handshake, JSON headers, generator and metadata validation tests.",
+    "Web /join and /patient-workflow fallback routes and safe continuation handling; no callback/account ownership is inferred from archive metadata."
+  ],
+  "findings": [],
+  "targetedVerificationRecommended": [
+    "Frozen workspace lock install/validation plus package graph check excludes Expo/ReactNative/mobile-only dependencies while retaining required braces/micromatch/sharp/Drizzle regressions.",
+    "Root recursive lint/typecheck/unit tests; remaining API/web/marketing/shared package builds; fail-if-no-match CI filters continue to require actual remaining workspaces.",
+    "API native-authentication tests and production-configuration tests preserve disabled/native/browser behavior; do not enable the native gate during removal.",
+    "Association generator tests plus web configuration unit and production HTTP tests preserve exact existing/missing file routing.",
+    "Parse local runner and inspect status for api/web/marketing only; confirm safely stopped owned mobile process and no stale mobile state record.",
+    "Source/config scan finds no live apps/mobile or @careiq/mobile imports/filters; historical documentation and retained mobile link hosting can remain explicitly labeled."
+  ],
+  "verificationLimits": "This reviewer performed static reads, manifest/source hash comparisons, bounded source/reference privacy scans, diff/import/config checks and one isolated no-filesystem vendor glob probe only. No browser, application API/database load, dependency install, provider-account or native-device checks performed.",
+  "reviewedFileSha256": {
+    "apps/api/src/middleware/authentication.ts": "20e6fb79283770206ec6e37847e45cf9efe9ce2744bc60e553dadeffd15c4359",
+    "apps/api/src/public-config.ts": "9ae14ba4eb97dc3855f282ead67981a973552454bd57a64aeac979e54afd8230",
+    "apps/api/tests/native-authentication.test.ts": "25641f5afa702390503fee6eed3ab4ea58fe1f99fd9a1f13cb029ca2ae053493",
+    "apps/web/src/proxy.ts": "95fabded5b1bd641f8e001ef624ea3abdc22d531b016332c60e93ffd4be7bea4",
+    "apps/web/next.config.ts": "1e44fbbdcd8080fa6684a3a9fc808250a934b16b3cbc9a66dad1e82a6902f422",
+    "apps/web/tests/web-config.test.ts": "804cdbd7677232c47fa530b75545d5a6b57e6f49371f2c946454b35709aecacc",
+    "apps/web/tests/browser/production.spec.ts": "b3cad2703b434c9ee1f49d08ae85009b470052ecb6d67774dac041950f9ef7f8",
+    "scripts/generate-mobile-associations.mjs": "ff4742025df6cdcc775f05218e2fd03299f83ca77ee63d124fe69315b042f7f2",
+    "scripts/tests/mobile-associations.test.mjs": "aa01f56550683aa3a88c42c34a5d947d01f4670acccc9b21592bbea802aa8fd0",
+    "packages/i18n/index.ts": "659990ef80d9b3813f432673319d9b5183c2ba031bf9deb404d46d14a76005a6",
+    "scripts/local-review.py": "c41c5cc2c421f0c71d635873986169f1a317e8160a43730273f8492928c0694c",
+    "package.json": "b5f1eb51d22c7fef1fc9f1eac5db1c209126ac57bee78593493e94fe06a13362",
+    ".github/workflows/ci.yml": "087da432aa9e8551eafcc160374ac3c879571d9266eacd6fce01d1af9e2987ee",
+    ".github/workflows/readiness.yml": "bbb726348a16f3f4a54246c12549dd7ef44c49fbf1e2b937698bba9b486af7d3"
+  },
+  "retainedVendorReview": {
+    "reviewedAt": "2026-10-18T17:25:05.634953+00:00",
+    "installedFramework": "Next.js 16.4.1; apps/web and apps/marketing resolve the same installed artifact",
+    "compiledPackageMetadataInspected": 131,
+    "removedPackageNames": {
+      "node-forge": "No compiled package metadata or JS/JSON text identity found in inspected Next artifact.",
+      "micromatch": "No compiled package metadata or JS/JSON text identity found in inspected Next artifact.",
+      "braces": "No compiled package directory/metadata found; text occurrences include different glob brace-expansion implementations and unrelated curly-brace messages."
+    },
+    "retainedMatchingArtifacts": [
+      {
+        "path": "dist/compiled/picomatch/index.js",
+        "identity": "picomatch; metadata omits upstream version",
+        "use": "Next image matching compiles configuration-owned local/remote patterns; URL input is matched against those compiled patterns."
+      },
+      {
+        "path": "dist/compiled/glob/glob.js",
+        "identity": "glob with bundled minimatch and recursive brace-expansion implementation; metadata omits upstream versions",
+        "use": "Next build input resolution and root-layout discovery; inline-static-env uses fixed brace patterns."
+      },
+      {
+        "path": "dist/compiled/serve-handler/index.js",
+        "identity": "serve-handler with bundled minimatch and recursive brace-expansion implementation; metadata omits upstream versions",
+        "use": "Artifact present; no noncompiled Next JS import/caller found in bounded installed-artifact search. Complete reachability is not established."
+      },
+      {
+        "path": "dist/compiled/@vercel/nft/index.js",
+        "identity": "File tracing artifact with minimatch and brace expansion implementation, including EXPANSION_MAX guard; exact upstream versions not established",
+        "use": "Build tracing artifact; not treated as equivalent to removed workspace braces patch."
+      }
+    ],
+    "boundedProbe": {
+      "artifact": "dist/compiled/glob/glob.js",
+      "input": "4500 nested brace pairs around a,b",
+      "operation": "glob.sync(pattern,{noprocess:true}); no filesystem traversal",
+      "isolation": "Fresh Node22 child with96MiB heap cap,1.5-second timeout; no network or credentials",
+      "elapsedMs": 501,
+      "exitCode": 0,
+      "caughtErrorName": "RangeError",
+      "caughtErrorMessage": "Maximum call stack size exceeded"
+    },
+    "limitation": {
+      "severity": "Informational / local build availability limitation",
+      "description": "Removing Expo workspace dependencies and getting a clean package audit does not remove all recursive brace-expansion matching code from the retained Next framework artifact.",
+      "reachabilityEvidence": [
+        "next/dist/cli/next-build.js debugBuildPaths -> build/index.js -> lib/resolve-build-paths.js -> compiled/glob.",
+        "lib/verify-root-layout.js compiles repository/configuration pageExtensions.",
+        "lib/inline-static-env.js uses fixed server/client/manifest glob patterns."
+      ],
+      "publicApplicationVector": "No CareIQ HTTP request-controlled glob-pattern path found in this bounded review; no public exploit or original braces3.0.3 advisory equivalence is claimed.",
+      "scopeDecision": "Do not introduce a broad custom framework fork as part of mobile extraction. Report retained vendor limitation and reconsider with an upstream-supported framework fix or if untrusted pattern inputs are introduced."
+    },
+    "artifactSha256": {
+      "picomatch/index.js": "607dc79784c1161c33076903769dba23e63d9d9ccfe3c4695a32ebe3a5ab892d",
+      "glob/glob.js": "07bdb1b563a0d855d8fc2062a26b7f03f0a4e8f98e54134ab919d42e8e250316",
+      "serve-handler/index.js": "e6d71301fb19665ca3c193f77cb29f025283a9b38ac0187e3fcab502f789e7ea",
+      "@vercel/nft/index.js": "e436d398b2263fb87a2d8ee3d9dab8db2544c684ba9bc1c0d4ab4e67acbab207"
+    },
+    "assuranceBoundary": "Package metadata and string/structural scans are bounded evidence, not a complete binary SBOM or proof that every minified vendor implementation is absent."
+  }
+}

@@ -6,6 +6,7 @@ import { clerkMiddleware, getAuth } from "@clerk/express";
 import type { AddressInfo } from "node:net";
 import { createApiApp, type ApiDependencies } from "../src/app.js";
 import { clinicalCapabilities } from "../src/middleware/permissions.js";
+import { DatabaseBusyError } from "../src/db/pool.js";
 import type { RequestAuthentication } from "../src/middleware/tenant-context.js";
 
 const authenticated = (orgRole = "org:admin"): RequestAuthentication => ({ isAuthenticated: true, userId: "user_verified", orgId: "org_verified", orgRole, sessionId: "session_verified" });
@@ -128,6 +129,30 @@ test("lists are bounded and communicate the next page without silently truncatin
   });
 });
 
+test("database admission stays retryable503 across clinical list/create aliases and later requests recover", async () => {
+  const counts = { listPatients: 0, listAppointments: 0, createPatient: 0, createAppointment: 0 }, locationId = randomUUID();
+  const failFirst = (operation: keyof typeof counts) => {
+    if (++counts[operation] % 2 === 1) { const error = new DatabaseBusyError(); error.message = "private-query patient@example.invalid DB_PASSWORD"; throw error; }
+  };
+  await withApi(authenticated(), {
+    listPatients: async () => { failFirst("listPatients"); return []; },
+    listAppointments: async () => { failFirst("listAppointments"); return []; },
+    createPatient: async () => { failFirst("createPatient"); return { id: randomUUID() }; },
+    createAppointment: async () => { failFirst("createAppointment"); return { id: randomUUID() }; },
+    practiceAccess: { authorizeLocation: async () => ({ tenant: { practiceId, locationId, userId: "user_verified", orgId: "org_verified" }, capabilities: clinicalCapabilities(authenticated()), permissions: [] }) } as any,
+  }, async base => {
+    for (const prefix of ["/api/v1", `/api/v1/locations/${locationId}`]) for (const resource of ["patients", "appointments"]) {
+      for (const method of ["GET", "POST"]) {
+        const retryKey = randomUUID();
+        const send = () => fetch(`${base}${prefix}/${resource}`, { method, ...(method === "POST" ? { headers: { "Content-Type": "application/json", "Idempotency-Key": retryKey }, body: JSON.stringify(resource === "patients" ? validPatient : validAppointment) } : {}) });
+        const busy = await send(); assert.equal(busy.status, 503); assert.equal(busy.headers.get("Retry-After"), "1"); assert.equal(busy.headers.get("Cache-Control"), "no-store");
+        const body = await busy.json(); assert.equal(body.error.code, "DATABASE_BUSY"); assert.equal(body.error.retryable, true); assert.doesNotMatch(JSON.stringify(body), /private-query|patient@example|DB_PASSWORD/);
+        assert.equal((await send()).status, method === "GET" ? 200 : 201);
+      }
+    }
+  });
+});
+
 test("public intake and health remain independent of authentication", async () => {
   await withApi({ isAuthenticated: false }, { authenticate: (_req, _res, next) => next(new Error("Authentication unavailable")) }, async (base) => {
     assert.equal((await fetch(`${base}/health`)).status, 200);
@@ -195,4 +220,49 @@ test("legacy list clients cannot silently receive a truncated directory or calen
       }
     });
   }
+});
+
+test("me is read-only and an arbitrary active organization cannot provision a practice", async () => {
+  await withApi(authenticated(), { findPracticeByClerkOrgId: async () => null }, async (base, calls) => {
+    const response = await fetch(`${base}/api/v1/me`);
+    assert.equal(response.status, 200); const { data } = await response.json();
+    assert.equal(data.practice, null); assert.equal(data.onboarding, "required");
+    assert.equal(data.capabilities.patients.read, false);
+    assert.equal(calls.some((call) => call.operation === "provisionPractice"), false);
+  });
+  await withApi({ isAuthenticated: true, userId: "user_verified", orgId: null }, {}, async (base) => assert.equal((await fetch(`${base}/api/v1/me`)).status, 200));
+});
+
+test("enabled practices reject every legacy clinical endpoint with stable context-required response", async () => {
+  await withApi(authenticated(), { findPracticeByClerkOrgId: async () => ({ id: practiceId, authorizationMode: "location", status: "active" }) }, async (base, calls) => {
+    for (const resource of ["patients", "appointments"]) {
+      for (const method of ["GET", "POST"]) {
+        const response = await fetch(`${base}/api/v1/${resource}`, { method });
+        assert.equal(response.status, 409); assert.equal((await response.json()).error.code, "LOCATION_CONTEXT_REQUIRED");
+      }
+    }
+    assert.equal(calls.filter((call) => /^(list|create)/.test(call.operation)).length, 0);
+  });
+});
+
+test("location HTTP routes use freshly resolved capabilities and validated actor/location, not stale admin claims", async () => {
+  const locationId = randomUUID();
+  const tenant = { userId: "user_verified", orgId: "org_verified", practiceId, locationId, membershipId: "fresh_member" };
+  const denied = { patients: { read: false, create: false }, appointments: { read: false, create: false } };
+  const access = { authorizeLocation: async (_auth: RequestAuthentication, id: string) => { assert.equal(id, locationId); return { tenant, capabilities: denied }; } } as NonNullable<ApiDependencies["practiceAccess"]>;
+  await withApi(authenticated(), { practiceAccess: access }, async (base, calls) => {
+    assert.equal((await fetch(`${base}/api/v1/locations/${locationId}/patients`)).status, 403);
+    assert.equal((await post(base, `locations/${locationId}/patients`, validPatient)).status, 403);
+    assert.equal(calls.some((call) => call.operation === "listPatients" || call.operation === "createPatient"), false);
+  });
+  const allowed = { ...access, authorizeLocation: async () => ({ tenant, capabilities: { ...denied, patients: { read: true, create: true } } }) };
+  await withApi(authenticated("org:custom"), { practiceAccess: allowed }, async (base, calls) => {
+    assert.equal((await post(base, `locations/${locationId}/patients`, { ...validPatient, locationId: randomUUID(), actorUserId: "forged" }, randomUUID())).status, 201);
+    assert.deepEqual(calls.find((call) => call.operation === "createPatient")?.arguments[0], tenant);
+  });
+  const { AccessError } = await import("../src/services/practice-policy.js");
+  await withApi(authenticated(), { practiceAccess: { ...access, authorizeLocation: async () => { throw new AccessError("AUTHORIZATION_UNAVAILABLE", 503); } } }, async (base, calls) => {
+    assert.equal((await fetch(`${base}/api/v1/locations/${locationId}/patients`)).status, 503);
+    assert.equal(calls.some((call) => call.operation === "listPatients"), false);
+  });
 });

@@ -1,18 +1,40 @@
-import { clerkMiddleware, getAuth } from "@clerk/express";
+import * as workflow from "./services/workflow.service.js";
+import { verifyWebhook } from "@clerk/backend/webhooks";
+import { handleClerkEvent } from "./services/practice-reconciliation.js";
+import { getAuth } from "@clerk/express";
+import { createAuthenticationMiddleware } from "./middleware/authentication.js";
 import { createApiApp } from "./app.js";
 import { pool } from "./db/client.js";
-import { provisionPractice, findPracticeByClerkOrgId } from "./services/practice.service.js";
+import { findPracticeByClerkOrgId } from "./services/practice.service.js";
+import { practiceAccess } from "./services/practice-access.service.js";
 import { createPatient, listPatients } from "./services/patient.service.js";
 import { createAppointment, listAppointments } from "./services/appointment.service.js";
 import { createInterviewRequest } from "./services/interview-request.service.js";
-import { interviewRequestsEnabled, parseCorsOrigins, parseTrustedProxies } from "./public-config.js";
+import { interviewRequestsEnabled, parseClerkAuthenticationPolicy, parseTrustedProxies } from "./public-config.js";
+import { validateProductionConfiguration } from "./production-config.js";
+import { verifyPrivateStorageDirectory } from "./workflow/storage-config.js";
+import { verifyDatabaseRelease } from "./db/release-check.js";
+import { ReleaseCheckError } from "./db/migration-safety.js";
+import { logFailure } from "./logging.js";
+import { verifyConfiguredAuditReader, closeProtectedAuditReader } from "./services/protected-audit.service.js";
 
-const origins = parseCorsOrigins();
+validateProductionConfiguration();
+const authenticationPolicy = parseClerkAuthenticationPolicy();
+const origins = authenticationPolicy.browserOrigins;
 const app = createApiApp({
-  authenticate: clerkMiddleware({ authorizedParties: origins }),
+  authenticate: createAuthenticationMiddleware(authenticationPolicy),
+  workflow,
   getAuth,
   health: () => pool.query("SELECT 1"),
-  provisionPractice,
+  practiceAccess,
+  clerkWebhook: async (body, headers) => {
+    let event;
+    if (!process.env.CLERK_WEBHOOK_SIGNING_SECRET) throw new Error("WEBHOOK_NOT_CONFIGURED");
+    try {
+      event = await verifyWebhook(new Request("https://api.careiq.invalid/api/v1/webhooks/clerk", { method: "POST", headers, body: new Uint8Array(body) }));
+    } catch { throw Object.assign(new Error("INVALID_WEBHOOK"), { status: 400 }); }
+    await handleClerkEvent(event, headers["svix-id"]);
+  },
   findPracticeByClerkOrgId,
   createPatient,
   listPatients,
@@ -25,6 +47,25 @@ const app = createApiApp({
 });
 
 const port = Number(process.env.PORT ?? 3000);
-app.listen(port, "0.0.0.0", () => {
-  console.log(`CareIQ API listening on port ${port}.`);
+// Local development stays on loopback unless the owner explicitly opts into another bind address.
+const host = process.env.HOST?.trim() || (process.env.NODE_ENV === "production" ? "0.0.0.0" : "127.0.0.1");
+async function start() {
+  if (process.env.NODE_ENV === "production") {
+    await verifyPrivateStorageDirectory();
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN READ ONLY");
+      await verifyDatabaseRelease(client, interviewRequestsEnabled());
+      await client.query("COMMIT");
+    } catch (error) { await client.query("ROLLBACK"); throw error; }
+    finally { client.release(); }
+    await verifyConfiguredAuditReader();
+  }
+  app.listen(port, host, () => { console.log(`CareIQ API listening on port ${port}.`); });
+}
+start().catch(async (error) => {
+  if (error instanceof ReleaseCheckError) console.error(error.message);
+  else logFailure("API startup release verification failed", error);
+  process.exitCode = 1;
+  await Promise.allSettled([pool.end(), closeProtectedAuditReader()]);
 });

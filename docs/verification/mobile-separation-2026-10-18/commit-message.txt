@@ -1,0 +1,17 @@
+Separate mobile app and harden web/API release security
+
+- Preserve verified mobile source and security references for a future repository
+- Remove mobile from workspace installs, release scripts, CI and local previews
+- Prune mobile-only dependencies and consolidate the canonical root lockfile
+- Retain native API/app-link contracts and the patched development lint dependency
+- Harden production document/audit storage, cursor keys and audit transport
+- Block marketing contact redirects and require real API paperwork browser checks
+- Update architecture, recovery guidance, verification evidence and Notion backlog
+
+Validation: 314 workspace tests, 16 security and 8 association tests pass;
+53 component + 2 real API browser cases, 3 production HTTP checks and all
+retained production builds pass. Production audit reports zero findings.
+
+Known limitation: full development audit retains one HIGH braces finding
+with its reviewed backport. Hosted production acceptance remains separate.
+No new database migration.

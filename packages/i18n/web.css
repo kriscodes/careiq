@@ -1,0 +1,78 @@
+/* Keep native form, keyboard, touch and validation behavior while styling its picker. */
+select:not([multiple]):not([data-native-picker]) {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  border: 1px solid var(--cq-border, #e1e7ef);
+  border-radius: 9px;
+  background-color: var(--cq-panel, #fff);
+  color: var(--cq-text, #26332d);
+  padding-block: 10px;
+  padding-inline: 13px 42px;
+  line-height: 1.5;
+}
+select:not([multiple]):not([data-native-picker]):disabled { background-color: #f5f7f6; cursor: not-allowed; }
+select option { background: #fff; color: #26332d; }
+@supports (appearance: base-select) {
+  select:not([multiple]):not([data-native-picker]),
+  select:not([multiple]):not([data-native-picker])::picker(select) { appearance: base-select; }
+  select:not([multiple]):not([data-native-picker]) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    background-image: none;
+    padding-inline: 13px;
+  }
+  select:not([multiple]):not([data-native-picker])::picker-icon {
+    flex-shrink: 0;
+    color: #58665e;
+    margin-inline-start: auto;
+    font-size: 12px;
+    padding-inline-start: 8px;
+  }
+  select:not([multiple]):not([data-native-picker]):open { border-color: #0067e8; }
+  select:not([multiple]):not([data-native-picker])::picker(select) {
+    border: 1px solid #dce5e0;
+    border-radius: 14px;
+    padding: 8px;
+    background: #fff;
+    color: #26332d;
+    box-shadow: 0 12px 34px #253d6226;
+    margin-block: 7px;
+    min-inline-size: anchor-size(width);
+    max-inline-size: min(420px, calc(100vw - 24px));
+    max-block-size: min(420px, calc(100dvh - 48px));
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+  select:not([multiple]):not([data-native-picker]) option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-block-size: 42px;
+    padding: 11px 12px;
+    margin-block: 2px;
+    border-radius: 8px;
+    background: #fff;
+    color: #26332d;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  select:not([multiple]):not([data-native-picker]) option:hover,
+  select:not([multiple]):not([data-native-picker]) option:focus-visible { background: #f2f6f8; }
+  select:not([multiple]):not([data-native-picker]) option:checked { background: #edf4ff; color: #0067e8; font-weight: 600; }
+  select:not([multiple]):not([data-native-picker]) option:disabled { color: #748179; }
+  select:not([multiple]):not([data-native-picker]) option::checkmark { order: 1; margin-inline-start: auto; color: #0067e8; }
+  select:not([multiple]):not([data-native-picker]) optgroup { padding-block: 7px; font-weight: 600; }
+  .cq-select-wrap::after { display: none; }
+}
+.cq-visually-hidden { position: absolute; inline-size: 1px; block-size: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.cq-language { position: relative; display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0; color: #26332d; }
+.cq-language-icon { position: absolute; z-index: 1; inset-inline-start: 12px; pointer-events: none; color: #0067e8; font-size: 14px; line-height: 1; }
+.cq-language-icon > span { font-size: 10px; vertical-align: sub; margin-inline-start: -2px; }
+.wf-topbar .cq-language-icon > span { margin: 0; margin-inline-start: -2px; }
+select.cq-language-select:not([multiple]):not([data-native-picker]) { inline-size: auto; min-inline-size: 122px; max-inline-size: 210px; padding-inline-start: 38px; font-size: 12px; min-block-size: 40px; }
+.cq-language-error { position: absolute; inset-block-start: calc(100% + 8px); inset-inline-end: 0; z-index: 20; inline-size: min(300px, calc(100vw - 32px)); border: 1px solid #dce5e0; background: #fff; padding: 13px 15px; border-radius: 10px; box-shadow: 0 12px 34px #253d6226; font-size: 12px; }
+@media (pointer: coarse) { select:not([multiple]):not([data-native-picker]), select:not([multiple]):not([data-native-picker]) option { min-block-size: 44px; font-size: 16px; } }
+@media (pointer: coarse) { select.cq-language-select:not([multiple]):not([data-native-picker]) { min-block-size: 44px; font-size: 16px; } }
+@media (forced-colors: active) { select:not([multiple]):not([data-native-picker]) { appearance: auto; background-image: none; } .cq-select-wrap::after { display: none; } }

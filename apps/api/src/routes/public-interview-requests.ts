@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import express, { type Express, type Request, type Response, type NextFunction, type RequestHandler, type ErrorRequestHandler } from "express";
 import cors from "cors";
+import { isDatabaseBusy } from "../availability.js";
 import { parseInterviewRequest, type InterviewRequest } from "@careiq/interview-contract";
 import { createInterviewRateLimiter, type RateLimitResult } from "../middleware/interview-rate-limit.js";
 
@@ -99,7 +100,13 @@ export function registerPublicInterviewRoutes(app: Express, options: InterviewRo
         // Inserts and recognized retries have the same response. Never return
         // row IDs, submitted fields, or whether another row already existed.
         res.status(200).json({ data: { accepted: true } });
-      } catch {
+      } catch (error) {
+        if (isDatabaseBusy(error)) {
+          res.locals.interviewOutcome = "unavailable";
+          res.setHeader("Retry-After", "1");
+          res.status(503).json({ error: { code: "DATABASE_BUSY", message: "This service is busy. Please try again shortly.", retryable: true, requestId: res.locals.interviewRequestId } });
+          return;
+        }
         res.locals.interviewOutcome = "failed";
         res.status(500).json({ error: { code: "INTERVIEW_REQUEST_FAILED", message: "Unable to receive your request. Please try again.", requestId: res.locals.interviewRequestId } });
       }

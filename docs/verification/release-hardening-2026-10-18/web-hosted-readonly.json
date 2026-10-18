@@ -1,0 +1,243 @@
+{
+  "checkedAt": "2026-10-18",
+  "scope": "Read-only, unauthenticated documented public endpoints via OS curl with default certificate verification enabled. Deployed commit unknown: these responses do not accept uncommitted local changes. Cookies, response bodies and query-bearing redirects are not retained. API health, unauthenticated clinical denial and origin preflights are public read-only checks; no health/patient response body retained.",
+  "initialCheckLimitation": "Python bundled CA store lacked an issuer and rejected TLS; repeated with OS curl without disabling verification.",
+  "checks": [
+    {
+      "url": "https://app.careiqlabs.com/sign-in",
+      "method": "GET",
+      "credentialFree": true,
+      "curlExitCode": 0,
+      "status": 404,
+      "tlsVerificationResult": 0,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache, no-store, max-age=0, must-revalidate",
+        "content-security-policy": "frame-ancestors 'none'; object-src 'none'; base-uri 'self'",
+        "x-frame-options": "DENY",
+        "x-content-type-options": "nosniff",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "server": "cloudflare"
+      }
+    },
+    {
+      "url": "https://app.careiqlabs.com/design-preview",
+      "method": "GET",
+      "credentialFree": true,
+      "curlExitCode": 0,
+      "status": 404,
+      "tlsVerificationResult": 0,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache, no-store, max-age=0, must-revalidate",
+        "content-security-policy": "frame-ancestors 'none'; object-src 'none'; base-uri 'self'",
+        "x-frame-options": "DENY",
+        "x-content-type-options": "nosniff",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "server": "cloudflare"
+      }
+    },
+    {
+      "url": "https://app.careiqlabs.com/workflow-preview",
+      "method": "GET",
+      "credentialFree": true,
+      "curlExitCode": 0,
+      "status": 404,
+      "tlsVerificationResult": 0,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache, no-store, max-age=0, must-revalidate",
+        "content-security-policy": "frame-ancestors 'none'; object-src 'none'; base-uri 'self'",
+        "x-frame-options": "DENY",
+        "x-content-type-options": "nosniff",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "server": "cloudflare"
+      }
+    },
+    {
+      "url": "https://careiqlabs.com/",
+      "method": "GET",
+      "credentialFree": true,
+      "curlExitCode": 0,
+      "status": 200,
+      "tlsVerificationResult": 0,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "public, max-age=0, s-maxage=300",
+        "x-frame-options": "DENY",
+        "x-content-type-options": "nosniff",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "server": "cloudflare"
+      }
+    },
+    {
+      "url": "https://www.careiqlabs.com/",
+      "method": "GET",
+      "credentialFree": true,
+      "curlExitCode": 0,
+      "status": 301,
+      "tlsVerificationResult": 0,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "server": "cloudflare"
+      },
+      "redirectTo": "https://careiqlabs.com/"
+    },
+    {
+      "url": "https://careiqlabs.com/privacy/",
+      "method": "GET",
+      "credentialFree": true,
+      "curlExitCode": 0,
+      "status": 200,
+      "tlsVerificationResult": 0,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "public, max-age=0, s-maxage=300",
+        "x-frame-options": "DENY",
+        "x-content-type-options": "nosniff",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "server": "cloudflare"
+      }
+    },
+    {
+      "url": "https://careiqlabs.com/robots.txt",
+      "method": "GET",
+      "credentialFree": true,
+      "curlExitCode": 0,
+      "status": 200,
+      "tlsVerificationResult": 0,
+      "headers": {
+        "content-type": "text/plain; charset=utf-8",
+        "cache-control": "public, max-age=0, s-maxage=300",
+        "x-frame-options": "DENY",
+        "x-content-type-options": "nosniff",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "server": "cloudflare"
+      }
+    },
+    {
+      "url": "https://app.careiqlabs.com/",
+      "method": "GET",
+      "credentialFree": true,
+      "curlExitCode": 0,
+      "status": 200,
+      "tlsVerificationResult": 0,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "s-maxage=31536000",
+        "content-security-policy": "frame-ancestors 'none'; object-src 'none'; base-uri 'self'",
+        "x-frame-options": "DENY",
+        "x-content-type-options": "nosniff",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "server": "cloudflare"
+      }
+    },
+    {
+      "url": "https://careiq-api-7ssz.onrender.com/health",
+      "method": "GET",
+      "credentialFree": true,
+      "curlExitCode": 0,
+      "attempts": 1,
+      "status": 200,
+      "tlsVerificationResult": 0,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "no-store",
+        "x-content-type-options": "nosniff",
+        "access-control-allow-credentials": "true",
+        "vary": "Accept-Encoding",
+        "server": "cloudflare"
+      }
+    },
+    {
+      "url": "https://careiq-api-7ssz.onrender.com/api/v1/patients",
+      "method": "GET",
+      "credentialFree": true,
+      "curlExitCode": 0,
+      "attempts": 1,
+      "status": 401,
+      "tlsVerificationResult": 0,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "no-store",
+        "x-content-type-options": "nosniff",
+        "access-control-allow-credentials": "true",
+        "vary": "Accept-Encoding",
+        "server": "cloudflare"
+      }
+    },
+    {
+      "url": "https://careiq-api-7ssz.onrender.com/api/v1/patients",
+      "method": "OPTIONS",
+      "credentialFree": true,
+      "curlExitCode": 0,
+      "attempts": 1,
+      "origin": "https://app.careiqlabs.com",
+      "status": 204,
+      "tlsVerificationResult": 0,
+      "headers": {
+        "access-control-allow-origin": "https://app.careiqlabs.com",
+        "access-control-allow-headers": "authorization",
+        "access-control-allow-methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+        "access-control-allow-credentials": "true",
+        "vary": "Origin, Access-Control-Request-Headers",
+        "server": "cloudflare"
+      }
+    },
+    {
+      "url": "https://careiq-api-7ssz.onrender.com/api/v1/patients",
+      "method": "OPTIONS",
+      "credentialFree": true,
+      "curlExitCode": 0,
+      "attempts": 1,
+      "origin": "https://untrusted.release.invalid",
+      "status": 204,
+      "tlsVerificationResult": 0,
+      "headers": {
+        "access-control-allow-headers": "authorization",
+        "access-control-allow-methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+        "access-control-allow-credentials": "true",
+        "vary": "Origin, Access-Control-Request-Headers",
+        "server": "cloudflare"
+      }
+    }
+  ],
+  "publicContentChecks": [
+    {
+      "url": "https://careiqlabs.com/",
+      "curlExitCode": 0,
+      "responseBodyRetained": false,
+      "robotsDirectives": [
+        "noindex, nofollow"
+      ],
+      "fieldsetsDisabled": [
+        true
+      ],
+      "formMethods": [
+        {
+          "method": "post",
+          "hasAction": true
+        }
+      ]
+    },
+    {
+      "url": "https://careiqlabs.com/robots.txt",
+      "curlExitCode": 0,
+      "responseBodyRetained": false,
+      "disallowsAll": true
+    },
+    {
+      "url": "https://app.careiqlabs.com/",
+      "curlExitCode": 0,
+      "responseBodyRetained": false,
+      "robotsDirectives": [],
+      "fieldsetsDisabled": [],
+      "formMethods": [],
+      "publicClerkKeyModes": [
+        "test"
+      ],
+      "referencesDevelopmentClerkAssetHost": true
+    }
+  ],
+  "publicContentScope": "Unauthenticated public HTML and robots are inspected in memory for enumerated structural markers only. No response bodies, public key values, cookies or IDs are retained."
+}

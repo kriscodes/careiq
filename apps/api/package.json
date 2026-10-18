@@ -12,7 +12,10 @@
     "db:studio": "drizzle-kit studio",
     "test": "tsx --test tests/*.test.ts",
     "typecheck": "tsc --noEmit",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "members:reconcile": "tsx src/db/reconcile-practices.ts",
+    "release:verify": "tsx src/db/verify-release.ts",
+    "db:verify": "tsx src/db/verify-release.ts --database-only"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +29,7 @@
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "express": "^5.2.1",
+    "pdf-lib": "^1.17.1",
     "pg": "^8.23.0"
   },
   "devDependencies": {

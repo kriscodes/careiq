@@ -1,0 +1,284 @@
+[
+  {
+    "name": "today-row",
+    "width": 1440,
+    "leftInset": 16,
+    "rightInset": 16,
+    "columnGap": "16px",
+    "overflow": false
+  },
+  {
+    "name": "booking",
+    "width": 1440,
+    "dialog": {
+      "x": 470,
+      "y": 129.203125,
+      "width": 500,
+      "height": 741.59375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": "24px 26px 26px",
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Patient",
+        "leftInset": 27,
+        "rightInset": 27,
+        "width": 446,
+        "paddingRight": "44px",
+        "backgroundPosition": "calc(100% - 16px) 50%",
+        "appearance": "none"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Provider",
+        "leftInset": 27,
+        "rightInset": 259,
+        "width": 214,
+        "paddingRight": "44px",
+        "backgroundPosition": "calc(100% - 16px) 50%",
+        "appearance": "none"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Visit type",
+        "leftInset": 259,
+        "rightInset": 27,
+        "width": 214,
+        "paddingRight": "44px",
+        "backgroundPosition": "calc(100% - 16px) 50%",
+        "appearance": "none"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Date and time",
+        "leftInset": 27,
+        "rightInset": 259,
+        "width": 214,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Duration in minutes",
+        "leftInset": 259,
+        "rightInset": 27,
+        "width": 214,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "TEXTAREA",
+        "name": "Reason for visit",
+        "leftInset": 27,
+        "rightInset": 27,
+        "width": 446,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave changes",
+        "leftInset": 27,
+        "rightInset": 27,
+        "width": 446,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "today-row",
+    "width": 768,
+    "leftInset": 14,
+    "rightInset": 14,
+    "columnGap": "12px",
+    "overflow": false
+  },
+  {
+    "name": "booking",
+    "width": 768,
+    "dialog": {
+      "x": 134,
+      "y": 129.203125,
+      "width": 500,
+      "height": 741.59375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": "24px 26px 26px",
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Patient",
+        "leftInset": 27,
+        "rightInset": 27,
+        "width": 446,
+        "paddingRight": "44px",
+        "backgroundPosition": "calc(100% - 16px) 50%",
+        "appearance": "none"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Provider",
+        "leftInset": 27,
+        "rightInset": 259,
+        "width": 214,
+        "paddingRight": "44px",
+        "backgroundPosition": "calc(100% - 16px) 50%",
+        "appearance": "none"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Visit type",
+        "leftInset": 259,
+        "rightInset": 27,
+        "width": 214,
+        "paddingRight": "44px",
+        "backgroundPosition": "calc(100% - 16px) 50%",
+        "appearance": "none"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Date and time",
+        "leftInset": 27,
+        "rightInset": 259,
+        "width": 214,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Duration in minutes",
+        "leftInset": 259,
+        "rightInset": 27,
+        "width": 214,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "TEXTAREA",
+        "name": "Reason for visit",
+        "leftInset": 27,
+        "rightInset": 27,
+        "width": 446,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave changes",
+        "leftInset": 27,
+        "rightInset": 27,
+        "width": 446,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "today-row",
+    "width": 320,
+    "leftInset": 12,
+    "rightInset": 12,
+    "columnGap": "12px",
+    "overflow": false
+  },
+  {
+    "name": "booking",
+    "width": 320,
+    "dialog": {
+      "x": 16,
+      "y": 20,
+      "width": 288,
+      "height": 720,
+      "clientWidth": 286,
+      "scrollWidth": 286
+    },
+    "bodyPadding": "22px 20px 24px",
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Patient",
+        "leftInset": 21,
+        "rightInset": 21,
+        "width": 246,
+        "paddingRight": "44px",
+        "backgroundPosition": "calc(100% - 16px) 50%",
+        "appearance": "none"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Provider",
+        "leftInset": 21,
+        "rightInset": 21,
+        "width": 246,
+        "paddingRight": "44px",
+        "backgroundPosition": "calc(100% - 16px) 50%",
+        "appearance": "none"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Visit type",
+        "leftInset": 21,
+        "rightInset": 21,
+        "width": 246,
+        "paddingRight": "44px",
+        "backgroundPosition": "calc(100% - 16px) 50%",
+        "appearance": "none"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Date and time",
+        "leftInset": 21,
+        "rightInset": 21,
+        "width": 246,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Duration in minutes",
+        "leftInset": 21,
+        "rightInset": 21,
+        "width": 246,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "TEXTAREA",
+        "name": "Reason for visit",
+        "leftInset": 21,
+        "rightInset": 21,
+        "width": 246,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave changes",
+        "leftInset": 21,
+        "rightInset": 21,
+        "width": 246,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  }
+]

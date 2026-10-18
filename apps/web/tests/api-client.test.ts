@@ -18,6 +18,9 @@ test("clinical requests send their attempt key and never use the browser cache",
   assert.equal(requests.length, 2);
   for (const [index, request] of requests.entries()) {
     assert.equal(request.cache, "no-store");
+    assert.equal(request.credentials, "omit");
+    assert.equal(request.redirect, "error");
+    assert.equal(request.referrerPolicy, "no-referrer");
     const headers = new Headers(request.headers);
     assert.equal(headers.get("Authorization"), "Bearer test-session");
     assert.equal(headers.get("Idempotency-Key"), index ? "appointment-attempt" : "patient-attempt");
@@ -28,11 +31,21 @@ test("a stalled save aborts with an actionable, retry-safe timeout message", asy
   t.mock.method(globalThis, "fetch", async (_url: string, options: RequestInit) => new Promise((_resolve, reject) => {
     options.signal?.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")), { once: true });
   }));
-  await assert.rejects(apiRequest("/api/v1/patients", "test-session", { method: "POST", timeoutMs: 5 }), (error: unknown) => {
+  await assert.rejects(apiRequest("/api/v1/patients", "test-session", { method: "POST", headers: { "Idempotency-Key": "patient-attempt" }, timeoutMs: 5 }), (error: unknown) => {
     assert.ok(error instanceof ApiError);
     assert.equal(error.code, "REQUEST_TIMEOUT");
     assert.match(error.message, /may have completed/);
     assert.match(error.message, /without changing the details/);
+    return true;
+  });
+});
+
+test("an uncertain non-idempotent change directs staff to refresh before repeating it", async t => {
+  t.mock.method(globalThis, "fetch", async () => { throw new TypeError("Network unavailable"); });
+  await assert.rejects(apiRequest("/api/v1/locations", "test-session", { method: "POST" }), (error: unknown) => {
+    assert.ok(error instanceof ApiError);
+    assert.match(error.message, /Refresh to check before trying again/);
+    assert.doesNotMatch(error.message, /avoid creating a duplicate/);
     return true;
   });
 });
@@ -70,4 +83,26 @@ test("old unpaginated responses remain complete; invalid continuation stops safe
   t.mock.restoreAll();
   t.mock.method(globalThis, "fetch", async () => Response.json({ data: [{ id: "a" }], meta: { hasMore: true, nextOffset: 0 } }));
   await assert.rejects(getAllPages("/api/v1/patients", "test-session"), /invalid page/);
+});
+
+
+test("unsafe API configuration fails before transmitting a session token", async t => {
+  let requests = 0;
+  t.mock.method(globalThis, "fetch", async () => { requests++; return Response.json({ data: {} }); });
+  const previous = process.env.NEXT_PUBLIC_API_URL;
+  process.env.NEXT_PUBLIC_API_URL = "http://remote.careiq.invalid";
+  try { await assert.rejects(apiRequest("/api/v1/me", "private-session"), (error: unknown) => error instanceof ApiError && error.code === "CONFIGURATION_ERROR"); }
+  finally { process.env.NEXT_PUBLIC_API_URL = previous; }
+  assert.equal(requests, 0);
+});
+test("server failures retain retry safety without exposing returned diagnostics", async t => {
+  t.mock.method(globalThis, "fetch", async () => Response.json({ error: { code: "INTERNAL_ERROR", message: "database password=secret stack trace" } }, { status: 500 }));
+  await assert.rejects(apiRequest("/api/v1/onboarding", "test-session", { method: "POST", headers: { "Idempotency-Key": "same-attempt" } }), (error: unknown) => {
+    assert.ok(error instanceof ApiError);
+    assert.equal(error.status, 500);
+    assert.equal(error.code, "INTERNAL_ERROR");
+    assert.match(error.message, /without changing the details/);
+    assert.doesNotMatch(error.message, /secret|password|stack/);
+    return true;
+  });
 });

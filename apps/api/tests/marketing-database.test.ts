@@ -1,3 +1,4 @@
+import { isolatedTestDatabaseUrl } from "./local-test-database.js";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes, randomUUID } from "node:crypto";
@@ -11,7 +12,7 @@ import { PRIVACY_NOTICE_VERSION } from "@careiq/interview-contract";
 import { marketingInterviewRequests } from "../src/db/schema/marketing-interview-requests.js";
 import { INTERVIEW_REQUEST_PATH, registerPublicInterviewRoutes, type InterviewRequestLog } from "../src/routes/public-interview-requests.js";
 
-const url = process.env.TEST_DATABASE_URL;
+const url = isolatedTestDatabaseUrl();
 
 test("marketing submissions commit once under a restricted runtime login without contact read/update/delete access", { skip: !url }, async () => {
   const target = new URL(url!);

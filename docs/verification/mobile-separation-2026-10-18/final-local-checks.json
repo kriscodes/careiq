@@ -1,0 +1,74 @@
+{
+  "verifiedAt": "2026-10-18T17:34:24.944082+00:00",
+  "httpAndCorsChecks": [
+    {
+      "name": "api-health",
+      "url": "http://localhost:3100/health",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "name": "api-unauthenticated",
+      "url": "http://localhost:3100/api/v1/patients",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "name": "web-sign-in",
+      "url": "http://localhost:3101/sign-in",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "name": "web-workflow",
+      "url": "http://localhost:3101/workflow-preview",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "name": "marketing",
+      "url": "http://localhost:3102/",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "name": "loaded-api-origin-3101",
+      "status": 204,
+      "hasExactOriginGrant": true,
+      "expectedGrant": true,
+      "pass": true
+    },
+    {
+      "name": "loaded-api-origin-8082",
+      "status": 204,
+      "hasExactOriginGrant": false,
+      "expectedGrant": false,
+      "pass": true
+    }
+  ],
+  "retiredAndOwnedTestPortsClosed": {
+    "8082": true,
+    "3191": true,
+    "3192": true
+  },
+  "activeManagedPreviews": {
+    "api": true,
+    "web": true,
+    "marketing": true
+  },
+  "mobileProcessRecordRemoved": true,
+  "activeApplications": [
+    "api",
+    "web",
+    "marketing"
+  ],
+  "sqlFilesUnchangedFromHead": true,
+  "sqlCount": 36,
+  "pass": true,
+  "scope": "Read-only local metadata/probes after ownedAPIrefresh. Browser CORS grant denial is separate from API authentication; no hosted/provider mutation."
+}

@@ -1,0 +1,86 @@
+{
+  "recordedAt": "2026-10-18T08:20:44.756739+00:00",
+  "status": "passed",
+  "tests": {
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "durationSeconds": 7.1
+  },
+  "configuration": "apps/web/playwright.integration.config.ts",
+  "optInEnvironment": "CAREIQ_REAL_API_E2E=true",
+  "databaseTarget": "guarded loopback careiq_test only",
+  "runtime": "Node.js 22.23.2; installed Chrome; isolated browser contexts",
+  "method": {
+    "ui": "Production PatientWorkflow and PatientPaperworkLibrary components in a test-only same-origin bundle",
+    "http": "Real createApiApp routes and actual services; no API responses stubbed",
+    "database": "Direct unique NOBYPASSRLS non-owning login inheriting careiq_clinical_runtime; full verifyDatabaseRelease before fixture writes",
+    "identity": "Synthetic authenticated principal injection only; no Clerk account/provider session used",
+    "externalTraffic": "Browser context blocks every non-loopback origin; zero observed attempts",
+    "pdfVerification": "Hashes of actual UI-created PDF blobs matched source projection, frozen DB facts and released library bytes; Chromium DevTools empty PDF response bodies are not used as evidence"
+  },
+  "cases": [
+    {
+      "name": "Adult self unsigned form",
+      "assertions": [
+        "Session hash consumed and HttpOnly/SameSite/path cookie checked",
+        "Premature signature completion refused with409",
+        "Visible conditional note is removed before answer freeze when hidden",
+        "Actual UI saves and submits answers",
+        "Terminal freeze retry returns same frozen document version",
+        "Published title remains pinned after logical template rename",
+        "Frozen answers, structured answers and pending demographic review agree; chart unchanged",
+        "Published content, form submission and document answers reject mutation",
+        "Exact released account-library copy has matching version and SHA256",
+        "Foreign-practice copy returns404 with no-store"
+      ]
+    },
+    {
+      "name": "Adult self signed form",
+      "assertions": [
+        "Actual UI saves and freezes before signing is available",
+        "Exact source PDF shown by UI matches signature projection SHA256",
+        "Explicit document review and electronic-signature consent required",
+        "Both assigned required signature fields completed with retained evidence",
+        "Output retains source PDF and points to exact frozen source version",
+        "Signature authority policy decision/hash/audit reference retained; evidence rejects mutation",
+        "Actual signed output/library copy SHA256 matches protected stored bytes",
+        "Foreign-practice copy refused"
+      ]
+    }
+  ],
+  "assurance": {
+    "verificationMethod": "patient_request_link",
+    "identityAssurance": "link_possession",
+    "independentIdentityVerified": false,
+    "certificateSignatureApplied": false,
+    "emailProviderActivated": false,
+    "notificationIntents": 0
+  },
+  "cleanup": {
+    "acknowledged": true,
+    "childExitConfirmed": true,
+    "ownedPracticesRemoved": 2,
+    "generatedRolesRemaining": 0,
+    "generatedPracticesRemaining": 0,
+    "everyOwnedPublicPracticeScopedTableVerifiedEmpty": true,
+    "ownedAuditEventsChangesResourcesMutationRecordsRemoved": true,
+    "privateStorageDirectoriesRemaining": 0,
+    "browserAssetDirectoriesRemaining": 0,
+    "rawLogPrivateMode": "0600"
+  },
+  "checks": {
+    "focusedApiHarnessTypecheck": "passed",
+    "fullWebTypecheck": "passed",
+    "newWebFilesEslint": "passed",
+    "whitespace": "passed",
+    "independentHarnessReview": "passed; separate API/DB and web reviewers"
+  },
+  "boundaries": [
+    "Synthetic fixture identity does not validate real Clerk JWT/account provisioning or email delivery.",
+    "Uses actual patient components in a test bundle; it does not replace the separately tested Next.js production build/routing.",
+    "Staff builder authoring and dispatch are seeded through real restricted-role services, not exercised through staff browser controls.",
+    "Local results do not assert production capacity, independent identity assurance, certificate signing or universal legal validity."
+  ],
+  "git": "The isolated integration runner did not stage, commit, push or deploy. Root staged reviewed merge resolutions separately; no merge commit or push was made."
+}

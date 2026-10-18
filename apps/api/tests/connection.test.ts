@@ -50,6 +50,12 @@ test("unrelated database URL parameters are retained", () => {
   assert.equal(connectionOptions({ DATABASE_URL: url }).connectionString, url);
 });
 
+test("database connection targets cannot be ambiguous or overridden by query parameters", () => {
+  for (const value of ["https://demo:private-demo-password@localhost/careiq_test", "postgresql://localhost", ...["host", "hostaddr", "port", "database", "dbname", "user", "password", "%68ost"].map((name) => `${databaseUrl}?${name}=private-demo-password`)]) {
+    assert.throws(() => connectionOptions({ DATABASE_URL: value }), (error: unknown) => error instanceof Error && !error.message.includes("private-demo-password"));
+  }
+});
+
 test("missing or invalid database settings fail without exposing their values", () => {
   assert.throws(() => connectionOptions({}), /DATABASE_URL is not configured/);
   assert.throws(

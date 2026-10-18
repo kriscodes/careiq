@@ -1,9 +1,10 @@
+import { isolatedTestDatabaseUrl } from "./local-test-database.js";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID, randomBytes } from "node:crypto";
 import { Pool } from "pg";
 
-const url = process.env.TEST_DATABASE_URL;
+const url = isolatedTestDatabaseUrl();
 
 test("tenant reads, writes, references, and empty context are isolated", { skip: !url }, async () => {
   const target = new URL(url!);
@@ -19,11 +20,13 @@ test("tenant reads, writes, references, and empty context are isolated", { skip:
     await client.query(`CREATE ROLE ${role} NOLOGIN NOSUPERUSER NOBYPASSRLS`);
     await client.query(`GRANT USAGE ON SCHEMA public TO ${role}`);
     await client.query(`GRANT SELECT, INSERT, UPDATE, DELETE ON practices, patients, appointments TO ${role}`);
+    // Scope policies reference location metadata even when this fixture exercises legacy mode.
+    await client.query(`GRANT SELECT ON practice_member_access, location_assignments, locations TO ${role}`);
     const security = await client.query("SELECT relrowsecurity, relforcerowsecurity FROM pg_class WHERE oid IN ('patients'::regclass, 'appointments'::regclass)");
     assert.equal(security.rowCount, 2);
     for (const table of security.rows) assert.ok(table.relrowsecurity && table.relforcerowsecurity);
     await client.query(`SET LOCAL ROLE ${role}`);
-    const context = async (id: string) => client.query("SELECT set_config('app.practice_id', $1, true)", [id]);
+    const context = async (id: string) => client.query("SELECT set_config('app.practice_id', $1, true),set_config('app.actor_user_id','',true),set_config('app.location_id','',true)", [id]);
     const blocked = async (query: string, params: unknown[], code: string) => {
       await client.query("SAVEPOINT denial");
       try {

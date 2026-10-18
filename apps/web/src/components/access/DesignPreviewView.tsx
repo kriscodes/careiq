@@ -1,0 +1,6 @@
+"use client";
+import { useI18n } from "@/i18n/provider";
+import Link from "next/link";
+import { LanguageSelector } from "@/i18n/LanguageSelector";
+export function DesignPreviewView() {
+  const { t } = useI18n(); return <main style={{ maxWidth: 1160, margin: "0 auto", padding: "48px 24px", color: "#2b3832", background: "#fff" }}><LanguageSelector /><p>{t("access.preview.reference")}</p><h1 style={{ fontSize: 32 }}>{t("access.copy.careiq_design_preview")}</h1><p>{t("access.copy.authentication_and_practice_onboarding_for_web_ios_and_android_sample_data")}</p><p>{t("access.preview.referenceDescription")}</p><Link href="/design-preview/index.html" style={{ display: "inline-block", margin: "16px 0 32px", padding: "12px 18px", borderRadius: 10, background: "#496f5a", color: "white", textDecoration: "none" }}>{t("access.copy.open_interactive_design_preview")}</Link><div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>{["web", "ios", "android"].map(platform => <Link key={platform} href={`/design-preview/${platform}-design-board.png`}>{t("access.copy.platform_overview_board", { platform: platform === "ios" ? "iOS" : platform === "web" ? "Web" : "Android" })}</Link>)}</div><p style={{ marginTop: 32 }}><Link href="/sign-in">{t("access.copy.go_to_live_sign_in")}</Link></p></main>; }

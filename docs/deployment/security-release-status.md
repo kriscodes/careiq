@@ -1,5 +1,8 @@
 # Security release status — October 3, 2026 UTC
 
+> October 16, 2026 addendum: Preserve the dated findings below as historical evidence. See [current Next.js versions and advisory status](../security/next-october-2026.md) and [the local workflow implementation](../workflow-implementation.md) for the subsequent changes; earlier passing audits are not a claim about the current dependency graph.
+
+
 ## Deployed and verified
 
 [PR #5](https://github.com/kriscodes/careiq/pull/5) merged to main as `fe77a653bd4991f42775d331ba2553635d802b7d`. Render shows that commit live for API and WEB. It deploys admin-create/member-view authorization, tenant-scoped durable retry protection, metadata-only audit writes, input limits and bounded pagination. The earlier PR #3 dependency, database-pool and response-header fixes remain included.

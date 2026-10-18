@@ -1,0 +1,66 @@
+{
+  "reviewDate": "2026-10-17",
+  "scope": "Existing Software Kanban records; remaining release/hosted acceptance preserved",
+  "pages": [
+    {
+      "key": "Current Implementation",
+      "pageId": "3eee9784-8806-8148-8978-ec97bf100e3e",
+      "title": "📍 Current Implementation & Next Steps",
+      "verifiedContent": true,
+      "inProgress": null,
+      "blocked": null,
+      "lastEditedAt": "2026-10-18T05:24:56.978Z",
+      "error": false
+    },
+    {
+      "key": "SW-T46",
+      "pageId": "3eee9784-8806-8102-9bc0-ef357dfe1b8e",
+      "title": "☑️ Extend and verify practice isolation across the MVP",
+      "verifiedContent": true,
+      "inProgress": true,
+      "blocked": null,
+      "lastEditedAt": "2026-10-18T05:25:19.332Z",
+      "error": false
+    },
+    {
+      "key": "SW-T114",
+      "pageId": "3fbe9784-8806-81b3-830e-d20c5b0b2bb3",
+      "title": "Verify document signing, access and progressive loading end to end",
+      "verifiedContent": true,
+      "inProgress": true,
+      "blocked": null,
+      "lastEditedAt": "2026-10-18T05:25:21.882Z",
+      "error": false
+    },
+    {
+      "key": "SW-T78",
+      "pageId": "3eee9784-8806-81b7-b019-eae8594cf312",
+      "title": "Run the signed-in v0.1 browser acceptance walkthrough",
+      "verifiedContent": true,
+      "inProgress": true,
+      "blocked": null,
+      "lastEditedAt": "2026-10-18T05:26:09.273Z",
+      "error": false
+    },
+    {
+      "key": "SW-T53",
+      "pageId": "3eee9784-8806-81ac-a277-fb669f797d2c",
+      "title": "☑️ Prepare legal and security review inputs",
+      "verifiedContent": true,
+      "inProgress": true,
+      "blocked": null,
+      "lastEditedAt": "2026-10-18T04:44:47.635Z",
+      "error": false
+    },
+    {
+      "key": "SW-T85",
+      "pageId": "3f0e9784-8806-8181-a09b-d78c02b4c5c2",
+      "title": "☑️ Resolve the mobile dependency audit gate",
+      "verifiedContent": true,
+      "inProgress": true,
+      "blocked": true,
+      "lastEditedAt": "2026-10-18T04:45:32.179Z",
+      "error": false
+    }
+  ]
+}

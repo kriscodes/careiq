@@ -271,3 +271,17 @@ h2 { font-size: clamp(30px, 3.1vw, 40px); line-height: 1.2; letter-spacing: -1.3
   .not-found h1 { font-size: 39px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
+
+/* Give translated navigation and the global language control their own space. */
+@media (max-width: 1100px) {
+  .header-inner { flex-wrap: wrap; padding-block: 14px; row-gap: 14px; }
+  .header-inner > .cq-language { margin-inline-start: auto; }
+  .main-navigation { flex-basis: 100%; justify-content: flex-end; }
+}
+@media (max-width: 850px) {
+  .header-inner { gap: 12px; }
+  .menu-toggle { order: 2; margin-inline-start: auto; }
+  .header-inner > .cq-language { order: 3; inline-size: 100%; }
+  .header-inner > .cq-language > select.cq-language-select { inline-size: 100%; max-inline-size: none; }
+  .main-navigation { order: 4; }
+}

@@ -1,0 +1,35 @@
+{
+  "verifiedAt": "2026-10-18T16:42:01.928826+00:00",
+  "head": "11df3349d87d9f36235ec5c4047398d290cb9306",
+  "group": "real-api",
+  "checks": [
+    {
+      "name": "real-api-browser",
+      "command": [
+        "pnpm",
+        "--filter",
+        "./apps/web",
+        "exec",
+        "playwright",
+        "test",
+        "--config",
+        "playwright.integration.config.ts"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 6.973,
+      "counts": {},
+      "pass": true
+    }
+  ],
+  "pass": true,
+  "boundary": "Local synthetic test configuration; no hosted deployment, database mutation or provider acceptance.",
+  "browserTests": {
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "identityProviderSeam": "synthetic",
+    "apiResponses": "actual handlers, not stubbed",
+    "cleanupAssertionsPassed": true
+  }
+}

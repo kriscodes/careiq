@@ -9,6 +9,10 @@
 
 Run commands from the repository root unless stated otherwise.
 
+## Isolated local review
+
+For the October 6 designs, run `pnpm local:setup` and `pnpm local:start` in the canonical checkout. This creates a dedicated PostgreSQL container on `127.0.0.1:55434`, applies migrations to `careiq_review`, validates a restricted runtime login, and starts API/web/marketing previews. Existing hosted database settings are not used. See [local review](local-review.md) for URLs, credentials and restart instructions.
+
 ## Local setup
 
 1. Run `pnpm install --frozen-lockfile`.
@@ -16,9 +20,13 @@ Run commands from the repository root unless stated otherwise.
 3. Copy `apps/web/.env.example` to `apps/web/.env.local` and fill in Clerk credentials from the same Clerk application.
 4. For a new development database, run `pnpm --filter ./apps/api db:migrate` with a migration-capable database role.
 5. Run `pnpm dev`. API: http://localhost:3000. Web: http://localhost:3001.
-6. Sign in, then select or create a Clerk organization. CareIQ creates the corresponding practice through `/api/v1/me` before loading tenant data.
+6. Sign in with the configured Clerk test application. Only verified, explicitly approved founding user IDs can create a practice through the controlled onboarding API. Existing staff use their practice invitation; `/api/v1/me` never creates a practice. Owners configure locations and confirm explicit staff assignments before clinical access is enabled.
 
 Local application servers use the database selected by `DATABASE_URL`; local servers do not imply a local database. Use synthetic demo data.
+
+## Mobile development
+
+Mobile is separated from the active checkout; no mobile install/build/test/preview command remains in this workspace. A verified owner-only source handoff is preserved outside it for a future repository. See [mobile separation](mobile-separation.md). Web-hosted association preparation remains under `web:associations`, `web:associations:check` and `web:associations:test` for future approved clients. Backend native authentication stays gated.
 
 ## Configuration
 
@@ -31,11 +39,11 @@ Local application servers use the database selected by `DATABASE_URL`; local ser
 | API | `PORT` | Listening port, default 3000; hosting providers may supply it. |
 | Web | `NEXT_PUBLIC_API_URL` | API origin, locally `http://localhost:3000`. |
 | Web | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY` | Frontend/server Clerk configuration. |
-| Web | `NEXT_PUBLIC_INTERVIEW_MODE` | Reviewer bar and static architecture notes. Defaults on in development unless exactly `false`; defaults off in production unless exactly `true`. Set it in the build environment for hosted interview demos. |
+| Web | `NEXT_PUBLIC_INTERVIEW_MODE` | Reviewer bar and static architecture notes. Defaults on in local development unless exactly `false`; always disabled in production regardless of this flag. |
 
 Next.js embeds `NEXT_PUBLIC_*` values during the build. Rebuild after changing them. Configure Clerk domains and redirect URLs for the hosted web address. Keep secrets in ignored local files or hosting environment settings.
 
-The interview flag changes only the visibility of reviewer tools. It is not an authorization boundary or a mock-data mode. A production interview build requires `NEXT_PUBLIC_INTERVIEW_MODE=true` during `pnpm build`; changing it only when starting an already-built web service does not update that build.
+The interview flag controls local reviewer tools. Production always disables the reviewer panel and design gallery. It is not a mock-data mode; application actions still use the configured API/database. See [current production-readiness checks](production-readiness.md).
 
 ## Checks
 
@@ -46,7 +54,7 @@ pnpm test
 pnpm build
 ```
 
-Unit tests cover API input validation. The optional `tenant-isolation.test.ts` suite runs when `TEST_DATABASE_URL` names a migrated disposable local `careiq_review` or `careiq_test` database. It needs a test administrator able to create roles, then executes checks under a temporary role without RLS bypass. Fixtures and the role are rolled back. Example: `TEST_DATABASE_URL=postgresql://...@127.0.0.1:55432/careiq_review pnpm --filter ./apps/api test`. They do not prove authentication, RLS, or hosted browser behavior. `GET /health` executes a database connectivity check and returns 503 if it fails.
+The API suite includes actual restricted-database/HTTP tenant, document, audit, retry and native-auth boundary checks. Automated database tests require the isolated loopback database named `careiq_test`, with no query overrides or fragments; they refuse the live local-review database and hosted targets. `pnpm release:check` validates that target before running any checks and requires both component and actual API/restricted-DB browser paperwork scenarios. Do not direct these tests at `careiq_review` or a hosted database. Missing test configuration fails the release command instead of silently skipping integration checks. `GET /health` separately checks database connectivity and returns503 on failure.
 
 ## Database migrations and isolation
 
@@ -62,7 +70,7 @@ The older `src/db/test-*-rls.ts` utilities require existing fixture practices an
 
 ## Render deployment
 
-Use the repository root as the working directory for both services so the workspace lockfile is used.
+Use the repository root as the working directory for both services so the single canonical workspace lockfile and security policies are used. The stale nested web lock/workspace is removed; installs initiated from the web directory also resolve the root workspace. No mobile application is included.
 
 | Service | Build command | Start command |
 | --- | --- | --- |
@@ -100,8 +108,14 @@ The static architecture panel is implemented in the separate interview reviewer 
 
 The [v0.1 design specification](design/interview-v0.1.md) includes visual and keyboard acceptance checks. The [interview architecture notes](interview-architecture.md) map the explanation to source files and document scope limits. Browser-local timezone labels must match displayed and submitted appointment dates. Patient search and date navigation operate on the current practice's loaded records.
 
-The security release adds admin/member authorization, durable clinical retry keys and append-only read/create audit metadata. Live tracing, provider availability/conflict prevention, a forensic audit UI, database mutation evidence and EHR integrations remain unimplemented. See [security hardening](security-hardening.md) for implementation scope and [release status](deployment/security-release-status.md) for activation prerequisites. Local builds and unit tests do not establish production readiness or healthcare compliance. Record checks for the final integrated build in [verification](verification.md); previous results do not certify subsequent changes.
+The security baseline adds admin/member authorization, durable clinical retry keys and append-only audit metadata. The subsequent [local workflow implementation](workflow-implementation.md) includes provider availability/conflict checks, protected audit review and database mutation evidence; [Forms Studio](forms-studio-implementation.md) adds guided patient paperwork. External EHR integrations and the documented delivery/storage/scanning/operating acceptance remain open. See [security hardening](security-hardening.md) for the historical baseline and [release status](deployment/security-release-status.md) for recorded activation evidence. Local builds and unit tests do not establish production readiness or healthcare compliance. Record checks for the final integrated build in [verification](verification.md); previous results do not certify subsequent changes.
 
 ## Public marketing application
 
 See [marketing setup, content, API contract and launch guide](marketing.md) and [marketing verification](marketing-verification.md). `pnpm --filter @careiq/marketing dev` runs on port 3002 independently of Clerk, the API and database. Its static build publishes `apps/marketing/out`; the interview form posts to the existing API only when configured. Migration 0014 and checked runtime-role membership are prerequisites for enabling submissions.
+
+## Practice/location implementation
+
+The [ADR-017 implementation guide](practice-access-implementation.md) documents owner eligibility, Clerk role configuration, invitation handling, the migration gate, and web/mobile boundaries. Migration 0016 expands the schema while keeping existing practices in legacy mode; never enable location mode by assigning every staff member every location. New practices require an approved founding identity and use location mode from creation. `/api/v1/me` now reads context without provisioning. Use the API environment example for the new server-only configuration.
+
+October 18 PR #10 integration preserves both CI workflows: `CareIQ checks` runs on PRs and pushes to `main`, `dev` and `codex/**`; `CareIQ readiness checks` also supports manual dispatch. Neither deploys the application. Their database checks use disposable PostgreSQL, builds use reserved configuration fixtures, and raw audit failures remain visible. See [post-merge verification](verification/pr-10-main-2026-10-18/README.md).

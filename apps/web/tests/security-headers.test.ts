@@ -9,6 +9,6 @@ test("all web paths reject framing without restricting Clerk script or connectio
   assert.match(headers["content-security-policy"], /frame-ancestors 'none'/);
   assert.equal(headers["x-frame-options"], "DENY");
   assert.equal(headers["x-content-type-options"], "nosniff");
-  assert.equal(headers["referrer-policy"], "strict-origin-when-cross-origin");
+  assert.equal(headers["referrer-policy"], "no-referrer");
   assert.doesNotMatch(headers["content-security-policy"], /(?:default|script|connect)-src/);
 });

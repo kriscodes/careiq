@@ -6,6 +6,8 @@ export type TenantContext = {
   userId: string;
   orgId: string;
   practiceId: string;
+  locationId?: string;
+  membershipId?: string;
 };
 
 export type RequestAuthentication = AuthorizationContext & {
@@ -15,7 +17,7 @@ export type RequestAuthentication = AuthorizationContext & {
 
 export function createTenantContextMiddleware(dependencies: {
   getAuth: (request: Request) => RequestAuthentication;
-  findPracticeByClerkOrgId: (orgId: string) => Promise<{ id: string } | null>;
+  findPracticeByClerkOrgId: (orgId: string) => Promise<{ id: string; authorizationMode?: string; status?: string } | null>;
 }) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -32,6 +34,12 @@ export function createTenantContextMiddleware(dependencies: {
       if (!practice) {
         res.status(403).json({ error: { code: "PRACTICE_NOT_FOUND", message: "No CareIQ practice is associated with this organization." } });
         return;
+      }
+      if (practice.status && practice.status !== "active") {
+        res.status(403).json({ error: { code: "PRACTICE_UNAVAILABLE", message: "This practice is not active." } }); return;
+      }
+      if (practice.authorizationMode === "location") {
+        res.status(409).json({ error: { code: "LOCATION_CONTEXT_REQUIRED", message: "Select a location in the current CareIQ client." } }); return;
       }
       res.locals.tenant = { userId: auth.userId, orgId: auth.orgId, practiceId: practice.id };
       res.locals.capabilities = clinicalCapabilities(auth);

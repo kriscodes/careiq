@@ -1,0 +1,23 @@
+import { useState } from "react";
+import { I18nProvider } from "../../../src/i18n/provider";
+import { AccountLocaleBridge } from "../../../src/i18n/AccountLocaleBridge";
+import { AuditConsole } from "../../../src/components/AuditConsole";
+import { PortalAccessManager } from "../../../src/components/workflow/PortalAccessManager";
+import { createWorkflowAdapter } from "../../../src/lib/api/workflow";
+import { WorkflowWorkspace } from "../../../src/components/workflow/WorkflowWorkspace";
+import { createPreviewAdapter } from "../../../src/components/workflow/preview-adapter";
+import { PatientPaperworkLibrary } from "../../../src/components/workflow/PatientPaperworkLibrary";
+import { PatientWorkflow } from "../../../src/components/workflow/PatientWorkflow";
+import { createRoot } from "react-dom/client";
+import { AuthScreen } from "../../../src/components/access/AuthScreen";
+import { PracticeOnboarding } from "../../../src/components/access/PracticeOnboarding";
+import { PracticeManagement } from "../../../src/components/access/PracticeManagement";
+import { PracticeWorkspace } from "../../../src/components/PracticeWorkspace";
+import type { AccessContext } from "../../../src/lib/api/practice";
+const params = new URLSearchParams(location.search);
+const owner: AccessContext = { userId: "user_test", orgId: "org_test", practice: { id: "practice_test", name: "Test practice", authorizationMode: "location", status: "active" }, onboarding: "ready", enrollmentStatus: "active", capabilities: { patients: { read: true, create: true }, appointments: { read: true, create: true } }, management: { locations: true, members: true }, locations: [] };
+const component = params.get("component");
+const root = document.getElementById("root")!;
+function PortalHarness() { window.__careiqMockCalls ||= []; const [adapter] = useState(() => createWorkflowAdapter("aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", async () => "synthetic-browser-test-token", () => window.__careiqMockCalls.push({ name:"accessDenied" }))); return <div className="wf-root"><PortalAccessManager adapter={adapter} patientId="bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb" onChanged={() => window.__careiqMockCalls.push({ name:"portalChanged" })} /></div>; }
+function WorkflowHarness() { window.__careiqMockCalls ||= []; const [adapter] = useState(() => { const base = createPreviewAdapter(); const command = base.command.bind(base); const load = base.load.bind(base); let failed = false; base.command = async (resource, body, options) => { window.__careiqMockCalls.push({ name: "workflowCommand", input: { resource, body, key: options?.key } }); if (params.get("scenario") === "save-failure" && !failed) { failed = true; throw new Error("Temporary network failure. Your entries are still here."); } return command(resource, body, options); }; if (params.get("scenario") === "readonly") base.load = async (date, signal) => ({ ...await load(date, signal), capabilities: {} }); return base; }); return <WorkflowWorkspace adapter={adapter} practiceName="Synthetic practice" />; }
+createRoot(root).render(<I18nProvider scope={component === "patient-workflow" || component === "patient-paperwork" ? "patient" : "staff"}>{params.get("scenario") === "locale-account" && <AccountLocaleBridge />}{component === "audit" ? <AuditConsole /> : component === "portal-access" ? <PortalHarness /> : component === "workflow" ? <WorkflowHarness /> : component === "patient-paperwork" ? <PatientPaperworkLibrary /> : component === "patient-workflow" ? <PatientWorkflow /> : component === "onboarding" ? <PracticeOnboarding onInvitations={() => { window.__careiqMockCalls.push({ name: "viewInvitations" }); }} /> : component === "owneraccess" || component === "invite" ? <PracticeManagement context={owner} mode={component} onDone={() => { window.__careiqMockCalls.push({ name: "managementDone" }); }} /> : component === "workspace" ? <PracticeWorkspace initialView={params.get("view") === "invitations" ? "invitations" : "entry"} /> : <AuthScreen initialMode={params.get("mode") === "signup" ? "signup" : "signin"} invitation={params.get("scenario") === "signed-invite"} expired={params.get("scenario") === "signed-expired"} />}</I18nProvider>);

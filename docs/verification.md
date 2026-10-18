@@ -1,5 +1,17 @@
 # Verification — September 21, 2026
 
+Latest repository scope: [October18 mobile separation and retained web/API verification](verification/mobile-separation-2026-10-18/README.md). Native mobile source/builds are deferred to a future repository; prior combined-workspace audit/counts below are historical.
+
+- [October18 release hardening, production checks and remaining gates](verification/release-hardening-2026-10-18/README.md).
+
+October 16 workflow implementation and verification are recorded in [the workflow review guide](workflow-implementation.md) and [current verification](verification/workflow/verification.md). Earlier results below remain historical.
+
+October 17 language-layer and dropdown checks are recorded in [the localization verification](verification/i18n-2026-10-17/README.md).
+
+October 17 Forms Studio, patient-completed PDFs, reviewed demographic data and library access boundaries are documented in the [implementation guide](forms-studio-implementation.md). Current review evidence is maintained in [the forms verification directory](verification/forms-studio-2026-10-17/); earlier dated results below remain historical.
+
+October 17 security, login stability and 100-practice capacity results are recorded in [the security review](verification/security-load-2026-10-17/README.md), with [owner-controlled actions](security/owner-security-checklist.md). These supersede earlier local suite totals for the current source; hosted/provider acceptance remains separate.
+
 ## Historical baseline — before the v0.1 design integration
 
 Completed on the earlier local checkout. These results are preserved as history and do not certify the subsequent UI changes:
@@ -61,7 +73,7 @@ Completed on the final v0.1 checkout before commit:
 
 Push target is the checkout's existing upstream, `origin/dev`. No Render deployment status or linked service configuration was available from GitHub during this review. Pushing the branch is not evidence of a successful deployment. Confirm the actual Render branch and service settings before treating the deployment as complete.
 
-For the hosted interview build, verify `NEXT_PUBLIC_INTERVIEW_MODE=true`, the hosted API URL and Clerk public settings at build time, allowed CORS origin, verified database TLS settings, and controlled application of migration 0013. Complete the signed-in two-practice and visual walkthrough against the deployed URL. Browser inspection remains pending because the admin security check was unavailable during the UI work.
+The current production-readiness update always disables reviewer tools in production. For hosted builds, verify the hosted API URL and Clerk public settings at build time, allowed CORS origin, verified database TLS settings, and controlled application of migration 0013. Complete the signed-in two-practice and visual walkthrough against the deployed URL. Browser inspection remains pending because the admin security check was unavailable during the UI work.
 
 
 ## Security remediation — October 3, 2026 UTC
@@ -76,3 +88,10 @@ These results supersede the historical source-level limitations above, without c
 - A scan of the reviewed repository and reachable Git history found no confirmed exposed credentials. This is not a guarantee that accounts or historical external systems contain no leaks.
 
 Still pending: production database identity/role/migration verification; release 2 deployment; signed-in browser and two-practice walkthrough; Clerk production configuration; email receipt/reply testing; backup/restore and retention operations. Browser automation could not initialize its administrator policy, and no workaround was used. Marketing intake/indexing remain disabled. See [current release status](deployment/security-release-status.md) and the [rollout runbook](security-hardening.md).
+
+
+## Authentication and onboarding — October 6, 2026
+
+Current local implementation, 176 passing tests, migration replay, web/mobile review and remaining audit/device acceptance are recorded in [authentication/onboarding verification](auth-onboarding-verification.md). Earlier dated sections above are historical. These changes were made in the canonical checkout without pushing, remote deployment or hosted database migration.
+
+October 18 local main integration and refreshed end-to-end evidence: [PR #10 conflict-resolution verification](verification/pr-10-main-2026-10-18/README.md). The merge remains uncommitted/unpushed at user request.

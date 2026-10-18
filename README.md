@@ -10,15 +10,19 @@ The platform is focused on reducing administrative workload around patient intak
 
 🚧 **Active development**
 
-**Current release: [v0.1.0 — Interview baseline](docs/releases/0.1.0.md)** · October 3, 2026 · Synthetic/demo use only.
+**Latest tagged release: [v0.1.0 — Interview baseline](docs/releases/0.1.0.md)** · October 3, 2026 · Synthetic/demo use only.
 
-CareIQ is currently in the foundation and first vertical-slice stage. Version 0.1.0 is the initial SDLC baseline for the interview demo, including the security hardening merged before this release.
+See the [version history](CHANGELOG.md) and [release process](docs/releasing.md). The implementation below is subsequent unreleased work; it does not change the deployed release.
 
-See the [version history](CHANGELOG.md) and [release process](docs/releasing.md) for future releases.
+CareIQ now includes the local staff workflow across web and API/PostgreSQL: scheduling, patient profiles, document/version review, requirement evidence, templates, restricted patient collection/signing and protected audit review.
 
-The current slice supports Clerk sign-in, practice selection, patient creation/listing, and appointment creation/listing backed by PostgreSQL tenant isolation. The **v0.1 — Interview Design** adds a light front-desk workspace, patient search, day/week navigation, and centered creation dialogs. A separate reviewer bar opens a static architecture explanation; it does not display live telemetry.
+Start with the [workflow implementation and review guide](docs/workflow-implementation.md), [runtime API contract](docs/design/workflow/runtime-contract.md) and [OpenAPI payload/response definitions](docs/api/workflow.openapi.json). The [interactive workflow preview](http://localhost:3101/workflow-preview) uses clearly labeled synthetic data; the authenticated workspace writes to the configured API/database. Local review uses isolated databases and existing test authentication. Delivery/scanning/storage activation and physical device acceptance are documented explicitly; no deployment was performed.
 
-See the [design specification](docs/design/interview-v0.1.md), [interview architecture notes](docs/interview-architecture.md), and [development and deployment guide](docs/development.md). The v0.1 label identifies the interview design, not production readiness. This application writes to the configured API/database; use synthetic demo data.
+October 17: the [Forms Studio and patient paperwork implementation](docs/forms-studio-implementation.md) adds guided forms, immutable submissions, reviewed demographic changes and an authenticated completed-copy library. The guide identifies supported adult-self signing, account-grant expiry and the remaining email/provider activation boundaries.
+
+Owner-controlled account, hosting, storage, backup and release measures are listed in the [security checklist](docs/security/owner-security-checklist.md). Local safeguards and hosted acceptance are tracked separately.
+
+The previous [interview design](docs/design/interview-v0.1.md) and [authentication/onboarding guide](docs/auth-onboarding.md) remain reference material and supported paths.
 
 ## Initial Product Direction
 
@@ -68,7 +72,7 @@ Authentication: Clerk
 Infrastructure: Render
 ```
 
-Additional clients, including mobile applications, can consume the same backend API as the platform evolves.
+Native mobile source was separated from this checkout on October18,2026 and preserved locally for a future repository. The backend practice/location and gated native-auth contracts remain available for that future client. See [mobile separation and recovery](docs/mobile-separation.md).
 
 ## Technology Stack
 
@@ -131,7 +135,7 @@ PostgreSQL Row-Level Security provides an additional enforcement boundary for te
 
 Clerk provides user identity and authentication.
 
-CareIQ maps the verified Clerk organization to an internal practice. Administrators can create/read clinical records; members can read only. Custom roles use explicit permissions. See [security hardening](docs/security-hardening.md) for capabilities, retry keys and the controlled rollout; source implementation is separate from live deployment status.
+CareIQ maps the authenticated Clerk organization to an internal practice. The API enforces fresh membership, explicit permissions and assigned-location access. Verified approved founders create practices through controlled onboarding; reading session context does not provision an organization or practice.
 
 ### Auditable Healthcare Workflows
 
@@ -167,10 +171,16 @@ Important database conventions include:
 * Explicit foreign-key relationships
 * Tenant-aware data modeling
 * PostgreSQL Row-Level Security
-* Append-only clinical read/create audit metadata and tenant-scoped retry keys; broader forensic audit architecture remains planned
+* Append-only clinical/admin audit metadata with narrow runtime grants; separate protected search, evidence review and snapshot exports
 * Version-controlled schema migrations
 
 Database migrations are owned by the API application.
+
+## Authentication and practice onboarding
+
+The current designs and implementation are documented in [the authentication/onboarding guide](docs/auth-onboarding.md). Review [web, iOS and Android designs](docs/design/auth-onboarding/design-handoff.md) and the [interactive prototype](docs/design/auth-onboarding/prototype.html).
+
+Use this existing checkout at `/Users/kristian/Documents/Server/CareIQ`; do not create fresh GitHub checkouts for routine work. The [local review guide](docs/local-review.md) starts isolated environments for these changes. No GitHub push or remote deployment was performed.
 
 ## Local Development
 
@@ -251,6 +261,9 @@ Formal compliance requirements and controls will evolve as the product approache
 
 ## Documentation
 
+* [Workflow implementation and review](docs/workflow-implementation.md)
+* [Workflow API contract](docs/design/workflow/runtime-contract.md)
+* [OpenAPI definitions](docs/api/workflow.openapi.json)
 * [Public marketing website](docs/marketing.md)
 * [Marketing verification](docs/marketing-verification.md)
 * [Version history](CHANGELOG.md)
@@ -260,6 +273,17 @@ Formal compliance requirements and controls will evolve as the product approache
 * [v0.1 — Interview Design](docs/design/interview-v0.1.md)
 * [Interview architecture notes](docs/interview-architecture.md)
 * [Development](docs/development.md)
+* [Authentication and onboarding](docs/auth-onboarding.md)
+* [Production-readiness status](docs/production-readiness.md)
+* [Web production checks](docs/web-production-readiness.md)
+* [API production checks](docs/api-production-release.md)
+* [Mobile production checks](docs/mobile-production-readiness.md)
+* [Local review environments](docs/local-review.md)
+* [Interface languages and dropdown styling](docs/localization.md)
+* [Mobile development](docs/mobile-development.md)
+* [Practice/location access](docs/practice-access-implementation.md)
+* [Security hardening](docs/security-hardening.md)
+* [Releases](docs/releasing.md)
 * [Verification record](docs/verification.md)
 * [Architecture Decision Records](docs/decisions)
 
@@ -268,3 +292,7 @@ Formal compliance requirements and controls will evolve as the product approache
 CareIQ is being built incrementally around complete vertical workflows rather than attempting to build an entire practice-management platform at once.
 
 Architecture decisions are made early where changing them later would be expensive, while product behavior remains flexible enough to evolve through customer discovery and real practice feedback.
+
+Current local [security, login stability and capacity evidence](docs/verification/security-load-2026-10-17/README.md).
+
+October 18 local main integration and refreshed end-to-end evidence: [PR #10 conflict-resolution verification](docs/verification/pr-10-main-2026-10-18/README.md). The merge remains uncommitted/unpushed at user request.

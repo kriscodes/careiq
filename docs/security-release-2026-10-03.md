@@ -1,5 +1,8 @@
 # Security release — October 3, 2026 UTC
 
+> October 16, 2026 addendum: Preserve the dated findings below as historical evidence. See [current Next.js versions and advisory status](security/next-october-2026.md) and [the local workflow implementation](workflow-implementation.md) for the subsequent changes; earlier passing audits are not a claim about the current dependency graph.
+
+
 This first release fixes the database-pool crash and web framing protection without requiring a production database migration. It updates Next.js and its lint configuration to 16.3.6 and pins the transitive `qs` dependency to 6.16.0. The API pool now handles idle connection errors using sanitized logs; PostgreSQL removes the broken connection, and a later query can reconnect.
 
 The web application sends `Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'`, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, and `Referrer-Policy: strict-origin-when-cross-origin`. This framing policy does not restrict Clerk's scripts or callbacks. It is not a complete script-source CSP.
