@@ -1,5 +1,9 @@
 # Verification — September 21, 2026
 
+Latest repository scope: [October18 mobile separation and retained web/API verification](verification/mobile-separation-2026-10-18/README.md). Native mobile source/builds are deferred to a future repository; prior combined-workspace audit/counts below are historical.
+
+- [October18 release hardening, production checks and remaining gates](verification/release-hardening-2026-10-18/README.md).
+
 October 16 workflow implementation and verification are recorded in [the workflow review guide](workflow-implementation.md) and [current verification](verification/workflow/verification.md). Earlier results below remain historical.
 
 October 17 language-layer and dropdown checks are recorded in [the localization verification](verification/i18n-2026-10-17/README.md).

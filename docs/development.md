@@ -11,7 +11,7 @@ Run commands from the repository root unless stated otherwise.
 
 ## Isolated local review
 
-For the October 6 designs, run `pnpm local:setup` and `pnpm local:start` in the canonical checkout. This creates a dedicated PostgreSQL container on `127.0.0.1:55434`, applies migrations to `careiq_review`, validates a restricted runtime login, and starts API/web/marketing/mobile previews. Existing hosted database settings are not used. See [local review](local-review.md) for URLs, credentials and restart instructions.
+For the October 6 designs, run `pnpm local:setup` and `pnpm local:start` in the canonical checkout. This creates a dedicated PostgreSQL container on `127.0.0.1:55434`, applies migrations to `careiq_review`, validates a restricted runtime login, and starts API/web/marketing previews. Existing hosted database settings are not used. See [local review](local-review.md) for URLs, credentials and restart instructions.
 
 ## Local setup
 
@@ -26,7 +26,7 @@ Local application servers use the database selected by `DATABASE_URL`; local ser
 
 ## Mobile development
 
-Mobile has its own [development guide](mobile-development.md). `pnpm mobile` starts Metro for an installed development build; `pnpm mobile:ios` / `pnpm mobile:android` generate and build native projects locally. `pnpm dev` continues to start the existing web/API/marketing applications. Mobile lint, type checks, tests and JavaScript exports participate in root checks; a successful export is not an installed native build.
+Mobile is separated from the active checkout; no mobile install/build/test/preview command remains in this workspace. A verified owner-only source handoff is preserved outside it for a future repository. See [mobile separation](mobile-separation.md). Web-hosted association preparation remains under `web:associations`, `web:associations:check` and `web:associations:test` for future approved clients. Backend native authentication stays gated.
 
 ## Configuration
 
@@ -54,7 +54,7 @@ pnpm test
 pnpm build
 ```
 
-Unit tests cover API input validation. The optional `tenant-isolation.test.ts` suite runs when `TEST_DATABASE_URL` names a migrated disposable local `careiq_review` or `careiq_test` database. It needs a test administrator able to create roles, then executes checks under a temporary role without RLS bypass. Fixtures and the role are rolled back. Example: `TEST_DATABASE_URL=postgresql://...@127.0.0.1:55432/careiq_review pnpm --filter ./apps/api test`. They do not prove authentication, RLS, or hosted browser behavior. `GET /health` executes a database connectivity check and returns 503 if it fails.
+The API suite includes actual restricted-database/HTTP tenant, document, audit, retry and native-auth boundary checks. Automated database tests require the isolated loopback database named `careiq_test`, with no query overrides or fragments; they refuse the live local-review database and hosted targets. `pnpm release:check` validates that target before running any checks and requires both component and actual API/restricted-DB browser paperwork scenarios. Do not direct these tests at `careiq_review` or a hosted database. Missing test configuration fails the release command instead of silently skipping integration checks. `GET /health` separately checks database connectivity and returns503 on failure.
 
 ## Database migrations and isolation
 
@@ -70,7 +70,7 @@ The older `src/db/test-*-rls.ts` utilities require existing fixture practices an
 
 ## Render deployment
 
-Use the repository root as the working directory for both services so the workspace lockfile is used.
+Use the repository root as the working directory for both services so the single canonical workspace lockfile and security policies are used. The stale nested web lock/workspace is removed; installs initiated from the web directory also resolve the root workspace. No mobile application is included.
 
 | Service | Build command | Start command |
 | --- | --- | --- |

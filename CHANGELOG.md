@@ -4,6 +4,16 @@ Release notes in this repository are the source of truth. Each released version 
 
 ## Unreleased
 
+October18 mobile separation and release hardening:
+
+- Separate native mobile source from active installs, CI, releases and local previews; preserve a verified private handoff for a future repository.
+- Use one root workspace/lock; remove mobile-only dependencies while retaining the patched development-only Next lint dependency and visible audits.
+- Keep web app-link hosting and gated native API contracts for future clients.
+- Harden production document/audit storage, cursor keys and audit transport; block marketing contact redirects/referrer forwarding.
+- Require isolated real API/browser paperwork verification in release checks; record actual production versus full development audit results separately.
+
+See [mobile separation](docs/mobile-separation.md) and [current verification](docs/verification/mobile-separation-2026-10-18/README.md). Historical mobile implementation entries below describe the earlier combined workspace. No new remote repository, release, deployment or database migration is created by this separation.
+
 October 18 integration: reconcile current `main` into the clinical workflow/Forms Studio branch, preserving released history, existing migration hashes and the current security boundaries. This local merge resolution is not a deployment.
 
 October 6 implementation, included in the unreleased PR #10 branch:

@@ -1,0 +1,454 @@
+{
+  "verifiedAt": "2026-10-18T16:37:32.306539+00:00",
+  "nodeVersion": "v22.23.2",
+  "pnpmVersion": "11.22.0",
+  "frozenInstall": {
+    "exitCode": 0,
+    "durationSeconds": 1,
+    "patchFormat": "Standard contextful unified diff",
+    "installedPostImageIntegrity": "All manifest hashes verified against actual pnpm-resolved files by security regression case 1."
+  },
+  "audits": [
+    {
+      "scope": "production",
+      "command": "pnpm audit --prod --json",
+      "exitCode": 1,
+      "durationSeconds": 1.671,
+      "metadata": {
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 2,
+          "critical": 0
+        },
+        "dependencies": 709,
+        "devDependencies": 0,
+        "optionalDependencies": 73,
+        "totalDependencies": 782
+      },
+      "advisories": [
+        {
+          "module_name": "node-forge",
+          "severity": "high",
+          "title": "node-forge RSA PKCS#1 v1.5 signature verification accepts extra nested DigestAlgorithm elements",
+          "url": "https://github.com/advisories/GHSA-86w9-cpqp-85rv",
+          "vulnerable_versions": "<=1.4.0",
+          "patched_versions": ">=1.4.1"
+        },
+        {
+          "module_name": "braces",
+          "severity": "high",
+          "title": "braces vulnerable to stack-exhaustion denial of service through deeply nested patterns",
+          "url": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+          "vulnerable_versions": "<=3.0.3",
+          "patched_versions": ">=3.0.4"
+        }
+      ]
+    },
+    {
+      "scope": "complete",
+      "command": "pnpm audit --json",
+      "exitCode": 1,
+      "durationSeconds": 0.49,
+      "metadata": {
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 2,
+          "critical": 0
+        },
+        "dependencies": 718,
+        "devDependencies": 363,
+        "optionalDependencies": 176,
+        "totalDependencies": 1145
+      },
+      "advisories": [
+        {
+          "module_name": "node-forge",
+          "severity": "high",
+          "title": "node-forge RSA PKCS#1 v1.5 signature verification accepts extra nested DigestAlgorithm elements",
+          "url": "https://github.com/advisories/GHSA-86w9-cpqp-85rv",
+          "vulnerable_versions": "<=1.4.0",
+          "patched_versions": ">=1.4.1"
+        },
+        {
+          "module_name": "braces",
+          "severity": "high",
+          "title": "braces vulnerable to stack-exhaustion denial of service through deeply nested patterns",
+          "url": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+          "vulnerable_versions": "<=3.0.3",
+          "patched_versions": ">=3.0.4"
+        }
+      ]
+    }
+  ],
+  "registry": [
+    {
+      "package": "node-forge",
+      "latestPublished": "1.4.0",
+      "advisoryThresholdVersion": "1.4.1",
+      "thresholdPublished": false,
+      "registryModified": "2026-03-24T21:44:34.780Z",
+      "distIntegrity": "sha512-LarFH0+6VfriEhqMMcLX2F7SwSXeWwnEAJEsYm5QKWchiVYVvJyV9v7UDvUv+w5HO23ZpQTXDv/GxdDdMyOuoQ==",
+      "tarballIntegrityVerified": true,
+      "tarballUrl": "https://registry.npmjs.org/node-forge/-/node-forge-1.4.0.tgz",
+      "registrySignaturesPresent": true,
+      "limits": "Content integrity against registry metadata verified; independent publisher identity/build attestation is not inferred."
+    },
+    {
+      "package": "braces",
+      "latestPublished": "3.0.3",
+      "advisoryThresholdVersion": "3.0.4",
+      "thresholdPublished": false,
+      "registryModified": "2024-09-18T05:27:12.449Z",
+      "distIntegrity": "sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==",
+      "tarballIntegrityVerified": true,
+      "tarballUrl": "https://registry.npmjs.org/braces/-/braces-3.0.3.tgz",
+      "registrySignaturesPresent": true,
+      "limits": "Content integrity against registry metadata verified; independent publisher identity/build attestation is not inferred."
+    }
+  ],
+  "productionPaths": [
+    [
+      "@careiq/mobile@0.1.0",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "@expo/metro@56.0.2",
+      "metro-file-map@0.84.5",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "@clerk/expo@4.8.0",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "@expo/metro@56.0.2",
+      "metro-file-map@0.84.5",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-router@57.0.28",
+      "@expo/metro-runtime@57.0.17",
+      "@expo/log-box@57.0.4",
+      "@expo/dom-webview@57.0.1",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "@expo/metro@56.0.2",
+      "metro-file-map@0.84.5",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-auth-session@57.0.16",
+      "expo-application@57.0.3",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "@expo/metro@56.0.2",
+      "metro-file-map@0.84.5",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-constants@57.0.22",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "@expo/metro@56.0.2",
+      "metro-file-map@0.84.5",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-linking@57.0.13",
+      "expo-constants@57.0.22",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "@expo/metro@56.0.2",
+      "metro-file-map@0.84.5",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-crypto@57.0.4",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "@expo/metro@56.0.2",
+      "metro-file-map@0.84.5",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-dev-client@57.0.20",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "@expo/metro@56.0.2",
+      "metro-file-map@0.84.5",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-document-picker@57.0.3",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "@expo/metro@56.0.2",
+      "metro-file-map@0.84.5",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-file-system@57.0.7",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "@expo/metro@56.0.2",
+      "metro-file-map@0.84.5",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-secure-store@57.0.4",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "@expo/metro@56.0.2",
+      "metro-file-map@0.84.5",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-sharing@57.0.23",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "@expo/metro@56.0.2",
+      "metro-file-map@0.84.5",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-status-bar@57.0.1",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "@expo/metro@56.0.2",
+      "metro-file-map@0.84.5",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-system-ui@57.0.4",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "@expo/metro@56.0.2",
+      "metro-file-map@0.84.5",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-web-browser@57.0.3",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "@expo/metro@56.0.2",
+      "metro-file-map@0.84.5",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "react-native@0.86.3",
+      "@react-native/community-cli-plugin@0.86.3",
+      "metro@0.84.6",
+      "metro-file-map@0.84.6",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "react-native-gesture-handler@2.32.0",
+      "react-native@0.86.3",
+      "@react-native/community-cli-plugin@0.86.3",
+      "metro@0.84.6",
+      "metro-file-map@0.84.6",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "react-native-reanimated@4.5.1",
+      "react-native-is-edge-to-edge@1.3.1",
+      "react-native@0.86.3",
+      "@react-native/community-cli-plugin@0.86.3",
+      "metro@0.84.6",
+      "metro-file-map@0.84.6",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "react-native-safe-area-context@5.7.0",
+      "react-native@0.86.3",
+      "@react-native/community-cli-plugin@0.86.3",
+      "metro@0.84.6",
+      "metro-file-map@0.84.6",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "react-native-screens@4.26.2",
+      "react-native@0.86.3",
+      "@react-native/community-cli-plugin@0.86.3",
+      "metro@0.84.6",
+      "metro-file-map@0.84.6",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "react-native-worklets@0.10.1",
+      "react-native@0.86.3",
+      "@react-native/community-cli-plugin@0.86.3",
+      "metro@0.84.6",
+      "metro-file-map@0.84.6",
+      "micromatch@4.0.8",
+      "braces@3.0.3"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "node-forge@1.4.0"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "@clerk/expo@4.8.0",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "node-forge@1.4.0"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-router@57.0.28",
+      "@expo/metro-runtime@57.0.17",
+      "@expo/log-box@57.0.4",
+      "@expo/dom-webview@57.0.1",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "node-forge@1.4.0"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-auth-session@57.0.16",
+      "expo-application@57.0.3",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "node-forge@1.4.0"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-constants@57.0.22",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "node-forge@1.4.0"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-linking@57.0.13",
+      "expo-constants@57.0.22",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "node-forge@1.4.0"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-crypto@57.0.4",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "node-forge@1.4.0"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-dev-client@57.0.20",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "node-forge@1.4.0"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-document-picker@57.0.3",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "node-forge@1.4.0"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-file-system@57.0.7",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "node-forge@1.4.0"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-secure-store@57.0.4",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "node-forge@1.4.0"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-sharing@57.0.23",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "node-forge@1.4.0"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-status-bar@57.0.1",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "node-forge@1.4.0"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-system-ui@57.0.4",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "node-forge@1.4.0"
+    ],
+    [
+      "@careiq/mobile@0.1.0",
+      "expo-web-browser@57.0.3",
+      "expo@57.0.30",
+      "@expo/cli@57.0.31",
+      "node-forge@1.4.0"
+    ]
+  ],
+  "productionWorkspacesContainingThesePaths": [
+    "@careiq/mobile@0.1.0"
+  ],
+  "sources": [
+    "https://registry.npmjs.org/node-forge",
+    "https://registry.npmjs.org/braces",
+    "https://github.com/advisories/GHSA-86w9-cpqp-85rv",
+    "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm"
+  ],
+  "advisoryDiscrepancy": "Current primary GitHub advisory pages identify no published patched versions. npm audit reports threshold >=1.4.1 and >=3.0.4, but direct public registry metadata confirms neither exists. Do not interpret audit thresholds as available releases.",
+  "limits": [
+    "No audit suppressions, renamed packages, invented versions, commits, pushes or deployments.",
+    "Backports do not change the version-only raw audit verdict.",
+    "Dependency paths indicate package graph reachability, not proof that every code path executes in a deployed process.",
+    "Raw logs and downloaded upstream tarballs are private ignored local review artifacts."
+  ]
+}

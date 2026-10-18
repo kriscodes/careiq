@@ -1,5 +1,7 @@
 # Practice model and mobile bootstrap review
 
+> October18,2026: native mobile source is no longer active in this checkout. A verified private handoff is preserved for a separate repository to be created later. Mobile commands/results below describe the earlier combined workspace; standalone setup and acceptance remain future work. See [separation and recovery](mobile-separation.md).
+
 Historical bootstrap review: 2026-10-04. For the subsequent October 5 backend/web implementation and validation, see [practice access implementation](practice-access-implementation.md).
 
 Date: 2026-10-04. Base: `7dcc510` (`main`, v0.1.0 interview baseline). Local branch: `codex/practice-mobile`.

@@ -1,3 +1,36 @@
+diff --git a/lib/compile.js b/lib/compile.js
+--- a/lib/compile.js
++++ b/lib/compile.js
+@@ -2,8 +2,10 @@
+ 
+ const fill = require('fill-range');
+ const utils = require('./utils');
++const validateDepth = require('./validate-depth');
+ 
+ const compile = (ast, options = {}) => {
++  validateDepth(ast);
+   const walk = (node, parent = {}) => {
+     const invalidBlock = utils.isInvalidBrace(parent);
+     const invalidNode = node.invalid === true && options.escapeInvalid === true;
+diff --git a/lib/expand.js b/lib/expand.js
+--- a/lib/expand.js
++++ b/lib/expand.js
+@@ -3,6 +3,7 @@
+ const fill = require('fill-range');
+ const stringify = require('./stringify');
+ const utils = require('./utils');
++const validateDepth = require('./validate-depth');
+ 
+ const append = (queue = '', stash = '', enclose = false) => {
+   const result = [];
+@@ -31,6 +32,7 @@
+ };
+ 
+ const expand = (ast, options = {}) => {
++  validateDepth(ast);
+   const rangeLimit = options.rangeLimit === undefined ? 1000 : options.rangeLimit;
+ 
+   const walk = (node, parent = {}) => {
 diff --git a/lib/parse.js b/lib/parse.js
 --- a/lib/parse.js
 +++ b/lib/parse.js
@@ -23,41 +56,20 @@ diff --git a/lib/parse.js b/lib/parse.js
        depth++;
  
        const dollar = prev.value && prev.value.slice(-1) === '$' || block.dollar === true;
-diff --git a/index.js b/index.js
---- a/index.js
-+++ b/index.js
-@@ -4,6 +4,7 @@
- const compile = require('./lib/compile');
- const expand = require('./lib/expand');
- const parse = require('./lib/parse');
-+const validateDepth = require('./lib/validate-depth');
+diff --git a/lib/stringify.js b/lib/stringify.js
+--- a/lib/stringify.js
++++ b/lib/stringify.js
+@@ -1,8 +1,10 @@
+ 'use strict';
  
- /**
-  * Expand the given pattern or create a regex-compatible string.
-@@ -75,6 +76,7 @@
-   if (typeof input === 'string') {
-     return stringify(braces.parse(input, options), options);
-   }
-+  validateDepth(input);
-   return stringify(input, options);
- };
+ const utils = require('./utils');
++const validateDepth = require('./validate-depth');
  
-@@ -97,6 +99,7 @@
-   if (typeof input === 'string') {
-     input = braces.parse(input, options);
-   }
-+  validateDepth(input);
-   return compile(input, options);
- };
- 
-@@ -122,6 +125,7 @@
-     input = braces.parse(input, options);
-   }
- 
-+  validateDepth(input);
-   let result = expand(input, options);
- 
-   // filter out empty strings if specified
+ module.exports = (ast, options = {}) => {
++  validateDepth(ast);
+   const stringify = (node, parent = {}) => {
+     const invalidBlock = options.escapeInvalid && utils.isInvalidBrace(parent);
+     const invalidNode = node.invalid === true && options.escapeInvalid === true;
 diff --git a/lib/validate-depth.js b/lib/validate-depth.js
 new file mode 100644
 --- /dev/null

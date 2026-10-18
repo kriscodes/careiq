@@ -1,0 +1,46 @@
+{
+  "verifiedAt": "2026-10-18T17:23:28.980007+00:00",
+  "results": [
+    {
+      "name": "retained-security",
+      "exitCode": 0,
+      "durationSeconds": 0.576,
+      "tests": 16,
+      "pass": 16,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    {
+      "name": "drizzle-metadata",
+      "exitCode": 0,
+      "durationSeconds": 0.433
+    }
+  ],
+  "expectedSecurityCases": 16,
+  "frozenInstall": {
+    "exitCode": 0,
+    "workspaceCount": 6,
+    "removedInstalledPackages": 520
+  },
+  "coverage": [
+    "Exact retained braces patch and actual installed post-images",
+    "Brace/parenthesis string depth and AST depth, cycles and width, all public and direct walker entries",
+    "Actual Next lint micromatch -> patched braces package resolution and ordinary glob compatibility",
+    "Sharp raster decode/resize",
+    "Drizzle legacy loader scoped esbuild version, synchronous/asynchronous TypeScript transforms and source maps",
+    "Real loopback esbuild foreign-Origin CORS and foreign-Host rejection",
+    "Active lock boundary against archived mobile importer/packages and obsolete patch reintroduction"
+  ],
+  "mobileOnlyCoveragePreservedOutsideActiveWorkspace": [
+    "forge PKCS#1/PSS/NONE exploit/compatibility cases",
+    "query-string/decode-uri-component decoding and bounded malformed URI processing",
+    "xcode/uuid caller compatibility",
+    "Expo signer package resolution"
+  ],
+  "limits": [
+    "No skipped mobile tests disguise an unresolved active dependency; the separated mobile source keeps its original complete tests.",
+    "Drizzle metadata check uses explicit synthetic loopback port 1 URL and does not connect to a database.",
+    "No hosted database, commit, push or deployment was performed."
+  ]
+}

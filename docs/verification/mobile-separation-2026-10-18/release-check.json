@@ -1,0 +1,45 @@
+{
+  "verifiedAt": "2026-10-18T17:29:26.876090+00:00",
+  "command": "pnpm release:check",
+  "exitCode": 0,
+  "durationSeconds": 91.687,
+  "workspaceTests": {
+    "apps/api": {
+      "tests": 224,
+      "pass": 224,
+      "fail": 0,
+      "skipped": 0
+    },
+    "apps/web": {
+      "tests": 73,
+      "pass": 73,
+      "fail": 0,
+      "skipped": 0
+    },
+    "apps/marketing": {
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "skipped": 0
+    },
+    "packages/interview-contract": {
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "skipped": 0
+    },
+    "packages/i18n": {
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "skipped": 0
+    }
+  },
+  "browserPassCounts": [
+    53,
+    2
+  ],
+  "pass": true,
+  "scope": "Six-project web/API/marketing/shared workspace; explicit isolated careiq_test URL; local synthetic identity/data; both required browser suites and raw production audit included. No mobile app or hosted service used.",
+  "rawLogsPrivate": true
+}

@@ -1,5 +1,7 @@
 # Authentication/onboarding verification — October 6, 2026
 
+> October18,2026: native mobile source is no longer active in this checkout. A verified private handoff is preserved for a separate repository to be created later. Mobile commands/results below describe the earlier combined workspace; standalone setup and acceptance remain future work. See [separation and recovery](mobile-separation.md).
+
 This is the earlier implementation baseline. The [production-readiness follow-up](production-readiness.md) supersedes its test counts, migration count, dependency audit and founder-approval status. Historical evidence below is retained.
 
 All work below was performed in `/Users/kristian/Documents/Server/CareIQ`. No fresh repository clone, fetch/pull, push, remote deployment or hosted database migration was performed. The checkout remains uncommitted for review, with earlier dirty marketing work preserved.

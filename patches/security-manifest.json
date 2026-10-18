@@ -2,34 +2,26 @@
   "schemaVersion": 1,
   "patches": [
     {
-      "package": "node-forge",
-      "version": "1.4.0",
-      "patch": "patches/node-forge@1.4.0.patch",
-      "patchSha256": "5633b984b745f42da460a1bdecff432694b9f7b9417974cba99d7f7de5a27bf7",
-      "files": [
-        {
-          "path": "lib/rsa.js",
-          "sha256": "22cdfb3220439533211cf00ff7c7e6605607761d77a2c3c263411d4c70798c4f"
-        }
-      ],
-      "sources": [
-        "https://github.com/digitalbazaar/forge/pull/1152/commits/ceba34402e329f0365134f23fe19898756527d65",
-        "https://github.com/digitalbazaar/forge/pull/1157/commits/683ab3344899cc08a581e4d5675a33e87aff7b04"
-      ]
-    },
-    {
       "package": "braces",
       "version": "3.0.3",
       "patch": "patches/braces@3.0.3.patch",
-      "patchSha256": "124c7de3cea62219a0513737ff48d0921c70494d3c2d1297c96190db944d766f",
+      "patchSha256": "f46149b456f0f0e3e42cc4adf1027ad72afd23673bb4f58173ae56915ed7bad9",
       "files": [
+        {
+          "path": "lib/compile.js",
+          "sha256": "82d4386b052cc68e388c70e85ad2a6ca0d5c94294dc539748a7067fdee052c67"
+        },
+        {
+          "path": "lib/expand.js",
+          "sha256": "0295a772cbe7355e9f6a8f30d3d1ff50fdcefd2419164d92fefbde220bc408cd"
+        },
         {
           "path": "lib/parse.js",
           "sha256": "0074fcc3ac26ae258e1dbebeccecf401868073189cbb6b4e56ffa527b11bed53"
         },
         {
-          "path": "index.js",
-          "sha256": "0b27b90e09dc54c4389e234c31839a21ce1e715364d2507f87e7d48d965f0cb1"
+          "path": "lib/stringify.js",
+          "sha256": "7f46c5f669377484b77193e8e41de9786c719445281e90c7d8f024575dbb0f59"
         },
         {
           "path": "lib/validate-depth.js",
@@ -38,21 +30,6 @@
       ],
       "sources": [
         "https://github.com/micromatch/braces/issues/70"
-      ]
-    },
-    {
-      "package": "query-string",
-      "version": "7.1.3",
-      "patch": "patches/query-string@7.1.3.patch",
-      "patchSha256": "32fabd661c87a64d8e92d6fb323ef8ca9b61812de3a3cba21215ac3373e9b641",
-      "files": [
-        {
-          "path": "index.js",
-          "sha256": "fc1ca6e1961ba005e554b1bc0de932d6454bf59bfaea03d02c7261dbdcafcdbd"
-        }
-      ],
-      "sources": [
-        "https://github.com/SamVerschueren/decode-uri-component/releases/tag/v0.5.0"
       ]
     }
   ]

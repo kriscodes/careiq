@@ -1,0 +1,208 @@
+{
+  "verifiedAt": "2026-10-18T17:37:55.076Z",
+  "phaseReadback": [
+    {
+      "url": "https://app.notion.com/3f0e978488068151965ce5b515898ef2",
+      "Key": "SW-E12",
+      "Name": "Build the iOS and Android mobile app",
+      "Status": "In progress",
+      "Phase": "Later",
+      "Blocked": "__NO__"
+    },
+    {
+      "url": "https://app.notion.com/3f0e9784880681c8bed2e26ca4fcfee6",
+      "Key": "SW-F25",
+      "Name": "Native app foundation and release",
+      "Status": "In progress",
+      "Phase": "Later",
+      "Blocked": "__NO__"
+    },
+    {
+      "url": "https://app.notion.com/3f0e9784880681f0a196d5f42a44a4e3",
+      "Key": "SW-S43",
+      "Name": "Run and verify the mobile foundation",
+      "Status": "In progress",
+      "Phase": "Later",
+      "Blocked": "__NO__"
+    },
+    {
+      "url": "https://app.notion.com/3f0e978488068181a09bd78c02b4c5c2",
+      "Key": "SW-T85",
+      "Name": "Resolve the mobile dependency audit gate",
+      "Status": "In progress",
+      "Phase": "Later",
+      "Blocked": "__YES__"
+    },
+    {
+      "url": "https://app.notion.com/3f0e9784880681d5be3fc245a6914216",
+      "Key": "SW-S46",
+      "Name": "Prepare a reviewed mobile release",
+      "Status": "Not started",
+      "Phase": "Later",
+      "Blocked": "__NO__"
+    },
+    {
+      "url": "https://app.notion.com/3f0e9784880681c8906ef324b3fe178e",
+      "Key": "SW-T91",
+      "Name": "Configure mobile environments, signing and release profiles",
+      "Status": "Not started",
+      "Phase": "Later",
+      "Blocked": "__NO__"
+    },
+    {
+      "url": "https://app.notion.com/3f0e97848806810ead9fc4c2213a5b5d",
+      "Key": "SW-T105",
+      "Name": "Run mobile session and location-isolation acceptance",
+      "Status": "Not started",
+      "Phase": "Later",
+      "Blocked": "__NO__"
+    },
+    {
+      "url": "https://app.notion.com/3f0e978488068118b7f0e4c9033fc82d",
+      "Key": "SW-F26",
+      "Name": "Mobile authentication and location workspace",
+      "Status": "In progress",
+      "Phase": "Later",
+      "Blocked": "__YES__"
+    },
+    {
+      "url": "https://app.notion.com/3f0e9784880681ad80fddb024d115324",
+      "Key": "SW-S44",
+      "Name": "Authenticate and accept invitations on mobile",
+      "Status": "Not started",
+      "Phase": "Later",
+      "Blocked": "__NO__"
+    },
+    {
+      "url": "https://app.notion.com/3f0e978488068175be88f2848e309a42",
+      "Key": "SW-T87",
+      "Name": "Implement mobile sign-in and prove authenticated API access",
+      "Status": "In progress",
+      "Phase": "Later",
+      "Blocked": "__YES__"
+    },
+    {
+      "url": "https://app.notion.com/3f0e978488068129b2ffc12bb070a4e5",
+      "Key": "SW-T88",
+      "Name": "Handle mobile staff invitation links and assignment states",
+      "Status": "Not started",
+      "Phase": "Later",
+      "Blocked": "__NO__"
+    },
+    {
+      "url": "https://app.notion.com/3f0e978488068162b60ef8edbbe11f04",
+      "Key": "SW-S45",
+      "Name": "Use a location-scoped mobile workspace",
+      "Status": "Not started",
+      "Phase": "Later",
+      "Blocked": "__NO__"
+    },
+    {
+      "url": "https://app.notion.com/3f0e9784880681d8bf17feed98bb0384",
+      "Key": "SW-T89",
+      "Name": "Implement mobile practice and location context lifecycle",
+      "Status": "Not started",
+      "Phase": "Later",
+      "Blocked": "__NO__"
+    },
+    {
+      "url": "https://app.notion.com/3f0e9784880681c18b42df924b958a47",
+      "Key": "SW-T90",
+      "Name": "Deliver the first selected mobile clinical workflow",
+      "Status": "Not started",
+      "Phase": "Later",
+      "Blocked": "__NO__"
+    }
+  ],
+  "contentReadback": [
+    {
+      "pageId": "3eee9784880681488978ec97bf100e3e",
+      "title": "📍 Current Implementation & Next Steps",
+      "status": null,
+      "phase": null,
+      "blocked": null,
+      "separationUpdatePresent": true,
+      "truncated": false,
+      "unknownBlocks": 0,
+      "lastEditedAt": "2026-10-18T17:32:54.862Z",
+      "url": "https://app.notion.com/p/3eee9784880681488978ec97bf100e3e?pvs=204"
+    },
+    {
+      "pageId": "3f0e978488068151965ce5b515898ef2",
+      "title": "🎯 Build the iOS and Android mobile app",
+      "status": "In progress",
+      "phase": "Later",
+      "blocked": "__NO__",
+      "separationUpdatePresent": true,
+      "truncated": false,
+      "unknownBlocks": 0,
+      "lastEditedAt": "2026-10-18T17:32:57.595Z",
+      "url": "https://app.notion.com/p/3f0e978488068151965ce5b515898ef2?pvs=204"
+    },
+    {
+      "pageId": "3f0e9784880681228835f7a573bb7d2a",
+      "title": "☑️ Add the apps/mobile Expo workspace and setup screens",
+      "status": "Done",
+      "phase": "MVP",
+      "blocked": "__NO__",
+      "separationUpdatePresent": true,
+      "truncated": false,
+      "unknownBlocks": 0,
+      "lastEditedAt": "2026-10-18T17:33:09.798Z",
+      "url": "https://app.notion.com/p/3f0e9784880681228835f7a573bb7d2a?pvs=204"
+    },
+    {
+      "pageId": "3f0e978488068181a09bd78c02b4c5c2",
+      "title": "☑️ Resolve the mobile dependency audit gate",
+      "status": "In progress",
+      "phase": "Later",
+      "blocked": "__YES__",
+      "separationUpdatePresent": true,
+      "truncated": false,
+      "unknownBlocks": 0,
+      "lastEditedAt": "2026-10-18T17:34:59.629Z",
+      "url": "https://app.notion.com/p/3f0e978488068181a09bd78c02b4c5c2?pvs=204"
+    },
+    {
+      "pageId": "3f0e978488068175be88f2848e309a42",
+      "title": "☑️ Implement mobile sign-in and prove authenticated API access",
+      "status": "In progress",
+      "phase": "Later",
+      "blocked": "__YES__",
+      "separationUpdatePresent": true,
+      "truncated": false,
+      "unknownBlocks": 0,
+      "lastEditedAt": "2026-10-18T17:33:12.594Z",
+      "url": "https://app.notion.com/p/3f0e978488068175be88f2848e309a42?pvs=204"
+    },
+    {
+      "pageId": "3eee978488068177bf1ce584868b1b30",
+      "title": "☑️ Complete controlled deployment and migration promotion",
+      "status": "In progress",
+      "phase": "MVP",
+      "blocked": "__YES__",
+      "separationUpdatePresent": true,
+      "truncated": false,
+      "unknownBlocks": 0,
+      "lastEditedAt": "2026-10-18T17:35:02.259Z",
+      "url": "https://app.notion.com/p/3eee978488068177bf1ce584868b1b30?pvs=204"
+    },
+    {
+      "pageId": "3eee97848806816ea1c1e0233091ab58",
+      "title": "☑️ Publish the release checklist and operator handoff",
+      "status": "In progress",
+      "phase": "Pilot",
+      "blocked": "__NO__",
+      "separationUpdatePresent": true,
+      "truncated": false,
+      "unknownBlocks": 0,
+      "lastEditedAt": "2026-10-18T17:33:03.983Z",
+      "url": "https://app.notion.com/p/3eee97848806816ea1c1e0233091ab58?pvs=204"
+    }
+  ],
+  "allPhaseRowsLater": true,
+  "priorStatusesPreserved": true,
+  "allContentWritesReadBack": true,
+  "newRepositoryOrTasksCreated": false,
+  "broadReleaseCardsMarkedDone": false
+}

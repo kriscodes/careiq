@@ -14,7 +14,7 @@ The platform is focused on reducing administrative workload around patient intak
 
 See the [version history](CHANGELOG.md) and [release process](docs/releasing.md). The implementation below is subsequent unreleased work; it does not change the deployed release.
 
-CareIQ now includes the local staff workflow across web, API/PostgreSQL and Expo mobile: scheduling, patient profiles, document/version review, requirement evidence, templates, restricted patient collection/signing and protected audit review.
+CareIQ now includes the local staff workflow across web and API/PostgreSQL: scheduling, patient profiles, document/version review, requirement evidence, templates, restricted patient collection/signing and protected audit review.
 
 Start with the [workflow implementation and review guide](docs/workflow-implementation.md), [runtime API contract](docs/design/workflow/runtime-contract.md) and [OpenAPI payload/response definitions](docs/api/workflow.openapi.json). The [interactive workflow preview](http://localhost:3101/workflow-preview) uses clearly labeled synthetic data; the authenticated workspace writes to the configured API/database. Local review uses isolated databases and existing test authentication. Delivery/scanning/storage activation and physical device acceptance are documented explicitly; no deployment was performed.
 
@@ -72,7 +72,7 @@ Authentication: Clerk
 Infrastructure: Render
 ```
 
-The Expo iOS/Android client in `apps/mobile` consumes the same authenticated API. Web and mobile share the practice/location access model.
+Native mobile source was separated from this checkout on October18,2026 and preserved locally for a future repository. The backend practice/location and gated native-auth contracts remain available for that future client. See [mobile separation and recovery](docs/mobile-separation.md).
 
 ## Technology Stack
 

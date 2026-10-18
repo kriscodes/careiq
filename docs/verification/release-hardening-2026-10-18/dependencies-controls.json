@@ -1,0 +1,71 @@
+{
+  "verifiedAt": "2026-10-18T16:37:36.116232+00:00",
+  "roundtrips": [
+    {
+      "package": "node-forge",
+      "version": "1.4.0",
+      "registryTarballPlusExactPatchMatchesReviewedPostImages": true,
+      "files": [
+        {
+          "path": "lib/rsa.js",
+          "matchesReviewedPostImage": true
+        }
+      ]
+    },
+    {
+      "package": "braces",
+      "version": "3.0.3",
+      "registryTarballPlusExactPatchMatchesReviewedPostImages": true,
+      "files": [
+        {
+          "path": "lib/compile.js",
+          "matchesReviewedPostImage": true
+        },
+        {
+          "path": "lib/expand.js",
+          "matchesReviewedPostImage": true
+        },
+        {
+          "path": "lib/parse.js",
+          "matchesReviewedPostImage": true
+        },
+        {
+          "path": "lib/stringify.js",
+          "matchesReviewedPostImage": true
+        },
+        {
+          "path": "lib/validate-depth.js",
+          "matchesReviewedPostImage": true
+        }
+      ]
+    }
+  ],
+  "boundedUnpatchedAndPatchedControls": [
+    {
+      "package": "braces",
+      "mode": "raw",
+      "walkers": 3,
+      "result": "reproduced stack-exhaustion RangeError"
+    },
+    {
+      "package": "braces",
+      "mode": "patched",
+      "walkers": 3,
+      "result": "bounded SyntaxError"
+    },
+    {
+      "package": "node-forge",
+      "mode": "raw",
+      "result": "reproduced invalid nested algorithm accepted"
+    },
+    {
+      "package": "node-forge",
+      "mode": "patched",
+      "result": "rejects invalid nested algorithm"
+    }
+  ],
+  "limits": [
+    "Negative controls establish regression sensitivity for these exact vectors, not all possible vulnerabilities.",
+    "No upstream packages were executed as network servers; controls use synthetic keys/patterns in bounded local child processes."
+  ]
+}

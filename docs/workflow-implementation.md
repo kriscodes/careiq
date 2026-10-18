@@ -19,7 +19,6 @@ The supervised local environment uses the isolated PostgreSQL container on `127.
 | Interactive staff workflow with clearly labeled synthetic records | [Workflow preview](http://localhost:3101/workflow-preview) |
 | Authenticated staff workspace, persistent isolated database | [CareIQ workspace](http://localhost:3101/) |
 | Protected audit search, details and exports | [Audit review](http://localhost:3101/audit) |
-| Expo web client | [Mobile app](http://localhost:8082/) |
 | API/database health | [Health](http://localhost:3100/health) |
 
 The synthetic preview is an interactive review surface with its own sample adapter. It does not prove a database write or a provider delivery. The authenticated workspace uses the implemented API and PostgreSQL. Existing owner approval, organization membership and assigned-location rules still apply. The new workflow opens for location-based practices; the legacy practice slice remains available for older practices.
@@ -48,7 +47,7 @@ The runner never uses the original hosted database URL. It applies migrations on
 | Audit review | Explicit purpose, scoped search and signed cursors, event/resource/field-change details, separately permitted database evidence, stable snapshot exports and reauthorized downloads |
 | Mobile | Native staff navigation, API-backed forms and lists, private file selection/transfer and temporary sharing, restricted patient route and universal-link configuration |
 
-The white-and-blue workflow follows the approved design while retaining the existing authentication, practice setup and settings. Responsive browser verification covers desktop, tablet and narrow phone widths. Native exports compile iOS and Android bundles; physical device acceptance remains separate.
+The white-and-blue workflow follows the approved design while retaining the existing authentication, practice setup and settings. Responsive browser verification covers desktop, tablet and narrow phone widths. Native mobile source is now separated for a future repository; earlier bundle exports remain dated evidence, and installed-device acceptance stays separate. See [the mobile handoff](mobile-separation.md).
 
 ## Backend and database
 

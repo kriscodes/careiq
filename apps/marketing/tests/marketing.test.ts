@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { createServer, type Server } from "node:http";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { content, validateContent } from "../src/content/content";
@@ -88,6 +89,8 @@ test("submissions use the configured API origin, omit credentials, and only acce
     assert.equal(options?.method, "POST");
     assert.equal(options?.credentials, "omit");
     assert.equal(options?.cache, "no-store");
+    assert.equal(options?.redirect, "error");
+    assert.equal(options?.referrerPolicy, "no-referrer");
     assert.ok(options?.signal);
     assert.deepEqual(JSON.parse(String(options?.body)), payload);
     return json({ data: { accepted: true } });
@@ -114,4 +117,45 @@ test("server-rendered configured form waits for hydration and never defaults to 
   assert.match(html, /action="https:\/\/api\.example\.com\/api\/v1\/public\/interview-requests"/);
   assert.match(html, /fieldset disabled/);
   assert.match(html, /<noscript>/);
+});
+
+
+// Use native fetch: a 307 must never replay contact details to another origin.
+test("a redirect cannot forward an interview submission to another local origin", async () => {
+  const listen = (server: Server) => new Promise<number>((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", () => {
+      const address = server.address();
+      if (!address || typeof address === "string") return reject(new Error("Missing loopback test address"));
+      resolve(address.port);
+    });
+  });
+  let redirectedRequests = 0;
+  const receiver = createServer((request, response) => {
+    redirectedRequests++;
+    request.resume();
+    response.writeHead(200, { "Content-Type": "application/json" });
+    response.end(JSON.stringify({ data: { accepted: true } }));
+  });
+  let originalRequests = 0;
+  let originalReferrer: string | undefined;
+  const receiverPort = await listen(receiver);
+  const origin = createServer((request, response) => {
+    originalRequests++;
+    originalReferrer = request.headers.referer;
+    request.resume();
+    response.writeHead(307, { Location: `http://127.0.0.1:${receiverPort}/contact-sink` });
+    response.end();
+  });
+  try {
+    const originPort = await listen(origin);
+    assert.deepEqual(await submitInterview(`http://127.0.0.1:${originPort}`, payload), { kind: "error" });
+    assert.equal(originalRequests, 1);
+    assert.equal(redirectedRequests, 0);
+    assert.equal(originalReferrer, undefined);
+  } finally {
+    await Promise.all([origin, receiver].map(server => new Promise<void>((resolve, reject) => {
+      server.close(error => error ? reject(error) : resolve());
+    })));
+  }
 });

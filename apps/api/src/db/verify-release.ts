@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { Pool } from "pg";
+import { verifyPrivateStorageDirectory } from "../workflow/storage-config.js";
 import { connectionOptions } from "./connection.js";
 import { verifyDatabaseRelease } from "./release-check.js";
 import { ProductionConfigurationError, validateProductionConfiguration } from "../production-config.js";
@@ -12,6 +13,7 @@ async function verify() {
   if (!process.argv.includes("--database-only")) {
     if (process.env.NODE_ENV !== "production") throw new ReleaseCheckError("Release verification requires NODE_ENV=production; --database-only checks restricted local database configuration separately.");
     validateProductionConfiguration();
+    await verifyPrivateStorageDirectory();
   }
   const pool = new Pool(connectionOptions());
   try {

@@ -1,6 +1,6 @@
 # CareIQ Architecture
 
-Implementation status: the working slice covers Clerk organization-based practice resolution, patient and appointment create/list flows, and transaction-scoped PostgreSQL RLS. The v0.1 interview workspace includes a separately labeled, static architecture panel. It explains the implementation; it is not live telemetry. The security release implements baseline admin/member authorization, clinical read/create audit metadata and retry keys. Broader forensic audit, background jobs, storage and integrations remain architectural direction. See [security hardening](security-hardening.md) and [deployment status](deployment/security-release-status.md).
+Implementation status: the current local web/API slice includes clinical scheduling/patient/document workflows, guided Forms Studio/patient paperwork, protected audit review and transaction-scoped tenant/location controls. Native mobile source is preserved outside this checkout for a later repository; server/native compatibility gates remain. Hosted activation and operating acceptance remain separate. See [workflow implementation](workflow-implementation.md), [Forms Studio](forms-studio-implementation.md), [mobile separation](mobile-separation.md) and [deployment history](deployment/security-release-status.md).
 
 This document provides a high-level view of the CareIQ platform architecture.
 
@@ -27,8 +27,8 @@ CareIQ currently consists of three primary runtime layers.
 ┌──────────────────────────────┐
 │          Clients             │
 │                              │
-│  Web App        Mobile client│
-│  Next.js        Expo / RN    │
+│  Web App (Next.js)            │
+│  Future separate mobile app   │
 └──────────────┬───────────────┘
                │
                │ HTTPS
@@ -66,7 +66,6 @@ apps/
     api/
     web/
     marketing/
-    mobile/
 
 packages/
     shared packages
@@ -85,7 +84,7 @@ Engineering and product decisions live under `docs`.
 
 ## Mobile foundation and practice/location model
 
-`apps/mobile` adds an Expo/React Native iOS and Android client to the existing pnpm workspace. The client now includes branded authentication, session gates, actor-scoped onboarding drafts, practice/location selection and invitation/access states. Secrets remain in provider-managed secure token storage, and API request/cache state is cleared on identity or scope changes. Native device acceptance remains a separate check from browser preview and JavaScript export. See the [mobile architecture proposal](design/mobile-architecture.md) for boundaries, navigation, data handling, and release design, and the [mobile development guide](mobile-development.md) for setup.
+Native mobile source was removed from this active workspace and preserved locally for a separate repository to be created later. API, web and marketing remain in this repository. The existing gated native authentication and web-hosted app-link contract remain server/web responsibilities. Shared localization remains here for web and is included in the recovery snapshot. See [ADR-018](decisions/018-mobile-repository-separation.md) and [the handoff guide](mobile-separation.md); the earlier mobile design/development records are historical inputs for future standalone setup.
 
 [ADR-017](decisions/017-practice-location-membership-model.md) establishes one Practice per Clerk Organization, CareIQ Locations beneath it, and explicit location access constrained by fresh Clerk membership and permissions. Pending invitees receive no clinical access until an owner confirms assignments. The implementation extends ADR-004/005/007 with controlled onboarding, web settings, location-scoped clinical endpoints, audit/retry scope and forced RLS. Existing ADR-013 remains the accepted storage decision.
 

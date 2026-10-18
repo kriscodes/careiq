@@ -12,6 +12,7 @@ import { createAppointment, listAppointments } from "./services/appointment.serv
 import { createInterviewRequest } from "./services/interview-request.service.js";
 import { interviewRequestsEnabled, parseClerkAuthenticationPolicy, parseTrustedProxies } from "./public-config.js";
 import { validateProductionConfiguration } from "./production-config.js";
+import { verifyPrivateStorageDirectory } from "./workflow/storage-config.js";
 import { verifyDatabaseRelease } from "./db/release-check.js";
 import { ReleaseCheckError } from "./db/migration-safety.js";
 import { logFailure } from "./logging.js";
@@ -50,6 +51,7 @@ const port = Number(process.env.PORT ?? 3000);
 const host = process.env.HOST?.trim() || (process.env.NODE_ENV === "production" ? "0.0.0.0" : "127.0.0.1");
 async function start() {
   if (process.env.NODE_ENV === "production") {
+    await verifyPrivateStorageDirectory();
     const client = await pool.connect();
     try {
       await client.query("BEGIN READ ONLY");

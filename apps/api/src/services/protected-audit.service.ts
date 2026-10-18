@@ -1,21 +1,23 @@
 import { createHmac, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { join, resolve } from "node:path";
+import { resolve } from "node:path";
 import type { Pool, PoolClient } from "pg";
 import { createDatabasePool } from "../db/pool.js";
 import type { TenantContext } from "../middleware/tenant-context.js";
 import { connectionOptions } from "../db/connection.js";
 import { camel, WorkflowError } from "../workflow/policy.js";
-import { sha256 } from "../workflow/storage.js";
+import { readPrivate, sha256, writePrivateIfAbsent } from "../workflow/storage.js";
+import { verifyPrivateStorageDirectory } from "../workflow/storage-config.js";
 
 export type AuditFilter = { from: string; to: string; action?: string; outcome?: string; actorId?: string; resourceId?: string; operationId?: string; cursor?: string; limit: number; includeEvidence?: boolean };
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const secret = process.env.CAREIQ_AUDIT_CURSOR_SECRET || randomBytes(32).toString("hex");
-const archiveDirectory = () => resolve(process.env.CAREIQ_AUDIT_EXPORT_DIR || ".local-review/audit-exports");
+const archiveEnvironment = (): NodeJS.ProcessEnv => ({...process.env, CAREIQ_PRIVATE_STORAGE_DIR:process.env.CAREIQ_AUDIT_EXPORT_DIR || (process.env.NODE_ENV === "production" ? undefined : resolve(".local-review/audit-exports"))});
 let reader: Pool | undefined;
 function auditReader() {
   if (!process.env.CAREIQ_AUDIT_DATABASE_URL) throw new WorkflowError("AUDIT_READER_UNAVAILABLE", 503, { message: "Protected audit access is not configured." });
-  reader ??= createDatabasePool({ ...connectionOptions({ ...process.env, DATABASE_URL: process.env.CAREIQ_AUDIT_DATABASE_URL, DATABASE_SSL_MODE: process.env.CAREIQ_AUDIT_SSL_MODE || "verify-full" }), max: 2 });
+  const options = connectionOptions({ ...process.env, DATABASE_URL: process.env.CAREIQ_AUDIT_DATABASE_URL, DATABASE_SSL_MODE: process.env.CAREIQ_AUDIT_SSL_MODE || "verify-full" });
+  if (process.env.NODE_ENV === "production" && options.ssl === false) throw new WorkflowError("AUDIT_READER_TLS_REQUIRED", 503);
+  reader ??= createDatabasePool({ ...options, max: 2 });
   return reader;
 }
 export function parseAuditFilter(input: Record<string, unknown>): AuditFilter {
@@ -95,6 +97,7 @@ async function assertAuditReaderIdentity(client: Pick<PoolClient, "query">): Pro
 /** An unconfigured audit reader leaves the optional audit feature disabled; a configured unsafe reader blocks activation. */
 export async function verifyConfiguredAuditReader(): Promise<void> {
   if (!process.env.CAREIQ_AUDIT_DATABASE_URL) return;
+  if (process.env.NODE_ENV === "production") await verifyPrivateStorageDirectory(archiveEnvironment());
   const client = await auditReader().connect();
   try { await assertAuditReaderIdentity(client); }
   finally { client.release(); }
@@ -170,17 +173,19 @@ export async function exportAudit(tenant: TenantContext, filter: AuditFilter, re
   const manifest = { version: 1, id: exportId, practiceId: tenant.practiceId, locationId: tenant.locationId, actorId: tenant.userId, purpose, createdAt: new Date().toISOString(), expiresAt, filter: { ...filter, cursor: undefined }, eventIds: dataset.events.map(event => event.id), ...dataset };
   const bytes = Buffer.from(JSON.stringify(manifest));
   if (bytes.length > 32 * 1024 * 1024) throw new WorkflowError("AUDIT_EXPORT_TOO_LARGE", 422, { message: "Choose a smaller period for this export." });
-  await mkdir(archiveDirectory(), { recursive: true, mode: 0o700 });
-  await writeFile(join(archiveDirectory(), filename), bytes, { flag: "wx", mode: 0o600 }).catch(async error => { if (error.code !== "EEXIST") throw error; });
-  const existing = JSON.parse(await readFile(join(archiveDirectory(), filename), "utf8"));
+  await writePrivateIfAbsent(filename, bytes, archiveEnvironment());
+  const existingBytes = await readPrivate(filename, archiveEnvironment());
+  const existing = JSON.parse(existingBytes.toString("utf8"));
   if (existing.practiceId !== tenant.practiceId || existing.locationId !== tenant.locationId || existing.actorId !== tenant.userId) throw new WorkflowError("AUDIT_EXPORT_SCOPE_DENIED", 403);
-  const hash = sha256(await readFile(join(archiveDirectory(), filename)));
+  const hash = sha256(existingBytes);
   await logAccess(tenant, requestId, "audit.export.prepared", exportId, { count: existing.eventIds.length, outputHash: hash, purpose });
   return { id: exportId, state: "ready", recordCount: existing.eventIds.length, sha256: hash, expiresAt: existing.expiresAt };
 }
 export async function auditExportContent(tenant: TenantContext, exportId: string, requestId: string) {
   if (!/^[a-f0-9]{64}$/.test(exportId)) throw new WorkflowError("INVALID_EXPORT_ID", 422);
-  const bytes = await readFile(join(archiveDirectory(), `${exportId}.json`)).catch(() => { throw new WorkflowError("RESOURCE_NOT_FOUND", 404); });
+  auditReader();
+  await verifyConfiguredAuditReader();
+  const bytes = await readPrivate(`${exportId}.json`, archiveEnvironment()).catch(() => { throw new WorkflowError("RESOURCE_NOT_FOUND", 404); });
   const manifest = JSON.parse(bytes.toString());
   if (manifest.practiceId !== tenant.practiceId || manifest.locationId !== tenant.locationId || manifest.actorId !== tenant.userId) throw new WorkflowError("RESOURCE_NOT_FOUND", 404);
   if (Date.parse(manifest.expiresAt) <= Date.now()) throw new WorkflowError("AUDIT_EXPORT_EXPIRED", 410);

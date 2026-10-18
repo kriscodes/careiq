@@ -31,7 +31,6 @@ APPS = {
     "api": {"directory": "apps/api", "port": 3100, "url": "http://localhost:3100/health", "health": "/health"},
     "web": {"directory": "apps/web", "port": 3101, "url": "http://localhost:3101/design-preview", "health": "/design-preview"},
     "marketing": {"directory": "apps/marketing", "port": 3102, "url": "http://localhost:3102", "health": "/"},
-    "mobile": {"directory": "apps/mobile", "port": 8082, "url": "http://localhost:8082/design-preview", "health": "/design-preview"},
 }
 PRIVATE_VALUES: set[str] = set()
 
@@ -293,6 +292,8 @@ def test_clerk_configuration():
 
 
 def app_environment(name: str):
+    if name not in APPS:
+        raise ReviewError("Review application must be api, web or marketing.")
     api, publishable, secret = test_clerk_configuration()
     runtime = read_env(STATE / "runtime.env")
     local_url(runtime["DATABASE_URL"], RUNTIME_ROLE, "careiq_review")
@@ -309,7 +310,7 @@ def app_environment(name: str):
                 raise ReviewError("owner.env must contain explicitly confirmed Clerk test user IDs, never an email or wildcard.")
             os.chmod(owner_file, 0o600)
             founder_ids = ",".join(approved)
-        origins = [f"http://{host}:{port}" for host in ("localhost", "127.0.0.1") for port in (3101, 3102, 8082)]
+        origins = [f"http://{host}:{port}" for host in ("localhost", "127.0.0.1") for port in (3101, 3102)]
         environment.update(runtime)
         audit = read_env(STATE / "audit.env")
         local_url(audit.get("CAREIQ_AUDIT_DATABASE_URL", ""), AUDIT_ROLE, "careiq_review")
@@ -332,20 +333,17 @@ def app_environment(name: str):
                             "NEXT_PUBLIC_APP_URL": "http://localhost:3101", "NEXT_PUBLIC_ALLOW_INDEXING": "false",
                             "NEXT_PUBLIC_PRIVACY_EMAIL": "", "NEXT_PUBLIC_CONTACT_EMAIL": "", "NEXT_PUBLIC_FOUNDER_LINKEDIN_URL": "",
                             "CAREIQ_LOCAL_REVIEW_DIST_DIR": ".next-local-review"})
-    else:
-        environment.update({"EXPO_PUBLIC_API_URL": "http://localhost:3100", "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": publishable,
-                            "EXPO_NO_TELEMETRY": "1", "EXPO_NO_DOTENV": "1", "EXPO_OFFLINE": "1"})
     return environment
 
 
 def app_command(name: str):
+    if name not in APPS:
+        raise ReviewError("Review application must be api, web or marketing.")
     directory = ROOT / APPS[name]["directory"]
     if name == "api":
         command = [str(directory / "node_modules/.bin/tsx"), "src/index.ts"]
-    elif name in ("web", "marketing"):
-        command = [str(directory / "node_modules/.bin/next"), "dev", "--webpack", "--hostname", "127.0.0.1", "--port", str(APPS[name]["port"])]
     else:
-        command = [str(directory / "node_modules/.bin/expo"), "start", "--web", "--host", "localhost", "--port", "8082"]
+        command = [str(directory / "node_modules/.bin/next"), "dev", "--webpack", "--hostname", "127.0.0.1", "--port", str(APPS[name]["port"])]
     if not Path(command[0]).exists():
         raise ReviewError(f"{name} dependencies are not ready. Finish pnpm install before local:start.")
     return directory, command
@@ -366,7 +364,8 @@ def fingerprint(pid: int):
 
 
 def owned(name, record):
-    if not record or record.get("app") != name or record.get("port") != APPS[name]["port"]:
+    application = APPS.get(name)
+    if not application or not record or record.get("app") != name or record.get("port") != application["port"]:
         return False
     current = fingerprint(record["pid"])
     recorded = record.get("fingerprint", "")
@@ -384,9 +383,8 @@ def owned(name, record):
 def health(name):
     application = APPS[name]
     try:
-        host = "localhost" if name == "mobile" else "127.0.0.1"
-        # Expo's localhost mode may bind ::1. All probes stay on loopback and bypass proxies.
-        with build_opener(ProxyHandler({})).open(f"http://{host}:{application['port']}{application['health']}", timeout=2) as response:
+        # All retained applications bind IPv4 loopback; never use an ambient proxy.
+        with build_opener(ProxyHandler({})).open(f"http://127.0.0.1:{application['port']}{application['health']}", timeout=2) as response:
             if response.status != 200:
                 return "warming"
             if name == "api" and json.loads(response.read(4096)).get("database") != "connected":
@@ -510,7 +508,7 @@ def stop_application(name, record, records):
 def restart(name):
     check_node_runtime()
     if name not in APPS:
-        raise ReviewError("Restart requires api, web, marketing or mobile.")
+        raise ReviewError("Restart requires api, web or marketing.")
     # Reject a malformed private override before interrupting the healthy owned app.
     app_environment(name)
     records = processes()

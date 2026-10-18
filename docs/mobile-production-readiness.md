@@ -1,5 +1,7 @@
 # Mobile production readiness
 
+> October18,2026: native mobile source is no longer active in this checkout. A verified private handoff is preserved for a separate repository to be created later. Mobile commands/results below describe the earlier combined workspace; standalone setup and acceptance remain future work. See [separation and recovery](mobile-separation.md).
+
 October 16 workflow implementation and verification are recorded in [the workflow review guide](workflow-implementation.md) and [current verification](verification/workflow/verification.md). Earlier results below remain historical.
 
 Date: 2026-10-06. Scope: local changes and verification in the canonical CareIQ checkout. No native release, hosted configuration, signing operation, account registration or deployment was performed. The API native-client gate remains disabled pending installed-device acceptance.

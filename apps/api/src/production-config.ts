@@ -1,4 +1,5 @@
 import { isIP } from "node:net";
+import { privateStorageRoot } from "./workflow/storage-config.js";
 import { connectionOptions } from "./db/connection.js";
 import { runtimePoolPolicy } from "./db/runtime-pool-policy.js";
 import { interviewRequestsEnabled, parseClerkAuthenticationPolicy, parseTrustedProxies } from "./public-config.js";
@@ -35,6 +36,13 @@ function checkProductionConfiguration(environment: NodeJS.ProcessEnv) {
   parseTrustedProxies(environment.TRUSTED_PROXY_CIDRS);
   interviewRequestsEnabled(environment.INTERVIEW_REQUESTS_ENABLED);
   runtimePoolPolicy(environment);
+  privateStorageRoot(environment);
+  if (!/^[a-f0-9]{64,}$/i.test(environment.CAREIQ_WORKFLOW_CURSOR_SECRET ?? "")) throw new Error("Production requires CAREIQ_WORKFLOW_CURSOR_SECRET with at least 32 random bytes encoded as hexadecimal.");
+  if (environment.CAREIQ_AUDIT_DATABASE_URL) {
+    privateStorageRoot({...environment, CAREIQ_PRIVATE_STORAGE_DIR:environment.CAREIQ_AUDIT_EXPORT_DIR});
+    if (connectionOptions({...environment, DATABASE_URL:environment.CAREIQ_AUDIT_DATABASE_URL, DATABASE_SSL_MODE:environment.CAREIQ_AUDIT_SSL_MODE || "verify-full"}).ssl === false) throw new Error("Production protected audit database TLS cannot be disabled.");
+    if (!/^[a-f0-9]{64,}$/i.test(environment.CAREIQ_AUDIT_CURSOR_SECRET ?? "") || environment.CAREIQ_AUDIT_CURSOR_SECRET === environment.CAREIQ_WORKFLOW_CURSOR_SECRET) throw new Error("Production protected audit requires a separate random hexadecimal CAREIQ_AUDIT_CURSOR_SECRET of at least 32 bytes.");
+  }
   const options = connectionOptions(environment);
   const database = new URL(options.connectionString!);
   if (!["postgres:", "postgresql:"].includes(database.protocol) || !database.username || !database.hostname || database.pathname.length < 2) throw new Error("DATABASE_URL must identify a PostgreSQL login and database.");

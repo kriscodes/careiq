@@ -24,6 +24,8 @@ export async function submitInterview(apiUrl: string, payload: InterviewRequest,
       headers: { "Content-Type": "application/json" },
       credentials: "omit",
       cache: "no-store",
+      redirect: "error",
+      referrerPolicy: "no-referrer",
       body: JSON.stringify(payload),
       signal: AbortSignal.timeout(15_000),
     });

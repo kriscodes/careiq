@@ -31,6 +31,10 @@ Notion is the readable index. Keep technical details and validation evidence in 
 4. **On the same day as release:** add the Notion blurb and verified repository links. Update deployment evidence only after checking the actual environment.
 5. **After feedback:** turn findings into scoped backlog items for the next cycle.
 
+## Current repository scope
+
+Native mobile was separated on October18,2026 for a future repository. Current root versions/checks cover API, web, marketing and shared packages; no native build or mobile repository is created by a CareIQ release here. Preserve website association/native API compatibility and keep native access gated until its later release acceptance. Use the single root workspace/lock and a clean reviewed install. Current production/full-development audit distinctions, retained vendor limits and actual checks are recorded in [mobile separation verification](verification/mobile-separation-2026-10-18/README.md). A passing local production audit does not replace the separate hosted/provider/backup/operating checklist.
+
 ## Release checklist
 
 - [ ] Choose the scope, version, release stage and acceptance criteria; resolve release blockers or state the limitations allowed for that stage.

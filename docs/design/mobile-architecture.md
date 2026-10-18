@@ -1,5 +1,7 @@
 # CareIQ mobile architecture and bootstrap proposal
 
+> October18,2026: native mobile source is no longer active in this checkout. A verified private handoff is preserved for a separate repository to be created later. Mobile commands/results below describe the earlier combined workspace; standalone setup and acceptance remain future work. See [separation and recovery](../mobile-separation.md).
+
 Current implementation note (October 6, 2026): the Expo client now implements authentication, onboarding drafts and practice/location access states locally. Historical bootstrap/proposal sections below describe sequencing, not the current completion status. See [authentication and onboarding](../auth-onboarding.md) and [current verification](../auth-onboarding-verification.md). No native release or remote deployment was performed.
 
 **Status:** Proposed for review. The bootstrap is authorized; product workflows and production release remain future work.

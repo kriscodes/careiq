@@ -1,6 +1,6 @@
 # Isolated local review
 
-Run the implemented CareIQ API, web app, marketing site and Expo web preview from this checkout. The runner uses a dedicated local PostgreSQL 18.6 container and a restricted runtime login. It does not deploy, use the original database URL or modify existing app environment files.
+Run the implemented CareIQ API, web app and marketing site from this checkout. The runner uses a dedicated local PostgreSQL 18.6 container and a restricted runtime login. It does not deploy, use the original database URL or modify existing app environment files.
 
 ## Start and inspect
 
@@ -30,22 +30,20 @@ pnpm local:status
 | Protected audit review | [Open audit review](http://localhost:3101/audit) |
 | Web design preview | [Open web preview](http://localhost:3101/design-preview) |
 | Web authentication | [Open web sign in](http://localhost:3101/sign-in) |
-| Mobile layout gallery | [Open mobile preview](http://localhost:8082/design-preview) |
-| Expo web authentication | [Open mobile sign in](http://localhost:8082/sign-in) |
 | Marketing | [Open marketing](http://localhost:3102) |
 | API/database health | [Check API health](http://localhost:3100/health) |
 
-The web/mobile sample galleries use synthetic data. Real authentication uses the existing Clerk **test** application. Signup creates an identity; it does not approve a founder or automatically create a practice. Only founder IDs already explicitly configured in the API environment are retained. Invitation acceptance continues to require owner confirmation and location assignments.
+The web sample galleries use synthetic data. Real authentication uses the existing Clerk **test** application. Signup creates an identity; it does not approve a founder or automatically create a practice. Only founder IDs already explicitly configured in the API environment are retained. Invitation acceptance continues to require owner confirmation and location assignments.
 
 ## Isolation and private state
 
 Application servers bind to loopback. The database container `careiq-auth-review-db` binds only `127.0.0.1:55434`, with label `com.careiq.local-review=true` and named volume `careiq-auth-review-pgdata`. It leaves unrelated local PostgreSQL installations and occupied ports untouched.
 
-Review uses separate ports 3100, 3101, 3102 and 8082 so existing development sessions on the usual ports remain undisturbed. Both IPv4 and IPv6 loopback are checked before starting a service.
+Review uses separate ports3100,3101 and3102 so existing development sessions on the usual ports remain undisturbed. Both IPv4 and IPv6 loopback are checked before starting a service.
 
 Web and marketing use `.next-local-review` through their optional `CAREIQ_LOCAL_REVIEW_DIST_DIR` setting. Their build files and development locks remain separate from ordinary `.next` sessions.
 
-The runtime login has no database/table ownership, superuser rights or RLS bypass. It receives the checked clinical-runtime group grant. Actor-scoped onboarding metadata and practice/location boundaries remain enforced. Marketing intake and native bearer authentication are disabled during this review; the Expo browser preview uses the exact configured browser origins. Actual iOS/Android authentication still requires device acceptance before enabling the native API policy.
+The runtime login has no database/table ownership, superuser rights or RLS bypass. It receives the checked clinical-runtime group grant. Actor-scoped onboarding metadata and practice/location boundaries remain enforced. Marketing intake and native bearer authentication remain disabled during this review. Mobile source and its owned8082 preview were removed from this workspace; see [separation/recovery](mobile-separation.md). Actual native authentication still requires acceptance in the future mobile repository before enabling the backend native policy.
 
 Existing API/web test Clerk keys are read privately and checked for matching test applications. Production Clerk keys are refused. The original `.env` and `.env.local` files remain unchanged. Inherited shell database URLs, credentials and application configuration are excluded from app environments. The runner supplies only the isolated database URL and local public service URLs.
 
@@ -66,7 +64,7 @@ For diagnostic output, use:
 python3 scripts/local-review.py status --json
 ```
 
-Logs are `.local-review/api.log`, `web.log`, `marketing.log`, `mobile.log` and `setup.log`. Logs are private, but avoid pasting authentication/provider diagnostics without reviewing them.
+Logs are `.local-review/api.log`, `web.log`, `marketing.log` and `setup.log`. Logs are private, but avoid pasting authentication/provider diagnostics without reviewing them.
 
 ## Stop and restart
 
@@ -79,4 +77,4 @@ Stop verifies the recorded supervisor command, start time and process group befo
 
 Use stop/start after dependency or environment changes. If another review operation is active, wait for it to finish before retrying. If an unmanaged process occupies a required port, close that process deliberately; the runner will not replace it. Do not use production credentials or enable native authentication merely to make a browser preview work.
 
-`python3 scripts/local-review.py restart web` (or `api`, `marketing`, `mobile`) restarts only that matching owned supervisor, leaves the other running applications in place, and preserves the database. It applies the same ownership and occupied-port checks.
+`python3 scripts/local-review.py restart web` (or `api`, `marketing`) restarts only that matching owned supervisor, leaves the other running applications in place, and preserves the database. It applies the same ownership and occupied-port checks.

@@ -1,5 +1,9 @@
 # Production-readiness follow-up — October 6, 2026
 
+Latest repository scope: [October18 mobile separation and retained web/API verification](verification/mobile-separation-2026-10-18/README.md). Native mobile source/builds are deferred to a future repository; prior combined-workspace audit/counts below are historical.
+
+Latest October18 hardening and current release blockers: [release verification](verification/release-hardening-2026-10-18/README.md). It includes private-file/audit production safeguards, dependency/redirect fixes and current hosted sign-in findings. Historical verification below retains its original scope.
+
 October 16 workflow implementation and verification are recorded in [the workflow review guide](workflow-implementation.md) and [current verification](verification/workflow/verification.md). Earlier results below remain historical.
 
 Status: local safeguards are implemented; release acceptance remains open. Work uses the existing `/Users/kristian/Documents/Server/CareIQ` checkout, preserves prior dirty marketing changes and stays uncommitted. No CareIQ clone/fetch/pull, commit, push, deployment, hosted migration, store registration or native release was performed.

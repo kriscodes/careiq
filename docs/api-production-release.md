@@ -14,6 +14,16 @@ Key syntax cannot establish that the secret/public keys belong to the same produ
 
 All authenticated sessions now require the configured frontend issuer and valid user/session identifiers in addition to Clerk SDK signature, activation, issued-at, expiry, token-category and authorized-party checks. The issuer comes from the configured public key, never an unverified token.
 
+## Private files and cursor custody — October 18 hardening
+
+Production additionally requires `CAREIQ_PRIVATE_STORAGE_DIR` to be an absolute, pre-provisioned owner-only directory outside the application checkout. Startup and `release:verify` inspect the directory without creating or changing it. Symbolic directory aliases, group/other access and a different filesystem owner are rejected. Private object reads reject symbolic links, hard-linked files, nonregular objects and group/other-readable permissions; new writes remain exclusive and owner-only. Preserve existing objects and review their custody/permissions before promotion; this code does not silently chmod or move production data.
+
+Set `CAREIQ_WORKFLOW_CURSOR_SECRET` to at least 32 cryptographically random bytes encoded as hexadecimal, supplied privately and consistently across the API fleet. Syntax checks cannot establish entropy or secret-manager custody. Rotation invalidates outstanding cursors; document that expected behavior and do not fall back to a process-generated production key.
+
+When `CAREIQ_AUDIT_DATABASE_URL` is configured, production also requires a separate `CAREIQ_AUDIT_CURSOR_SECRET` and an absolute owner-only `CAREIQ_AUDIT_EXPORT_DIR` outside the checkout. The optional audit feature remains unavailable without its separate reader; no owner/runtime credential fallback is added. Export reads and exclusive writes share the hardened document-file controls, and every download requires a currently verified dedicated reader. Its directory is checked before reader activation and on every export file access, and plaintext audit-database transport is rejected in production at configuration and reader creation. See the nonsecret names in [API environment example](../apps/api/.env.example).
+
+These checks prevent development defaults and unsafe filesystem permissions from being accepted as release settings. They do not provision a durable volume, certify encryption/backup/retention, activate scanning or implement email delivery. The operator must verify those properties in the intended environment. Keep the existing quarantine and unavailable-provider states until accepted integrations are running. Storage guidance: [OWASP file uploads](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html); key custody: [OWASP secrets management](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html).
+
 ## Restricted database release verifier
 
 Production startup checks database metadata in a read-only transaction before serving requests. It checks PostgreSQL 18+, direct restricted login, transitive role memberships, database/schema/table ownership and excessive grants. All predefined `pg_*` memberships are denied for API runtimes, including monitoring, server file/program, signal and checkpoint roles. Narrow custom groups remain subject to the same transitive ownership and column/table privilege checks.

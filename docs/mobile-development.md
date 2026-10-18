@@ -1,5 +1,7 @@
 # Mobile development
 
+> October18,2026: native mobile source is no longer active in this checkout. A verified private handoff is preserved for a separate repository to be created later. Mobile commands/results below describe the earlier combined workspace; standalone setup and acceptance remain future work. See [separation and recovery](mobile-separation.md).
+
 `apps/mobile` is the `@careiq/mobile` iOS/Android application. It uses Expo SDK 57, React Native 0.86.3, React 19.2.3 and Expo Router. Review the [mobile architecture proposal](design/mobile-architecture.md) before extending the scaffold. The practice/location model is specified in [ADR-017](decisions/017-practice-location-membership-model.md); the current authentication/onboarding implementation follows that access model. See [authentication and onboarding](auth-onboarding.md) for the implemented API and UI flows.
 
 The installed Clerk native module requires **iOS 17 or later**. Its Expo plugin sets the deployment target and Android packaging settings; Apple sign-in capability is explicitly disabled until an authentication flow is selected. Expo SDK 57 requires Xcode 26.4 or later for local iOS builds.

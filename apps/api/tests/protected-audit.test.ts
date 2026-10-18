@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { randomBytes, randomUUID } from "node:crypto";
-import { mkdtemp, rm } from "node:fs/promises";
+import { chmod, mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { execFile } from "node:child_process";
@@ -138,6 +138,10 @@ test("protected audit uses a dedicated reader, isolates locations, rejects chang
       await emit(locationId, "patients.update");
       const secondBytes = await auditExportContent(tenant, exported.id, randomUUID());
       assert.deepEqual(secondBytes, firstBytes);
+      const file = join(temporary, exported.id + ".json");
+      await chmod(file, 0o644);
+      try { await assert.rejects(auditExportContent(tenant, exported.id, randomUUID()), error => (error as {code:string}).code === "RESOURCE_NOT_FOUND"); }
+      finally { await chmod(file, 0o600); }
       await assert.rejects(auditExportContent({ ...tenant, locationId: otherLocation }, exported.id, randomUUID()));
       await admin.query("UPDATE location_assignments SET active=false WHERE practice_id=$1 AND location_id=$2 AND user_id=$3", [practiceId, locationId, userId]);
       await assert.rejects(auditExportContent(tenant, exported.id, randomUUID()), error => (error as { code: string }).code === "LOCATION_ACCESS_DENIED");
@@ -151,4 +155,21 @@ test("protected audit uses a dedicated reader, isolates locations, rejects chang
     for (const name of [runtimeRole, readerRole]) { await admin.query(`DROP OWNED BY ${name}`).catch(() => {}); await admin.query(`DROP ROLE IF EXISTS ${name}`); }
     await admin.end(); await rm(temporary, { recursive: true, force: true });
   }
+});
+
+test("production audit rejects plaintext transport before any database or audit write", async () => {
+  const keys=["NODE_ENV","CAREIQ_AUDIT_DATABASE_URL","CAREIQ_AUDIT_SSL_MODE"] as const;
+  const previous=Object.fromEntries(keys.map(key=>[key,process.env[key]]));
+  try {
+    process.env.NODE_ENV="production";process.env.CAREIQ_AUDIT_DATABASE_URL="postgresql://audit:synthetic@127.0.0.1:9/careiq_unreachable";process.env.CAREIQ_AUDIT_SSL_MODE="disable";
+    await assert.rejects(searchAudit({practiceId:randomUUID(),locationId:randomUUID(),userId:"user_synthetic",orgId:"org_synthetic"},parseAuditFilter({from:"2026-10-01T00:00:00Z",to:"2026-10-02T00:00:00Z"}),randomUUID(),"synthetic-test"), error => (error as {code:string}).code === "AUDIT_READER_TLS_REQUIRED");
+  } finally { for (const key of keys) { if (previous[key] === undefined) delete process.env[key];else process.env[key]=previous[key]; } }
+});
+
+test("retained audit export downloads stay unavailable when the dedicated reader is disabled", async () => {
+  const previous=process.env.CAREIQ_AUDIT_DATABASE_URL;
+  delete process.env.CAREIQ_AUDIT_DATABASE_URL;
+  try {
+    await assert.rejects(auditExportContent({practiceId:randomUUID(),locationId:randomUUID(),userId:"user_synthetic",orgId:"org_synthetic"},"a".repeat(64),randomUUID()),error=>(error as {code:string}).code==="AUDIT_READER_UNAVAILABLE");
+  } finally { if(previous===undefined)delete process.env.CAREIQ_AUDIT_DATABASE_URL;else process.env.CAREIQ_AUDIT_DATABASE_URL=previous; }
 });

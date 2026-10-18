@@ -1,0 +1,73 @@
+{
+  "verifiedAt": "2026-10-18T16:48:41.907Z",
+  "pages": [
+    {
+      "pageId": "3f0e9784-8806-8181-a09b-d78c02b4c5c2",
+      "title": "☑️ Resolve the mobile dependency audit gate",
+      "updatePresent": true,
+      "status": "In progress",
+      "blocked": "__YES__",
+      "lastEditedAt": "2026-10-18T16:44:13.527Z",
+      "truncated": false,
+      "unknownBlocks": 0,
+      "url": "https://app.notion.com/p/3f0e978488068181a09bd78c02b4c5c2?pvs=204"
+    },
+    {
+      "pageId": "3eee9784-8806-8148-8978-ec97bf100e3e",
+      "title": "📍 Current Implementation & Next Steps",
+      "updatePresent": true,
+      "status": null,
+      "blocked": null,
+      "lastEditedAt": "2026-10-18T16:44:16.565Z",
+      "truncated": false,
+      "unknownBlocks": 0,
+      "url": "https://app.notion.com/p/3eee9784880681488978ec97bf100e3e?pvs=204"
+    },
+    {
+      "pageId": "3eee9784-8806-8177-bf1c-e584868b1b30",
+      "title": "☑️ Complete controlled deployment and migration promotion",
+      "updatePresent": true,
+      "status": "In progress",
+      "blocked": "__YES__",
+      "lastEditedAt": "2026-10-18T16:45:36.889Z",
+      "truncated": false,
+      "unknownBlocks": 0,
+      "url": "https://app.notion.com/p/3eee978488068177bf1ce584868b1b30?pvs=204"
+    },
+    {
+      "pageId": "3eee9784-8806-81b7-b019-eae8594cf312",
+      "title": "Run the signed-in v0.1 browser acceptance walkthrough",
+      "updatePresent": true,
+      "status": "In progress",
+      "blocked": "__YES__",
+      "lastEditedAt": "2026-10-18T16:45:40.628Z",
+      "truncated": false,
+      "unknownBlocks": 0,
+      "url": "https://app.notion.com/p/3eee9784880681b7b019eae8594cf312?pvs=204"
+    },
+    {
+      "pageId": "3eee9784-8806-816e-a1c1-e0233091ab58",
+      "title": "☑️ Publish the release checklist and operator handoff",
+      "updatePresent": true,
+      "status": "In progress",
+      "blocked": "__NO__",
+      "lastEditedAt": "2026-10-18T16:44:10.721Z",
+      "truncated": false,
+      "unknownBlocks": 0,
+      "url": "https://app.notion.com/p/3eee97848806816ea1c1e0233091ab58?pvs=204"
+    },
+    {
+      "pageId": "3eee9784-8806-81db-a552-fd29ccc4b4e0",
+      "title": "👤 Detect regressions before release",
+      "updatePresent": true,
+      "status": "In progress",
+      "blocked": "__NO__",
+      "lastEditedAt": "2026-10-18T16:44:21.376Z",
+      "truncated": false,
+      "unknownBlocks": 0,
+      "url": "https://app.notion.com/p/3eee9784880681dba552fd29ccc4b4e0?pvs=204"
+    }
+  ],
+  "allWritesReadBack": true,
+  "scope": "Existing implementation and Software Kanban records updated; broad release/provider/hosted/device gates remain open."
+}

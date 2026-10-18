@@ -1,0 +1,71 @@
+{
+  "verifiedAt": "2026-10-18T17:36:26.708890+00:00",
+  "startingHead": "11df3349d87d9f36235ec5c4047398d290cb9306",
+  "activeProjects": 6,
+  "mobileDirectoryAbsent": true,
+  "workspaceUnitTests": {
+    "api": 224,
+    "web": 73,
+    "marketing": 9,
+    "contract": 3,
+    "i18n": 5,
+    "total": 314,
+    "skipped": 0
+  },
+  "otherChecks": {
+    "securityRegressions": 16,
+    "associations": 8,
+    "componentBrowser": 53,
+    "actualApiPaperworkBrowser": 2,
+    "productionHttp": 3,
+    "releaseTargetGuardCases": 12
+  },
+  "audit": {
+    "production": {
+      "exitCode": 0,
+      "findings": 0
+    },
+    "complete": {
+      "exitCode": 1,
+      "high": 1,
+      "module": "braces",
+      "scope": "Next development lint tooling",
+      "reviewedBackportRetained": true
+    }
+  },
+  "requiredReports": [
+    "source-handoff.json",
+    "release-check.json",
+    "production-install.json",
+    "api-scope-refresh.json",
+    "final-local-checks.json"
+  ],
+  "sourceSha256": {
+    "package.json": "b5f1eb51d22c7fef1fc9f1eac5db1c209126ac57bee78593493e94fe06a13362",
+    "pnpm-workspace.yaml": "2c425b60a1e7c8b6af4d740daccc64e78bf90bebe8052567ba8e0cb86b8f4cc7",
+    "pnpm-lock.yaml": "914796c9b4469f561aedb213dd0a67d16a3946fdfca3407a2f49b9797b49e408",
+    ".github/workflows/ci.yml": "087da432aa9e8551eafcc160374ac3c879571d9266eacd6fce01d1af9e2987ee",
+    ".github/workflows/readiness.yml": "bbb726348a16f3f4a54246c12549dd7ef44c49fbf1e2b937698bba9b486af7d3",
+    "scripts/local-review.py": "c41c5cc2c421f0c71d635873986169f1a317e8160a43730273f8492928c0694c",
+    "scripts/tests/security-dependencies.test.mjs": "bf7ca3e07e16dbfa17c3bc63ed3a91211bc5f20d118d3ea6b05cea88b5b3124c",
+    "patches/braces@3.0.3.patch": "f46149b456f0f0e3e42cc4adf1027ad72afd23673bb4f58173ae56915ed7bad9",
+    "patches/security-manifest.json": "071de9e3d58505e56a2905a8067348b2869a541d6575c547e9d5d978dc73037d",
+    "apps/api/src/workflow/storage-config.ts": "55c2df7b88068d27412ce402f6741d9b5de5c3bbdd0544a991a0110839f0f899",
+    "apps/api/src/workflow/storage.ts": "7c024f7f04a8c77195f6c5421ab1d2653cd84a28a4a1b7bbe21f71d46cd4f78d",
+    "apps/api/src/production-config.ts": "bc5af79ac5bf01fe6dcf2ad5b6ccb0e7f57e99e1c61034f5690731e48ac89b91",
+    "apps/api/src/services/protected-audit.service.ts": "60335e8f9944507ad007f4760444999958cffaca4d4b29c4142d5824c27fa079",
+    "apps/marketing/src/lib/submission.ts": "52ec9cb454ce0ca372d7225887f2f3fad41cf324b7e94dd931d2bdcd71c45444"
+  },
+  "newRepositoryCreated": false,
+  "mutations": {
+    "staged": false,
+    "committed": false,
+    "pushed": false,
+    "deployed": false,
+    "hostedDatabaseChanged": false,
+    "schemaSqlChanged": false
+  },
+  "futureMobileRepositoryDeferred": true,
+  "overallHostedProductionAccepted": false,
+  "limits": "Local/graph/install evidence is bounded; compiled vendor recursion and actual hosted provider/operations/device acceptance remain separate."
+}

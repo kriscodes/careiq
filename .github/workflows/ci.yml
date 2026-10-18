@@ -31,9 +31,6 @@ jobs:
           --health-retries 12
     env:
       CI: true
-      EXPO_NO_DOTENV: 1
-      EXPO_NO_TELEMETRY: 1
-      CAREIQ_MOBILE_VARIANT: preview
       NEXT_TELEMETRY_DISABLED: 1
       DATABASE_URL: postgresql://postgres:disposable-ci-password@127.0.0.1:5432/careiq_test
       TEST_DATABASE_URL: postgresql://postgres:disposable-ci-password@127.0.0.1:5432/careiq_test
@@ -56,6 +53,14 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+      - run: pnpm security:regressions
+      - run: pnpm web:associations:test
+      - name: Browser workflows with synthetic identity and API fixtures
+        run: |
+          pnpm --fail-if-no-match --filter ./apps/web exec playwright install --with-deps chromium
+          pnpm --fail-if-no-match --filter ./apps/web test:browser
+      - name: Browser paperwork through the real local API and restricted database
+        run: pnpm test:browser:api
       - name: Build workspaces with reserved configuration fixtures
         env:
           # Reserved .invalid fixtures cannot authenticate a real account.
@@ -68,6 +73,4 @@ jobs:
           pnpm --fail-if-no-match --filter @careiq/api build
           pnpm --fail-if-no-match --filter ./apps/web exec next build --webpack
           pnpm --fail-if-no-match --filter @careiq/marketing exec next build --webpack
-          pnpm --fail-if-no-match --filter @careiq/mobile exec expo install --check
-          pnpm --fail-if-no-match --filter @careiq/mobile build
       - run: pnpm audit --prod --audit-level moderate

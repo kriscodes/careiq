@@ -1,7 +1,9 @@
 import { addBoundedPdfPage } from './pdf-limits.js';
 import { createHash } from 'node:crypto';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { resolve, join } from 'node:path';
+import { mkdir, open, writeFile } from 'node:fs/promises';
+import { constants } from 'node:fs';
+import { join } from 'node:path';
+import { privateStorageRoot, verifyPrivateStorageDirectory } from './storage-config.js';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { inflateSync } from 'node:zlib';
@@ -9,27 +11,44 @@ import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import { WorkflowError } from './policy.js';
 const execFileAsync = promisify(execFile);
 export const maximumFileBytes = 10 * 1024 * 1024;
-const root = () => resolve(process.env.CAREIQ_PRIVATE_STORAGE_DIR || join(process.cwd(), '.local-review/private-documents'));
+const root = (environment: NodeJS.ProcessEnv = process.env) => privateStorageRoot(environment);
 const safeKey = (key: string) => {
-    if (!/^[a-f0-9-]{36}\.(?:bin|pdf|json)$/.test(key))
+    if (!/^(?:[a-f0-9-]{36}\.(?:bin|pdf|json)|[a-f0-9]{64}\.json)$/.test(key))
         throw new WorkflowError('INVALID_STORAGE_REFERENCE', 500);
     return key;
 };
 export const sha256 = (bytes: Uint8Array) => createHash('sha256').update(bytes).digest('hex');
-export async function storePrivate(key: string, bytes: Uint8Array) {
-    await mkdir(root(), { recursive: true, mode: 0o700 });
+/** Preserve the first bytes without following an existing link. Callers must read/validate on EEXIST. */
+export async function writePrivateIfAbsent(key: string, bytes: Uint8Array, environment: NodeJS.ProcessEnv = process.env): Promise<boolean> {
+    const filename = safeKey(key), directory = root(environment);
+    await mkdir(directory, { recursive: true, mode: 0o700 });
+    await verifyPrivateStorageDirectory(environment);
     try {
-        await writeFile(join(root(), safeKey(key)), bytes, { flag: 'wx', mode: 0o600 });
-    }
-    catch (error) {
-        if ((error as NodeJS.ErrnoException).code !== 'EEXIST')
-            throw error;
-        const existing = await readPrivate(key);
-        if (sha256(existing) !== sha256(bytes))
-            throw new WorkflowError('IMMUTABLE_OBJECT_CONFLICT', 409);
+        await writeFile(join(directory, filename), bytes, { flag: constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW, mode: 0o600 });
+        return true;
+    } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
+        return false;
     }
 }
-export const readPrivate = (key: string) => readFile(join(root(), safeKey(key)));
+export async function storePrivate(key: string, bytes: Uint8Array, environment: NodeJS.ProcessEnv = process.env) {
+    if (!await writePrivateIfAbsent(key, bytes, environment)) {
+        const existing = await readPrivate(key, environment);
+        if (sha256(existing) !== sha256(bytes)) throw new WorkflowError('IMMUTABLE_OBJECT_CONFLICT', 409);
+    }
+}
+export function readPrivate(key: string, environment: NodeJS.ProcessEnv = process.env): Promise<Buffer> {
+    return readPrivateFile(safeKey(key), environment);
+}
+async function readPrivateFile(key: string, environment: NodeJS.ProcessEnv): Promise<Buffer> {
+    const directory = await verifyPrivateStorageDirectory(environment);
+    const file = await open(join(directory, key), constants.O_RDONLY | constants.O_NOFOLLOW);
+    try {
+        const metadata = await file.stat();
+        if (!metadata.isFile() || metadata.nlink !== 1 || (metadata.mode & 0o077) !== 0 || (process.getuid && metadata.uid !== process.getuid())) throw new WorkflowError('PRIVATE_STORAGE_OBJECT_UNSAFE', 503);
+        return await file.readFile();
+    } finally { await file.close(); }
+}
 export function detectType(bytes: Buffer): string {
     if (bytes.subarray(0, 5).toString() === '%PDF-')
         return 'application/pdf';

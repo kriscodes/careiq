@@ -33,9 +33,6 @@ jobs:
       DATABASE_URL: postgresql://careiq_ci:disposable_ci_only@127.0.0.1:5432/careiq_test
       TEST_DATABASE_URL: postgresql://careiq_ci:disposable_ci_only@127.0.0.1:5432/careiq_test
       DATABASE_SSL_MODE: disable
-      EXPO_NO_DOTENV: 1
-      EXPO_NO_TELEMETRY: 1
-      CAREIQ_MOBILE_VARIANT: preview
       NEXT_TELEMETRY_DISABLED: 1
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -58,18 +55,17 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm security:regressions
-      - run: pnpm mobile:links:test
+      - run: pnpm web:associations:test
       - name: Browser harness (synthetic identity and API only)
         run: |
           pnpm --fail-if-no-match --filter ./apps/web exec playwright install --with-deps chromium
           pnpm --fail-if-no-match --filter ./apps/web test:browser
       - name: Browser paperwork through the real local API and restricted database
-        env:
-          CAREIQ_REAL_API_E2E: "true"
-        run: pnpm --fail-if-no-match --filter ./apps/web exec playwright test --config playwright.integration.config.ts
+        run: pnpm test:browser:api
       - name: Build API and shared contract
         run: |
           pnpm --fail-if-no-match --filter @careiq/interview-contract build
+          pnpm --fail-if-no-match --filter @careiq/i18n build
           pnpm --fail-if-no-match --filter @careiq/api build
       - name: Build web with reserved configuration fixtures
         env:
@@ -81,10 +77,6 @@ jobs:
         run: pnpm --fail-if-no-match --filter ./apps/web exec next build --webpack
       - name: Build marketing
         run: pnpm --fail-if-no-match --filter @careiq/marketing exec next build --webpack
-      - name: Expo compatibility and JavaScript exports
-        run: |
-          pnpm --fail-if-no-match --filter @careiq/mobile exec expo install --check
-          pnpm --fail-if-no-match --filter @careiq/mobile build
 
   dependency-audit:
     runs-on: ubuntu-latest

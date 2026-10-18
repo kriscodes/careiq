@@ -53,7 +53,7 @@ Browser sessions retain exact authorized-party and origin configuration. The sep
 
 ## Repository changes and documentation reconciliation
 
-`apps/web` contains branded Clerk authentication, access/session states, three-step onboarding and practice/location administration. `apps/mobile` contains the Expo iOS/Android implementation, secure provider token cache, in-memory request/data lifecycle and the same onboarding/access contract. `apps/api` enforces the shared policy and persists/reconciles setup state.
+`apps/web` contains branded Clerk authentication, access/session states, three-step onboarding and practice/location administration. The former `apps/mobile` Expo implementation is preserved outside this checkout for a later separate repository; see [mobile separation](mobile-separation.md). `apps/api` enforces the shared policy and persists/reconciles setup state.
 
 Documentation previously authored in local project copies was brought into this repo: ADR-017, security/backup runbooks, practice access, mobile architecture/development/review, deployment history, release guides and changelog. Historical verification/deployment entries remain historical; they do not imply these new changes are deployed. Current architecture/development guidance now describes controlled provisioning rather than lazy `/me` creation.
 

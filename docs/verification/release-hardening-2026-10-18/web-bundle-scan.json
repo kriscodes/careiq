@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-10-18",
+  "checks": [
+    {
+      "name": "web-client",
+      "filesScanned": 39,
+      "sensitiveMarkerOccurrences": {
+        "postgres-url": 0,
+        "database-url-name": 0,
+        "secret-key-prefix": 0,
+        "private-key": 0
+      },
+      "pass": true
+    },
+    {
+      "name": "marketing-export",
+      "filesScanned": 41,
+      "sensitiveMarkerOccurrences": {
+        "postgres-url": 0,
+        "database-url-name": 0,
+        "secret-key-prefix": 0,
+        "private-key": 0
+      },
+      "pass": true
+    }
+  ],
+  "scope": "Final marketing transport-fix build and isolated web production build; public outputs only.",
+  "limitations": "Marker-based inspection, not proof of absence of all possible secrets. Source maps included if emitted. Server output excluded because configuration remains server-side."
+}
