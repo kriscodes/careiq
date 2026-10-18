@@ -4,12 +4,12 @@
   color-scheme: light;
   --cq-bg: #ffffff;
   --cq-panel: #ffffff;
-  --cq-text: #2b3832;
-  --cq-muted: #626f68;
-  --cq-border: #e4e9e6;
-  --cq-accent: #496f5a;
-  --cq-soft: #f0f5f2;
-  --cq-hover: #f5f8f6;
+  --cq-text: #202b34;
+  --cq-muted: #617080;
+  --cq-border: #e1e7ef;
+  --cq-accent: #0067e8;
+  --cq-soft: #eef5ff;
+  --cq-hover: #f5f8ff;
   --background: var(--cq-bg);
   --foreground: var(--cq-text);
 }
@@ -23,6 +23,12 @@
 
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--cq-bg); color: var(--cq-text); font-family: "Segoe UI", ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 14px; line-height: 1.5; }
+.cq-topbar { gap: 16px; justify-content: space-between; flex-wrap: wrap; }
+.cq-a-header-actions { flex-wrap: wrap; }
+html[dir="rtl"] .cq-sidebar { border-right: 0; border-inline-end: 1px solid var(--cq-border); }
+html[dir="rtl"] .cq-navbutton, html[dir="rtl"] .cq-row { text-align: start; }
+html[dir="rtl"] .cq-count { margin-left: 0; margin-inline-start: auto; }
+@media (max-width: 600px) { .cq-a-header { flex-wrap: wrap; } .cq-a-header-actions { margin-inline-start: auto; } }
 button, input, select, textarea { font: inherit; }
 button { cursor: pointer; touch-action: manipulation; }
 button:disabled, fieldset:disabled { cursor: not-allowed; }
@@ -149,9 +155,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .cq-reviewer-button:hover { background: #fff5df; }
 
 /* Native dialogs use the browser top layer; sizing never depends on observers. */
-.cq-modal { color-scheme: light; position: fixed; inset: 0; margin: auto; width: min(500px, calc(100vw - 32px)); max-width: none; max-height: calc(100dvh - 40px); overflow-y: auto; padding: 0; background: var(--cq-panel); color: var(--cq-text); border: 1px solid var(--cq-border); border-radius: 18px; box-shadow: 0 24px 80px #22332924; }
+.cq-modal { color-scheme: light; position: fixed; inset: 0; margin: auto; width: min(500px, calc(100vw - 32px)); max-width: none; max-height: calc(100dvh - 40px); overflow-y: auto; overscroll-behavior: contain; scroll-padding-block: 20px; padding: 0; background: var(--cq-panel); color: var(--cq-text); border: 1px solid var(--cq-border); border-radius: 18px; box-shadow: 0 24px 80px #22332924; }
 .cq-modal::backdrop { background: #293b3233; }
 .cq-modal-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 26px 26px 22px; border-bottom: 1px solid var(--cq-border); }
+.cq-modal-head > div { min-width: 0; }
+.cq-modal-body { min-width: 0; padding: 24px 26px 26px; }
+/* The shared body owns the gutter for both legacy and workflow content. */
+.cq-modal-body .cq-form-body, .cq-modal-body > .cq-notes-body { padding: 0; }
 .cq-modal-head h2 { font-size: 21px; font-weight: 650; letter-spacing: -.6px; line-height: 1.3; }
 .cq-modal-head p { margin-top: 7px; font-size: 12px; color: var(--cq-muted); }
 .cq-modal-head .cq-iconbutton { flex: 0 0 36px; font-size: 25px; margin-top: -7px; margin-right: -7px; }
@@ -230,6 +240,7 @@ textarea.cq-input { resize: vertical; min-height: 96px; }
   .cq-section-head > span { text-align: right; }
   .cq-patient-tools { padding-left: 16px; padding-right: 16px; }
   .cq-modal-head { padding: 22px 20px 18px; }
+  .cq-modal-body { padding: 22px 20px 24px; }
   .cq-form-body { padding: 20px; }
   .cq-notes-body { padding: 20px; }
   .cq-row { grid-template-columns: 61px 30px minmax(0, 1fr) 12px; gap: 8px; }

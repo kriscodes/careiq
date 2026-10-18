@@ -25,6 +25,7 @@ CONTAINER = "careiq-auth-review-db"
 VOLUME = "careiq-auth-review-pgdata"
 DB_PORT = 55434
 RUNTIME_ROLE = "careiq_review_runtime"
+AUDIT_ROLE = "careiq_review_audit"
 LABEL = "com.careiq.local-review"
 APPS = {
     "api": {"directory": "apps/api", "port": 3100, "url": "http://localhost:3100/health", "health": "/health"},
@@ -246,6 +247,37 @@ COMMIT;
     write_private(path, f"DATABASE_URL={value}\nDATABASE_SSL_MODE=disable\nHOST=127.0.0.1\nPORT=3100\nINTERVIEW_REQUESTS_ENABLED=false\nCLERK_NATIVE_AUTH_ENABLED=false\n")
 
 
+
+def ensure_audit_reader():
+    path = STATE / "audit.env"
+    existing = read_env(path)
+    password = local_url(existing["CAREIQ_AUDIT_DATABASE_URL"], AUDIT_ROLE, "careiq_review").password if existing else secrets.token_hex(24)
+    if not password or any(character not in "0123456789abcdef" for character in password):
+        raise ReviewError("Audit reader credential metadata differs from this runner; no role was changed.")
+    PRIVATE_VALUES.add(password)
+    marker = "CareIQ isolated local review audit reader"
+    role_sql = f"""
+BEGIN;
+DO $$ BEGIN
+  IF NOT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='{AUDIT_ROLE}') THEN
+    CREATE ROLE {AUDIT_ROLE} LOGIN PASSWORD '{password}' INHERIT NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE NOREPLICATION;
+    COMMENT ON ROLE {AUDIT_ROLE} IS '{marker}';
+  ELSIF (SELECT shobj_description(oid,'pg_authid') FROM pg_roles WHERE rolname='{AUDIT_ROLE}') IS DISTINCT FROM '{marker}' THEN
+    RAISE EXCEPTION 'Existing audit reader belongs to another environment';
+  ELSE
+    ALTER ROLE {AUDIT_ROLE} PASSWORD '{password}';
+  END IF;
+END $$;
+GRANT careiq_audit_reader TO {AUDIT_ROLE};
+COMMIT;
+"""
+    docker("exec", "-i", CONTAINER, "psql", "-U", "postgres", "-d", "careiq_review", "-v", "ON_ERROR_STOP=1", "-f", "-", input_text=role_sql)
+    audit_secret = existing.get("CAREIQ_AUDIT_CURSOR_SECRET") or secrets.token_hex(32)
+    workflow_secret = existing.get("CAREIQ_WORKFLOW_CURSOR_SECRET") or secrets.token_hex(32)
+    value = f"postgresql://{AUDIT_ROLE}:{password}@127.0.0.1:{DB_PORT}/careiq_review"
+    write_private(path, f"CAREIQ_AUDIT_DATABASE_URL={value}\nCAREIQ_AUDIT_SSL_MODE=disable\nCAREIQ_AUDIT_CURSOR_SECRET={audit_secret}\nCAREIQ_WORKFLOW_CURSOR_SECRET={workflow_secret}\n")
+
+
 def test_clerk_configuration():
     api = read_env(ROOT / "apps/api/.env")
     web = read_env(ROOT / "apps/web/.env.local")
@@ -279,6 +311,14 @@ def app_environment(name: str):
             founder_ids = ",".join(approved)
         origins = [f"http://{host}:{port}" for host in ("localhost", "127.0.0.1") for port in (3101, 3102, 8082)]
         environment.update(runtime)
+        audit = read_env(STATE / "audit.env")
+        local_url(audit.get("CAREIQ_AUDIT_DATABASE_URL", ""), AUDIT_ROLE, "careiq_review")
+        environment.update(audit)
+        environment.update({"CAREIQ_PRIVATE_STORAGE_DIR": str(STATE / "private-documents"), "CAREIQ_AUDIT_EXPORT_DIR": str(STATE / "audit-exports")})
+        # An actual local scanner remains optional; uploads fail closed without one.
+        scanner = shutil.which("clamscan")
+        if scanner:
+            environment["CAREIQ_SCANNER_COMMAND"] = scanner
         environment.update({"CLERK_PUBLISHABLE_KEY": publishable, "CLERK_SECRET_KEY": secret, "CORS_ORIGINS": ",".join(origins),
                             "TRUSTED_PROXY_CIDRS": "", "CLERK_NATIVE_AUTHORIZED_PARTIES": "", "CLERK_WEBHOOK_SIGNING_SECRET": "",
                             "CAREIQ_PRACTICE_CREATOR_USER_IDS": founder_ids,
@@ -361,6 +401,7 @@ def setup():
     ensure_database()
     migrate_databases()
     ensure_runtime()
+    ensure_audit_reader()
     print("Isolated local databases and restricted review runtime are ready on 127.0.0.1:55434.", flush=True)
 
 

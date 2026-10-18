@@ -39,7 +39,7 @@ function createMobileBuildConfig(config, env) {
     ios: { ...config.ios, bundleIdentifier: bundle, ...(linkHost ? { associatedDomains: [`applinks:${linkHost}`] } : {}) },
     android: {
       ...config.android, package: androidPackage, allowBackup: false,
-      ...(linkHost ? { intentFilters: [{ action: "VIEW", autoVerify: true, category: ["BROWSABLE", "DEFAULT"], data: [{ scheme: "https", host: linkHost, path: "/join" }] }] } : {}),
+      ...(linkHost ? { intentFilters: [{ action: "VIEW", autoVerify: true, category: ["BROWSABLE", "DEFAULT"], data: [{ scheme: "https", host: linkHost, path: "/join" }, { scheme: "https", host: linkHost, path: "/patient-workflow" }] }] } : {}),
     },
     extra: { ...config.extra, mobileVariant: variant, ...(projectId ? { eas: { projectId } } : {}) },
   };

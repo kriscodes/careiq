@@ -8,7 +8,7 @@ for (const key of ["CAREIQ_WEB_TEST_URL", "CAREIQ_WEB_PRODUCTION_URL"]) {
 export default defineConfig({
   testDir: "./tests/browser",
   projects: [
-    { name: "components", testMatch: "components.spec.ts" },
+    { name: "components", testMatch: ["components.spec.ts", "workflow.spec.ts", "audit.spec.ts", "i18n.spec.ts"] },
     ...(process.env.CAREIQ_WEB_TEST_URL ? [{ name: "live", testMatch: "live.spec.ts", use: { baseURL: process.env.CAREIQ_WEB_TEST_URL } }] : []),
     ...(process.env.CAREIQ_WEB_PRODUCTION_URL ? [{ name: "production", testMatch: "production.spec.ts", use: { baseURL: process.env.CAREIQ_WEB_PRODUCTION_URL } }] : []),
   ],
@@ -18,5 +18,5 @@ export default defineConfig({
   retries: 0,
   reporter: "list",
   outputDir: "test-results/browser",
-  use: { browserName: "chromium", channel: process.env.PLAYWRIGHT_CHANNEL, viewport: { width: 1280, height: 900 }, trace: "off", screenshot: "off", video: "off" },
+  use: { browserName: "chromium", channel: process.env.PLAYWRIGHT_CHANNEL, launchOptions: { timeout: 180_000 }, viewport: { width: 1280, height: 900 }, trace: "off", screenshot: "off", video: "off" },
 });

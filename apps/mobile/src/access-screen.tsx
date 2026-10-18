@@ -1,9 +1,10 @@
+import { Text, View, useI18n, NativeCopyError } from "./i18n";
+import { WorkflowScreen } from "./workflow-screen";
 import { useAuth, useClerk, useOrganizationList, useUser } from "@clerk/expo";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { AppState, Text, View } from "react-native";
-import { userMessage } from "./api";
+import { AppState } from "react-native";
 import { invitationConfirmation } from "./invitation-policy";
 import { canEnterLocation, type AccessContext } from "./contracts";
 import { useApiSession } from "./session";
@@ -14,6 +15,7 @@ export function AccessScreen({
 }: {
   created?: boolean;
 }) {
+  const { errorMessage, t: tx } = useI18n();
   const router = useRouter();
   const {
     orgId,
@@ -71,36 +73,37 @@ export function AccessScreen({
       });
       setShowPractices(false);
     } catch (e) {
-      setError(userMessage(e));
+      setError(errorMessage(e));
     } finally {
       setBusy(false);
     }
   };
   const logout = () => {
     clear();
-    void signOut().then(() => router.replace("/sign-in")).catch(e => setError(userMessage(e)));
+    void signOut().then(() => router.replace("/sign-in")).catch(e => setError(errorMessage(e)));
   };
   const memberships = organizations.userMemberships.data ?? [];
   const invitations = organizations.userInvitations.data ?? [];
-  if (showPractices || !orgId && memberships.length) return <Page title="Choose your practice" description="Open a practice you’re a member of." onBack={orgId ? () => setShowPractices(false) : undefined}>{memberships.map(member => <Choice key={member.id} title={member.organization.name} description={member.organization.id === orgId ? "Current practice" : "Tap to continue"} selected={member.organization.id === orgId} onPress={() => void switchPractice(member.organization.id)} />)}{organizations.userMemberships.hasNextPage && <Button secondary busy={organizations.userMemberships.isFetching} onPress={() => void organizations.userMemberships.fetchNext?.()}>Show more practices</Button>}<Feedback error={error} />{invitations.length > 0 && <Button secondary onPress={() => router.push("/join")}>View invitations</Button>}<TextButton onPress={logout}>Sign out</TextButton></Page>;
-  if (context.isError) return <Page title="We couldn’t confirm your access" description="Check again before opening your practice."><Feedback error={userMessage(context.error)} /><Button busy={context.isFetching} onPress={() => void context.refetch()}>Try again</Button>{memberships.length > 0 && <Button secondary onPress={() => setShowPractices(true)}>Choose a practice</Button>}<TextButton onPress={logout}>Sign out</TextButton></Page>;
-  if (context.isPending || !organizations.isLoaded || organizations.userMemberships.isLoading) return <Page title="Opening your practice…">{null}</Page>;
+  if (showPractices || !orgId && memberships.length) return <Page title={tx("mobile.copy.choose_your_practice_b5a03b7")} description={tx("mobile.copy.open_a_practice_you_re_a_member_of_e02f7fd")} onBack={orgId ? () => setShowPractices(false) : undefined}>{memberships.map(member => <Choice key={member.id} title={member.organization.name} description={member.organization.id === orgId ? tx("mobile.copy.current_practice_0d5bbd2") : tx("mobile.copy.tap_to_continue_cbaabfd")} selected={member.organization.id === orgId} onPress={() => void switchPractice(member.organization.id)} />)}{organizations.userMemberships.hasNextPage && <Button secondary busy={organizations.userMemberships.isFetching} onPress={() => void organizations.userMemberships.fetchNext?.()}>{tx("mobile.copy.show_more_practices_e75819c")}</Button>}<Feedback error={error} />{invitations.length > 0 && <Button secondary onPress={() => router.push("/join")}>{tx("mobile.copy.view_invitations_9749155")}</Button>}<TextButton onPress={logout}>{tx("mobile.copy.sign_out_dc1649a")}</TextButton></Page>;
+  if (context.isError) return <Page title={tx("mobile.copy.we_couldn_t_confirm_your_access_d8f2762")} description={tx("mobile.copy.check_again_before_opening_your_practice_17b854a")}><Feedback error={errorMessage(context.error)} /><Button busy={context.isFetching} onPress={() => void context.refetch()}>{tx("mobile.copy.try_again_042c862")}</Button>{memberships.length > 0 && <Button secondary onPress={() => setShowPractices(true)}>{tx("mobile.copy.choose_a_practice_155a4fb")}</Button>}<TextButton onPress={logout}>{tx("mobile.copy.sign_out_dc1649a")}</TextButton></Page>;
+  if (context.isPending || !organizations.isLoaded || organizations.userMemberships.isLoading) return <Page title={tx("mobile.copy.opening_your_practice_7458ad4")}>{null}</Page>;
   const access = context.data;
-  if (access.onboarding === "required" || !access.practice) return <Page title="Welcome to CareIQ" description="Create your practice or join the team that invited you.">{invitations.length > 0 && <Button onPress={() => router.push("/join")}>View your invitations</Button>}{access.onboardingOrgId && <Button onPress={() => void switchPractice(access.onboardingOrgId!)}>Continue practice setup</Button>}<Button secondary={invitations.length > 0} onPress={() => router.push("/onboarding")}>Set up a new practice</Button><Button secondary onPress={() => router.push("/join")}>Join a practice</Button><Feedback error={error} /><TextButton onPress={logout}>Sign out</TextButton></Page>;
+  if (access.onboarding === "required" || !access.practice) return <Page title={tx("mobile.copy.welcome_to_careiq_dbffa1a")} description={tx("mobile.copy.create_your_practice_or_join_the_team_that_invited_y_422d7b5")}>{invitations.length > 0 && <Button onPress={() => router.push("/join")}>{tx("mobile.copy.view_your_invitations_0892d4e")}</Button>}{access.onboardingOrgId && <Button onPress={() => void switchPractice(access.onboardingOrgId!)}>{tx("mobile.copy.continue_practice_setup_865fb7c")}</Button>}<Button secondary={invitations.length > 0} onPress={() => router.push("/onboarding")}>{tx("mobile.copy.set_up_a_new_practice_62f661b")}</Button><Button secondary onPress={() => router.push("/join")}>{tx("mobile.copy.join_a_practice_a805a4f")}</Button><Feedback error={error} /><TextButton onPress={logout}>{tx("mobile.copy.sign_out_dc1649a")}</TextButton></Page>;
   if (access.onboarding === "pending" || access.enrollmentStatus !== "active") {
     const removed = ["suspended", "revoked"].includes(access.enrollmentStatus ?? "");
-    return <Page title={removed ? "Your access has changed" : "You’ve joined the practice"} description={removed ? "Your practice owner can help confirm your access." : "Your invitation was accepted. Your owner needs to confirm your role and locations."}><View style={styles.card}><Text style={styles.label}>{access.practice.name}</Text><Text style={styles.note}>{removed ? "Access unavailable" : "Waiting for access confirmation"}</Text></View><Button busy={context.isFetching} onPress={() => void context.refetch()}>Check access again</Button>{memberships.length > 1 && <Button secondary onPress={() => setShowPractices(true)}>Switch practice</Button>}<Feedback error={error} /><TextButton onPress={logout}>Sign out</TextButton></Page>;
+    return <Page title={removed ? tx("mobile.copy.your_access_has_changed_0464d28") : tx("mobile.copy.you_ve_joined_the_practice_ef915df")} description={removed ? tx("mobile.copy.your_practice_owner_can_help_confirm_your_access_1836e5c") : tx("mobile.copy.your_invitation_was_accepted_your_owner_needs_to_con_c93cf55")}><View style={styles.card}><Text style={styles.label}>{access.practice.name}</Text><Text style={styles.note}>{removed ? tx("mobile.copy.access_unavailable_bc1b06f") : tx("mobile.copy.waiting_for_access_confirmation_77a133e")}</Text></View><Button busy={context.isFetching} onPress={() => void context.refetch()}>{tx("mobile.copy.check_access_again_ab00d01")}</Button>{memberships.length > 1 && <Button secondary onPress={() => setShowPractices(true)}>{tx("mobile.copy.switch_practice_29938f9")}</Button>}<Feedback error={error} /><TextButton onPress={logout}>{tx("mobile.copy.sign_out_dc1649a")}</TextButton></Page>;
   }
-  if (created) return <Page title="Your practice is ready" description={`${access.practice.name} and its first location have been created.`}><View style={styles.success}><Text style={{
+  if (created) return <Page title={tx("mobile.copy.your_practice_is_ready_55f31d7")} description={tx("mobile.copy.value0_and_its_first_location_have_been_created_9463f29", { value0: access.practice.name })}><View style={styles.success}><Text style={{
         fontSize: 25
-      }}>✓</Text></View><Note>You’re the practice owner. You can invite your team and choose your own location access when you’re ready.</Note><Button onPress={() => router.replace("/")}>Continue to practice</Button>{access.management.members && <Button secondary onPress={() => router.push("/team")}>Invite a teammate</Button>}<TextButton onPress={() => router.push("/team?self=1")}>Set my location access</TextButton></Page>;
+      }}>✓</Text></View><Note>{tx("mobile.copy.you_re_the_practice_owner_you_can_invite_your_team_a_ae8634d")}</Note><Button onPress={() => router.replace("/")}>{tx("mobile.copy.continue_to_practice_91f5815")}</Button>{access.management.members && <Button secondary onPress={() => router.push("/team")}>{tx("mobile.copy.invite_a_teammate_bb56a15")}</Button>}<TextButton onPress={() => router.push("/team?self=1")}>{tx("mobile.copy.set_my_location_access_17a4a93")}</TextButton></Page>;
   const locations = access.locations.filter(location => canEnterLocation(access, location.id));
-  if (!locations.length) return <Page title={access.practice.ownerUserId === userId ? "Choose your location access" : "Location access is needed"} description={access.practice.ownerUserId === userId ? "Your practice is ready. Choose a working location before accessing its workspace." : "Ask your practice owner to assign an active location to you."}><Note>{access.practice.name}</Note>{access.management.members && <><Button onPress={() => router.push("/team?self=1")}>Set my location access</Button><Button secondary onPress={() => router.push("/team")}>Invite and manage teammates</Button></>}<Button secondary busy={context.isFetching} onPress={() => void context.refetch()}>Check access again</Button>{memberships.length > 1 && <TextButton onPress={() => setShowPractices(true)}>Switch practice</TextButton>}<TextButton onPress={logout}>Sign out</TextButton></Page>;
-  if (!locationId || !canEnterLocation(access, locationId)) return <Page title="Choose your working location" description={access.practice.name}>{locations.map(location => <Choice key={location.id} title={location.name} description={location.timeZone} onPress={() => selectLocation(location.id)} />)}{access.management.members && <TextButton onPress={() => router.push("/team")}>Manage team access</TextButton>}{memberships.length > 1 && <TextButton onPress={() => setShowPractices(true)}>Switch practice</TextButton>}<TextButton onPress={logout}>Sign out</TextButton></Page>;
+  if (!locations.length) return <Page title={access.practice.ownerUserId === userId ? tx("mobile.copy.choose_your_location_access_fbe14ba") : tx("mobile.copy.location_access_is_needed_e300d00")} description={access.practice.ownerUserId === userId ? tx("mobile.copy.your_practice_is_ready_choose_a_working_location_bef_1f0fb73") : tx("mobile.copy.ask_your_practice_owner_to_assign_an_active_location_f373eca")}><Note>{access.practice.name}</Note>{access.management.members && <><Button onPress={() => router.push("/team?self=1")}>{tx("mobile.copy.set_my_location_access_17a4a93")}</Button><Button secondary onPress={() => router.push("/team")}>{tx("mobile.copy.invite_and_manage_teammates_1ec85ba")}</Button></>}<Button secondary busy={context.isFetching} onPress={() => void context.refetch()}>{tx("mobile.copy.check_access_again_ab00d01")}</Button>{memberships.length > 1 && <TextButton onPress={() => setShowPractices(true)}>{tx("mobile.copy.switch_practice_29938f9")}</TextButton>}<TextButton onPress={logout}>{tx("mobile.copy.sign_out_dc1649a")}</TextButton></Page>;
+  if (!locationId || !canEnterLocation(access, locationId)) return <Page title={tx("mobile.copy.choose_your_working_location_d490f58")} description={access.practice.name}>{locations.map(location => <Choice key={location.id} title={location.name} description={location.timeZone} onPress={() => selectLocation(location.id)} />)}{access.management.members && <TextButton onPress={() => router.push("/team")}>{tx("mobile.copy.manage_team_access_db8b531")}</TextButton>}{memberships.length > 1 && <TextButton onPress={() => setShowPractices(true)}>{tx("mobile.copy.switch_practice_29938f9")}</TextButton>}<TextButton onPress={logout}>{tx("mobile.copy.sign_out_dc1649a")}</TextButton></Page>;
   const location = locations.find(l => l.id === locationId)!;
-  return <Page title="You’re ready to get started" description={access.practice.name}><View style={styles.card}><Text style={styles.label}>{location.name}</Text><Text style={styles.note}>{location.timeZone}</Text></View><Note>Your account and assigned location are confirmed. Scheduling and patient workflows will use this practice and location.</Note><Button secondary onPress={() => selectLocation(null)}>Change location</Button>{access.management.members && <Button secondary onPress={() => router.push("/team")}>Manage team access</Button>}{memberships.length > 1 && <TextButton onPress={() => setShowPractices(true)}>Switch practice</TextButton>}<TextButton onPress={logout}>Sign out</TextButton></Page>;
+  return <WorkflowScreen practiceName={access.practice.name} locationName={location.name} onChangeLocation={() => selectLocation(null)} />;
 }
 export function JoinScreen() {
+  const { errorMessage, t: tx } = useI18n();
   const {
     user
   } = useUser();
@@ -141,7 +144,7 @@ export function JoinScreen() {
     }).then(() => {
       if (live) router.replace("/");
     }).catch(e => {
-      if (live) setError(userMessage(e));
+      if (live) setError(errorMessage(e));
     }).finally(() => {
       if (live) setBusy(false);
     });
@@ -149,27 +152,27 @@ export function JoinScreen() {
       live = false;
       controller.abort();
     };
-  }, [confirmation, orgId, api, scope, router]);
-  if (confirmation === "confirm") return <Page title={error ? "We couldn’t confirm your practice" : "Confirming your practice…"} description="Your invitation is accepted. Confirming your account with the practice." onBack={() => router.replace("/")}><Feedback error={error} />{error && <Button busy={busy} onPress={() => {
+  }, [confirmation, orgId, api, scope, router, errorMessage]);
+  if (confirmation === "confirm") return <Page title={error ? tx("mobile.copy.we_couldn_t_confirm_your_practice_6410554") : tx("mobile.copy.confirming_your_practice_05e8bd7")} description={tx("mobile.copy.your_invitation_is_accepted_confirming_your_account__988790d")} onBack={() => router.replace("/")}><Feedback error={error} />{error && <Button busy={busy} onPress={() => {
     setBusy(true); setError("");
-    void confirmAccess().catch(e => setError(userMessage(e))).finally(() => setBusy(false));
-  }}>Confirm practice access again</Button>}<TextButton onPress={() => router.replace("/")}>Back to my practices</TextButton></Page>;
-  return <Page title="Join your practice" description={`Invitations for ${user?.primaryEmailAddress?.emailAddress || "your account"}.`} onBack={() => router.replace("/")}>{organizations.userInvitations.isLoading ? <Text style={styles.body}>Checking your invitations…</Text> : organizations.userInvitations.data?.length ? organizations.userInvitations.data.map(invitation => <View key={invitation.id} style={styles.card}><Text style={styles.label}>{invitation.publicOrganizationData.name}</Text><Text style={styles.note}>Your owner will confirm your role and locations after you accept.</Text><Button busy={busy} onPress={() => {
+    void confirmAccess().catch(e => setError(errorMessage(e))).finally(() => setBusy(false));
+  }}>{tx("mobile.copy.confirm_practice_access_again_b25255a")}</Button>}<TextButton onPress={() => router.replace("/")}>{tx("mobile.copy.back_to_my_practices_0ab2796")}</TextButton></Page>;
+  return <Page title={tx("mobile.copy.join_your_practice_19966f6")} description={tx("mobile.copy.invitations_for_value0_84ed33c", { value0: user?.primaryEmailAddress?.emailAddress || tx("mobile.copy.your_account_637395c") })} onBack={() => router.replace("/")}>{organizations.userInvitations.isLoading ? <Text style={styles.body}>{tx("mobile.copy.checking_your_invitations_54399c4")}</Text> : organizations.userInvitations.data?.length ? organizations.userInvitations.data.map(invitation => <View key={invitation.id} style={styles.card}><Text style={styles.label}>{invitation.publicOrganizationData.name}</Text><Text style={styles.note}>{tx("mobile.copy.your_owner_will_confirm_your_role_and_locations_afte_b4fd22a")}</Text><Button busy={busy} onPress={() => {
         setBusy(true);
         setError("");
         void invitation.accept().then(async accepted => {
           const id = accepted.publicOrganizationData.id;
           setAcceptedOrg(id);
-          if (!organizations.setActive) throw new Error("Your practice connection is still loading. Try again.");
+          if (!organizations.setActive) throw new NativeCopyError("mobile.copy.your_practice_connection_is_still_loading_try_again_0a43cfa");
           await organizations.setActive({ organization: id });
           router.replace({ pathname: "/join", params: { confirm: id } });
         }).catch(e => {
-          setError(userMessage(e));
+          setError(errorMessage(e));
           setBusy(false);
         });
-      }}>Accept invitation</Button></View>) : <Note>No pending invitations were found for this account. If your invitation was sent to another email, sign out and use that email. Expired or revoked invitations need to be resent by the practice owner.</Note>}{organizations.userInvitations.hasNextPage && <Button secondary busy={organizations.userInvitations.isFetching} onPress={() => void organizations.userInvitations.fetchNext?.()}>Show more invitations</Button>}<Feedback error={confirmation === "wrong-practice" ? "Open the invitation from this account to confirm the correct practice." : error || (organizations.userInvitations.error ? userMessage(organizations.userInvitations.error) : "")} />{acceptedOrg && error && <Button busy={busy} onPress={() => {
+      }}>{tx("mobile.copy.accept_invitation_0b918ca")}</Button></View>) : <Note>{tx("mobile.copy.no_pending_invitations_were_found_for_this_account_i_64ac518")}</Note>}{organizations.userInvitations.hasNextPage && <Button secondary busy={organizations.userInvitations.isFetching} onPress={() => void organizations.userInvitations.fetchNext?.()}>{tx("mobile.copy.show_more_invitations_1efe88b")}</Button>}<Feedback error={confirmation === "wrong-practice" ? "Open the invitation from this account to confirm the correct practice." : error || (organizations.userInvitations.error ? errorMessage(organizations.userInvitations.error) : "")} />{acceptedOrg && error && <Button busy={busy} onPress={() => {
       setBusy(true); setError("");
-      if (!organizations.setActive) { setError("Your practice connection is still loading. Try again."); setBusy(false); return; }
-      void organizations.setActive({ organization: acceptedOrg }).then(() => router.replace({ pathname: "/join", params: { confirm: acceptedOrg } })).catch(e => setError(userMessage(e))).finally(() => setBusy(false));
-    }}>Open accepted practice</Button>}<TextButton onPress={() => void organizations.userInvitations.revalidate?.()}>Check again</TextButton><TextButton onPress={() => router.replace("/")}>Back to my practices</TextButton></Page>;
+      if (!organizations.setActive) { setError("mobile.copy.your_practice_connection_is_still_loading_try_again_0a43cfa"); setBusy(false); return; }
+      void organizations.setActive({ organization: acceptedOrg }).then(() => router.replace({ pathname: "/join", params: { confirm: acceptedOrg } })).catch(e => setError(errorMessage(e))).finally(() => setBusy(false));
+    }}>{tx("mobile.copy.open_accepted_practice_6b2f054")}</Button>}<TextButton onPress={() => void organizations.userInvitations.revalidate?.()}>{tx("mobile.copy.check_again_e185048")}</TextButton><TextButton onPress={() => router.replace("/")}>{tx("mobile.copy.back_to_my_practices_0ab2796")}</TextButton></Page>;
 }

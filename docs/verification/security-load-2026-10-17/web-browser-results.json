@@ -1,0 +1,54 @@
+{
+  "verifiedAtUtc": "2026-10-18T05:20:23.596469+00:00",
+  "scope": "Complete web component browser suite in fresh synthetic Chrome contexts",
+  "runtime": "Pinned Node 22.23.2; Playwright 1.63.0; Chrome channel; one worker",
+  "command": "CAREIQ_CAPTURE_AUTH=1 PLAYWRIGHT_CHANNEL=chrome '<pinned-node22>' apps/web/node_modules/@playwright/test/cli.js test --config apps/web/playwright.config.ts --project components --reporter=line",
+  "tests": {
+    "total": 53,
+    "passed": 53,
+    "failed": 0,
+    "skipped": 0,
+    "interrupted": 0,
+    "retriesConfigured": 0,
+    "reportedDuration": "1.3m",
+    "files": {
+      "audit.spec.ts": 2,
+      "components.spec.ts": 23,
+      "i18n.spec.ts": 8,
+      "workflow.spec.ts": 20
+    }
+  },
+  "sourceChangesRequiredByFinalRun": false,
+  "priorSetupTimeout": "Did not reproduce after the database benchmark completed and load window was clear; no assertion or timeout weakening.",
+  "authCoverage": [
+    "Real installed Clerk provider preloaded auth does not mount credentials before SDK readiness",
+    "SDK loading/failure has stable manual retry with no automatic navigation",
+    "Stationary hover remains enabled/pointer during 90 passive fetch transitions",
+    "Deliberate pending sign-in locks once and prevents duplicate submission",
+    "Restored pending MFA is not silently finalized",
+    "English/Spanish recovery messages and prior sign-in/signup/reset/MFA/invitation/session-refresh flows"
+  ],
+  "screenshots": [
+    {
+      "file": "auth-sdk-unavailable-desktop.png",
+      "width": 1280,
+      "height": 970,
+      "sha256": "1425aff970c3b17ee90af52c51e55c01cc506cb1bbc6e6d7f3b29f0c761e6b8e",
+      "classification": "Synthetic real-SDK lifecycle evidence; no real account/session/patient data",
+      "visualInspection": "White background; recovery message and manual retry control readable; no clipping. Mobile viewport was 390px and horizontal-fit assertion passed."
+    },
+    {
+      "file": "auth-sdk-unavailable-mobile.png",
+      "width": 390,
+      "height": 935,
+      "sha256": "ca36dbcc32b08d7c079316850bcfb4c4c382e847dc4294461ead358287cdd59d",
+      "classification": "Synthetic real-SDK lifecycle evidence; no real account/session/patient data",
+      "visualInspection": "White background; recovery message and manual retry control readable; no clipping. Mobile viewport was 390px and horizontal-fit assertion passed."
+    }
+  ],
+  "limitations": [
+    "Patient and staff identities/APIs in the component suite are synthetic. The lifecycle regression uses actual installed Clerk React provider/hooks with a reserved .invalid provider and blocked external requests.",
+    "No personal browser was accessed. Administrator policy denial was respected.",
+    "A successful real Clerk account session and real email-provider delivery remain external acceptance work."
+  ]
+}

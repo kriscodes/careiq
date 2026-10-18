@@ -27,7 +27,8 @@
         {
           "appleSignIn": false
         }
-      ]
+      ],
+      "expo-sharing"
     ],
     "web": {
       "bundler": "metro",

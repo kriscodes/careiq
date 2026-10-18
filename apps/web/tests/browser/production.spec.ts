@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 /** Production Next server, reserved .invalid synthetic live-shaped keys, HTTP only; no hosted auth. */
 test("production rejects reviewer pages and static assets before Clerk, including encoded aliases", async ({ request }) => {
-  for (const path of ["/design-preview", "/design-preview/index.html", "/design-preview/web-design-board.png", "/design-preview/ios-design-board.png", "/design-preview/android-design-board.png", "/design-preview%2Findex.html", "/design%2Dpreview/index.html"]) {
+  for (const path of ["/design-preview", "/workflow-preview", "/workflow%2Dpreview", "/workflow-preview%2Findex.html", "/design-preview/index.html", "/design-preview/web-design-board.png", "/design-preview/ios-design-board.png", "/design-preview/android-design-board.png", "/design-preview%2Findex.html", "/design%2Dpreview/index.html"]) {
     const response = await request.get(path, { headers: { accept: "application/json" }, maxRedirects: 0 });
     expect(response.status(), path).toBe(404);
     expect(response.headers()["cache-control"]).toContain("no-store");

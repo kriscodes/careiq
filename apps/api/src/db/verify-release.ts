@@ -6,6 +6,7 @@ import { ProductionConfigurationError, validateProductionConfiguration } from ".
 import { interviewRequestsEnabled } from "../public-config.js";
 import { ReleaseCheckError } from "./migration-safety.js";
 import { logFailure } from "../logging.js";
+import { verifyConfiguredAuditReader, closeProtectedAuditReader } from "../services/protected-audit.service.js";
 
 async function verify() {
   if (!process.argv.includes("--database-only")) {
@@ -18,7 +19,8 @@ async function verify() {
     try { await client.query("BEGIN READ ONLY"); await verifyDatabaseRelease(client, interviewRequestsEnabled()); await client.query("COMMIT"); }
     catch (error) { await client.query("ROLLBACK"); throw error; }
     finally { client.release(); }
+    await verifyConfiguredAuditReader();
     console.log("API release database checks passed. This does not certify provider configuration, hosted acceptance or device authentication.");
-  } finally { await pool.end(); }
+  } finally { await Promise.allSettled([pool.end(), closeProtectedAuditReader()]); }
 }
 verify().catch((error) => { if (error instanceof ReleaseCheckError || error instanceof ProductionConfigurationError) console.error(error.message); else logFailure("API release verification failed", error); process.exitCode = 1; });

@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { designPreviewEnabled } from "@/lib/web-config";
-export const metadata = { title: "CareIQ · Design preview", robots: { index: false, follow: false } };
-export default function DesignPreview() { if (!designPreviewEnabled(process.env.NODE_ENV)) notFound(); return <main style={{ maxWidth: 1160, margin: "0 auto", padding: "48px 24px", color: "#2b3832", background: "#fff" }}><h1 style={{ fontSize: 32 }}>CareIQ design preview</h1><p>Authentication and practice onboarding for web, iOS and Android. Sample data only; these preview actions are simulated and never open a live practice.</p><Link href="/design-preview/index.html" style={{ display: "inline-block", margin: "16px 0 32px", padding: "12px 18px", borderRadius: 10, background: "#496f5a", color: "white", textDecoration: "none" }}>Open interactive design preview →</Link><div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>{["web", "ios", "android"].map(platform => <Link key={platform} href={`/design-preview/${platform}-design-board.png`}>{platform === "ios" ? "iOS" : platform === "web" ? "Web" : "Android"} overview board</Link>)}</div><p style={{ marginTop: 32 }}><Link href="/sign-in">Go to live sign-in</Link></p></main>; }
+import { DesignPreviewView } from "@/components/access/DesignPreviewView";
+export const metadata = { title: "CareIQ", robots: { index: false, follow: false } };
+export default function DesignPreview() { if (!designPreviewEnabled(process.env.NODE_ENV)) notFound(); return <DesignPreviewView />; }

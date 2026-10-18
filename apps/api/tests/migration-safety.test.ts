@@ -3,12 +3,13 @@ import assert from "node:assert/strict";
 import { assertMigrationLedger, assertMigrationTarget, migrationManifest } from "../src/db/migration-safety.js";
 test("release manifest and migration ledger detect drift, missing history and changed order", async () => {
   const entries = await migrationManifest();
-  assert.equal(entries.length, 19);
+  assert.ok(entries.length >= 19);
+  assert.equal(entries[18]?.tag, "0018_runtime-release-guards");
   const ledger = entries.map((entry) => ({ created_at: String(entry.when), hash: entry.hash }));
   assertMigrationLedger(entries, []);
   assertMigrationLedger(entries, ledger, true);
-  assertMigrationLedger(entries, ledger.slice(0, 18));
-  assert.throws(() => assertMigrationLedger(entries, ledger.slice(0, 18), true));
+  assertMigrationLedger(entries, ledger.slice(0, -1));
+  assert.throws(() => assertMigrationLedger(entries, ledger.slice(0, -1), true));
   assert.throws(() => assertMigrationLedger(entries, [{ ...ledger[0]!, hash: "changed" }]));
   assert.throws(() => assertMigrationLedger(entries, [ledger[1]!, ledger[0]!]));
   assert.throws(() => assertMigrationLedger(entries, [...ledger, ledger[0]!]));

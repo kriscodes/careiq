@@ -50,3 +50,6 @@ temp/
 
 # Isolated production build verification output
 .next-production-check/
+
+# Generated isolated Next.js build directories can contain private build metadata
+.next-*/

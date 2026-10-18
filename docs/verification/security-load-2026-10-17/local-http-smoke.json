@@ -1,0 +1,41 @@
+{
+  "checks": [
+    {
+      "name": "review-api-health",
+      "status": 200,
+      "expected": 200,
+      "pass": true,
+      "sentCredentials": false
+    },
+    {
+      "name": "review-api-unauthenticated-patients",
+      "status": 401,
+      "expected": 401,
+      "pass": true,
+      "sentCredentials": false
+    },
+    {
+      "name": "review-sign-in",
+      "status": 200,
+      "expected": 200,
+      "pass": true,
+      "sentCredentials": false
+    },
+    {
+      "name": "review-workflow-preview",
+      "status": 200,
+      "expected": 200,
+      "pass": true,
+      "sentCredentials": false
+    },
+    {
+      "name": "review-patient-paperwork",
+      "status": 200,
+      "expected": 200,
+      "pass": true,
+      "sentCredentials": false
+    }
+  ],
+  "pass": true,
+  "scope": "Owned loopback review only; no personal browser or real account session"
+}

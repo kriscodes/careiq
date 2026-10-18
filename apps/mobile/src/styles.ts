@@ -1,11 +1,11 @@
 import { StyleSheet } from "react-native";
 export const colors = {
   white: "#fff",
-  ink: "#2b3832",
-  muted: "#626f68",
-  line: "#e4e9e6",
-  sage: "#496f5a",
-  soft: "#f0f5f2",
+  ink: "#202b34",
+  muted: "#617080",
+  line: "#e1e7ef",
+  sage: "#0067e8",
+  soft: "#eef5ff",
   danger: "#963f36"
 };
 export const styles = StyleSheet.create({
@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
     marginBottom: 16
   },
   brand: {
-    color: colors.ink,
+    color: colors.sage,
     fontSize: 28,
     fontWeight: "700",
     letterSpacing: -1.2

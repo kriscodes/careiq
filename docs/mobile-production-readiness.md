@@ -1,5 +1,7 @@
 # Mobile production readiness
 
+October 16 workflow implementation and verification are recorded in [the workflow review guide](workflow-implementation.md) and [current verification](verification/workflow/verification.md). Earlier results below remain historical.
+
 Date: 2026-10-06. Scope: local changes and verification in the canonical CareIQ checkout. No native release, hosted configuration, signing operation, account registration or deployment was performed. The API native-client gate remains disabled pending installed-device acceptance.
 
 ## Implemented safeguards

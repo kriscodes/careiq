@@ -1,5 +1,7 @@
 # Production-readiness follow-up — October 6, 2026
 
+October 16 workflow implementation and verification are recorded in [the workflow review guide](workflow-implementation.md) and [current verification](verification/workflow/verification.md). Earlier results below remain historical.
+
 Status: local safeguards are implemented; release acceptance remains open. Work uses the existing `/Users/kristian/Documents/Server/CareIQ` checkout, preserves prior dirty marketing changes and stays uncommitted. No CareIQ clone/fetch/pull, commit, push, deployment, hosted migration, store registration or native release was performed.
 
 ## Implemented

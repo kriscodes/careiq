@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
+import { SiteShell } from "../components/SiteShell";
 import { content } from "../content/content";
 import { siteConfig } from "../lib/site-config";
 import "./globals.css";
+import "../../../../packages/i18n/web.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.siteUrl),
@@ -22,9 +22,6 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return <html lang="en"><body>
-    <a className="skip-link" href="#main-content">{content.navigation.skip}</a>
-    <Header brand={content.brand} copy={content.navigation} appUrl={siteConfig.appUrl} />
-    {children}
-    <Footer />
+    <SiteShell>{children}</SiteShell>
   </body></html>;
 }

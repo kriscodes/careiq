@@ -1,3 +1,4 @@
+import { resolve } from "node:path";
 import type { Page, Route } from "@playwright/test";
 import { test, expect } from "./harness";
 import type { AccessContext } from "../../src/lib/api/practice";
@@ -241,6 +242,7 @@ test("an opened clinical scope is discarded on backgrounding and revocation bloc
     const path = new URL(route.request().url()).pathname;
     if (path === "/api/v1/me") return json(route, { data: { ...access, locations: [location], enrollmentStatus: revoked ? "revoked" : "active" } });
     clinicalPaths.push(path);
+    if (path.endsWith("/workflow")) return json(route, { data: { location, timeZone: location.timeZone, patients: [{ id: "patient_test", firstName: "Synthetic", lastName: "Browser", email: null, phone: null }], appointments: [], documents: [], templates: [], requests: [], workItems: [], providers: [], visitTypes: [], documentTypes: [], capabilities: { patientsRead: true, appointmentsRead: true }, asOf: "2026-10-16T12:00:00Z" } });
     return json(route, { data: path.endsWith("/patients") ? [{ id: "patient_test", firstName: "Synthetic", lastName: "Browser", email: null, phone: null }] : [] });
   });
   await page.goto(`${harnessUrl}/?component=workspace`);
@@ -267,4 +269,95 @@ test("onboarding and owner management redact provider token failures and remain 
     await expect(page.getByRole("alert")).not.toContainText("private provider");
     await expect(page.getByRole("button", { name: "Try again", exact: true })).toBeEnabled();
   }
+});
+
+test("real Clerk preloaded auth state cannot make an unloaded sign-in proxy actionable", async ({ page }) => {
+  test.setTimeout(60000);
+  const { authRuntimeHarness } = await import("./auth-runtime-harness"); const isolated = await authRuntimeHarness();
+  try {
+    let navigations = 0;
+    page.on("request", request => { if (request.isNavigationRequest() && request.frame() === page.mainFrame()) navigations++; });
+    await page.goto(isolated.url);
+    await expect(page.getByTestId("server-auth-state")).toHaveText("loaded");
+    await expect(page.getByRole("heading", { name: "Opening CareIQ…" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Sign in", exact: true })).toHaveCount(0);
+    await expect(page.locator("input")).toHaveCount(0);
+    await expect(page.getByRole("alert")).toContainText("sign-in service", { timeout: 15_000 });
+    const retry = page.getByRole("button", { name: "Try again", exact: true });
+    await expect(retry).toBeEnabled();
+    await retry.hover();
+    const stable = await retry.evaluate(async button => {
+      const samples: { disabled: boolean; cursor: string }[] = [];
+      for (let count = 0; count < 90; count++) { await new Promise(requestAnimationFrame); samples.push({ disabled: button.matches(":disabled"), cursor: getComputedStyle(button).cursor }); }
+      return samples;
+    });
+    expect(stable.every(sample => !sample.disabled && sample.cursor === "pointer")).toBe(true);
+    expect(navigations).toBe(1);
+    if (process.env.CAREIQ_CAPTURE_AUTH === "1") {
+      const output = resolve(__dirname, "../../../../docs/verification/security-load-2026-10-17");
+      await page.screenshot({ path: resolve(output, "auth-sdk-unavailable-desktop.png"), fullPage: true });
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.screenshot({ path: resolve(output, "auth-sdk-unavailable-mobile.png"), fullPage: true });
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    }
+    await expect(page.locator("input")).toHaveCount(0);
+    await retry.click();
+    await expect.poll(() => navigations).toBe(2);
+    await expect(page.getByRole("heading", { name: "Opening CareIQ…" })).toBeVisible();
+    await expect(page.locator("input")).toHaveCount(0);
+  } finally { await isolated.close(); }
+});
+
+test("stationary sign-in hover remains enabled through passive provider fetch transitions", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=auth&scenario=auth-noise`);
+  await page.getByLabel("Email address", { exact: true }).fill("synthetic@example.invalid");
+  await page.getByLabel("Password", { exact: true }).fill("synthetic-password");
+  const submit = page.getByRole("button", { name: "Sign in", exact: true });
+  await submit.hover();
+  const samples = await submit.evaluate(async button => {
+    const states: { disabled: boolean; cursor: string; hovered: boolean }[] = [];
+    for (let count = 0; count < 90; count++) {
+      window.__careiqAuthFetch!.set(count % 2 ? "signin" : "signup", count % 4 < 2 ? "fetching" : "idle");
+      await new Promise(requestAnimationFrame);
+      states.push({ disabled: button.matches(":disabled"), cursor: getComputedStyle(button).cursor, hovered: button.matches(":hover") });
+    }
+    return states;
+  });
+  expect(samples.every(sample => !sample.disabled && sample.cursor === "pointer" && sample.hovered)).toBe(true);
+  await expect(page.getByLabel("Password", { exact: true })).toHaveValue("synthetic-password");
+  expect((await calls(page)).filter(call => call.name === "password")).toHaveLength(0);
+  await submit.click();
+  await expect.poll(async () => (await calls(page)).filter(call => call.name === "signInFinalize").length).toBe(1);
+});
+
+test("a deliberate pending sign-in locks once and prevents duplicate submissions", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=auth&scenario=auth-deferred`);
+  await page.getByLabel("Email address", { exact: true }).fill("synthetic@example.invalid");
+  await page.getByLabel("Password", { exact: true }).fill("synthetic-password");
+  await page.getByRole("button", { name: "Sign in", exact: true }).evaluate(button => { (button as HTMLButtonElement).click(); (button as HTMLButtonElement).click(); });
+  await expect(page.getByRole("button", { name: "One moment", exact: false })).toBeDisabled();
+  expect((await calls(page)).filter(call => call.name === "password")).toHaveLength(1);
+  expect((await calls(page)).filter(call => call.name === "signInFinalize")).toHaveLength(0);
+  await page.evaluate(() => window.__careiqAuthFetch!.resolvePassword());
+  await expect.poll(async () => (await calls(page)).filter(call => call.name === "signInFinalize").length).toBe(1);
+  await expect(page.getByRole("button", { name: "Sign in", exact: true })).toBeEnabled();
+});
+
+test("a restored pending MFA attempt is preserved and never silently finalized", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=auth&scenario=auth-restored-mfa`);
+  await expect(page.getByText("Provider completion fixture", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Password", { exact: true })).toHaveCount(0);
+  await page.evaluate(() => { window.__careiqAuthFetch!.set("signup", "fetching"); window.__careiqAuthFetch!.set("signin", "idle"); });
+  await expect(page.getByText("Provider completion fixture", { exact: true })).toBeVisible();
+  expect((await calls(page)).filter(call => ["password", "signInFinalize"].includes(call.name))).toHaveLength(0);
+});
+
+test("SDK failure is retryable without mounting credentials in English and Spanish", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=auth&scenario=auth-failed`);
+  await expect(page.getByRole("alert")).toContainText("sign-in service");
+  await expect(page.locator("input")).toHaveCount(0);
+  await page.getByLabel("Interface language", { exact: true }).selectOption("es");
+  await expect(page.getByRole("alert")).toContainText("servicio de inicio de sesión");
+  await expect(page.getByRole("button", { name: "Intentar de nuevo", exact: true })).toBeEnabled();
+  await expect(page.locator("input")).toHaveCount(0);
 });

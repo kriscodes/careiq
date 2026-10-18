@@ -6,6 +6,7 @@ import { clerkMiddleware, getAuth } from "@clerk/express";
 import type { AddressInfo } from "node:net";
 import { createApiApp, type ApiDependencies } from "../src/app.js";
 import { clinicalCapabilities } from "../src/middleware/permissions.js";
+import { DatabaseBusyError } from "../src/db/pool.js";
 import type { RequestAuthentication } from "../src/middleware/tenant-context.js";
 
 const authenticated = (orgRole = "org:admin"): RequestAuthentication => ({ isAuthenticated: true, userId: "user_verified", orgId: "org_verified", orgRole, sessionId: "session_verified" });
@@ -124,6 +125,30 @@ test("lists are bounded and communicate the next page without silently truncatin
     assert.deepEqual(requested, [{ limit: 3, offset: 4 }]);
     for (const query of ["limit=101", "limit=0", "limit=2&limit=3", "offset=-1", "offset=1.5", "offset=1000001"]) {
       assert.equal((await fetch(`${base}/api/v1/patients?${query}`)).status, 400);
+    }
+  });
+});
+
+test("database admission stays retryable503 across clinical list/create aliases and later requests recover", async () => {
+  const counts = { listPatients: 0, listAppointments: 0, createPatient: 0, createAppointment: 0 }, locationId = randomUUID();
+  const failFirst = (operation: keyof typeof counts) => {
+    if (++counts[operation] % 2 === 1) { const error = new DatabaseBusyError(); error.message = "private-query patient@example.invalid DB_PASSWORD"; throw error; }
+  };
+  await withApi(authenticated(), {
+    listPatients: async () => { failFirst("listPatients"); return []; },
+    listAppointments: async () => { failFirst("listAppointments"); return []; },
+    createPatient: async () => { failFirst("createPatient"); return { id: randomUUID() }; },
+    createAppointment: async () => { failFirst("createAppointment"); return { id: randomUUID() }; },
+    practiceAccess: { authorizeLocation: async () => ({ tenant: { practiceId, locationId, userId: "user_verified", orgId: "org_verified" }, capabilities: clinicalCapabilities(authenticated()), permissions: [] }) } as any,
+  }, async base => {
+    for (const prefix of ["/api/v1", `/api/v1/locations/${locationId}`]) for (const resource of ["patients", "appointments"]) {
+      for (const method of ["GET", "POST"]) {
+        const retryKey = randomUUID();
+        const send = () => fetch(`${base}${prefix}/${resource}`, { method, ...(method === "POST" ? { headers: { "Content-Type": "application/json", "Idempotency-Key": retryKey }, body: JSON.stringify(resource === "patients" ? validPatient : validAppointment) } : {}) });
+        const busy = await send(); assert.equal(busy.status, 503); assert.equal(busy.headers.get("Retry-After"), "1"); assert.equal(busy.headers.get("Cache-Control"), "no-store");
+        const body = await busy.json(); assert.equal(body.error.code, "DATABASE_BUSY"); assert.equal(body.error.retryable, true); assert.doesNotMatch(JSON.stringify(body), /private-query|patient@example|DB_PASSWORD/);
+        assert.equal((await send()).status, method === "GET" ? 200 : 201);
+      }
     }
   });
 });

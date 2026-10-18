@@ -134,6 +134,125 @@
       "when": 1791280800000,
       "tag": "0018_runtime-release-guards",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1792108800000,
+      "tag": "0019_workflow-foundation",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1792108900000,
+      "tag": "0020_workflow-audit-patient-context",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1792109000000,
+      "tag": "0021_workflow-patient-completion",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1792109100000,
+      "tag": "0022_workflow-patient-collection",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1792109200000,
+      "tag": "0023_workflow-context-guards",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1792109300000,
+      "tag": "0024_workflow-availability-retirement",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1792109400000,
+      "tag": "0025_workflow-terminal-retries",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1792109500000,
+      "tag": "0026_workflow-read-indexes",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1792294357767,
+      "tag": "0027_forms-studio-v2",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1792294726342,
+      "tag": "0028_patient-paperwork",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1792294726343,
+      "tag": "0029_paperwork-publication-guards",
+      "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1792294726344,
+      "tag": "0030_form-completion-receipts",
+      "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1792294726345,
+      "tag": "0031_form-signer-authority",
+      "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1792294726346,
+      "tag": "0032_location-calendar-eligibility",
+      "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1792294726347,
+      "tag": "0033_patient-fulfillment-purpose",
+      "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1792294726348,
+      "tag": "0034_patient-request-link-audit",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "7",
+      "when": 1792294726349,
+      "tag": "0035_clinical-scope-statistics",
+      "breakpoints": true
     }
   ]
 }

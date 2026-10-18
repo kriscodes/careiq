@@ -33,4 +33,4 @@ export default async function proxy(request: NextRequest, event: NextFetchEvent)
   const response = await clerkProxy(request, event);
   return response instanceof Response ? normalizeClerkContinuation(response, request.nextUrl.href) : response;
 }
-export const config = { matcher: ["/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)", "/(api|trpc)(.*)", "/__clerk/(.*)", "/design-preview(.*)", "/(.*%.*)"] };
+export const config = { matcher: ["/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)", "/(api|trpc)(.*)", "/__clerk/(.*)", "/design-preview(.*)", "/workflow-preview(.*)", "/(.*%.*)"] };

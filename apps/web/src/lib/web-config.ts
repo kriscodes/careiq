@@ -11,7 +11,7 @@ export function apiRequestUrl(value: string | undefined, path: string): string {
 export function isDesignPreviewPath(path: string): boolean {
   let decoded = path;
   try { decoded = decodeURIComponent(path).replaceAll("\\", "/"); } catch { /* Invalid paths remain unavailable to the file server. */ }
-  return decoded === "/design-preview" || decoded.startsWith("/design-preview/");
+  return ["/design-preview", "/workflow-preview"].some(prefix => decoded === prefix || decoded.startsWith(`${prefix}/`));
 }
 export function designPreviewEnabled(environment: string | undefined): boolean { return environment !== "production"; }
 export function validateProductionWebConfig(env: Record<string, string | undefined>) {

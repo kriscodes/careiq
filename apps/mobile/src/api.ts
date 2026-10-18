@@ -1,5 +1,5 @@
 export class ApiError extends Error {
-  constructor(readonly code: string, readonly status: number, message: string) {
+  constructor(readonly code: string, readonly status: number, message: string, readonly retryHint?: "read" | "idempotentWrite" | "write") {
     super(message);
   }
 }
@@ -18,9 +18,13 @@ function tokenWithCancellation(getToken: () => Promise<string | null>, signal: A
   });
 }
 export type Api = <T>(path: string, options?: {
-  method?: "GET" | "PUT" | "POST";
+  method?: "GET" | "PUT" | "POST" | "PATCH";
   body?: unknown;
+  binaryBody?: ArrayBuffer;
+  binaryResponse?: boolean;
+  envelope?: boolean;
   key?: string;
+  ifMatch?: string;
   signal?: AbortSignal;
 }) => Promise<T>;
 // No response, bearer token, or clinical record is persisted or logged.
@@ -37,6 +41,7 @@ export function createApi({
 }): Api {
   return async <T,>(path: string, options: Parameters<Api>[1] = {}) => {
     if (!path.startsWith("/api/v1/") || path.includes("..")) throw new Error("Invalid API route.");
+    const retryHint = (options.method ?? "GET") === "GET" ? "read" : options.key ? "idempotentWrite" : "write";
     const scope = getScope();
     const controller = new AbortController();
     const unregister = register(controller);
@@ -56,18 +61,26 @@ export function createApi({
         method: options.method ?? "GET",
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": options.binaryBody ? "application/octet-stream" : "application/json",
+          ...(options.ifMatch ? { "If-Match": options.ifMatch } : {}),
           ...(options.key ? {
             "Idempotency-Key": options.key
           } : {})
         },
-        ...(options.body !== undefined ? {
+        ...(options.binaryBody ? { body: options.binaryBody } : options.body !== undefined ? {
           body: JSON.stringify(options.body)
         } : {}),
         signal: controller.signal,
         cache: "no-store",
-        credentials: "omit"
+        credentials: "omit",
+        redirect: "error",
+        referrerPolicy: "no-referrer"
       });
+      if (options.binaryResponse && response.ok) {
+        const bytes = await response.arrayBuffer();
+        if (scope !== getScope() || controller.signal.aborted) throw new ScopeChangedError();
+        return bytes as T;
+      }
       const payload = (await response.json().catch(() => {
         throw new ApiError("INVALID_RESPONSE", 503, "The service response could not be read. Please try again.");
       })) as {
@@ -81,9 +94,11 @@ export function createApi({
       if (!payload || typeof payload !== "object" || Array.isArray(payload)) throw new ApiError("INVALID_RESPONSE", 503, "The service response could not be read. Please try again.");
       if (!response.ok) throw new ApiError(payload.error?.code ?? "API_UNAVAILABLE", response.status, payload.error?.message ?? "Unable to complete this request. Please try again.");
       if (!("data" in payload)) throw new ApiError("INVALID_RESPONSE", 503, "The service response could not be read. Please try again.");
-      return payload.data as T;
+      return (options.envelope ? payload : payload.data) as T;
     } catch (error) {
-      if (timedOut) throw new ApiError("REQUEST_TIMEOUT", 408, "This is taking longer than expected. Check your connection and try again.");
+      if (timedOut) throw new ApiError("REQUEST_TIMEOUT", 408, "", retryHint);
+      if (error instanceof ApiError) throw new ApiError(error.code,error.status,error.message,error.retryHint ?? retryHint);
+      if (error instanceof TypeError || error instanceof Error && error.name === "AbortError") throw new ApiError("NETWORK_ERROR",0,"",retryHint);
       throw error;
     } finally {
       clearTimeout(timeout);

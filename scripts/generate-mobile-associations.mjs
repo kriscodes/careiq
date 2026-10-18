@@ -85,7 +85,7 @@ export function createAssociations(input) {
   const metadata = validateMetadata(input);
   return {
     'apple-app-site-association': {
-      applinks: { details: [{ appIDs: [`${metadata.appleTeamId}.${metadata.iosBundleId}`], components: [{ '/': '/join' }] }] },
+      applinks: { details: [{ appIDs: [`${metadata.appleTeamId}.${metadata.iosBundleId}`], components: [{ '/': '/join' }, { '/': '/patient-workflow' }] }] },
     },
     'assetlinks.json': [{
       relation: ['delegate_permission/common.handle_all_urls'],

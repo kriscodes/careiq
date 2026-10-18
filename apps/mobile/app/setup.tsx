@@ -1,16 +1,18 @@
+import { ScrollView, Text, View, SafeAreaView, useI18n, NativeCopyError } from "../src/i18n";
 import { useQuery } from "@tanstack/react-query";
-import { Pressable, ScrollView, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Pressable } from "react-native";
+
 import { configuration } from "../src/environment";
 import { checkHealth } from "../src/health";
 import { styles } from "../src/styles";
 export default function SetupScreen() {
+  const { t: tx, errorMessage } = useI18n();
   const health = useQuery({
     queryKey: ["health", configuration.apiUrl],
     queryFn: ({
       signal
     }) => {
-      if (!configuration.apiUrl) throw new Error("Configure the API address first.");
+      if (!configuration.apiUrl) throw new NativeCopyError("mobile.copy.configure_the_api_address_first_e5aef2d");
       return checkHealth(configuration.apiUrl, signal);
     },
     enabled: false
@@ -18,29 +20,23 @@ export default function SetupScreen() {
   const disabled = !configuration.apiUrl || health.isFetching;
   return <SafeAreaView style={styles.screen} edges={["bottom", "left", "right"]}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Connect your environment</Text>
+        <Text style={styles.title}>{tx("mobile.copy.connect_your_environment_d6874d0")}</Text>
         <View style={styles.card}>
-          <Text style={styles.label}>API configuration</Text>
+          <Text style={styles.label}>{tx("mobile.copy.api_configuration_1f2a74c")}</Text>
           <Text style={styles.body}>
-            {configuration.apiUrl ? "Configured" : "Not configured"}
+            {configuration.apiUrl ? tx("mobile.copy.configured_668c5ff") : tx("mobile.copy.not_configured_811931b")}
           </Text>
-          <Text style={styles.note}>
-            Set EXPO_PUBLIC_API_URL in the mobile environment file to check
-            connectivity.
-          </Text>
+          <Text style={styles.note}>{tx("mobile.copy.set_expo_public_api_url_in_the_mobile_environment_fi_9768339")}</Text>
         </View>
         <View style={styles.card}>
-          <Text style={styles.label}>Authentication configuration</Text>
+          <Text style={styles.label}>{tx("mobile.copy.authentication_configuration_2c04d73")}</Text>
           <Text style={styles.body}>
-            {configuration.clerkPublishableKey ? "Publishable key configured" : "Not configured"}
+            {configuration.clerkPublishableKey ? tx("mobile.copy.publishable_key_configured_d898bf8") : tx("mobile.copy.not_configured_811931b")}
           </Text>
-          <Text style={styles.note}>
-            A configured key prepares the provider and secure token cache.
-            Sign-in and practice setup use this connection.
-          </Text>
+          <Text style={styles.note}>{tx("mobile.copy.a_configured_key_prepares_the_provider_and_secure_to_a49e162")}</Text>
         </View>
         {configuration.issues.map(issue => <Text key={issue} style={styles.issue}>
-            {issue}
+            {tx(issue)}
           </Text>)}
         <Pressable accessibilityRole="button" accessibilityState={{
         disabled,
@@ -49,16 +45,13 @@ export default function SetupScreen() {
         void health.refetch();
       }}>
           <Text style={styles.buttonText}>
-            {health.isFetching ? "Checking…" : "Check connection"}
+            {health.isFetching ? tx("mobile.copy.checking_820d600") : tx("mobile.copy.check_connection_14caeff")}
           </Text>
         </Pressable>
         <Text accessibilityLiveRegion="polite" style={health.isError ? styles.issue : styles.body}>
-          {health.isFetching ? "Checking the configured API…" : health.isError ? health.error.message : health.data ? "API and database are available." : "Connection not checked."}
+          {health.isFetching ? tx("mobile.copy.checking_the_configured_api_6e4fdca") : health.isError ? errorMessage(health.error) : health.data ? tx("mobile.copy.api_and_database_are_available_9e55200") : tx("mobile.copy.connection_not_checked_c738478")}
         </Text>
-        <Text style={styles.note}>
-          This check calls the public health endpoint. It does not authenticate
-          you, create a practice, or verify location access.
-        </Text>
+        <Text style={styles.note}>{tx("mobile.copy.this_check_calls_the_public_health_endpoint_it_does__e8f9f3f")}</Text>
       </ScrollView>
     </SafeAreaView>;
 }

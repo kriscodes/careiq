@@ -1,0 +1,13 @@
+{
+  "runId": "af2065c8-12c1-415e-81c1-494d35ccf4cc",
+  "database": "careiq_bench_4d26086addda",
+  "removed": true,
+  "completedAt": "2026-10-18T05:17:29.785Z",
+  "verifiedMigrationCount": 36,
+  "latestMigration": "0035_clinical-scope-statistics",
+  "notes": [
+    "Only the marker-verified task-created benchmark database and its generated restricted login were removed.",
+    "Application review/test databases, data and shared runtime group were preserved.",
+    "Private generated benchmark credential/state file was deleted after verification."
+  ]
+}

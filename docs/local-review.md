@@ -22,10 +22,12 @@ pnpm local:start
 pnpm local:status
 ```
 
-`local:setup` starts or creates the labeled review database, applies the full migration journal to `careiq_review` and `careiq_test`, and validates grants for the separate `careiq_review_runtime` login. `local:start` performs setup again safely and starts detached supervised processes. They remain running after the launching terminal closes. Start and restart return a failing exit status if a supervisor stops or a service does not become ready within the startup check. Healthy services remain running. Inspect the private logs and `local:status`, then retry `local:start` after resolving the failure.
+`local:setup` starts or creates the labeled review database, applies the full migration journal to `careiq_review` and `careiq_test`, and validates grants for the separate `careiq_review_runtime` login and creates the independent `careiq_review_audit` reader. `local:start` performs setup again safely and starts detached supervised processes. They remain running after the launching terminal closes. Start and restart return a failing exit status if a supervisor stops or a service does not become ready within the startup check. Healthy services remain running. Inspect the private logs and `local:status`, then retry `local:start` after resolving the failure.
 
 | Surface | Local URL |
 | --- | --- |
+| Staff workflow preview | [Open workflow preview](http://localhost:3101/workflow-preview) |
+| Protected audit review | [Open audit review](http://localhost:3101/audit) |
 | Web design preview | [Open web preview](http://localhost:3101/design-preview) |
 | Web authentication | [Open web sign in](http://localhost:3101/sign-in) |
 | Mobile layout gallery | [Open mobile preview](http://localhost:8082/design-preview) |
@@ -47,7 +49,7 @@ The runtime login has no database/table ownership, superuser rights or RLS bypas
 
 Existing API/web test Clerk keys are read privately and checked for matching test applications. Production Clerk keys are refused. The original `.env` and `.env.local` files remain unchanged. Inherited shell database URLs, credentials and application configuration are excluded from app environments. The runner supplies only the isolated database URL and local public service URLs.
 
-`.local-review/` holds private database/runtime credentials, process ownership state and logs. The directory uses mode 700; credential/state/log files use mode 600. Keep this directory ignored by Git and do not share its contents. `database.env` is an operator/migration credential; `runtime.env` is the restricted API credential; `test.env` points only to disposable `careiq_test`.
+`.local-review/` holds private database/runtime credentials, process ownership state and logs. The directory uses mode 700; credential/state/log files use mode 600. Keep this directory ignored by Git and do not share its contents. `database.env` is an operator/migration credential; `runtime.env` is the restricted API credential; `test.env` points only to disposable `careiq_test`. `audit.env` contains the independent audit-reader credential and stable private cursor secrets. Private document objects and temporary audit export manifests stay under this directory. The runner uses a real local `clamscan` executable if present; otherwise uploads remain quarantined. See [workflow review](workflow-implementation.md) for integration boundaries.
 
 An optional private `.local-review/owner.env` may contain only `CAREIQ_PRACTICE_CREATOR_USER_IDS`, with explicitly confirmed existing Clerk **test user IDs** separated by commas. It overrides the API's local founder list without editing original environment files. Emails and wildcards are rejected; an empty value disables local practice creation. No identity is approved automatically. Set the file to mode 600, then reload only the owned review API:
 

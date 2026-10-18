@@ -1,10 +1,11 @@
+import { useI18n, NativeCopyError } from "./i18n";
 import { useAuth, useClerk, useOrganizationList, useSession } from "@clerk/expo";
 import { focusManager, useQueryClient } from "@tanstack/react-query";
 import { Redirect, usePathname, useRouter } from "expo-router";
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { AppState } from "react-native";
 import { AccessLifecycle, isForeground, type AccessPhase } from "./access-policy";
-import { createApi, ScopeChangedError, userMessage, type Api } from "./api";
+import { createApi, ScopeChangedError, type Api } from "./api";
 import { readAccessContext } from "./access-validation";
 import type { AccessContext } from "./contracts";
 import { configuration } from "./environment";
@@ -53,6 +54,7 @@ function ScopeProvider({
   getToken: ReturnType<typeof useAuth>["getToken"];
   authenticated: boolean;
 }) {
+  const { errorMessage } = useI18n();
   const queryClient = useQueryClient();
   const [locationId, setLocationId] = useState<string | null>(null);
   const [accessError, setAccessError] = useState("");
@@ -79,7 +81,7 @@ function ScopeProvider({
   const getScope = useCallback(() => `${scopeRef.current}:${lifecycle.generation}`, [lifecycle]);
   const readToken = useCallback(() => {
     if (!lifecycle.foreground) throw new ScopeChangedError();
-    if (!configuration.apiUrl) throw new Error("CareIQ services are not configured yet.");
+    if (!configuration.apiUrl) throw new NativeCopyError("mobile.copy.careiq_services_are_not_configured_yet_0aaa238");
     return tokenRef.current({
       skipCache: true
     });
@@ -99,9 +101,9 @@ function ScopeProvider({
         setAccessError("");
       }
     } catch (error) {
-      if (lifecycle.failCheck(generation)) setAccessError(userMessage(error));
+      if (lifecycle.failCheck(generation)) setAccessError(errorMessage(error));
     }
-  }, [api, getScope, lifecycle, queryClient]);
+  }, [api, getScope, lifecycle, queryClient, errorMessage]);
   useEffect(() => {
     const timer = setTimeout(() => {
       if (authenticated && isForeground(AppState.currentState)) void checkAccess();
@@ -152,8 +154,9 @@ export function Configured({
 }: {
   children: ReactNode;
 }) {
+  const { t: tx } = useI18n();
   const router = useRouter();
-  return configuration.clerkPublishableKey ? children : <Page title="CareIQ mobile" description="Your account connection is not configured in this local build."><Note>Connect CareIQ to sign in and create or join a practice.</Note><Button onPress={() => router.push("/design-preview")}>View the designs</Button><Button secondary onPress={() => router.push("/setup")}>Connection settings</Button></Page>;
+  return configuration.clerkPublishableKey ? children : <Page title={tx("mobile.copy.careiq_mobile_1a3d2c1")} description={tx("mobile.copy.your_account_connection_is_not_configured_in_this_lo_a943a5d")}><Note>{tx("mobile.copy.connect_careiq_to_sign_in_and_create_or_join_a_pract_43b7dbd")}</Note><Button onPress={() => router.push("/design-preview")}>{tx("mobile.copy.view_the_designs_575c4b3")}</Button><Button secondary onPress={() => router.push("/setup")}>{tx("mobile.copy.connection_settings_618aac5")}</Button></Page>;
 }
 export function Protected({
   children
@@ -167,6 +170,7 @@ function SignedInGate({
 }: {
   children: ReactNode;
 }) {
+  const { t: tx } = useI18n();
   const {
     isLoaded,
     isSignedIn
@@ -187,13 +191,13 @@ function SignedInGate({
       infinite: true
     }
   });
-  if (!isLoaded) return <Page title="Opening CareIQ…">{null}</Page>;
+  if (!isLoaded) return <Page title={tx("mobile.copy.opening_careiq_e7ab89a")}>{null}</Page>;
   if (!isSignedIn) return <Redirect href={{ pathname: "/sign-in", params: { returnTo: pathname === "/join" ? "/join" : "/" } }} />;
-  if (!session) return <Page title="Opening CareIQ…">{null}</Page>;
+  if (!session) return <Page title={tx("mobile.copy.opening_careiq_e7ab89a")}>{null}</Page>;
   if (session.currentTask || session.status !== "active") return <Redirect href={{ pathname: "/security", params: { returnTo: pathname === "/join" ? "/join" : "/" } }} />;
-  if (context.phase === "background") return <Page title="CareIQ is paused">{null}</Page>;
-  if (context.phase === "checking") return <Page title="Confirming your access…" description="Checking your account and practice before continuing.">{null}</Page>;
-  if (context.phase === "error") return <Page title="We couldn’t confirm your access" description="Check again before opening your practice."><Feedback error={context.accessError} /><Button onPress={context.retryAccess}>Try again</Button>{organizations.userMemberships.data?.map(member => <Choice key={member.id} title={`Open ${member.organization.name}`} onPress={() => {
+  if (context.phase === "background") return <Page title={tx("mobile.copy.careiq_is_paused_47f5943")}>{null}</Page>;
+  if (context.phase === "checking") return <Page title={tx("mobile.copy.confirming_your_access_faf2d96")} description={tx("mobile.copy.checking_your_account_and_practice_before_continuing_87aad7d")}>{null}</Page>;
+  if (context.phase === "error") return <Page title={tx("mobile.copy.we_couldn_t_confirm_your_access_d8f2762")} description={tx("mobile.copy.check_again_before_opening_your_practice_17b854a")}><Feedback error={context.accessError} /><Button onPress={context.retryAccess}>{tx("mobile.copy.try_again_042c862")}</Button>{organizations.userMemberships.data?.map(member => <Choice key={member.id} title={tx("mobile.copy.open_value0_a34416a", { value0: member.organization.name })} onPress={() => {
       context.clear();
       void organizations.setActive?.({
         organization: member.organization.id
@@ -201,7 +205,7 @@ function SignedInGate({
     }} />)}<TextButton onPress={() => {
       context.clear();
       void signOut().then(() => router.replace("/sign-in"));
-    }}>Sign out</TextButton></Page>;
+    }}>{tx("mobile.copy.sign_out_dc1649a")}</TextButton></Page>;
   return <ResetScope key={context.scope}>{children}</ResetScope>;
 }
 function ResetScope({

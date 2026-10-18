@@ -182,3 +182,13 @@ test("unexpected JSON values fail without rendering internal JavaScript errors",
     }
   } finally { globalThis.fetch = original; }
 });
+
+test("connection failures distinguish safe keyed retries from uncertain unkeyed saves",async()=>{
+  const original=globalThis.fetch;globalThis.fetch=async()=>{throw new TypeError("fetch failed after request was sent");};
+  try{
+    const api=createApi({origin:"https://api.example.com",getToken:async()=>"synthetic-token",getScope:()=>"scope",register:()=>()=>{}});
+    for(const [options,expected]of [[{method:"GET"},"read"],[{method:"POST",body:{name:"Synthetic"},key:"stable-command-key"},"idempotentWrite"],[{method:"POST",body:{name:"Synthetic"}},"write"]] as const){
+      await assert.rejects(api("/api/v1/patients",options),error=>error instanceof ApiError&&error.code==="NETWORK_ERROR"&&error.retryHint===expected);
+    }
+  }finally{globalThis.fetch=original;}
+});

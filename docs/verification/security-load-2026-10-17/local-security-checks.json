@@ -1,0 +1,35 @@
+{
+  "envFiles": [
+    {
+      "path": "apps/api/.env",
+      "permissions": "0o600",
+      "gitIgnored": true
+    },
+    {
+      "path": "apps/web/.env.local",
+      "permissions": "0o600",
+      "gitIgnored": true
+    }
+  ],
+  "generatedBuildIgnored": true,
+  "canonicalSourceSecretPatternScan": "only known documentation/CI placeholders matched; no credential values recorded",
+  "clerkPublicProtocolProbe": {
+    "scriptStatus": 200,
+    "environmentStatus": 200,
+    "usedSessionOrSecret": false
+  },
+  "personalBrowserInspection": "blocked: administrator policy verification unavailable; no bypass attempted",
+  "secretEnvironmentPathsInAvailableGitHistory": 0,
+  "historyScope": "local available refs only; no fetch or remote history inspection",
+  "secretScanMatchReview": "two matching literals are explicitly documented reserved .invalid production-build fixtures, not provider credentials",
+  "staleWebRefresh": {
+    "priorNext": "16.3.3",
+    "currentNext": "16.4.1",
+    "currentProcessVerified": true,
+    "loopbackOnly": true,
+    "signInHttpStatus": 200,
+    "existingWebEnvironmentPreserved": true,
+    "existingApiTargetPreserved": true,
+    "sharedApiDatabaseNotMigrated": true
+  }
+}

@@ -1,3 +1,4 @@
+import { verifyWorkflowDatabaseRelease } from "./workflow-release-check.js";
 import { readFile } from "node:fs/promises";
 import type { PoolClient } from "pg";
 import { migrationsFolder, ReleaseCheckError } from "./migration-safety.js";
@@ -25,6 +26,10 @@ policy("practice_admin_events", "admin_event_insert", "INSERT", `(${practice} AN
 policy("practice_admin_events", "admin_event_review", "SELECT", practice, ["careiq_audit_reader"]);
 policy("clinical_request_keys", "clinical_request_keys_insert", "INSERT", `(${scope} AND ((location_id IS NULL) OR ${actor}))`);
 policy("clinical_request_keys", "clinical_request_keys_select", "SELECT", `(${practice} AND (((location_id IS NULL) AND careiq_clinical_scope(practice_id, careiq_context_uuid('app.location_id'::text))) OR (${actor} AND ${scope})))`);
+const workflowMutableColumns: Record<string, string[]> = {
+  patients: ["first_name", "last_name", "email", "phone", "preferred_name", "date_of_birth", "archived_at", "revision", "updated_at"],
+  appointments: ["scheduled_at", "ends_at", "provider_id", "visit_type_id", "status", "reason", "revision", "cancelled_at", "cancelled_by_actor_id", "cancellation_reason_code", "cancellation_note", "updated_at"],
+};
 const normalize = (value: string | null) => value?.replace(/\s+/g, " ").trim() ?? null;
 
 /** Catalog-only, read-only checks. Does not read clinical/contact rows or change grants. */
@@ -61,7 +66,7 @@ export async function verifyDatabaseRelease(client: Pick<PoolClient, "query">, m
     CROSS JOIN pg_roles r WHERE n.nspname='public' AND c.relname=ANY($1::text[]) AND a.attnum>0 AND NOT a.attisdropped
     AND (r.rolname=current_user OR pg_has_role(current_user,r.oid,'MEMBER')) GROUP BY c.relname,a.attname`, [protectedTables])).rows;
   for (const column of columns) {
-    if (column.can_reference || (column.can_select && (audits.includes(column.relname) || (column.relname === "marketing_interview_requests" && column.attname !== "submission_key"))) || (column.can_update && !editable.includes(column.relname) && !(column.relname === "practices" && column.attname === "owner_user_id"))) throw new ReleaseCheckError("API runtime can read or modify protected columns.");
+    if (column.can_reference || (column.can_select && (audits.includes(column.relname) || (column.relname === "marketing_interview_requests" && column.attname !== "submission_key"))) || (column.can_update && !editable.includes(column.relname) && !(column.relname === "practices" && column.attname === "owner_user_id") && !workflowMutableColumns[column.relname]?.includes(column.attname))) throw new ReleaseCheckError("API runtime can read or modify protected columns.");
   }
   if (!columns.some((column) => column.relname === "practices" && column.attname === "owner_user_id" && column.can_update) || (marketingEnabled && !columns.some((column) => column.relname === "marketing_interview_requests" && column.attname === "submission_key" && column.can_select))) throw new ReleaseCheckError("Required narrowly scoped column grants are missing.");
   const policies = (await client.query("SELECT tablename,policyname,cmd,roles::text[],qual,with_check FROM pg_policies WHERE schemaname='public' AND tablename=ANY($1::text[])", [protectedTables])).rows as Policy[];
@@ -86,4 +91,5 @@ export async function verifyDatabaseRelease(client: Pick<PoolClient, "query">, m
     FROM pg_trigger t JOIN pg_proc p ON p.oid=t.tgfoid JOIN pg_namespace n ON n.oid=p.pronamespace
     WHERE t.tgrelid='public.practices'::regclass AND t.tgname='practices_location_activation' AND NOT t.tgisinternal`)).rows;
   if (constraints.length !== expectedConstraints.length || expectedConstraints.some(([table, name, definition]) => !constraints.some((actual) => actual.relname === table && actual.conname === name && actual.convalidated && normalize(actual.definition) === normalize(definition!))) || trigger.length !== 1 || !["O", "A"].includes(trigger[0].tgenabled) || trigger[0].proname !== "careiq_location_activation_guard" || trigger[0].nspname !== "public" || normalize(trigger[0].definition) !== "CREATE TRIGGER practices_location_activation BEFORE UPDATE OF authorization_mode ON public.practices FOR EACH ROW EXECUTE FUNCTION careiq_location_activation_guard()") throw new ReleaseCheckError("Location constraint definitions or the reviewed activation trigger differ from this release.");
+  await verifyWorkflowDatabaseRelease(client);
 }

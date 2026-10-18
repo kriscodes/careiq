@@ -93,16 +93,16 @@ export function emptyDraft(): Draft {
 }
 export function draftErrors(draft: Draft): Partial<Record<keyof Draft, string>> {
   const errors: Partial<Record<keyof Draft, string>> = {};
-  if (!draft.practiceName.trim()) errors.practiceName = "Enter your practice name.";else if (draft.practiceName.trim().length > 120) errors.practiceName = "Use 120 characters or fewer.";
-  if (!draft.locationName.trim()) errors.locationName = "Enter a location name.";else if (draft.locationName.trim().length > 120) errors.locationName = "Use 120 characters or fewer.";
+  if (!draft.practiceName.trim()) errors.practiceName = "mobile.copy.enter_your_practice_name_c8c29f4";else if (draft.practiceName.trim().length > 120) errors.practiceName = "mobile.copy.use_120_characters_or_fewer_403b61e";
+  if (!draft.locationName.trim()) errors.locationName = "mobile.copy.enter_a_location_name_662c3cb";else if (draft.locationName.trim().length > 120) errors.locationName = "mobile.copy.use_120_characters_or_fewer_403b61e";
   try {
     new Intl.DateTimeFormat("en", {
       timeZone: draft.timeZone
     }).format();
   } catch {
-    errors.timeZone = "Choose a valid time zone, such as America/Los_Angeles.";
+    errors.timeZone = "mobile.copy.choose_a_valid_time_zone_such_as_america_los_angeles_5d00507";
   }
-  if (draft.address.length > 500) errors.address = "Use 500 characters or fewer.";
+  if (draft.address.length > 500) errors.address = "mobile.copy.use_500_characters_or_fewer_8a67662";
   return errors;
 }
 export function onboardingPayload(draft: Draft) {

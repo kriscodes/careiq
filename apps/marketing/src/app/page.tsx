@@ -1,6 +1,7 @@
+"use client";
 import { Icon, type IconName } from "../components/Icon";
 import { InterviewForm } from "../components/InterviewForm";
-import { content } from "../content/content";
+import { useSiteContent } from "../content/localized";
 import { siteConfig } from "../lib/site-config";
 
 const workflowIcons: IconName[] = ["user-plus", "workflow", "mail", "calendar"];
@@ -8,6 +9,7 @@ const focusIcons: IconName[] = ["user-plus", "workflow", "calendar"];
 const interviewIcons: IconName[] = ["clock", "users", "check"];
 
 export default function Home() {
+  const content=useSiteContent();
   return <main id="main-content">
     <section className="hero container" aria-labelledby="hero-heading">
       <div className="hero-copy"><p className="eyebrow"><span className="status-dot" />{content.hero.eyebrow}</p><h1 id="hero-heading">{content.hero.headline}</h1><p className="hero-description">{content.hero.description}</p><p className="hero-supporting">{content.hero.supporting}</p>

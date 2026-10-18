@@ -26,7 +26,7 @@ test("the preview static files and page all match Proxy and are disabled in prod
   const environment = process.env.NODE_ENV;
   Reflect.set(process.env, "NODE_ENV", "production");
   try {
-    for (const path of ["/design-preview", "/design-preview/index.html", "/design-preview/web-design-board.png", "/design-preview/ios-design-board.png", "/design-preview%2Findex.html", "/design%2Dpreview/index.html"]) {
+    for (const path of ["/workflow-preview", "/workflow-preview/fixture.png", "/workflow%2Dpreview", "/design-preview", "/design-preview/index.html", "/design-preview/web-design-board.png", "/design-preview/ios-design-board.png", "/design-preview%2Findex.html", "/design%2Dpreview/index.html"]) {
       assert.equal(unstable_doesMiddlewareMatch({ config, nextConfig: {}, url: path }), true);
       const response = await proxy(new NextRequest(`https://web.careiq.invalid${path}`), undefined as never);
       assert.equal(response?.status, 404);

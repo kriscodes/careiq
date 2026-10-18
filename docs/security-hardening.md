@@ -1,5 +1,8 @@
 # Security hardening and release operations
 
+> October 16, 2026 addendum: This is a historical implementation and verification record. Current dependency versions and advisory evidence are in [Next.js security version notes](security/next-october-2026.md). The [workflow implementation guide](workflow-implementation.md) records the newer database audit coverage and review interface; the future-work statements below describe the earlier release.
+
+
 This document describes the implemented source and the work required to activate it safely. It does not certify the deployed configuration. See [release status](deployment/security-release-status.md) for what is actually live.
 
 ## Access rules

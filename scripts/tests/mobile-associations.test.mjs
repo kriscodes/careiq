@@ -44,11 +44,11 @@ test('malformed IDs, hosts, partial certificate hashes and obvious placeholders 
     { fingerprints: [fingerprints[0], 'invalid-rotation-fingerprint'] },
   ]) assert.throws(() => validateMetadata({ ...metadata, ...changes }), /metadata is incomplete or invalid/);
 });
-test('AASA matches exactly /join and Android signing rotations are normalized and retained', () => {
+test('AASA matches exactly /join and /patient-workflow and Android signing rotations are normalized and retained', () => {
   const colon = fingerprints[0].toUpperCase().match(/.{2}/g).join(':');
   const files = createAssociations({ ...metadata, fingerprints: [fingerprints[0], colon, fingerprints[1]] });
   assert.deepEqual(files['apple-app-site-association'], {
-    applinks: { details: [{ appIDs: ['A1B2C3D4E5.com.careiqfixture.mobile'], components: [{ '/': '/join' }] }] },
+    applinks: { details: [{ appIDs: ['A1B2C3D4E5.com.careiqfixture.mobile'], components: [{ '/': '/join' }, { '/': '/patient-workflow' }] }] },
   });
   const target = files['assetlinks.json'][0].target;
   assert.equal(target.namespace, 'android_app');

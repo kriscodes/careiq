@@ -38,7 +38,7 @@ test("test keys, development identifiers, insecure origins and malformed links c
 test("owned-link configuration restricts Android link routing and production omits the development client scheme", () => {
   const config = createMobileBuildConfig(base, release);
   assert.deepEqual(config.ios.associatedDomains, ["applinks:links.careiqfixture.com"]);
-  assert.deepEqual(config.android.intentFilters[0].data, [{ scheme: "https", host: "links.careiqfixture.com", path: "/join" }]);
+  assert.deepEqual(config.android.intentFilters[0].data, [{ scheme: "https", host: "links.careiqfixture.com", path: "/join" }, { scheme: "https", host: "links.careiqfixture.com", path: "/patient-workflow" }]);
   assert.equal(config.android.intentFilters[0].autoVerify, true);
   assert.deepEqual(config.plugins.at(-2), ["expo-dev-client", { addGeneratedScheme: false }]);
   assert.equal(config.plugins.at(-1), "./plugins/with-release-transport.cjs");

@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@/i18n/provider";
 import { type ReactNode, useEffect, useId, useRef } from "react";
 
 type InterviewModalProps = {
@@ -12,6 +13,7 @@ type InterviewModalProps = {
 };
 
 export function InterviewModal({ title, description, children, onClose, busy = false, developerNotes = false }: InterviewModalProps) {
+  const { t } = useI18n();
   const ref = useRef<HTMLDialogElement>(null);
   const id = useId();
 
@@ -43,13 +45,13 @@ export function InterviewModal({ title, description, children, onClose, busy = f
     <dialog ref={ref} className={`cq-modal${developerNotes ? " cq-modal-developer" : ""}`} aria-labelledby={`${id}-title`} aria-describedby={`${id}-description`} onCancel={(event) => { event.preventDefault(); if (!busy) onClose(); }}>
       <header className="cq-modal-head">
         <div>
-          {developerNotes && <p className="cq-form-note">DEVELOPER NOTES · INTERVIEW DEMO</p>}
+          {developerNotes && <p className="cq-form-note">{t("access.copy.developer_notes_interview_demo")}</p>}
           <h2 id={`${id}-title`}>{title}</h2>
           <p id={`${id}-description`}>{description}</p>
         </div>
-        <button type="button" className="cq-iconbutton" aria-label={`Close ${title}`} disabled={busy} onClick={onClose}>×</button>
+        <button type="button" className="cq-iconbutton" aria-label={t("access.modal.close", { title })} disabled={busy} onClick={onClose}>×</button>
       </header>
-      {children}
+      <div className="cq-modal-body">{children}</div>
     </dialog>
   );
 }

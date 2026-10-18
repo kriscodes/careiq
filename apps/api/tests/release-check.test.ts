@@ -33,7 +33,7 @@ test("restricted release verifier checks actual role/RLS metadata and transitive
         if (fault === "policy" && sql.includes("FROM pg_policies")) result.rows.find((r: any) => r.tablename === "patients").qual = "true";
         if (fault === "helper search path" && sql.includes("p.prosrc")) result.rows[0].proconfig = null;
         if (fault === "audit SELECT" && sql.includes("c.relrowsecurity")) result.rows.find((r: any) => r.relname === "clinical_audit_events").can_select = true;
-        if (fault === "column UPDATE" && sql.includes("bool_or")) result.rows.find((r: any) => r.relname === "patients").can_update = true;
+        if (fault === "column UPDATE" && sql.includes("bool_or")) result.rows.find((r: any) => r.relname === "patients" && r.attname === "id").can_update = true;
         if (fault === "constraint" && sql.includes("FROM pg_constraint")) result.rows[0].convalidated = false;
         if (fault === "constraint table" && sql.includes("FROM pg_constraint")) result.rows[0].relname = "same_named_constraint_elsewhere";
         if (fault === "constraint definition" && sql.includes("FROM pg_constraint")) result.rows[0].definition = "CHECK (true)";

@@ -15,3 +15,7 @@ Scoped published overrides also select uuid 11.1.1 for xcode 3.0.1 (its v4 calle
 Install with the pinned Node/pnpm and `pnpm install --frozen-lockfile`. An altered patch or installed file fails the integrity check. Remove a backport only after a published reviewed replacement fixes the relevant advisory, its actual caller compatibility passes, the lockfile is refreshed and the raw audit passes. Do not fabricate the not-yet-published node-forge 1.4.1 or braces 3.0.4 versions.
 
 See [production readiness](../docs/production-readiness.md). No package was published and no remote workflow was run by this local change.
+
+The October 16 Next.js update is documented in [security version notes](../docs/security/next-october-2026.md). Existing backports remain unchanged.
+
+The subsequent SDK57 patch alignment and Doctor results are recorded in [Expo patch verification](../docs/security/expo-sdk57-patches-2026-10-16.md); supply-chain policy and these backports remain unchanged.

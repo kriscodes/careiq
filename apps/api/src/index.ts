@@ -1,3 +1,4 @@
+import * as workflow from "./services/workflow.service.js";
 import { verifyWebhook } from "@clerk/backend/webhooks";
 import { handleClerkEvent } from "./services/practice-reconciliation.js";
 import { getAuth } from "@clerk/express";
@@ -14,12 +15,14 @@ import { validateProductionConfiguration } from "./production-config.js";
 import { verifyDatabaseRelease } from "./db/release-check.js";
 import { ReleaseCheckError } from "./db/migration-safety.js";
 import { logFailure } from "./logging.js";
+import { verifyConfiguredAuditReader, closeProtectedAuditReader } from "./services/protected-audit.service.js";
 
 validateProductionConfiguration();
 const authenticationPolicy = parseClerkAuthenticationPolicy();
 const origins = authenticationPolicy.browserOrigins;
 const app = createApiApp({
   authenticate: createAuthenticationMiddleware(authenticationPolicy),
+  workflow,
   getAuth,
   health: () => pool.query("SELECT 1"),
   practiceAccess,
@@ -43,7 +46,8 @@ const app = createApiApp({
 });
 
 const port = Number(process.env.PORT ?? 3000);
-const host = process.env.HOST?.trim() || "0.0.0.0";
+// Local development stays on loopback unless the owner explicitly opts into another bind address.
+const host = process.env.HOST?.trim() || (process.env.NODE_ENV === "production" ? "0.0.0.0" : "127.0.0.1");
 async function start() {
   if (process.env.NODE_ENV === "production") {
     const client = await pool.connect();
@@ -53,6 +57,7 @@ async function start() {
       await client.query("COMMIT");
     } catch (error) { await client.query("ROLLBACK"); throw error; }
     finally { client.release(); }
+    await verifyConfiguredAuditReader();
   }
   app.listen(port, host, () => { console.log(`CareIQ API listening on port ${port}.`); });
 }
@@ -60,5 +65,5 @@ start().catch(async (error) => {
   if (error instanceof ReleaseCheckError) console.error(error.message);
   else logFailure("API startup release verification failed", error);
   process.exitCode = 1;
-  await pool.end();
+  await Promise.allSettled([pool.end(), closeProtectedAuditReader()]);
 });

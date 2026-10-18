@@ -17,7 +17,7 @@
     "local:status": "python3 scripts/local-review.py status",
     "local:stop": "python3 scripts/local-review.py stop",
     "mobile:check": "pnpm --filter @careiq/mobile lint && pnpm --filter @careiq/mobile typecheck && pnpm --filter @careiq/mobile test",
-    "mobile:doctor": "pnpm --filter @careiq/mobile doctor",
+    "mobile:doctor": "pnpm --filter @careiq/mobile run doctor",
     "mobile:export": "pnpm --filter @careiq/mobile build",
     "security:regressions": "node --test scripts/tests/security-dependencies.test.mjs",
     "security:audit": "pnpm audit --prod",

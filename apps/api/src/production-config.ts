@@ -1,5 +1,6 @@
 import { isIP } from "node:net";
 import { connectionOptions } from "./db/connection.js";
+import { runtimePoolPolicy } from "./db/runtime-pool-policy.js";
 import { interviewRequestsEnabled, parseClerkAuthenticationPolicy, parseTrustedProxies } from "./public-config.js";
 
 /** Decode only the configured public key; never derive trust from unverified JWT claims. */
@@ -33,6 +34,7 @@ function checkProductionConfiguration(environment: NodeJS.ProcessEnv) {
   if (![...policy.browserOrigins, ...policy.nativeAuthorizedParties].every(hostedHttps)) throw new Error("Production authorized origins must be hosted HTTPS origins.");
   parseTrustedProxies(environment.TRUSTED_PROXY_CIDRS);
   interviewRequestsEnabled(environment.INTERVIEW_REQUESTS_ENABLED);
+  runtimePoolPolicy(environment);
   const options = connectionOptions(environment);
   const database = new URL(options.connectionString!);
   if (!["postgres:", "postgresql:"].includes(database.protocol) || !database.username || !database.hostname || database.pathname.length < 2) throw new Error("DATABASE_URL must identify a PostgreSQL login and database.");

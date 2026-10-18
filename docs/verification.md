@@ -1,5 +1,13 @@
 # Verification — September 21, 2026
 
+October 16 workflow implementation and verification are recorded in [the workflow review guide](workflow-implementation.md) and [current verification](verification/workflow/verification.md). Earlier results below remain historical.
+
+October 17 language-layer and dropdown checks are recorded in [the localization verification](verification/i18n-2026-10-17/README.md).
+
+October 17 Forms Studio, patient-completed PDFs, reviewed demographic data and library access boundaries are documented in the [implementation guide](forms-studio-implementation.md). Current review evidence is maintained in [the forms verification directory](verification/forms-studio-2026-10-17/); earlier dated results below remain historical.
+
+October 17 security, login stability and 100-practice capacity results are recorded in [the security review](verification/security-load-2026-10-17/README.md), with [owner-controlled actions](security/owner-security-checklist.md). These supersede earlier local suite totals for the current source; hosted/provider acceptance remains separate.
+
 ## Historical baseline — before the v0.1 design integration
 
 Completed on the earlier local checkout. These results are preserved as history and do not certify the subsequent UI changes:

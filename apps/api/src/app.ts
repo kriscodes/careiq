@@ -1,7 +1,11 @@
+import { registerWorkflowRoutes, registerPatientWorkflowRoutes, type WorkflowDependencies } from "./routes/workflow.js";
+import { registerProtectedAuditRoutes } from "./routes/protected-audit.js";
+import { registerPatientPaperworkPortalRoutes } from "./routes/patient-paperwork.js";
 import express, { type Request, type RequestHandler } from "express";
 import cors from "cors";
 import { registerPracticeRoutes, accessFailure, type PracticeAccess } from "./routes/practice-access.js";
 import { logFailure } from "./logging.js";
+import { isDatabaseBusy } from "./availability.js";
 import { createTenantContextMiddleware, type RequestAuthentication, type TenantContext } from "./middleware/tenant-context.js";
 import { clinicalCapabilities, requireClinicalPermission } from "./middleware/permissions.js";
 import { parseAppointmentInput, parseIdempotencyKey, parsePagination, parsePatientInput } from "./validation.js";
@@ -13,6 +17,7 @@ type AppointmentInput = NonNullable<ReturnType<typeof parseAppointmentInput>>;
 
 export type ApiDependencies = {
   authenticate: RequestHandler;
+  workflow?: WorkflowDependencies;
   getAuth: (request: Request) => RequestAuthentication;
   health: () => Promise<unknown>;
   findPracticeByClerkOrgId: (orgId: string) => Promise<{ id: string; authorizationMode?: string; status?: string } | null>;
@@ -36,6 +41,7 @@ export function createApiApp(dependencies: ApiDependencies, configuration: {
   app.set("trust proxy", configuration.trustedProxies);
 
   registerPublicInterviewRoutes(app, { ...configuration.interviews, origins: configuration.origins });
+  if (dependencies.workflow) registerPatientWorkflowRoutes(app, dependencies.workflow, configuration.origins);
   app.use(cors({ origin: configuration.origins, credentials: true }));
   app.use((req, res, next) => {
     if (req.path.startsWith("/api/") || req.path === "/health") {
@@ -64,6 +70,8 @@ export function createApiApp(dependencies: ApiDependencies, configuration: {
     }
   });
   app.use(dependencies.authenticate);
+  if (dependencies.workflow) registerPatientPaperworkPortalRoutes(app, dependencies.getAuth);
+  app.use("/api/v1/locations/:locationId/workflow", express.json({ limit: "256kb" }));
   app.use(express.json({ limit: "16kb" }));
   const tenantContextMiddleware = createTenantContextMiddleware(dependencies);
 
@@ -84,7 +92,11 @@ export function createApiApp(dependencies: ApiDependencies, configuration: {
     }
   });
 
-  if (dependencies.practiceAccess) registerPracticeRoutes(app, dependencies.practiceAccess, dependencies.getAuth);
+  if (dependencies.practiceAccess) {
+    registerPracticeRoutes(app, dependencies.practiceAccess, dependencies.getAuth);
+    if (dependencies.workflow) registerWorkflowRoutes(app, dependencies.workflow, dependencies.practiceAccess, dependencies.getAuth);
+    registerProtectedAuditRoutes(app, dependencies.getAuth, dependencies.practiceAccess);
+  }
   const locationContext: RequestHandler = async (req, res, next) => {
     try {
       if (!dependencies.practiceAccess) { res.status(503).json({ error: { code: "LOCATION_ACCESS_UNAVAILABLE", message: "Location access is unavailable." } }); return; }
@@ -109,6 +121,7 @@ export function createApiApp(dependencies: ApiDependencies, configuration: {
       }
       res.status(200).json({ data: rows.slice(0, page.limit), meta: { ...page, hasMore, nextOffset: hasMore ? page.offset + page.limit : null } });
     } catch (error) {
+      if (isDatabaseBusy(error)) { res.setHeader("Retry-After", "1"); res.status(503).json({ error: { code: "DATABASE_BUSY", message: "This service is busy. Please try again shortly.", retryable: true } }); return; }
       if (error instanceof Error && error.message === "LOCATION_CONTEXT_REQUIRED") { res.status(409).json({ error: { code: error.message, message: "Select a location in the current CareIQ client." } }); return; }
       if (error instanceof Error && error.message === "LOCATION_ACCESS_DENIED") { res.status(403).json({ error: { code: error.message, message: "Location access has changed." } }); return; }
       logFailure(`Failed to list ${resource}`, error);
@@ -139,6 +152,7 @@ export function createApiApp(dependencies: ApiDependencies, configuration: {
         : await dependencies.createAppointment(res.locals.tenant, input as AppointmentInput, idempotencyKey);
       res.status(201).json({ data: record });
     } catch (error) {
+      if (isDatabaseBusy(error)) { res.setHeader("Retry-After", "1"); res.status(503).json({ error: { code: "DATABASE_BUSY", message: "This service is busy. Please try again shortly.", retryable: true } }); return; }
       const code = error instanceof Error ? error.message : "";
       if (code === "LOCATION_CONTEXT_REQUIRED") { res.status(409).json({ error: { code, message: "Select a location in the current CareIQ client." } }); return; }
       if (code === "LOCATION_ACCESS_DENIED") { res.status(403).json({ error: { code, message: "Location access has changed. Reload your context." } }); return; }

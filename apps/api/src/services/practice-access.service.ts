@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import type { PoolClient } from "pg";
 import type { RequestAuthentication, TenantContext } from "../middleware/tenant-context.js";
-import { clinicalCapabilities } from "../middleware/permissions.js";
+import { clinicalCapabilities, type ClinicalCapabilities } from "../middleware/permissions.js";
 import { practiceTransaction } from "../db/practice-transaction.js";
 import { findPracticeByClerkOrgId } from "./practice.service.js";
 import { clerk, currentMembership, verifiedEmails } from "./clerk-directory.js";
@@ -67,7 +67,7 @@ export async function getPracticeContext(auth: RequestAuthentication) {
     return { ...base, practice, onboarding: active ? "ready" : "pending", enrollmentStatus: membership ? (member?.membership_id === membership.id ? member?.status : "pending_assignment") : "revoked", capabilities: currentCapabilities(active ? membership : null), management: { locations: Boolean(owner), members: Boolean(owner) }, locations };
   });
 }
-export async function authorizeLocation(auth: RequestAuthentication, locationId: string) {
+export async function authorizeLocation(auth: RequestAuthentication, locationId: string): Promise<{ tenant: TenantContext; capabilities: ClinicalCapabilities; permissions?: string[] }> {
   if (!uuid(locationId)) throw new AccessError("INVALID_LOCATION", 400);
   const context = await resolve(auth);
   return practiceTransaction(context.practice.id, context.userId, async (client) => {
@@ -75,7 +75,7 @@ export async function authorizeLocation(auth: RequestAuthentication, locationId:
     assertCurrentEnrollment(member, context.membership);
     const permitted = await client.query("SELECT l.id FROM locations l JOIN location_assignments a ON a.location_id=l.id AND a.practice_id=l.practice_id WHERE l.practice_id=$1 AND l.id=$2 AND l.status='active' AND a.user_id=$3 AND a.active", [context.practice.id, locationId, context.userId]);
     if (!permitted.rowCount) throw new AccessError("LOCATION_ACCESS_DENIED");
-    return { tenant: { userId: context.userId, orgId: context.orgId, practiceId: context.practice.id, locationId, membershipId: context.membership!.id } satisfies TenantContext, capabilities: currentCapabilities(context.membership) };
+    return { tenant: { userId: context.userId, orgId: context.orgId, practiceId: context.practice.id, locationId, membershipId: context.membership!.id } satisfies TenantContext, capabilities: currentCapabilities(context.membership), permissions: context.membership!.permissions };
   });
 }
 export async function onboardPractice(auth: RequestAuthentication, body: Record<string, unknown>, requestKey: string) {

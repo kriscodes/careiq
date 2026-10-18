@@ -42,7 +42,7 @@ BEGIN
       FOR protected_column IN
         SELECT attname FROM pg_attribute WHERE attrelid = format('public.%I', protected_table)::regclass AND attnum > 0 AND NOT attisdropped
       LOOP
-        IF (has_column_privilege(reachable_record.oid, format('public.%I', protected_table), protected_column, 'UPDATE, REFERENCES') AND NOT (protected_table = 'practices' AND protected_column = 'owner_user_id' AND NOT has_column_privilege(reachable_record.oid, 'public.practices', 'owner_user_id', 'REFERENCES')))
+        IF (has_column_privilege(reachable_record.oid, format('public.%I', protected_table), protected_column, 'UPDATE, REFERENCES') AND NOT (NOT has_column_privilege(reachable_record.oid, format('public.%I',protected_table), protected_column, 'REFERENCES') AND ((protected_table = 'practices' AND protected_column = 'owner_user_id') OR (protected_table='patients' AND protected_column=ANY(ARRAY['first_name','last_name','email','phone','preferred_name','date_of_birth','archived_at','revision','updated_at'])) OR (protected_table='appointments' AND protected_column=ANY(ARRAY['scheduled_at','ends_at','provider_id','visit_type_id','status','reason','revision','cancelled_at','cancelled_by_actor_id','cancellation_reason_code','cancellation_note','updated_at'])))))
            OR (protected_table IN ('clinical_audit_events','practice_admin_events') AND has_column_privilege(reachable_record.oid, format('public.%I', protected_table), protected_column, 'SELECT')) THEN
           RAISE EXCEPTION 'Runtime role can read audit data or modify protected clinical columns';
         END IF;

@@ -1,4 +1,7 @@
+"use client";
+import { useI18n } from "@/i18n/provider";
 import Link from "next/link";
 import { designPreviewEnabled } from "@/lib/web-config";
 import { AccessHeading, AccessShell } from "./AccessShell";
-export function Unavailable() { return <AccessShell><AccessHeading title="Sign-in is unavailable">CareIQ isn’t ready to sign in here yet. Contact your CareIQ administrator, or try again later.</AccessHeading>{designPreviewEnabled(process.env.NODE_ENV) && <Link className="cq-a-secondary" href="/design-preview">Open the design preview</Link>}</AccessShell>; }
+export function Unavailable() {
+  const { t } = useI18n(); return <AccessShell><AccessHeading title={t("access.copy.sign_in_is_unavailable")}>{t("access.copy.careiq_isn_t_ready_to_sign_in_here_yet_contact_your_careiq_administrator_o")}</AccessHeading>{designPreviewEnabled(process.env.NODE_ENV) && <Link className="cq-a-secondary" href="/design-preview">{t("access.copy.open_the_design_preview")}</Link>}</AccessShell>; }

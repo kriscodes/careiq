@@ -26,13 +26,13 @@ export function readMobileConfiguration(values: {
       if (!secure && !local || url.username || url.password || url.search || url.hash || url.pathname !== "/") throw new Error();
       result.apiUrl = url.origin;
     } catch {
-      result.issues.push("API URL must be an HTTPS origin without a path, credentials, or query. Development builds also allow local HTTP origins.");
+      result.issues.push("mobile.copy.api_url_must_be_an_https_origin_without_a_path_crede_64a03e1");
     }
   }
   const key = values.clerkPublishableKey?.trim();
   if (key) {
     // Clerk validates the actual instance. This only rejects obvious setup mistakes.
-    if (/^pk_(test|live)_[A-Za-z0-9_-]+={0,2}$/.test(key)) result.clerkPublishableKey = key;else result.issues.push("Authentication needs a Clerk publishable key beginning with pk_test_ or pk_live_.");
+    if (/^pk_(test|live)_[A-Za-z0-9_-]+={0,2}$/.test(key)) result.clerkPublishableKey = key;else result.issues.push("mobile.copy.authentication_needs_a_clerk_publishable_key_beginni_09a4fbf");
   }
   return result;
 }
