@@ -1,5 +1,7 @@
 # CareIQ
 
+Security implementation and rollout: [hardening guide](docs/security-hardening.md) · [release status and owner actions](docs/deployment/security-release-status.md).
+
 CareIQ is a healthcare operations platform being built for small and independent medical practices.
 
 The platform is focused on reducing administrative workload around patient intake, scheduling, referrals, document collection, communication, and other front-office workflows.
@@ -7,6 +9,10 @@ The platform is focused on reducing administrative workload around patient intak
 ## Status
 
 🚧 **Active development**
+
+**Latest tagged release: [v0.1.0 — Interview baseline](docs/releases/0.1.0.md)** · October 3, 2026 · Synthetic/demo use only.
+
+See the [version history](CHANGELOG.md) and [release process](docs/releasing.md). The implementation below is subsequent unreleased work; it does not change the deployed release.
 
 CareIQ now includes the local staff workflow across web, API/PostgreSQL and Expo mobile: scheduling, patient profiles, document/version review, requirement evidence, templates, restricted patient collection/signing and protected audit review.
 
@@ -260,6 +266,8 @@ Formal compliance requirements and controls will evolve as the product approache
 * [OpenAPI definitions](docs/api/workflow.openapi.json)
 * [Public marketing website](docs/marketing.md)
 * [Marketing verification](docs/marketing-verification.md)
+* [Version history](CHANGELOG.md)
+* [Release process and cadence](docs/releasing.md)
 * [Product Vision](docs/product-vision.md)
 * [Architecture](docs/architecture.md)
 * [v0.1 — Interview Design](docs/design/interview-v0.1.md)
@@ -286,3 +294,5 @@ CareIQ is being built incrementally around complete vertical workflows rather th
 Architecture decisions are made early where changing them later would be expensive, while product behavior remains flexible enough to evolve through customer discovery and real practice feedback.
 
 Current local [security, login stability and capacity evidence](docs/verification/security-load-2026-10-17/README.md).
+
+October 18 local main integration and refreshed end-to-end evidence: [PR #10 conflict-resolution verification](docs/verification/pr-10-main-2026-10-18/README.md). The merge remains uncommitted/unpushed at user request.

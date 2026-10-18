@@ -2,6 +2,8 @@
 
 These safeguards are implemented in the canonical checkout. Local verification passed; no hosted database migration, remote deployment or commit was performed. Production configuration and hosted/device acceptance remain separate release requirements.
 
+October 18 integration: the current 36-migration history through `0035` is preserved byte-for-byte and verified on isolated databases. See [PR #10 verification and operator handoff](verification/pr-10-main-2026-10-18/README.md). The dated counts below describe the October 6 baseline; no hosted migration or deployment is inferred.
+
 ## Startup and configuration
 
 `NODE_ENV=production` now fails before listening unless Clerk live keys, a valid Clerk frontend hostname, exact hosted HTTPS browser/native origins, signed-webhook configuration and a fixed invitation redirect on an allowed browser origin are present. Founder approval accepts explicit Clerk user IDs; custom staff roles accept explicit organization role keys. Empty founder approval continues to disable practice creation.

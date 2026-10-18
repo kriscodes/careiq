@@ -1,0 +1,12 @@
+Merge main into dev and verify integrated CareIQ workflows
+
+- Resolve 54 conflicts while preserving security controls and released history
+- Preserve all 36 migration SQL files and retain main's qs security pin
+- Align CI fixtures/builds and add real browser/API/database paperwork checks
+- Verify immutable PDFs, signatures, library copies, retries and tenant denial
+- Update verification coverage, operator handoff and Notion tracking
+
+Validation: 218 API, 73 web, 56 mobile, 8 marketing and 8 shared tests pass.
+Also pass: 53 component browser, 2 real API browser and 3 production HTTP cases.
+Builds, native preview exports and 36-migration replay/release checks pass.
+Known release gate: the unsuppressed dependency audit retains 2 HIGH findings.

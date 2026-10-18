@@ -63,6 +63,10 @@ jobs:
         run: |
           pnpm --fail-if-no-match --filter ./apps/web exec playwright install --with-deps chromium
           pnpm --fail-if-no-match --filter ./apps/web test:browser
+      - name: Browser paperwork through the real local API and restricted database
+        env:
+          CAREIQ_REAL_API_E2E: "true"
+        run: pnpm --fail-if-no-match --filter ./apps/web exec playwright test --config playwright.integration.config.ts
       - name: Build API and shared contract
         run: |
           pnpm --fail-if-no-match --filter @careiq/interview-contract build

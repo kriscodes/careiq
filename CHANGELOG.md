@@ -4,7 +4,9 @@ Release notes in this repository are the source of truth. Each released version 
 
 ## Unreleased
 
-Local, unpushed review changes from October 6, 2026:
+October 18 integration: reconcile current `main` into the clinical workflow/Forms Studio branch, preserving released history, existing migration hashes and the current security boundaries. This local merge resolution is not a deployment.
+
+October 6 implementation, included in the unreleased PR #10 branch:
 
 - Branded authentication and three-step practice onboarding for web and Expo iOS/Android.
 - Actor-isolated server drafts, immutable pending-operation recovery and the new onboarding-state API.

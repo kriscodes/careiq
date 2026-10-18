@@ -89,3 +89,5 @@ Still pending: production database identity/role/migration verification; release
 ## Authentication and onboarding — October 6, 2026
 
 Current local implementation, 176 passing tests, migration replay, web/mobile review and remaining audit/device acceptance are recorded in [authentication/onboarding verification](auth-onboarding-verification.md). Earlier dated sections above are historical. These changes were made in the canonical checkout without pushing, remote deployment or hosted database migration.
+
+October 18 local main integration and refreshed end-to-end evidence: [PR #10 conflict-resolution verification](verification/pr-10-main-2026-10-18/README.md). The merge remains uncommitted/unpushed at user request.
