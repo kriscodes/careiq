@@ -265,6 +265,7 @@ Formal compliance requirements and controls will evolve as the product approache
 
 * [Patient delivery and staff notification implementation](docs/notifications-implementation.md) — configuration, queued delivery, recipient inbox, permissions and verification limits.
 * [Notification verification record](docs/verification/notifications-2026-10-18/README.md) — staged checks and outstanding acceptance.
+* [PR #11 check repairs](docs/verification/pr-11-ci/README.md) — notification integration fixes, additive migration and local regression evidence.
 
 * [Patient delivery and staff notification designs](docs/design/patient-delivery-and-staff-notifications/design-handoff.md) — proposed UI, API and delivery architecture; no provider activation.
 

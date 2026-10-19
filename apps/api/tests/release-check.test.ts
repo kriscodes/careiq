@@ -22,7 +22,18 @@ test("restricted release verifier checks actual role/RLS metadata and transitive
     await admin.query(grant);
     const runtimeUrl = new URL(target); runtimeUrl.username = role; runtimeUrl.password = password;
     runtime = new Pool({ connectionString: runtimeUrl.href, ssl: false, max: 1 });
-    await verifyDatabaseRelease(runtime);
+    let checkedReceiptColumns = false;
+    await verifyDatabaseRelease({ query: async (sql: any, args: any) => {
+      const result = await runtime!.query(sql, args);
+      if (typeof sql === "string" && sql.includes("notification_metadata")) {
+        // Exercise the real driver result: PostgreSQL name[] otherwise arrives as a string.
+        assert.ok(result.rows.every((row: any) => Array.isArray(row.update_columns)));
+        assert.deepEqual(result.rows.find((row: any) => row.table_name === "staff_notification_events").update_columns, ["processed_at"]);
+        checkedReceiptColumns = true;
+      }
+      return result;
+    } } as any);
+    assert.equal(checkedReceiptColumns, true);
     await assert.rejects(verifyDatabaseRelease(admin), /privileged|restricted/);
     // Use actual catalog results, replacing one value at a time. No global policy/ACL
     // mutation can interfere with other integration tests or the review workspace.

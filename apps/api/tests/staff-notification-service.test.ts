@@ -48,7 +48,9 @@ test('staff inbox binds current authorization, exact read-all membership and fin
       await scoped(worker,async c=>{await c.query('UPDATE work_items SET assignee_user_id=$2,revision=revision+1 WHERE id=$1',[original.id,other]);});
       const changed=(await admin.query('SELECT * FROM work_items WHERE id=$1',[original.id])).rows[0];assert.equal(Number(changed.notification_owner_generation),2);assert.equal(Number(changed.notification_due_generation),1);
       await service.runStaffNotificationSweep(worker,options);
-      const previous=await service.staffNotifications(tenant,access,{},randomUUID()),next=await service.staffNotifications(otherTenant,access,{},randomUUID());assert.ok(previous.items.some((i:any)=>i.eventKind==='ownership_changed'));assert.equal(next.items.filter((i:any)=>i.eventKind==='ownership_changed').length,1);
+      const readRequestId=randomUUID(),previous=await service.staffNotifications(tenant,access,{},readRequestId),next=await service.staffNotifications(otherTenant,access,{},randomUUID());assert.ok(previous.items.some((i:any)=>i.eventKind==='ownership_changed'));assert.equal(next.items.filter((i:any)=>i.eventKind==='ownership_changed').length,1);
+      assert.equal(previous.items.filter((i:any)=>i.workItem.id===original.id).length,2);
+      assert.equal(Number((await admin.query("SELECT count(*) FROM audit.event_resources r JOIN audit.events e ON e.id=r.event_id WHERE e.request_id=$1 AND e.action='staff_notifications.inbox.read' AND r.resource_type='work_item' AND r.resource_id=$2",[readRequestId,original.id])).rows[0].count),1);
       await scoped(worker,async c=>{await c.query('UPDATE work_items SET assignee_user_id=$2,revision=revision+1 WHERE id=$1',[original.id,other]);});await service.runStaffNotificationSweep(worker,options);
       assert.equal((await service.staffNotifications(otherTenant,access,{},randomUUID())).items.filter((i:any)=>i.eventKind==='ownership_changed').length,1);
       await createWork(owner);await service.runStaffNotificationSweep(worker,options);assert.equal((await service.staffNotifications(worker,access,{},randomUUID())).items.length,0);

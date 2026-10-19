@@ -54,7 +54,7 @@ const helperRules = [
   {name:'careiq_staff_ownership_event',migration:1,arguments:'',definer:false,execute:false,path:false,result:'trigger'},
   {name:'careiq_communication_profile_changed',migration:2,arguments:'',definer:true,execute:false,path:true,result:'trigger'},
   {name:'careiq_portal_communication_choices',migration:2,arguments:'grant_value uuid, choices_value jsonb, expected_revision bigint, email_account text, sms_account text, retry_key uuid, request_fingerprint text',definer:true,execute:true,path:true,result:'jsonb'},
-  {name:'careiq_publish_completed_paperwork',migration:2,arguments:'request_uuid uuid, version_uuid uuid, is_signed boolean',definer:true,execute:true,path:true,result:'jsonb'},
+  {name:'careiq_publish_completed_paperwork',migration:3,arguments:'request_uuid uuid, version_uuid uuid, is_signed boolean',definer:true,execute:true,path:true,result:'jsonb'},
 ];
 
 /** Catalog-only checks. Never select message bodies, endpoints, bearer material, patient rows or secrets. */
@@ -70,7 +70,7 @@ export async function verifyNotificationDatabaseRelease(client: Pick<PoolClient,
       has_any_column_privilege(current_user,c.oid,'INSERT') AS column_insert,
       has_any_column_privilege(current_user,c.oid,'REFERENCES') AS column_references,
       has_table_privilege(current_user,c.oid,'TRUNCATE,REFERENCES,TRIGGER') AS excessive,
-      ARRAY(SELECT a.attname FROM pg_attribute a WHERE a.attrelid=c.oid AND a.attnum>0 AND NOT a.attisdropped AND has_column_privilege(current_user,c.oid,a.attname,'UPDATE') ORDER BY a.attname) AS update_columns,
+      ARRAY(SELECT a.attname::text FROM pg_attribute a WHERE a.attrelid=c.oid AND a.attnum>0 AND NOT a.attisdropped AND has_column_privilege(current_user,c.oid,a.attname,'UPDATE') ORDER BY a.attname) AS update_columns,
       EXISTS(SELECT 1 FROM aclexplode(COALESCE(c.relacl,acldefault('r',c.relowner))) a WHERE a.grantee=0) OR
         EXISTS(SELECT 1 FROM pg_attribute at CROSS JOIN LATERAL aclexplode(at.attacl) a WHERE at.attrelid=c.oid AND a.grantee=0) AS public_access
     FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
@@ -106,7 +106,7 @@ export async function verifyNotificationDatabaseRelease(client: Pick<PoolClient,
       pg_has_role(current_user,p.proowner,'MEMBER') AS owns,has_function_privilege(current_user,p.oid,'EXECUTE') AS can_execute,
       EXISTS(SELECT 1 FROM aclexplode(COALESCE(p.proacl,acldefault('f',p.proowner))) a WHERE a.grantee=0 AND a.privilege_type='EXECUTE') AS public_execute
     FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname=ANY($1::text[])`,[helperRules.map(r=>r.name)])).rows;
-  const migrations=await Promise.all(['0039_notification_delivery.sql','0040_staff_notifications.sql','0041_patient_communication_preferences.sql'].map(file=>readFile(`${migrationsFolder}/${file}`,'utf8')));
+  const migrations=await Promise.all(['0039_notification_delivery.sql','0040_staff_notifications.sql','0041_patient_communication_preferences.sql','0042_paperwork_publication_permission.sql'].map(file=>readFile(`${migrationsFolder}/${file}`,'utf8')));
   if(helpers.length!==helperRules.length || helperRules.some(rule=>{
     const row=helpers.find(r=>r.proname===rule.name);
     const reviewed=new RegExp(`CREATE (?:OR REPLACE )?FUNCTION public\\.${rule.name}\\([\\s\\S]*? AS \\$\\$([\\s\\S]*?)\\$\\$;`).exec(migrations[rule.migration]!)?.[1]?.trim();

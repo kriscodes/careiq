@@ -2,9 +2,9 @@
 
 ## Current boundary
 
-Implementation is preserved in this task's writable staging output. It has not been installed into the canonical `/Users/kristian/Documents/Server/CareIQ` checkout. Automatic approval review reports “Selected model is at capacity” for the isolated local database migration; the final canonical installation review also timed out before execution. No migration, commit, push, deployment or live patient/staff message was performed by this implementation task.
+The implementation is now installed in the canonical checkout and included in [PR #11](https://github.com/kriscodes/careiq/pull/11). The [PR check repair record](../pr-11-ci/README.md) supersedes the original staging limitations below with actual isolated database, release-verifier and browser evidence. External senders, live provider accounts and hosted deployment are not activated by those checks.
 
-## Executed checks
+## Original staged checks
 
 | Check | Observed result |
 | --- | --- |
@@ -17,7 +17,9 @@ Implementation is preserved in this task's writable staging output. It has not b
 
 The focused API run uses `node --import tsx --test` with `patient-delivery-policy`, `patient-delivery-routes`, `staff-notification-policy`, `notification-worker`, `portal-preference-policy` and `notification-release-check` tests. The catalog checker tests use synthetic catalog fixtures; the actual database catalog remains unverified.
 
-## Prepared acceptance still required
+## Original staging acceptance list
+
+Database and browser items below describe the original staging handoff. Their subsequent local completion is recorded in the PR check repair record; provider activation remains separate.
 
 - Apply migrations only to isolated loopback `careiq_test`, then run the full API regression suite. Patient/staff/portal restricted-role service fixtures cover delivery evidence and leases, retry repair, automatic slot consumption, recipient privacy, generations, revisions, replay, suppression, account revocation and concurrent saves. Their safe skip without an isolated test URL is not a passing database test.
 - Run the release verifier using the actual restricted runtime credential and separate audit-reader configuration. Rehearse complete migration replay and ledger consistency; do not use hosted development data.
