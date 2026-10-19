@@ -1,0 +1,45 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { randomUUID } from 'node:crypto';
+import { caseInput, coverageInput, evidenceInput, followUpInput, insuranceRange, seekInstant, insuranceCursorFor, insuranceCursorFrom } from '../src/workflow/insurance-policy.js';
+import { WorkflowError } from '../src/workflow/policy.js';
+const evidence = { source: 'phone', observedAt: '2026-10-18T12:00:00Z', reference: 'Synthetic reference', outcome: 'active', reasonCode: 'manual_verification' };
+const now = new Date('2026-10-18T13:00:00Z');
+test('manual evidence preserves unknown benefits separately from verified zero amounts', () => {
+    assert.equal(evidenceInput(evidence, now).copayCents, null);
+    assert.equal(evidenceInput({ ...evidence, copayCents: 0, deductibleRemainingCents: 0, coinsurancePercent: 0 }, now).copayCents, 0);
+    assert.throws(() => evidenceInput({ ...evidence, copayCents: '0' }, now), error => error instanceof WorkflowError && error.code === 'INVALID_BENEFIT');
+    for (const value of [-1, 100.1, Infinity, true]) assert.throws(() => evidenceInput({ ...evidence, coinsurancePercent: value }, now));
+    assert.throws(() => evidenceInput({ ...evidence, coinsurancePercent: 101 }, now));
+    assert.throws(() => evidenceInput({ ...evidence, outcome: 'inactive', copayCents: 0 }, now));
+    assert.throws(() => evidenceInput({ ...evidence, observedAt: '2026-10-18T13:02:00Z' }, now));
+});
+test('corrections require explicit links and all insurance commands reject injected authority', () => {
+    assert.throws(() => evidenceInput({ ...evidence, reasonCode: 'correction' }, now));
+    assert.throws(() => evidenceInput({ ...evidence, supersedesEvidenceId: randomUUID() }, now));
+    assert.ok(evidenceInput({ ...evidence, reasonCode: 'correction', supersedesEvidenceId: randomUUID() }, now).supersedesEvidenceId);
+    assert.throws(() => caseInput({ appointmentId: randomUUID(), payerName: 'Synthetic payer', actorUserId: 'forged' }));
+    assert.throws(() => evidenceInput({ ...evidence, practiceId: randomUUID() }, now));
+    assert.throws(() => followUpInput({ assigneeUserId: null, reasonCode: 'assignment' }));
+    assert.throws(() => coverageInput({ payerName: 'New payer' }));
+    assert.equal(coverageInput({ payerName: 'New payer', memberId: '', reasonCode: 'correction' }).memberId, null);
+    assert.equal(coverageInput({ payerName: 'New payer', reasonCode: 'correction' }).memberId, undefined);
+});
+test('manager reads bound date ranges and preserve exact timestamp cursor fractions', () => {
+    assert.equal(insuranceRange({ from: '2026-10-01', to: '2026-10-31' }).limit, 50);
+    assert.throws(() => insuranceRange({ from: '2026-10-01', to: '2026-11-01' }));
+    assert.throws(() => insuranceRange({ from: '2026-02-30', to: '2026-03-01' }));
+    assert.throws(() => insuranceRange({ from: '2026-10-02', to: '2026-10-01' }));
+    assert.throws(() => insuranceRange({ from: '2026-10-01', to: '2026-10-31', limit: '101' }));
+    assert.equal(seekInstant('2026-10-18T12:00:00.123456Z'), '2026-10-18T12:00:00.123456Z');
+    const tenant = { practiceId: randomUUID(), locationId: randomUUID(), userId: 'synthetic', membershipId: 'synthetic_member', orgId: 'synthetic_org' };
+    const query = { kind: 'cases', from: '2026-10-01', to: '2026-10-31', limit: 1 };
+    const cursor = insuranceCursorFor({ time: '2026-10-18T12:00:00.123456Z', id: randomUUID() }, tenant, query);
+    assert.equal(insuranceRange({ from: '2026-10-01', to: '2026-10-31', cursor }).cursor, cursor);
+    assert.equal(insuranceCursorFrom(cursor, tenant, query)?.time, '2026-10-18T12:00:00.123456Z');
+    for (const changed of [{ ...tenant, userId: 'other' }, { ...tenant, membershipId: 'other' }, { ...tenant, locationId: randomUUID() }]) assert.throws(() => insuranceCursorFrom(cursor, changed, query));
+    assert.throws(() => insuranceCursorFrom(cursor, tenant, { ...query, from: '2026-10-02' }));
+    assert.throws(() => insuranceCursorFrom(cursor, tenant, { ...query, limit: 2 }));
+    assert.throws(() => insuranceCursorFrom(cursor + 'x', tenant, query));
+    assert.throws(() => insuranceRange({ from: '2026-10-01', to: '2026-10-31', cursor: Buffer.from('{}').toString('base64url') }));
+});

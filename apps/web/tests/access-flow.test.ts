@@ -35,3 +35,10 @@ test("practice creation has only required existing data and normalizes retry det
   assert.match(validateDraft({ ...draft, timeZone: "Unknown/Zone" }, true)!, /valid time zone/);
   assert.equal(validateDraft({ ...draft, practiceName: "", locationName: "", step: 1 }), null);
 });
+
+test("paperwork sign-in return keeps only a validated exact-copy hint", () => {
+  const item = '019a0000-0000-7000-8000-000000000001';
+  assert.equal(safeDestination('/patient-paperwork'), '/patient-paperwork');
+  assert.equal(safeDestination('/patient-paperwork?item=' + item), '/patient-paperwork?item=' + item);
+  for (const value of ['/patient-paperwork?item=other', '/patient-paperwork?item=' + item + '&redirect_url=//evil.invalid', '/patient-paperwork?item=' + item + '#other', '/patient-paperwork/../owner']) assert.equal(safeDestination(value), '/');
+});

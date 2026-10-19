@@ -1,5 +1,5 @@
 import { test, expect } from "./harness";
-import { mkdir } from "node:fs/promises";
+import { mkdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 test.beforeEach(async ({ page }) => { await page.route("**/*", route => ["localhost", "127.0.0.1", "[::1]"].includes(new URL(route.request().url()).hostname) ? route.continue() : route.abort("blockedbyclient")); });
@@ -356,4 +356,125 @@ test("ordinary staff cannot see portal account bindings and patient account code
   await page.route("**/api/v1/patient-paperwork", route => route.fulfill({ contentType: "application/json", body: JSON.stringify({ data: { items: [], hasMore: false, nextCursor: null } }) }));
   await page.goto(`${harnessUrl}/?component=patient-paperwork`); await expect(page.getByLabel("Patient account code", { exact: true })).toHaveValue("user_test"); await expect(page.getByRole("button", { name: "Copy account code", exact: true })).toBeVisible();
   await expect(page.getByLabel("Patient account code", { exact: true })).not.toHaveValue("owner@example.invalid");
+});
+
+test("insurance manager uses real queue actions and preserves unknown versus zero evidence benefits", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=workflow`);
+  await page.getByRole("button", { name: "Manager", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "A clear view of your day." })).toBeVisible();
+  await expect(page.getByText("Payer connection unavailable.", { exact: false })).toBeVisible();
+  await page.getByRole("button", { name: "Open insurance queue", exact: false }).click();
+  await page.getByRole("button", { name: "Review insurance for Alex Morgan", exact: true }).click();
+  await expect(page.getByRole("dialog")).toContainText("Unknown");
+  await page.getByRole("button", { name: "Record manual verification", exact: true }).click();
+  await page.getByLabel("Source reference", { exact: true }).fill("SYNTHETIC CALL 123");
+  await page.getByLabel("Copay (USD)", { exact: true }).fill("0");
+  await page.getByLabel("Coverage result", { exact: true }).selectOption("inactive");
+  await expect(page.getByLabel("Copay (USD)", { exact: true })).toBeDisabled();
+  await expect(page.getByRole("dialog").last()).toContainText("Benefits remain unknown");
+  await page.getByLabel("Coverage result", { exact: true }).selectOption("active");
+  await expect(page.getByLabel("Copay (USD)", { exact: true })).toHaveValue("0");
+  await page.getByRole("button", { name: "Save to case history", exact: true }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await page.getByRole("button", { name: "Review insurance for Alex Morgan", exact: true }).click();
+  await expect(page.getByRole("dialog")).toContainText("$0.00");
+  await expect(page.getByRole("dialog")).toContainText("Unknown");
+  await page.getByRole("button", { name: "Activity", exact: true }).click();
+  await expect(page.getByRole("dialog")).toContainText("Verification evidence recorded");
+  await page.getByRole("button", { name: "Evidence", exact: true }).click();
+  await page.getByRole("button", { name: "Correct current evidence", exact: true }).click();
+  await page.getByLabel("Source reference", { exact: true }).fill("SYNTHETIC CORRECTION");
+  await page.getByLabel("Coverage result", { exact: true }).selectOption("inactive");
+  await page.getByRole("button", { name: "Save to case history", exact: true }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await page.getByRole("button", { name: "Review insurance for Alex Morgan", exact: true }).click();
+  await page.getByRole("button", { name: "Evidence", exact: true }).click();
+  await expect(page.getByRole("dialog")).toContainText("SYNTHETIC CALL 123");
+  await expect(page.getByRole("dialog")).toContainText("SYNTHETIC CORRECTION");
+  await expect(page.getByRole("dialog")).toContainText("Historical");
+  await page.getByRole("button", { name: "Activity", exact: true }).click();
+  await expect(page.getByRole("dialog")).toContainText("Verification evidence corrected");
+});
+
+test("insurance lost-save retry keeps evidence entries and reuses one attempt key", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=workflow&scenario=insurance-save-failure`);
+  await page.getByRole("button", { name: "Insurance", exact: true }).click();
+  await page.getByRole("button", { name: "Review insurance for Alex Morgan", exact: true }).click();
+  await page.getByRole("button", { name: "Record manual verification", exact: true }).click();
+  await page.getByLabel("Source reference", { exact: true }).fill("SYNTHETIC RETRY");
+  await page.getByRole("button", { name: "Save to case history", exact: true }).click();
+  await expect(page.getByRole("alert")).toContainText("Your entries are preserved");
+  await expect(page.getByLabel("Source reference", { exact: true })).toHaveValue("SYNTHETIC RETRY");
+  await page.getByRole("button", { name: "Save to case history", exact: true }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  const calls = await page.evaluate(() => window.__careiqMockCalls.filter(call => call.name === "insuranceEvidence"));
+  expect(calls).toHaveLength(2);
+  expect((calls[0].input as { key: string }).key).toBe((calls[1].input as { key: string }).key);
+  await page.getByRole("button", { name: "Review insurance for Alex Morgan", exact: true }).click();
+  await page.getByRole("button", { name: "Evidence", exact: true }).click();
+  await expect(page.locator(".ci-evidence")).toHaveCount(1);
+});
+
+test("insurance read-only grants hide manager and all mutation controls", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=workflow&scenario=insurance-readonly`);
+  await expect(page.getByRole("button", { name: "Manager", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Insurance", exact: true }).click();
+  await expect(page.getByRole("button", { name: "New verification case", exact: false })).toHaveCount(0);
+  await page.getByRole("button", { name: "Review insurance for Alex Morgan", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Record manual verification", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Assign or schedule follow-up", exact: true })).toHaveCount(0);
+});
+
+test("insurance policy correction preserves masked ID and requires a new verification", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=workflow`);
+  await page.getByRole("button", { name: "Insurance", exact: true }).click();
+  await page.getByRole("button", { name: "Review insurance for Alex Morgan", exact: true }).click();
+  await page.getByRole("button", { name: "Correct policy details", exact: true }).click();
+  await page.getByLabel("Payer", { exact: true }).fill("Synthetic corrected plan");
+  await expect(page.getByLabel("Member ID change", { exact: true })).toHaveValue("preserve");
+  await page.getByRole("button", { name: "Save to case history", exact: true }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await page.getByRole("button", { name: "Review insurance for Alex Morgan", exact: true }).click();
+  await expect(page.getByRole("dialog")).toContainText("Synthetic corrected plan");
+  await expect(page.getByRole("dialog")).toContainText("•••• 0123");
+  await expect(page.getByRole("dialog")).toContainText("Unverified");
+});
+
+test("insurance views fit desktop and narrow web layouts", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=workflow`);
+  await page.getByRole("button", { name: "Manager", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Verification outlook", exact: true })).toBeVisible();
+  await expect(page.locator(".ci-metric")).toHaveCount(4);
+  if (process.env.CAREIQ_CAPTURE_DESIGN === "1") {
+    const directory = resolve(__dirname, "../../../../docs/verification/manager-insurance");
+    await mkdir(directory, { recursive: true });
+    await page.screenshot({ path: resolve(directory, "manager-desktop.png"), fullPage: true });
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "Insurance", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Review insurance for Alex Morgan", exact: true })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  if (process.env.CAREIQ_CAPTURE_DESIGN === "1") {
+    await page.screenshot({ path: resolve(__dirname, "../../../../docs/verification/manager-insurance/insurance-mobile.png"), fullPage: true });
+  }
+});
+
+
+test("insurance manager export contains only authorized aggregate summary fields", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=workflow`);
+  await page.getByRole("button", { name: "Manager", exact: true }).click();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export summary", exact: true }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe("careiq-manager-summary-2026-10-16.csv");
+  const path = await download.path();
+  expect(path).not.toBeNull();
+  const content = await readFile(path!, "utf8");
+  expect(content).toContain("Tracked insurance cases");
+  expect(content).toContain("Location time zone");
+  expect(content).not.toContain("Alex Morgan");
+  expect(content).not.toContain("Jordan Lee");
+  expect(content).not.toContain("synthetic-insurance");
+  expect(content).not.toContain("0123");
+  await expect(page.getByRole("status").filter({ hasText: "Summary export authorized" })).toBeVisible();
 });

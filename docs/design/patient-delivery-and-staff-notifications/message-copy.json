@@ -1,0 +1,59 @@
+{
+  "status": "proposed copy; synthetic approved-version fixtures do not establish production approval",
+  "version": 1,
+  "providerSelected": false,
+  "translations": {
+    "en": "review required before activation",
+    "es": "translation approval required before activation"
+  },
+  "copy": {
+    "en": {
+      "request": {
+        "subject": "A secure request from Evergreen Medical",
+        "title": "You have paperwork to complete",
+        "body": "Please open your secure request to complete your paperwork.",
+        "cta": "Open secure request",
+        "sms": "Evergreen Medical: Please complete your paperwork using your secure request."
+      },
+      "reminder": {
+        "subject": "A reminder from Evergreen Medical",
+        "title": "A reminder about your paperwork",
+        "body": "Your secure paperwork request is still open. Please complete it when you can.",
+        "cta": "Continue securely",
+        "sms": "Evergreen Medical: A reminder to complete your paperwork using your secure request."
+      },
+      "complete": {
+        "subject": "Your secure copy is ready",
+        "title": "Your paperwork is ready",
+        "body": "Sign in to view or download your completed copy.",
+        "cta": "View secure copy",
+        "sms": "Evergreen Medical: Your paperwork is ready. Sign in to view your secure copy."
+      }
+    },
+    "es": {
+      "request": {
+        "subject": "Una solicitud segura de Evergreen Medical",
+        "title": "Tiene documentos por completar",
+        "body": "Abra su solicitud segura para completar los documentos.",
+        "cta": "Abrir solicitud segura",
+        "sms": "Evergreen Medical: Complete sus documentos mediante su solicitud segura."
+      },
+      "reminder": {
+        "subject": "Un recordatorio de Evergreen Medical",
+        "title": "Un recordatorio sobre sus documentos",
+        "body": "Su solicitud segura sigue abierta. Complete los documentos cuando pueda.",
+        "cta": "Continuar de forma segura",
+        "sms": "Evergreen Medical: Le recordamos que complete sus documentos mediante su solicitud segura."
+      },
+      "complete": {
+        "subject": "Su copia segura está lista",
+        "title": "Sus documentos están listos",
+        "body": "Inicie sesión para ver o descargar su copia completada.",
+        "cta": "Ver copia segura",
+        "sms": "Evergreen Medical: Sus documentos están listos. Inicie sesión para ver su copia segura."
+      }
+    }
+  },
+  "defaultLinkPolicy": "First-party fixed origin, no external shortener or tracking, request verification distinct from authenticated exact-library access",
+  "smsFooterPolicy": "Append provider/region-approved opt-out/help/rates language; calculate final encoding and segments"
+}

@@ -253,6 +253,55 @@
       "when": 1792294726349,
       "tag": "0035_clinical-scope-statistics",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1792365621550,
+      "tag": "0036_insurance-workspace",
+      "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1792365621551,
+      "tag": "0037_insurance-patient-activity",
+      "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1792365846882,
+      "tag": "0038_insurance-evidence-applicability",
+      "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "7",
+      "when": 1792365846883,
+      "tag": "0039_notification_delivery",
+      "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1792365846884,
+      "tag": "0040_staff_notifications",
+      "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1792365846885,
+      "tag": "0041_patient_communication_preferences",
+      "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "7",
+      "when": 1792365846886,
+      "tag": "0042_paperwork_publication_permission",
+      "breakpoints": true
     }
   ]
 }

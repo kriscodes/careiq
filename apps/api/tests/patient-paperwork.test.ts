@@ -33,8 +33,8 @@ test('patient forms freeze exact answers and publish signed/unsigned copies behi
         const run=(action:string,target:string,input:unknown,expectedRevision?:number)=>service.execute(tenant,action,target,input,ctx(expectedRevision));
         const patient=(await run('patients.create','',{firstName:'Synthetic',lastName:'Paperwork',dateOfBirth:'1980-01-01'})).id as string;
         const type=(await run('document-types.create','',{code:'paperwork',name:'Synthetic paperwork'})).id as string;
-        const authoring=(signed:boolean)=>({schemaVersion:2,content:'Synthetic legal content, frozen at publication.',fieldSchema:[{key:'patient_name',label:'Patient name',type:'text',required:true},{key:'has_detail',label:'Add detail?',type:'checkbox',required:false},{key:'detail',label:'Detail',type:'text',required:false},...(signed?[{key:'patient_signature',label:'Patient signature',type:'typed_signature',required:true,signerRole:'patient'}]:[])],formSchema:{mode:'guided',defaultLocale:'en',completionPolicy:signed?'form_then_sign':'form_only',sections:[],rules:[{id:'detail_rule',targetFieldKey:'detail',sourceFieldKey:'has_detail',operator:'checked'}],bindings:[{fieldKey:'patient_name',destination:'patient.preferredName',reviewRequired:true}],signing:signed?{roles:[{key:'patient',label:'Patient',required:true}],consentText:'Synthetic electronic signature consent with explicit intent.',consentTextVersion:'synthetic-consent-v1'}:{roles:[]},delivery:{emailCopy:true}}});
-        const publish=async(signed:boolean)=>{const template=await run('templates.create','',{documentTypeId:type,title:signed?'Synthetic signed form':'Synthetic submitted form',...authoring(signed)});await run('templates.publication',String(template.id),{expectedDraftRevision:1},1);return(await admin.query('SELECT published_version_id FROM document_templates WHERE id=$1',[template.id])).rows[0].published_version_id as string;};
+        const authoring=(signed:boolean,emailCopy=true)=>({schemaVersion:2,content:'Synthetic legal content, frozen at publication.',fieldSchema:[{key:'patient_name',label:'Patient name',type:'text',required:true},{key:'has_detail',label:'Add detail?',type:'checkbox',required:false},{key:'detail',label:'Detail',type:'text',required:false},...(signed?[{key:'patient_signature',label:'Patient signature',type:'typed_signature',required:true,signerRole:'patient'}]:[])],formSchema:{mode:'guided',defaultLocale:'en',completionPolicy:signed?'form_then_sign':'form_only',sections:[],rules:[{id:'detail_rule',targetFieldKey:'detail',sourceFieldKey:'has_detail',operator:'checked'}],bindings:[{fieldKey:'patient_name',destination:'patient.preferredName',reviewRequired:true}],signing:signed?{roles:[{key:'patient',label:'Patient',required:true}],consentText:'Synthetic electronic signature consent with explicit intent.',consentTextVersion:'synthetic-consent-v1'}:{roles:[]},delivery:{emailCopy}}});
+        const publish=async(signed:boolean,emailCopy=true)=>{const template=await run('templates.create','',{documentTypeId:type,title:signed?'Synthetic signed form':'Synthetic submitted form',...authoring(signed,emailCopy)});await run('templates.publication',String(template.id),{expectedDraftRevision:1},1);return(await admin.query('SELECT published_version_id FROM document_templates WHERE id=$1',[template.id])).rows[0].published_version_id as string;};
         let grantId='',unsignedVersion='',unsignedItem='',signedVersion='';
         await context.test('private calendar rule covers exact birthday/upper-bound/leap-day edges without runtime clock overrides',async()=>{
             for(const [dob,zone,at,expected] of [
@@ -183,7 +183,7 @@ test('patient forms freeze exact answers and publish signed/unsigned copies behi
                 await assert.rejects(paperwork.patientFormFreeze(signSession.sessionToken,{},randomUUID(),2,randomUUID()),code('SIGNER_AUTHORITY_UNAVAILABLE'));
                 await run('patients.update',respondent,{dateOfBirth:birth.adult},2);
                 assert.equal((await staffPortalGrants(tenant,respondent,randomUUID())).adultSelfEligible,true);assert.equal((await paperwork.portalPaperwork(calendarSubject,'sess_CalendarPatient')).items?.length,1);assert.ok((await paperwork.portalPaperwork(calendarSubject,'sess_CalendarPatient',copyId)).bytes);
-                const retried=await run('paperwork.notifications.retry',notification,{},2);assert.equal(retried.state,'needs_attention');assert.equal(retried.failureCode,'DELIVERY_PROVIDER_UNAVAILABLE');
+                const retried=await run('paperwork.notifications.retry',notification,{},2);assert.equal(retried.state,'suppressed');assert.equal(retried.failureCode,'CONFIRMED_ENDPOINT_REQUIRED');assert.equal(typeof retried.deliveryIntentId,'string');
                 await paperwork.patientFormFreeze(signSession.sessionToken,{},randomUUID(),2,randomUUID());
                 const current=await service.patientRequest(signSession.sessionToken,randomUUID()),payload={expectedRevision:current.signature!.revision,sourceSha256:current.signature!.sourceSha256,consent:{accepted:true,textVersion:current.signature!.consentTextVersion},fields:[{key:'patient_signature',type:'typed_signature',value:'Synthetic calendar'}]};
                 await run('patients.update',respondent,{dateOfBirth:birth.upper},3);
@@ -191,6 +191,32 @@ test('patient forms freeze exact answers and publish signed/unsigned copies behi
                 await run('patients.update',respondent,{dateOfBirth:birth.adult},4);
                 assert.equal((await service.patientCompletion(signSession.sessionToken,payload,randomUUID(),randomUUID())).state,'completed');
             } finally {await admin.query("UPDATE locations SET time_zone='UTC' WHERE id=$1",[locationId]);}
+        });
+        await context.test('publication follows latest active SMS paperwork permission independently of frozen email-copy choice',async()=>{
+            const respondent=String((await run('patients.create','',{firstName:'Synthetic',lastName:'SMS paperwork',dateOfBirth:'1980-01-01'})).id),endpoint=randomUUID();
+            await run('paperwork.portal.bind',respondent,{clerkUserId:'user_SmsPaperwork'+randomUUID().replaceAll('-',''),relationship:'self',verificationMethod:'staff_in_person',verificationReference:'Synthetic SMS paperwork identity verification'});
+            await admin.query("INSERT INTO communication_endpoints(id,practice_id,location_id,patient_id,channel,address,address_fingerprint,verification_reference,verified_by_actor_id,time_zone) VALUES($1,$2,$3,$4,'sms','+12025550123',$5,'Synthetic verified SMS destination',$6,'UTC')",[endpoint,practiceId,locationId,respondent,'a'.repeat(64),userId]);
+            const permission=async(purpose:string,allowed:boolean)=>admin.query("INSERT INTO communication_permission_events(practice_id,location_id,patient_id,endpoint_id,purpose,allowed,source,actor_user_id,verification_reference) VALUES($1,$2,$3,$4,$5,$6,'staff_verified',$7,'Synthetic explicit permission')",[practiceId,locationId,respondent,endpoint,purpose,allowed,userId]);
+            const version=await publish(false,false);
+            const complete=async()=>{
+                const request=await run('paperwork.requests.create','',{patientId:respondent,templateVersionId:version,recipient:{name:'Synthetic SMS patient',channel:'local_review'}}),session=await service.exchangePatientSession({token:String(request.localReviewPath).split('=')[1]},randomUUID());
+                await paperwork.patientFormAnswers(session.sessionToken,{answers:{patient_name:'Synthetic SMS patient',has_detail:false}},randomUUID(),1,randomUUID());
+                const key=randomUUID(),frozen=await paperwork.patientFormFreeze(session.sessionToken,{},key,2,randomUUID());
+                assert.equal(frozen.state,'completed');assert.equal(frozen.signed,false);
+                assert.equal((await admin.query('SELECT count(*) FROM paperwork_library_items WHERE document_version_id=$1',[frozen.documentVersionId])).rows[0].count,'1');
+                const notifications=(await admin.query('SELECT id,channel,state,failure_code FROM paperwork_notifications WHERE request_id=$1',[request.id])).rows;
+                return {request,session,key,frozen,notifications};
+            };
+            await permission('request',true);
+            const noConsent=await complete();assert.equal(noConsent.frozen.notificationState,'not_requested');assert.equal(noConsent.notifications.length,0);
+            await permission('paperwork',true);
+            const optedIn=await complete();assert.equal(optedIn.frozen.notificationState,'needs_attention');assert.equal(optedIn.frozen.failureCode,'DELIVERY_PROVIDER_UNAVAILABLE');assert.equal(optedIn.notifications.length,1);assert.equal(optedIn.notifications[0].channel,'sms');
+            const replay=await paperwork.patientFormFreeze(optedIn.session.sessionToken,{},optedIn.key,2,randomUUID());assert.equal(replay.libraryItemId,optedIn.frozen.libraryItemId);
+            assert.equal((await admin.query("SELECT count(*) FROM outbox_events WHERE event_type='paperwork.notification.requested' AND aggregate_id=$1",[optedIn.notifications[0].id])).rows[0].count,'1');
+            await permission('paperwork',false);
+            const withdrawn=await complete();assert.equal(withdrawn.frozen.notificationState,'not_requested');assert.equal(withdrawn.notifications.length,0);
+            await permission('paperwork',true);await admin.query("UPDATE communication_endpoints SET status='invalid' WHERE id=$1",[endpoint]);
+            const inactive=await complete();assert.equal(inactive.frozen.notificationState,'not_requested');assert.equal(inactive.notifications.length,0);
         });
         await context.test('database grants prevent fabricated library copies and revoked binding stops historical byte access immediately',async()=>{
             const client=await runtimePool!.connect();try{await client.query('BEGIN');await client.query("SELECT set_config('app.practice_id',$1,true),set_config('app.location_id',$2,true),set_config('app.actor_user_id',$3,true)",[practiceId,locationId,userId]);

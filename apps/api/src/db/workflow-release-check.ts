@@ -1,5 +1,7 @@
 import { readFile } from "node:fs/promises";
 import type { PoolClient } from "pg";
+import { verifyNotificationDatabaseRelease } from "./notification-release-check.js";
+import { verifyInsuranceDatabaseRelease } from "./insurance-release-check.js";
 import { verifyFormsStudioDatabaseRelease } from "./forms-studio-release-check.js";
 import { migrationsFolder, ReleaseCheckError } from "./migration-safety.js";
 
@@ -39,4 +41,6 @@ export async function verifyWorkflowDatabaseRelease(client: Pick<PoolClient, "qu
     JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='audit' AND t.tgname='audit_append_only' AND c.relname=ANY($1::text[])`, [auditTables])).rows;
   if (appendOnly.length !== auditTables.length || appendOnly.some(row => !["O", "A"].includes(row.tgenabled))) throw new ReleaseCheckError("Canonical audit tables must reject ordinary changes.");
   await verifyFormsStudioDatabaseRelease(client);
+  await verifyInsuranceDatabaseRelease(client);
+  await verifyNotificationDatabaseRelease(client);
 }

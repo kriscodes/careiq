@@ -8,6 +8,8 @@ import {resolve,join} from 'node:path';
 import {Pool} from 'pg';
 import {PDFDocument} from 'pdf-lib';
 import {isolatedTestDatabaseUrl} from './local-test-database.js';
+import type {TenantContext,RequestAuthentication} from '../src/middleware/tenant-context.js';
+import type {PracticeAccess} from '../src/routes/practice-access.js';
 if(process.env.CAREIQ_REAL_API_E2E!=='true'||!process.send)throw new Error('EXPLICIT_ISOLATED_BROWSER_TEST_REQUIRED');
 const database=isolatedTestDatabaseUrl();if(!database)throw new Error('ISOLATED_TEST_DATABASE_REQUIRED');
 const assets=process.env.CAREIQ_E2E_ASSET_DIR;
@@ -20,6 +22,8 @@ const storage=await mkdtemp(join(tmpdir(),'careiq-real-pdf-'));
 let runtime:Pool|undefined,server:Server|undefined,closing=false,roleCreated=false,runtimeEnded=false;
 type Flow={requestId:string;token:string;title:string;templateVersionId:string;patientId:string};
 const flows={} as Record<'unsigned'|'signed',Flow>;
+const staffBearer=randomUUID(),staffSession='sess_Staff'+randomUUID().replaceAll('-','');
+let staff:{tenant:TenantContext;appointmentId:string;patientId:string;date:string}|undefined;
 const send=(message:unknown)=>{if(process.connected)process.send!(message);};
 const fixtureRequestId=()=>{const id=randomUUID();requestIds.add(id);return id;};
 async function cleanup(){
@@ -68,6 +72,11 @@ async function start(){
   await admin.query('INSERT INTO location_assignments(practice_id,user_id,location_id,active,granted_by) VALUES($1,$2,$3,true,$2)',[t.practiceId,t.userId,t.locationId]);
   const run=(action:string,target:string,input:unknown,expectedRevision?:number)=>service.execute(t,action,target,input,{requestId:fixtureRequestId(),idempotencyKey:randomUUID(),expectedRevision});
   const patientId=String((await run('patients.create','',{firstName:'Synthetic',lastName:'Browser',dateOfBirth:'1980-01-01'})).id);
+  if(index===0){
+   const scheduledAt=new Date(Date.now()+3600000),endsAt=new Date(scheduledAt.getTime()+1800000),appointmentId=randomUUID();
+   await admin.query('INSERT INTO appointments(id,practice_id,location_id,patient_id,scheduled_at,ends_at) VALUES($1,$2,$3,$4,$5,$6)',[appointmentId,t.practiceId,t.locationId,patientId,scheduledAt.toISOString(),endsAt.toISOString()]);
+   staff={tenant:t,appointmentId,patientId,date:scheduledAt.toISOString().slice(0,10)};
+  }
   const documentTypeId=String((await run('document-types.create','',{code:'browser_form',name:'Synthetic browser form'})).id);
   if(index===0)await run('paperwork.portal.bind',patientId,{clerkUserId:subject,relationship:'self',verificationMethod:'staff_in_person',verificationReference:'Synthetic fixture attestation',paperworkEmailEnabled:false});
   for(const signed of index===0?[false,true]:[false]){
@@ -83,16 +92,25 @@ async function start(){
  }
  const {createApiApp}=await import('../src/app.js');
  const patients=await import('../src/services/patient.service.js'),appointments=await import('../src/services/appointment.service.js'),practices=await import('../src/services/practice.service.js');
+ const insurance=await import('../src/services/insurance.service.js');const {WorkflowError}=await import('../src/workflow/policy.js');
+ assert.ok(staff);
+ const staffPermissions=['org:patients:read','org:appointments:read','org:documents:read','org:documents:review','org:work:manage','org:activity:read'];
+ const getAuth=(req:import('express').Request):RequestAuthentication=>req.get('Authorization')===`Bearer ${staffBearer}`?{isAuthenticated:true,userId:staff!.tenant.userId,orgId:staff!.tenant.orgId,orgRole:'org:custom',sessionId:staffSession,has:({permission})=>staffPermissions.includes(permission)}:req.get('Authorization')===`Bearer ${bearer}`?{isAuthenticated:true,userId:subject,sessionId}:{isAuthenticated:false};
+ const practiceAccess={authorizeLocation:async(auth:RequestAuthentication,locationId:string)=>{
+  if(!auth.isAuthenticated||auth.userId!==staff!.tenant.userId||auth.orgId!==staff!.tenant.orgId||locationId!==staff!.tenant.locationId)throw new WorkflowError('FORBIDDEN',403);
+  return{tenant:staff!.tenant,capabilities:{patients:{read:true,create:false},appointments:{read:true,create:false}},permissions:staffPermissions};
+ }} as unknown as PracticeAccess;
+
  // Only the identity-provider seam is synthetic. All API/service responses,
  // permission checks, PDF bytes, audit facts and library reads remain real.
  let app:ReturnType<typeof createApiApp>|undefined;
  server=createServer((req,res)=>{res.once('finish',()=>{const value=res.getHeader('X-Request-Id');if(typeof value==='string')requestIds.add(value);});if(!app){res.statusCode=503;res.end();return;}app(req,res);});await new Promise<void>(ok=>server!.listen(0,'127.0.0.1',ok));
  const origin='http://127.0.0.1:'+(server.address() as {port:number}).port;
- app=createApiApp({authenticate:(_req,_res,next)=>next(),getAuth:req=>req.get('Authorization')===`Bearer ${bearer}`?{isAuthenticated:true,userId:subject,sessionId}:{isAuthenticated:false},workflow:service,health:()=>runtime!.query('SELECT 1'),findPracticeByClerkOrgId:practices.findPracticeByClerkOrgId,listPatients:patients.listPatients,listAppointments:appointments.listAppointments,createPatient:patients.createPatient,createAppointment:appointments.createAppointment},{origins:[origin],trustedProxies:false,interviews:{enabled:false,store:async()=>{throw new Error('PUBLIC_INTERVIEW_DISABLED');},log:()=>{}}});
+ app=createApiApp({authenticate:(_req,_res,next)=>next(),getAuth,practiceAccess,workflow:service,insurance,health:()=>runtime!.query('SELECT 1'),findPracticeByClerkOrgId:practices.findPracticeByClerkOrgId,listPatients:patients.listPatients,listAppointments:appointments.listAppointments,createPatient:patients.createPatient,createAppointment:appointments.createAppointment},{origins:[origin],trustedProxies:false,interviews:{enabled:false,store:async()=>{throw new Error('PUBLIC_INTERVIEW_DISABLED');},log:()=>{}}});
  const js=await readFile(join(assets!,'app.js')),css=await readFile(join(assets!,'styles.css'));
  app.get('/app.js',(_req,res)=>res.type('js').set('Cache-Control','no-store').send(js));app.get('/styles.css',(_req,res)=>res.type('css').set('Cache-Control','no-store').send(css));
- app.get(['/','/patient-paperwork'],(_req,res)=>res.type('html').set('Cache-Control','no-store').send('<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="/styles.css"></head><body><p style="font:12px system-ui">Isolated synthetic identity · Real loopback API and restricted test database</p><div id="root"></div><script src="/app.js"></script></body></html>'));
- send({type:'ready',origin,subject,bearer,flows,foreignLibraryId});
+ app.get(['/','/patient-paperwork','/staff'],(_req,res)=>res.type('html').set('Cache-Control','no-store').send('<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="/styles.css"></head><body><p style="font:12px system-ui">Isolated synthetic identity · Real loopback API and restricted test database</p><div id="root"></div><script src="/app.js"></script></body></html>'));
+ send({type:'ready',origin,subject,bearer,flows,foreignLibraryId,staff:{subject:staff.tenant.userId,bearer:staffBearer,orgId:staff.tenant.orgId,locationId:staff.tenant.locationId,practiceName:'Synthetic browser practice',appointmentId:staff.appointmentId,patientId:staff.patientId,date:staff.date}});
 }
 async function verify(flowName:'unsigned'|'signed',expectedName:string){
  const f=flows[flowName];assert.ok(f);const signed=flowName==='signed';
@@ -115,7 +133,24 @@ async function verify(flowName:'unsigned'|'signed',expectedName:string){
  const sessions=(await admin.query('SELECT verification_method,assurance FROM patient_sessions WHERE request_id=$1',[f.requestId])).rows;assert.equal(sessions.length,1);assert.equal(sessions[0].verification_method,'patient_request_link');assert.equal(sessions[0].assurance,'link_possession');
  return{immutableFactsVerified:true,exactPdfHashVerified:true,libraryCopies:1,pendingChartReviews:1,signatureFields:signed?2:0,notificationIntents:0,independentIdentityVerified:false,sourceSha256:source.sha256,outputSha256:output.sha256,libraryId:String(library.id),frozenTitle:f.title};
 }
+async function verifyInsurance(caseId:string){
+ assert.ok(staff);assert.match(caseId,/^[0-9a-f-]{36}$/i);const t=staff.tenant;
+ const record=(await admin.query('SELECT * FROM insurance_cases WHERE id=$1 AND practice_id=$2 AND location_id=$3',[caseId,t.practiceId,t.locationId])).rows[0];assert.ok(record);assert.equal(record.patient_id,staff.patientId);assert.equal(record.appointment_id,staff.appointmentId);assert.equal(record.assignee_user_id,t.userId);assert.equal(Number(record.revision),4);
+ const evidence=(await admin.query('SELECT * FROM insurance_evidence WHERE case_id=$1 ORDER BY created_at,id',[caseId])).rows;assert.equal(evidence.length,2);
+ const original=evidence[0],correction=evidence[1];assert.equal(original.reference,'Synthetic browser source A');assert.equal(original.copay_cents,0);assert.equal(original.deductible_remaining_cents,null);assert.equal(original.coinsurance_percent,null);assert.equal(original.supersedes_evidence_id,null);
+ assert.equal(correction.reference,'Synthetic browser source B');assert.equal(correction.copay_cents,2500);assert.equal(correction.deductible_remaining_cents,null);assert.equal(correction.coinsurance_percent,null);assert.equal(correction.supersedes_evidence_id,original.id);assert.equal(correction.reason_code,'correction');assert.equal(record.current_evidence_id,correction.id);
+ const actions=['insurance.case.created','insurance.evidence.recorded','insurance.evidence.corrected','insurance.follow_up.revised'];
+ const events=(await admin.query('SELECT * FROM audit.events WHERE practice_id=$1 AND location_id=$2 AND entity_id=$3 AND action=ANY($4::text[]) ORDER BY recorded_at,id',[t.practiceId,t.locationId,caseId,actions])).rows;assert.equal(events.length,4);assert.deepEqual(new Set(events.map(event=>event.action)),new Set(actions));events.forEach(event=>{assert.equal(event.actor_id,t.userId);assert.equal(event.outcome,'succeeded');assert.match(event.request_id,/^[0-9a-f-]{36}$/i);});
+ const eventIds=events.map(event=>event.id);const relationships=(await admin.query('SELECT event_id,resource_type,resource_id,patient_id FROM audit.event_resources WHERE event_id=ANY($1::uuid[])',[eventIds])).rows;
+ for(const event of events)for(const [type,id] of [['insurance_case',caseId],['patient',staff.patientId],['appointment',staff.appointmentId]])assert.ok(relationships.some(relation=>relation.event_id===event.id&&relation.resource_type===type&&relation.resource_id===id&&relation.patient_id===staff!.patientId));
+ const rowEvidence=(await admin.query("SELECT * FROM audit.database_records WHERE application_event_id=ANY($1::uuid[]) AND table_name IN ('insurance_cases','insurance_evidence')",[eventIds])).rows;for(const event of events)assert.ok(rowEvidence.some(row=>row.application_event_id===event.id));
+ for(const observed of evidence){const fact=rowEvidence.find(row=>row.table_name==='insurance_evidence'&&row.row_key.id===observed.id);assert.ok(fact);assert.equal(fact.application_event_id,observed.audit_event_id);assert.equal(fact.authenticated_login,role);}
+ const protectedMetadata=JSON.stringify([events.map(event=>({metadata:event.metadata,authorization:event.authorization_context})),rowEvidence.map(row=>({before:row.before_evidence,after:row.after_evidence}))]);for(const value of ['SYNTHETIC-BROWSER-MEMBER',original.reference,correction.reference])assert.equal(protectedMetadata.includes(value),false);
+ await assert.rejects(admin.query("UPDATE insurance_evidence SET reference='tampered' WHERE id=$1",[original.id]),error=>(error as {code?:string}).code==='23514');assert.equal((await admin.query('SELECT reference FROM insurance_evidence WHERE id=$1',[original.id])).rows[0].reference,original.reference);
+ assert.ok((await admin.query("SELECT id FROM audit.events WHERE practice_id=$1 AND location_id=$2 AND action='manager.dashboard.read' AND actor_id=$3",[t.practiceId,t.locationId,t.userId])).rowCount);
+ return{insuranceFactsVerified:true,immutableEvidenceVerified:true,zeroAndUnknownPreserved:true,evidenceCount:2,auditBusinessEvents:4,databaseEvidenceLinked:true,staffActorVerified:true};
+}
 let queue=Promise.resolve();
-process.on('message',(message:{type?:string;id?:number;flow?:'unsigned'|'signed';expectedName?:string})=>{queue=queue.then(async()=>{try{if(message.type==='verify'){assert.equal(typeof message.expectedName,'string');send({type:'result',id:message.id,result:await verify(message.flow!,message.expectedName!)});}else if(message.type==='shutdown'){send({type:'closed',cleanup:await cleanup()});process.disconnect?.();}}catch(error){send({type:'failure',id:message.id,code:error instanceof assert.AssertionError?'FIXTURE_ASSERTION_FAILED':'FIXTURE_OPERATION_FAILED'});}});});
+process.on('message',(message:{type?:string;id?:number;flow?:'unsigned'|'signed';expectedName?:string;caseId?:string})=>{queue=queue.then(async()=>{try{if(message.type==='verify'){assert.equal(typeof message.expectedName,'string');send({type:'result',id:message.id,result:await verify(message.flow!,message.expectedName!)});}else if(message.type==='verifyInsurance'){assert.equal(typeof message.caseId,'string');send({type:'result',id:message.id,result:await verifyInsurance(message.caseId!)});}else if(message.type==='shutdown'){send({type:'closed',cleanup:await cleanup()});process.disconnect?.();}}catch(error){send({type:'failure',id:message.id,code:error instanceof assert.AssertionError?'FIXTURE_ASSERTION_FAILED':'FIXTURE_OPERATION_FAILED'});}});});
 process.once('disconnect',()=>{void cleanup().catch(()=>{process.exitCode=1;});});process.once('SIGTERM',()=>{void cleanup().finally(()=>process.exit());});
 try{await start();}catch(error){const code=(error as {code?:string}).code;send({type:'failure',code:'FIXTURE_SETUP_FAILED'+(code&&/^[A-Z0-9_]{1,64}$/.test(code)?'_'+code:'')});try{await cleanup();}catch{send({type:'failure',code:'FIXTURE_CLEANUP_FAILED'});}process.exitCode=1;process.disconnect?.();}

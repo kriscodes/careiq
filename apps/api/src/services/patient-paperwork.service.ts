@@ -9,7 +9,7 @@ import { verifiedBindingInput, paperworkCursorFor, paperworkCursorFrom } from '.
 import { patientAdultSelfEligible } from '../workflow/patient-eligibility.js';
 import { command, row, scoped, type CommandContext, type QueryClient } from '../workflow/transaction.js';
 import { readPrivate, sha256 } from '../workflow/storage.js';
-import { freezePrepared, insert, issueGrant, localDelivery, patientCommand, patientTransaction, update } from './workflow.service.js';
+import { deliveryReceipt, freezePrepared, insert, issueGrant, localDelivery, patientCommand, patientTransaction, update } from './workflow.service.js';
 
 const scope=(t:TenantContext)=>[t.practiceId,t.locationId];
 function completionPolicy(version:Record<string,any>) {
@@ -38,10 +38,10 @@ export async function executePaperwork(t:TenantContext,action:string,target:stri
             if(appointmentId) {const appointment=await row(client,'appointments',t,appointmentId);if(appointment.patient_id!==patient.id || ['cancelled','completed','no_show'].includes(appointment.status) || requirement && requirement.appointment_id!==appointmentId)throw new WorkflowError('APPOINTMENT_UNAVAILABLE',409);}
             const recipient=body(p.recipient ?? {},['name','channel','address']);
             const channel=recipient.channel ?? 'local_review';
-            if(!['local_review','email'].includes(String(channel)))throw new WorkflowError('INVALID_CHANNEL',422);
+            if(!['local_review','email','sms'].includes(String(channel)))throw new WorkflowError('INVALID_CHANNEL',422);
             const expiresAt=p.expiresAt ? instant(p.expiresAt,'expiresAt') : new Date(Date.now()+7*86400000),dueAt=p.dueAt ? instant(p.dueAt,'dueAt') : null;
             if(expiresAt<=new Date() || expiresAt.getTime()>Date.now()+30*86400000 || dueAt && dueAt>expiresAt)throw new WorkflowError('INVALID_REQUEST_EXPIRY',422);
-            const request=await insert(client,'document_requests',t,{patient_id:patient.id,appointment_id:appointmentId,purpose:'form_completion',form_completion_policy:schema.completionPolicy,recipient_name:text(recipient.name ?? [patient.first_name,patient.last_name].filter(Boolean).join(' '),'recipient.name',200),recipient_email:channel==='email'?validEmail(recipient.address):null,expires_at:expiresAt,due_at:dueAt,state:'open',created_by_actor_id:t.userId});
+            const request=await insert(client,'document_requests',t,{patient_id:patient.id,appointment_id:appointmentId,purpose:'form_completion',form_completion_policy:schema.completionPolicy,recipient_name:text(recipient.name ?? [patient.first_name,patient.last_name].filter(Boolean).join(' '),'recipient.name',200),recipient_email:channel==='email'?validEmail(recipient.address):null,recipient_phone:channel==='sms'?text(recipient.address,'recipient.address',40):null,expires_at:expiresAt,due_at:dueAt,state:'open',created_by_actor_id:t.userId});
             const prepared=await insert(client,'prepared_documents',t,{patient_id:patient.id,appointment_id:appointmentId,requirement_id:requirement?.id ?? null,template_version_id:version.id,answers:'{}',created_by_actor_id:t.userId});
             await insert(client,'document_request_items',t,{patient_id:patient.id,request_id:request.id,requirement_id:requirement?.id ?? null,document_type_id:template.document_type_id,prepared_document_id:prepared.id});
             if(schema.completionPolicy==='form_then_sign')await requireFormSignerAuthority(client,request.id);
@@ -49,7 +49,7 @@ export async function executePaperwork(t:TenantContext,action:string,target:stri
             if(delivery.sendNow!==undefined && typeof delivery.sendNow!=='boolean')throw new WorkflowError('INVALID_DELIVERY_OPTION',422);
             const attempt=delivery.sendNow===true ? await localDelivery(client,t,request,'initial') : null;
             await recordWorkflowAudit(client,t,{action:'paperwork.requests.created',entityType:'request',entityId:request.id,requestId:context.requestId,resources:[{resourceType:'request',resourceId:request.id,patientId:patient.id},{resourceType:'prepared_document',resourceId:prepared.id,patientId:patient.id}],metadata:{templateVersionId:version.id,purpose:'form_completion'}});
-            return {id:request.id,state:'open',revision:1,preparedDocumentId:prepared.id,completionPolicy:schema.completionPolicy,localReviewPath,deliveryState:attempt?'failed':'not_requested',...(attempt?{failureCode:'DELIVERY_PROVIDER_UNAVAILABLE',attemptId:attempt.id}:{})};
+            return {id:request.id,state:'open',revision:1,preparedDocumentId:prepared.id,completionPolicy:schema.completionPolicy,localReviewPath,...(attempt?deliveryReceipt(attempt):{deliveryState:'not_requested'})};
         }
         if(action==='paperwork.portal.bind') {
             const p=verifiedBindingInput(input),patient=await row(client,'patients',t,id(target));
@@ -78,14 +78,22 @@ export async function executePaperwork(t:TenantContext,action:string,target:stri
         }
         if(action==='paperwork.notifications.retry') {
             const p=body(input,[]),notification=await row(client,'paperwork_notifications',t,id(target));checkRevision(notification,context.expectedRevision);
-            // Recheck current binding/preferences; this local runtime has no provider adapter.
+            // Recheck the pinned audience and exact-copy grant before a known-safe explicit retry.
             const grant=notification.recipient_grant_id ? (await client.query('SELECT * FROM patient_portal_grants WHERE id=$1 AND patient_id=$2 AND practice_id=$3 AND location_id=$4 FOR SHARE',[notification.recipient_grant_id,notification.patient_id,...scope(t)])).rows[0] : null;
             const {notificationEligibility}=await import('../workflow/paperwork-policy.js');
             const library=await row(client,'paperwork_library_items',t,notification.library_item_id),patient=await row(client,'patients',t,notification.patient_id,false);
-            const eligibility=library.release_state!=='released'?{state:'suppressed',failureCode:'PAPERWORK_RELEASE_RESTRICTED'}:patient.archived_at||!await patientAdultSelfEligible(client,patient.id)?{state:'suppressed',failureCode:'PATIENT_PORTAL_ACCESS_UNAVAILABLE'}:notificationEligibility(grant?{revokedAt:grant.revoked_at,expiresAt:grant.expires_at,email:grant.verified_email,emailVerifiedAt:grant.email_verified_at,enabled:grant.paperwork_email_enabled}:null);
-            const changed=await update(client,'paperwork_notifications',t,notification.id,{state:eligibility.state,failure_code:eligibility.failureCode});
-            await recordWorkflowAudit(client,t,{action:'paperwork.notifications.retry.gated',entityType:'paperwork_notification',entityId:notification.id,requestId:context.requestId,metadata:{failureCode:eligibility.failureCode,resultState:eligibility.state},resources:[{resourceType:'document_version',resourceId:notification.document_version_id,patientId:notification.patient_id}]});
-            return {...concurrency(changed),failureCode:eligibility.failureCode};
+            const eligibility=library.release_state!=='released'?{state:'suppressed',failureCode:'PAPERWORK_RELEASE_RESTRICTED'}:patient.archived_at||!await patientAdultSelfEligible(client,patient.id)?{state:'suppressed',failureCode:'PATIENT_PORTAL_ACCESS_UNAVAILABLE'}:notification.channel==='sms'?(grant&&!grant.revoked_at&&new Date(grant.expires_at)>new Date()?{state:'needs_attention',failureCode:'DELIVERY_PROVIDER_UNAVAILABLE'}:{state:'suppressed',failureCode:'PATIENT_PORTAL_ACCESS_UNAVAILABLE'}):notificationEligibility(grant?{revokedAt:grant.revoked_at,expiresAt:grant.expires_at,email:grant.verified_email,emailVerifiedAt:grant.email_verified_at,enabled:grant.paperwork_email_enabled}:null);
+            const uncertain=await client.query("SELECT id FROM delivery_intents WHERE paperwork_notification_id=$1 AND state IN ('queued','scheduled','retry_waiting','submitting','accepted','unknown') LIMIT 1",[notification.id]);
+            if(uncertain.rowCount)throw new WorkflowError('DELIVERY_RECONCILIATION_REQUIRED',409);
+            let retryIntent:any=null;
+            if(eligibility.failureCode==='DELIVERY_PROVIDER_UNAVAILABLE'){
+                const {enqueuePaperworkNotification}=await import('./patient-delivery.service.js');
+                retryIntent=await enqueuePaperworkNotification(client,t,notification,context.idempotencyKey!);
+            }
+            const changed=retryIntent?await row(client,'paperwork_notifications',t,notification.id,false):await update(client,'paperwork_notifications',t,notification.id,{state:eligibility.state,failure_code:eligibility.failureCode});
+            const nextState=changed.state,nextFailure=changed.failure_code;
+            await recordWorkflowAudit(client,t,{action:'paperwork.notifications.retry.gated',entityType:'paperwork_notification',entityId:notification.id,requestId:context.requestId,metadata:{failureCode:nextFailure,resultState:nextState},resources:[{resourceType:'document_version',resourceId:notification.document_version_id,patientId:notification.patient_id}]});
+            return {...concurrency(changed),failureCode:nextFailure,...(retryIntent?{deliveryIntentId:retryIntent.id}:{} )};
         }
         throw new WorkflowError('UNKNOWN_PAPERWORK_COMMAND',404);
     });

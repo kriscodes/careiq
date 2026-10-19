@@ -1,3 +1,4 @@
+import { createInsurancePreviewAdapter } from "./insurance-preview";
 import { type WorkflowAdapter, type WorkflowSnapshot, type WorkflowAppointment, type WorkflowDocument, type WorkflowTemplate, type WorkflowRequest, type WorkflowActivity, type DocumentVersion, type Requirement } from "../../lib/api/workflow";
 
 const sampleDay = "2026-10-16";
@@ -74,6 +75,7 @@ export function createPreviewAdapter(): WorkflowAdapter {
   const find = (group: string, id: string) => { const source = ({ patients: state.patients, appointments: state.appointments, documents: state.documents, templates: state.templates, "template-versions": state.templates.flatMap(template => template.versions ?? []), requests: state.requests, "work-items": state.workItems, requirements: state.appointments.flatMap(a => a.requirements ?? []) } as Record<string, Array<{ id: string }>>)[group]; const record = source?.find(r => r.id === id); if (!record) throw new Error("This sample record is unavailable."); return record as unknown as Record<string, unknown>; };
   return {
     preview: true,
+    insurance: createInsurancePreviewAdapter(() => state),
     async load() { restore(); return copy(state); },
     async page<T>() { return { data: [] as T[], pagination: { hasMore: false, nextCursor: null } }; },
     async detail<T>(resource: string) { restore(); if (resource.startsWith("activity")) return copy(activity) as T; const [group, id, extra] = resource.split("/"); if (group === "availability") return { slots: ["09:00", "10:30", "13:00", "14:30"].map(time => ({ startsAt: `${sampleDay}T${time}:00-07:00` })) } as T; const record = find(group, id); return copy(extra === "versions" ? record.versions : record) as T; },

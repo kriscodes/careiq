@@ -1,3 +1,4 @@
+import { deliveryIntents } from './patient-delivery.js';
 // Workflow tables are enforced by migration 0019, including FORCE RLS, immutable guards and provider exclusion.
 import { pgTable, index, foreignKey, unique, pgPolicy, check, uuid, timestamp, text, bigint, varchar, date, uniqueIndex, boolean, integer, type AnyPgColumn, type PgTableExtraConfigValue, jsonb, time, numeric, pgSchema, primaryKey } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
@@ -613,6 +614,7 @@ export const documentRequests = pgTable("document_requests", {
 	locationId: uuid("location_id").notNull(),
 	patientId: uuid("patient_id").notNull(),
 	appointmentId: uuid("appointment_id"),
+	deliveryGeneration: integer("delivery_generation").default(1).notNull(),
 	purpose: text().notNull(),
 	formCompletionPolicy: text("form_completion_policy"),
 	recipientName: text("recipient_name").notNull(),
@@ -634,6 +636,7 @@ export const documentRequests = pgTable("document_requests", {
   check("document_requests_purpose_check",sql`(purpose = ANY (ARRAY['collection'::text, 'signature'::text, 'replacement'::text, 'form_completion'::text]))`),
   check("document_requests_state_check",sql`(state = ANY (ARRAY['draft'::text, 'open'::text, 'completed'::text, 'declined'::text, 'cancelled'::text, 'expired'::text]))`),
   check("document_requests_form_policy_check",sql`((purpose='form_completion' AND form_completion_policy IS NOT NULL AND form_completion_policy IN ('form_only','form_then_sign')) OR (purpose<>'form_completion' AND form_completion_policy IS NULL))`),
+  check("document_requests_delivery_generation_check",sql`delivery_generation>0`),
   check("document_requests_revision_check",sql`(revision > 0)`),
   unique("document_requests_id_practice_id_location_id_key").on(table.id, table.practiceId, table.locationId),
   unique("document_requests_id_patient_id_practice_id_location_id_key").on(table.id, table.patientId, table.practiceId, table.locationId),
@@ -1129,6 +1132,10 @@ export const deliveryAttempts = pgTable("delivery_attempts", {
 	locationId: uuid("location_id").notNull(),
 	patientId: uuid("patient_id").notNull(),
 	requestId: uuid("request_id").notNull(),
+	intentId: uuid("intent_id"),
+	externalKey: text("external_key"),
+	providerAccount: text("provider_account"),
+	renderHash: text("render_hash"),
 	purpose: text().notNull(),
 	sequence: integer().notNull(),
 	channel: text().notNull(),
@@ -1145,7 +1152,8 @@ export const deliveryAttempts = pgTable("delivery_attempts", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	revision: bigint({ mode: "number" }).default(1).notNull(),
 }, (table): PgTableExtraConfigValue[] => [
-  check("delivery_attempts_purpose_check",sql`(purpose = ANY (ARRAY['initial'::text, 'reminder'::text, 'reissue'::text]))`),
+  foreignKey({name:"delivery_attempt_intent_scope_fk",columns:[table.intentId,table.patientId,table.practiceId,table.locationId],foreignColumns:[deliveryIntents.id,deliveryIntents.patientId,deliveryIntents.practiceId,deliveryIntents.locationId]}),
+  check("delivery_attempts_purpose_check",sql`(purpose = ANY (ARRAY['initial'::text, 'reminder'::text, 'reissue'::text, 'paperwork_ready'::text, 'paperwork_resend'::text]))`),
   check("delivery_attempts_sequence_check",sql`(sequence > 0)`),
   check("delivery_attempts_channel_check",sql`(channel = ANY (ARRAY['email'::text, 'sms'::text, 'local_review'::text]))`),
   check("delivery_attempts_state_check",sql`(state = ANY (ARRAY['queued'::text, 'submitting'::text, 'accepted'::text, 'delivered'::text, 'failed'::text, 'unknown'::text]))`),
@@ -1170,6 +1178,8 @@ export const workItems = pgTable("work_items", {
 	appointmentId: uuid("appointment_id"),
 	requirementId: uuid("requirement_id"),
 	requestId: uuid("request_id"),
+	notificationDueGeneration: bigint("notification_due_generation", {mode:"number"}).default(1).notNull(),
+	notificationOwnerGeneration: bigint("notification_owner_generation", {mode:"number"}).default(1).notNull(),
 	kind: text().notNull(),
 	assigneeUserId: text("assignee_user_id"),
 	dueAt: timestamp("due_at", { withTimezone: true, mode: 'date' }),
