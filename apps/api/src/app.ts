@@ -1,4 +1,8 @@
+import { registerPatientDeliveryRoutes, registerPatientDeliveryCallbackRoutes, type DeliveryCallbackOptions } from "./routes/patient-delivery.js";
+import { registerStaffNotificationRoutes, type StaffNotificationDependencies } from "./routes/staff-notifications.js";
+import { registerPortalCommunicationRoutes, type PortalCommunicationDependencies } from "./routes/portal-communication.js";
 import { registerWorkflowRoutes, registerPatientWorkflowRoutes, type WorkflowDependencies } from "./routes/workflow.js";
+import { registerInsuranceRoutes, type InsuranceDependencies } from "./routes/insurance.js";
 import { registerProtectedAuditRoutes } from "./routes/protected-audit.js";
 import { registerPatientPaperworkPortalRoutes } from "./routes/patient-paperwork.js";
 import express, { type Request, type RequestHandler } from "express";
@@ -18,6 +22,11 @@ type AppointmentInput = NonNullable<ReturnType<typeof parseAppointmentInput>>;
 export type ApiDependencies = {
   authenticate: RequestHandler;
   workflow?: WorkflowDependencies;
+  insurance?: InsuranceDependencies;
+  patientDelivery?: typeof import("./services/patient-delivery.service.js");
+  staffNotifications?: StaffNotificationDependencies;
+  portalCommunications?: PortalCommunicationDependencies;
+  deliveryCallbacks?: DeliveryCallbackOptions;
   getAuth: (request: Request) => RequestAuthentication;
   health: () => Promise<unknown>;
   findPracticeByClerkOrgId: (orgId: string) => Promise<{ id: string; authorizationMode?: string; status?: string } | null>;
@@ -69,10 +78,12 @@ export function createApiApp(dependencies: ApiDependencies, configuration: {
       res.status(status).json({ error: { code: status === 400 ? "INVALID_WEBHOOK" : "RECONCILIATION_UNAVAILABLE", message: "Unable to process provider event." } });
     }
   });
+  if (dependencies.deliveryCallbacks) registerPatientDeliveryCallbackRoutes(app, dependencies.deliveryCallbacks);
   app.use(dependencies.authenticate);
   if (dependencies.workflow) registerPatientPaperworkPortalRoutes(app, dependencies.getAuth);
   app.use("/api/v1/locations/:locationId/workflow", express.json({ limit: "256kb" }));
   app.use(express.json({ limit: "16kb" }));
+  if (dependencies.portalCommunications) registerPortalCommunicationRoutes(app, dependencies.getAuth, dependencies.portalCommunications);
   const tenantContextMiddleware = createTenantContextMiddleware(dependencies);
 
   app.get("/api/v1/me", async (req, res) => {
@@ -95,6 +106,9 @@ export function createApiApp(dependencies: ApiDependencies, configuration: {
   if (dependencies.practiceAccess) {
     registerPracticeRoutes(app, dependencies.practiceAccess, dependencies.getAuth);
     if (dependencies.workflow) registerWorkflowRoutes(app, dependencies.workflow, dependencies.practiceAccess, dependencies.getAuth);
+    if (dependencies.insurance) registerInsuranceRoutes(app, dependencies.insurance, dependencies.practiceAccess, dependencies.getAuth);
+    if (dependencies.patientDelivery) registerPatientDeliveryRoutes(app, dependencies.practiceAccess, dependencies.getAuth, dependencies.patientDelivery);
+    if (dependencies.staffNotifications) registerStaffNotificationRoutes(app, dependencies.practiceAccess, dependencies.getAuth, dependencies.staffNotifications);
     registerProtectedAuditRoutes(app, dependencies.getAuth, dependencies.practiceAccess);
   }
   const locationContext: RequestHandler = async (req, res, next) => {

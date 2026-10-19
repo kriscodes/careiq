@@ -1,0 +1,688 @@
+{
+  "date": "2026-10-18",
+  "scope": "Synthetic browser prototype; no live provider, authentication, database, native-device or compliance validation",
+  "checks": [
+    {
+      "name": "delivery-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "reminders-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "templates-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "inbox-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "preferences-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "rules-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "providers-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "states-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "handoff-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "delivery-1024",
+      "width": 1024,
+      "scroll": 1024,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "reminders-1024",
+      "width": 1024,
+      "scroll": 1024,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "templates-1024",
+      "width": 1024,
+      "scroll": 1024,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "inbox-1024",
+      "width": 1024,
+      "scroll": 1024,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "preferences-1024",
+      "width": 1024,
+      "scroll": 1024,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "rules-1024",
+      "width": 1024,
+      "scroll": 1024,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "providers-1024",
+      "width": 1024,
+      "scroll": 1024,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-1024",
+      "width": 1024,
+      "scroll": 1024,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "states-1024",
+      "width": 1024,
+      "scroll": 1024,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "handoff-1024",
+      "width": 1024,
+      "scroll": 1024,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "delivery-768",
+      "width": 768,
+      "scroll": 768,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "reminders-768",
+      "width": 768,
+      "scroll": 768,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "templates-768",
+      "width": 768,
+      "scroll": 768,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "inbox-768",
+      "width": 768,
+      "scroll": 768,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "preferences-768",
+      "width": 768,
+      "scroll": 768,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "rules-768",
+      "width": 768,
+      "scroll": 768,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "providers-768",
+      "width": 768,
+      "scroll": 768,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-768",
+      "width": 768,
+      "scroll": 768,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "states-768",
+      "width": 768,
+      "scroll": 768,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "handoff-768",
+      "width": 768,
+      "scroll": 768,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "delivery-390",
+      "width": 390,
+      "scroll": 390,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "reminders-390",
+      "width": 390,
+      "scroll": 390,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "templates-390",
+      "width": 390,
+      "scroll": 390,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "inbox-390",
+      "width": 390,
+      "scroll": 390,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "preferences-390",
+      "width": 390,
+      "scroll": 390,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "rules-390",
+      "width": 390,
+      "scroll": 390,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "providers-390",
+      "width": 390,
+      "scroll": 390,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-390",
+      "width": 390,
+      "scroll": 390,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "states-390",
+      "width": 390,
+      "scroll": 390,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "handoff-390",
+      "width": 390,
+      "scroll": 390,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "delivery-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "reminders-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "templates-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "inbox-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "preferences-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "rules-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "providers-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "states-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "handoff-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-Service unavailable-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-Access removed-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-No messages-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-Read only-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-Dispatch paused-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-Stale request-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-Unknown outcome-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-Opted out-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-No valid recipient-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-Secure sign-in-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-Copy available-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-Expired link-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-Cancelled request-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-Preparing copy-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-Access unavailable-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-Communication choices-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-Open request-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-Service unavailable-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-Access removed-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-No messages-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-Read only-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-Dispatch paused-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-Stale request-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-Unknown outcome-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-Opted out-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "state-No valid recipient-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-Secure sign-in-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-Copy available-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-Expired link-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-Cancelled request-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-Preparing copy-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-Access unavailable-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-Communication choices-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-Open request-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "one intent per chosen channel",
+      "passed": true
+    },
+    {
+      "name": "same initial request is not duplicated",
+      "passed": true
+    },
+    {
+      "name": "unknown outcome reconciles original without a second send",
+      "passed": true
+    },
+    {
+      "name": "patient delivery scope filters rows and attention banner",
+      "passed": true
+    },
+    {
+      "name": "queued intent does not fabricate an actual provider attempt",
+      "passed": true
+    },
+    {
+      "name": "read-only details expose no mutations",
+      "passed": true
+    },
+    {
+      "name": "reading an overdue alert does not resolve work",
+      "passed": true
+    },
+    {
+      "name": "mark-read does not complete source work",
+      "passed": true
+    },
+    {
+      "name": "policy mutation requires one explicit location",
+      "passed": true
+    },
+    {
+      "name": "automatic reminders start off and require explicit enable",
+      "passed": true
+    },
+    {
+      "name": "saved staff email preference survives local navigation",
+      "passed": true
+    },
+    {
+      "name": "request verification does not claim submission or completion",
+      "passed": true
+    },
+    {
+      "name": "completed-copy journey opens authenticated library preview",
+      "passed": true
+    },
+    {
+      "name": "composer-dialog-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "native dialog Escape and focus restoration",
+      "passed": true
+    },
+    {
+      "name": "failed-detail-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "spanish-sms-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "patient-communication-choices-320",
+      "width": 320,
+      "scroll": 320,
+      "visibleText": [],
+      "passed": true
+    },
+    {
+      "name": "enlarged-controls-inbox-640",
+      "width": 640,
+      "scroll": 640,
+      "visibleText": [],
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "passed": true
+}

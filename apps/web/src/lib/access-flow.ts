@@ -1,6 +1,9 @@
 /** Restrict restored destinations to the app. Never accept an arbitrary redirect. */
 export function safeDestination(value: string | null | undefined): string {
   if (value === "/" || value === "/?invitations=1" || value === "/?onboarding=1" || value === "/join" || value === "/join?accepted=1") return value;
+  if (value === "/patient-paperwork") return value;
+  const paperwork = value?.match(/^\/patient-paperwork\?item=([0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/i);
+  if (paperwork) return `/patient-paperwork?item=${paperwork[1].toLowerCase()}`;
   const match = value?.match(/^\/join\?confirm=(org_[A-Za-z0-9]{1,100})$/);
   if (match) return `/join?confirm=${match[1]}`;
   return "/";

@@ -568,14 +568,14 @@ export async function execute(t: TenantContext, action: string, target: string, 
                 if (recent.rowCount)
                     throw new WorkflowError('REMINDER_COOLDOWN', 429);
                 const attempt = await localDelivery(client, t, request, 'reminder');
-                return safeResult(request.id, 'open', { attemptId: attempt.id, deliveryState: 'failed', failureCode: 'DELIVERY_PROVIDER_UNAVAILABLE' });
+                return safeResult(request.id, 'open', deliveryReceipt(attempt));
             }
             text(p.reasonCode, 'reasonCode', 80);
             await revokeAccess(client, request.id);
-            const link = await issueGrant(client, t, request);
-            const attempt = await localDelivery(client, t, request, 'reissue');
-            await update(client, 'document_requests', t, request.id, {});
-            return safeResult(request.id, 'open', { localReviewPath: link, attemptId: attempt.id, deliveryState: 'failed', failureCode: 'DELIVERY_PROVIDER_UNAVAILABLE' });
+            const next = await update(client, 'document_requests', t, request.id, { delivery_generation: Number(request.delivery_generation ?? 1) + 1 });
+            const link = await issueGrant(client, t, next);
+            const attempt = await localDelivery(client, t, next, 'reissue');
+            return safeResult(request.id, 'open', { localReviewPath: link, ...deliveryReceipt(attempt) });
         }
         if (action === 'work-items.assignment' || action === 'work-items.completion') {
             const p = b(['assigneeUserId', 'reasonCode']);
@@ -775,11 +775,19 @@ async function closeRequest(client: QueryClient, t: TenantContext, request: any,
 }
 export async function issueGrant(client: QueryClient, t: TenantContext, request: any) { const token = randomBytes(32).toString('base64url'); await insert(client, 'patient_access_grants', t, { patient_id: request.patient_id, request_id: request.id, token_hash: sha256(Buffer.from(token)), expires_at: request.expires_at }); return '/patient-workflow#token=' + token; }
 export async function localDelivery(client: QueryClient, t: TenantContext, request: any, purpose: string) {
+    if (request.recipient_email || request.recipient_phone) {
+        const { enqueueLegacyRequestDelivery } = await import('./patient-delivery.service.js');
+        const intent = await enqueueLegacyRequestDelivery(client, t, request, purpose);
+        return { ...intent, intent_id: intent.id };
+    }
     const sequence = Number((await client.query('SELECT coalesce(max(sequence),0)+1 AS next FROM delivery_attempts WHERE request_id=$1', [request.id])).rows[0].next);
     const delivery = await insert(client, 'delivery_attempts', t, { patient_id: request.patient_id, request_id: request.id, purpose, sequence, channel: request.recipient_email ? 'email' : request.recipient_phone ? 'sms' : 'local_review', destination_snapshot: request.recipient_email ?? request.recipient_phone ?? 'local review', provider_id: 'unconfigured', state: 'failed', failure_code: 'DELIVERY_PROVIDER_UNAVAILABLE', completed_at: now(), dedupe_key: randomUUID() });
     await insert(client, 'outbox_events', t, { event_type: 'delivery.unavailable', aggregate_id: request.id, aggregate_revision: Number(request.revision), payload: JSON.stringify({ requestId: request.id, attemptId: delivery.id, channel: delivery.channel }), last_failure_code: 'DELIVERY_PROVIDER_UNAVAILABLE' });
     await client.query("INSERT INTO work_items(practice_id,location_id,patient_id,appointment_id,request_id,kind,assignee_user_id,due_at) VALUES($1,$2,$3,$4,$5,'delivery_follow_up',$6,$7) ON CONFLICT(practice_id,location_id,request_id,kind) WHERE kind='delivery_follow_up' AND state IN ('open','in_progress') DO NOTHING", [...scope(t), request.patient_id, request.appointment_id, request.id, request.assignee_user_id, request.due_at]);
     return delivery;
+}
+export function deliveryReceipt(delivery: { id: string; intent_id?: string; state?: string; failure_code?: string | null }) {
+    return { deliveryState: delivery.state ?? 'failed', ...(delivery.intent_id ? { deliveryIntentId: delivery.intent_id } : { attemptId: delivery.id }), ...(delivery.failure_code ? { failureCode: delivery.failure_code } : {}) };
 }
 const consentText = 'I consent to use electronic records and signatures for this document. I have reviewed the document and agree that my submitted signature records my intent to sign. I can decline before completion.';
 async function createRequest(client: QueryClient, t: TenantContext, target: string, p: Record<string, unknown>) {
@@ -835,7 +843,7 @@ async function createRequest(client: QueryClient, t: TenantContext, target: stri
         throw new WorkflowError('INVALID_DELIVERY_OPTION', 422);
     const sendNow = deliveryInput.sendNow === true;
     const delivery = sendNow ? await localDelivery(client, t, request, 'initial') : null;
-    return safeResult(request.id, 'open', { revision: 1, localReviewPath: link, deliveryState: delivery ? 'failed' : 'not_requested', ...(delivery ? { attemptId: delivery.id, failureCode: 'DELIVERY_PROVIDER_UNAVAILABLE' } : {}) });
+    return safeResult(request.id, 'open', { revision: 1, localReviewPath: link, ...(delivery ? deliveryReceipt(delivery) : { deliveryState: 'not_requested' }) });
 }
 export async function operation(t: TenantContext, operationId: string, requestId: string) { return scoped(t, async (client) => { const op = await row(client, 'workflow_operations', t, id(operationId), false); const runs = await client.query('SELECT id,job_type,job_version,attempt,state,started_at,finished_at,failure_code FROM job_runs WHERE operation_id=$1 ORDER BY attempt', [op.id]); await recordWorkflowAudit(client, t, { action: 'operations.read', entityType: 'operation', entityId: op.id, requestId }); return { ...concurrency(op), runs: runs.rows.map(camel) }; }, requestId); }
 export async function documentContent(t: TenantContext, versionId: string, requestId: string, purpose = 'view') {

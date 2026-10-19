@@ -1,4 +1,10 @@
+import * as patientDelivery from "./services/patient-delivery.service.js";
+import * as staffNotifications from "./services/staff-notifications.service.js";
+import * as portalCommunications from "./services/portal-communication.service.js";
+import { startNotificationWorker, notificationWorkerConfiguration } from "./notifications/worker.js";
+import { configuredDeliveryCallbacks } from "./notifications/callback-configuration.js";
 import * as workflow from "./services/workflow.service.js";
+import * as insurance from "./services/insurance.service.js";
 import { verifyWebhook } from "@clerk/backend/webhooks";
 import { handleClerkEvent } from "./services/practice-reconciliation.js";
 import { getAuth } from "@clerk/express";
@@ -24,6 +30,11 @@ const origins = authenticationPolicy.browserOrigins;
 const app = createApiApp({
   authenticate: createAuthenticationMiddleware(authenticationPolicy),
   workflow,
+  insurance,
+  patientDelivery,
+  staffNotifications,
+  portalCommunications,
+  deliveryCallbacks: configuredDeliveryCallbacks(),
   getAuth,
   health: () => pool.query("SELECT 1"),
   practiceAccess,
@@ -61,7 +72,12 @@ async function start() {
     finally { client.release(); }
     await verifyConfiguredAuditReader();
   }
-  app.listen(port, host, () => { console.log(`CareIQ API listening on port ${port}.`); });
+  notificationWorkerConfiguration();
+  const server = app.listen(port, host, () => { console.log(`CareIQ API listening on port ${port}.`); });
+  const stopNotifications = startNotificationWorker();
+  const shutdown = () => { stopNotifications(); server.close(() => { void Promise.allSettled([pool.end(), closeProtectedAuditReader()]); }); };
+  process.once("SIGTERM", shutdown);
+  process.once("SIGINT", shutdown);
 }
 start().catch(async (error) => {
   if (error instanceof ReleaseCheckError) console.error(error.message);

@@ -44,3 +44,58 @@ for(const flowName of ['unsigned','signed'] as const){
   }finally{await context.close();}
  });
 }
+
+test('real HTTP/restricted DB: manager insurance review preserves evidence and links the staff action audit',async({browser,realApi})=>{
+ const staff=realApi.staff,context=await browser.newContext({locale:'en-US',serviceWorkers:'block'});let external=0;
+ try{
+  await context.route('**/*',async route=>{const url=new URL(route.request().url());if(url.origin===realApi.origin||url.protocol==='blob:'||url.protocol==='data:')await route.continue();else{external++;await route.abort('blockedbyclient');}});
+  await context.addInitScript(identity=>{window.__careiqRealApiIdentity=identity;},staff);
+  const page=await context.newPage();await page.goto(realApi.origin+'/staff');
+  await page.getByRole('button',{name:'Manager',exact:true}).click();
+  await page.getByLabel('Appointment day',{exact:true}).fill(staff.date);
+  await expect(page.getByRole('heading',{name:'A clear view of your day.',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'Open insurance queue',exact:false}).click();
+  await page.getByRole('button',{name:'New verification case',exact:false}).click();
+  const create=page.getByRole('dialog').last();
+  await expect(create.getByLabel('Appointment',{exact:true}).locator(`option[value="${staff.appointmentId}"]`)).toHaveCount(1);
+  await create.getByLabel('Appointment',{exact:true}).selectOption(staff.appointmentId);
+  await create.getByLabel('Payer',{exact:true}).fill('Synthetic browser payer');
+  await create.getByLabel('Member ID',{exact:true}).fill('SYNTHETIC-BROWSER-MEMBER');
+  const createdResponse=page.waitForResponse(response=>new URL(response.url()).pathname.endsWith('/insurance/cases')&&response.request().method()==='POST');
+  await create.getByRole('button',{name:'Save to case history',exact:true}).click();
+  const created=await createdResponse;expect(created.status()).toBe(201);const caseId=String((await created.json()).data.id);
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  const open=()=>page.getByRole('button',{name:'Review insurance for Synthetic Browser',exact:true}).click();
+  await open();await page.getByRole('button',{name:'Record manual verification',exact:true}).click();
+  const original=page.getByRole('dialog').last();
+  await original.getByLabel('Evidence source',{exact:true}).selectOption('phone');
+  const observedAt=new Date(Date.now()-120000).toISOString().slice(0,16);
+  await original.getByLabel('Date and time checked',{exact:true}).fill(observedAt);
+  await original.getByLabel('Source reference',{exact:true}).fill('Synthetic browser source A');
+  await original.getByLabel('Copay (USD)',{exact:true}).fill('0');
+  const firstEvidence=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/locations/${staff.locationId}/insurance/cases/${caseId}/evidence`&&response.request().method()==='POST');
+  await original.getByRole('button',{name:'Save to case history',exact:true}).click();expect((await firstEvidence).status()).toBe(201);
+  await expect(page.getByRole('dialog')).toHaveCount(0);await open();
+  await expect(page.getByRole('dialog')).toContainText('$0.00');await expect(page.getByRole('dialog')).toContainText('Unknown');
+  await page.getByRole('button',{name:'Evidence',exact:true}).click();await page.getByRole('button',{name:'Correct current evidence',exact:true}).click();
+  const correction=page.getByRole('dialog').last();
+  await correction.getByLabel('Evidence source',{exact:true}).selectOption('phone');
+  await correction.getByLabel('Date and time checked',{exact:true}).fill(observedAt);
+  await correction.getByLabel('Source reference',{exact:true}).fill('Synthetic browser source B');
+  await correction.getByLabel('Copay (USD)',{exact:true}).fill('25');
+  const correctedResponse=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/locations/${staff.locationId}/insurance/cases/${caseId}/evidence`&&response.request().method()==='POST');
+  await correction.getByRole('button',{name:'Save to case history',exact:true}).click();expect((await correctedResponse).status()).toBe(201);
+  await expect(page.getByRole('dialog')).toHaveCount(0);await open();await page.getByRole('button',{name:'Evidence',exact:true}).click();
+  await expect(page.getByRole('dialog')).toContainText('Synthetic browser source A');await expect(page.getByRole('dialog')).toContainText('Synthetic browser source B');await expect(page.getByRole('dialog')).toContainText('Historical');
+  await page.getByRole('button',{name:'Assign or schedule follow-up',exact:true}).click();
+  const followUp=page.getByRole('dialog').last();
+  await followUp.getByLabel('Owner',{exact:true}).selectOption(staff.subject);
+  await followUp.getByLabel('Reason for this change',{exact:true}).selectOption('assignment');
+  const assignment=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/locations/${staff.locationId}/insurance/cases/${caseId}/follow-up`&&response.request().method()==='POST');
+  await followUp.getByRole('button',{name:'Save to case history',exact:true}).click();expect((await assignment).status()).toBe(200);
+  await expect(page.getByRole('dialog')).toHaveCount(0);await open();await page.getByRole('button',{name:'Activity',exact:true}).click();
+  await expect(page.getByRole('dialog')).toContainText('Assignment or follow-up updated');
+  expect(await realApi.verifyInsurance(caseId)).toEqual({insuranceFactsVerified:true,immutableEvidenceVerified:true,zeroAndUnknownPreserved:true,evidenceCount:2,auditBusinessEvents:4,databaseEvidenceLinked:true,staffActorVerified:true});
+  expect(external).toBe(0);
+ }finally{await context.close();}
+});

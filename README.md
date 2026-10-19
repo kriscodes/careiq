@@ -6,6 +6,8 @@ CareIQ is a healthcare operations platform being built for small and independent
 
 The platform is focused on reducing administrative workload around patient intake, scheduling, referrals, document collection, communication, and other front-office workflows.
 
+Manager dashboard and manual insurance verification: [implementation and audit coverage](docs/manager-insurance-implementation.md).
+
 ## Status
 
 🚧 **Active development**
@@ -260,6 +262,11 @@ Current design considerations include:
 Formal compliance requirements and controls will evolve as the product approaches real patient data and production healthcare deployments.
 
 ## Documentation
+
+* [Patient delivery and staff notification implementation](docs/notifications-implementation.md) — configuration, queued delivery, recipient inbox, permissions and verification limits.
+* [Notification verification record](docs/verification/notifications-2026-10-18/README.md) — staged checks and outstanding acceptance.
+
+* [Patient delivery and staff notification designs](docs/design/patient-delivery-and-staff-notifications/design-handoff.md) — proposed UI, API and delivery architecture; no provider activation.
 
 * [Workflow implementation and review](docs/workflow-implementation.md)
 * [Workflow API contract](docs/design/workflow/runtime-contract.md)

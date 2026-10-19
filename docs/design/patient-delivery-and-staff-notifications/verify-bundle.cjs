@@ -1,0 +1,20 @@
+const {chromium}=require('/Users/kristian/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const fs=require('node:fs/promises');
+const path=require('node:path');
+const assert=require('node:assert/strict');
+(async()=>{
+ const browser=await chromium.launch({headless:true,channel:'chrome'});
+ const page=await browser.newPage({viewport:{width:320,height:740}}),errors=[];
+ page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('file://'+path.join(__dirname,'careiq-notifications-prototype.html'));
+ assert.equal(await page.locator('h1').textContent(),'Every message, accounted for.');
+ assert.equal(await page.evaluate(()=>window.careiqDesign.snapshot().deliveries.length),7);
+ await page.evaluate(()=>window.careiqDesign.configure({page:'handoff'}));
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+ const links=await page.locator('main a').evaluateAll(nodes=>nodes.map(x=>x.getAttribute('href')));
+ for(const link of links)await fs.access(path.resolve(__dirname,link));
+ assert.equal(errors.length,0);
+ const result={passed:true,checks:['Self-contained prototype loads without JavaScript errors','Default delivery fixtures render','Handoff fits 320px','Bundle document links resolve'],errors};
+ await fs.writeFile(path.join(__dirname,'bundle-verification.json'),JSON.stringify(result,null,2));
+ await browser.close();console.log(JSON.stringify(result,null,2));
+})().catch(e=>{console.error(e);process.exitCode=1});

@@ -1,3 +1,4 @@
+import { createInsuranceAdapter, type InsuranceAdapter } from "./insurance";
 import { apiRequest, ApiError } from "./client";
 import { apiRequestUrl } from "../web-config";
 import { translate } from "../../../../../packages/i18n";
@@ -23,6 +24,7 @@ export type WorkflowActivity = { id: string; action: string; createdAt?: string;
 export type WorkflowPagination = { hasMore: boolean; nextCursor: string | null; limit?: number; total?: number };
 export type WorkflowSnapshot = { relatedPagination?: { documentVersions?: Record<string, WorkflowPagination>; templateVersions?: Record<string, WorkflowPagination> }; pagination?: Record<string, WorkflowPagination>; location?: { id: string; name: string; timeZone?: string }; timeZone: string; patients: WorkflowPatient[]; appointments: WorkflowAppointment[]; documents: WorkflowDocument[]; templates: WorkflowTemplate[]; requests: WorkflowRequest[]; workItems: WorkItem[]; providers: Lookup[]; visitTypes: Lookup[]; documentTypes: Lookup[]; summary?: Record<string, number>; capabilities?: Record<string, unknown>; asOf: string };
 export type WorkflowAdapter = {
+  insurance?: InsuranceAdapter;
   preview?: boolean;
   load(date: string, signal?: AbortSignal, options?: { q?: string }): Promise<WorkflowSnapshot>;
   page<T>(resource: string, signal?: AbortSignal): Promise<{ data: T[]; pagination: WorkflowPagination }>;
@@ -61,6 +63,7 @@ export function createWorkflowAdapter(locationId: string, getToken: () => Promis
     catch (error) { if (error instanceof ApiError && [401, 403].includes(error.status) && error.code !== "RECENT_AUTHENTICATION_REQUIRED") onAccessDenied(); throw error; }
   };
   return {
+    insurance: createInsuranceAdapter(locationId, getToken, onAccessDenied),
     load: async (date, signal, options) => normalizeSnapshot(await request<WorkflowSnapshot>(`?date=${encodeURIComponent(date)}${options?.q ? `&q=${encodeURIComponent(options.q)}` : ""}`, { signal })),
     async page<T>(resource: string, signal?: AbortSignal) { try { return await apiRequest<{ data: T[]; pagination: WorkflowPagination }>(workflowPath(locationId, resource), await getToken(), { signal }); } catch (error) { if (error instanceof ApiError && [401,403].includes(error.status)) onAccessDenied(); throw error; } },
     detail: <T,>(resource: string, signal?: AbortSignal) => request<T>(resource, { signal }),

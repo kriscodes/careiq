@@ -183,7 +183,7 @@ test('patient forms freeze exact answers and publish signed/unsigned copies behi
                 await assert.rejects(paperwork.patientFormFreeze(signSession.sessionToken,{},randomUUID(),2,randomUUID()),code('SIGNER_AUTHORITY_UNAVAILABLE'));
                 await run('patients.update',respondent,{dateOfBirth:birth.adult},2);
                 assert.equal((await staffPortalGrants(tenant,respondent,randomUUID())).adultSelfEligible,true);assert.equal((await paperwork.portalPaperwork(calendarSubject,'sess_CalendarPatient')).items?.length,1);assert.ok((await paperwork.portalPaperwork(calendarSubject,'sess_CalendarPatient',copyId)).bytes);
-                const retried=await run('paperwork.notifications.retry',notification,{},2);assert.equal(retried.state,'needs_attention');assert.equal(retried.failureCode,'DELIVERY_PROVIDER_UNAVAILABLE');
+                const retried=await run('paperwork.notifications.retry',notification,{},2);assert.equal(retried.state,'suppressed');assert.equal(retried.failureCode,'CONFIRMED_ENDPOINT_REQUIRED');assert.equal(typeof retried.deliveryIntentId,'string');
                 await paperwork.patientFormFreeze(signSession.sessionToken,{},randomUUID(),2,randomUUID());
                 const current=await service.patientRequest(signSession.sessionToken,randomUUID()),payload={expectedRevision:current.signature!.revision,sourceSha256:current.signature!.sourceSha256,consent:{accepted:true,textVersion:current.signature!.consentTextVersion},fields:[{key:'patient_signature',type:'typed_signature',value:'Synthetic calendar'}]};
                 await run('patients.update',respondent,{dateOfBirth:birth.upper},3);
