@@ -25,6 +25,53 @@ test("custom sign-in reports a safe failure and leaves the form retryable", asyn
   await expect(page.getByRole("button", { name: "Sign in", exact: true })).toBeEnabled();
   expect((await calls(page)).filter(call => call.name === "signInFinalize")).toHaveLength(0);
 });
+for (const mode of ["signin", "signup"] as const) {
+  const provider = mode === "signup" ? "Provider signup fixture" : "Provider completion fixture";
+  const email = mode === "signup" ? "Work email" : "Email address";
+  test(`${mode} cold OAuth callback delegates to Clerk before and after reload`, async ({ page, harnessUrl }) => {
+    const callbackUrl = `${harnessUrl}/sign-${mode === "signup" ? "up" : "in"}?component=auth&mode=${mode}&returnTo=%2Fpatient-paperwork#/sso-callback?__clerk_status=verified`;
+    await page.goto(callbackUrl);
+    for (let attempt = 0; attempt < 2; attempt++) {
+      if (attempt) await page.reload();
+      await expect(page.getByText(provider, { exact: true })).toBeVisible();
+      await expect(page.getByLabel(email, { exact: true })).toHaveCount(0);
+      await expect(page.getByLabel("Password", { exact: true })).toHaveCount(0);
+      expect(page.url()).toBe(callbackUrl);
+      await expect.poll(() => page.evaluate(() => sessionStorage.getItem("careiq.account-return"))).toBe("/patient-paperwork");
+      expect((await calls(page)).filter(call => ["password", "createAccount", "signInFinalize", "signUpFinalize"].includes(call.name))).toHaveLength(0);
+    }
+  });
+  test(`${mode} keeps credentials for normal entry and unrelated hashes`, async ({ page, harnessUrl }) => {
+    await page.goto(`${harnessUrl}/?component=auth&mode=${mode}`);
+    await expect(page.getByLabel(email, { exact: true })).toBeVisible();
+    for (const hash of ["#/other", "#/sso-callback-extra", "#/sso-callback/other", "#/sso-callback#other"]) {
+      await page.evaluate(value => { window.location.hash = value; }, hash);
+      await page.reload();
+      await expect(page.getByLabel(email, { exact: true })).toBeVisible();
+      await expect(page.getByText(provider, { exact: true })).toHaveCount(0);
+    }
+  });
+}
+
+test("OAuth callback takes precedence over restored signup email verification", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/sign-up?component=auth&mode=signup&scenario=auth-restored-signup#/sso-callback`);
+  await expect(page.getByText("Provider signup fixture", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Verification code", { exact: true })).toHaveCount(0);
+  expect((await calls(page)).filter(call => ["sendVerificationCode", "verifyEmail", "signUpFinalize"].includes(call.name))).toHaveLength(0);
+});
+
+test("provider hash changes keep Clerk mounted after deliberate social sign-in entry", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=auth`);
+  await page.getByRole("button", { name: "Other sign-in options", exact: true }).click();
+  await expect(page.getByText("Provider completion fixture", { exact: true })).toBeVisible();
+  for (const hash of ["/sso-callback?__clerk_status=verified", "/continue"]) {
+    await page.evaluate(value => { window.location.hash = value; }, hash);
+    await expect(page.getByText("Provider completion fixture", { exact: true })).toBeVisible();
+    await expect(page.getByLabel("Password", { exact: true })).toHaveCount(0);
+  }
+  expect((await calls(page)).filter(call => ["password", "signInFinalize"].includes(call.name))).toHaveLength(0);
+});
+
 test("MFA failure cannot finalize; a deliberate recovery code can", async ({ page, harnessUrl }) => {
   await page.goto(`${harnessUrl}/?component=auth&scenario=mfa`);
   await page.getByLabel("Email address", { exact: true }).fill("synthetic@example.invalid");

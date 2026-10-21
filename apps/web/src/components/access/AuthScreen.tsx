@@ -70,6 +70,9 @@ function LoadedAuthScreen({ initialMode = "signin", returnTo, invitation = false
     // Restore only the provider attempt. Credentials and codes are never persisted by CareIQ.
     void Promise.resolve().then(() => {
       if (!alive.current) return;
+      // The fragment is available only in the browser. Clerk must own its OAuth callback,
+      // including a cold return before its sign-in/sign-up resource status has advanced.
+      if (/^#\/sso-callback(?:\?|$)/.test(window.location.hash)) { setMode("provider"); return; }
       if (signupFlow && signUp.id && signUp.status !== "complete") {
         setEmail(signUp.emailAddress || "");
         setMode(signUp.unverifiedFields.includes("email_address") ? "verify" : "provider");
