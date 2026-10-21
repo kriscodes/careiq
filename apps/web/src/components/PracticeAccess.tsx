@@ -101,6 +101,15 @@ export function PracticeAccess({ orgId, initialView = "entry", intendedOrganizat
   if (view === "invitations") return <Invitations onBack={() => setView("entry")} />;
   if (view === "onboarding") return <PracticeOnboarding onInvitations={() => setView("invitations")} />;
   if (view === "practices" || (intendedOrganizationId && intendedOrganizationId !== context.orgId)) return <PracticeEntry onCreate={() => setView("onboarding")} onInvitations={() => setView("invitations")} />;
+  if (context.orgId && !context.practice) return <AccessShell account={<UserButton />}>
+    <AccessHeading title={t("access.practice.unconfiguredTitle")} mark="building">{t("access.practice.unconfiguredDescription")}</AccessHeading>
+    <div className="cq-a-actions">
+      <button className="cq-a-primary" onClick={() => setView("onboarding")}>{t("access.copy.set_up_a_new_practice")}</button>
+      <button className="cq-a-secondary" onClick={() => setView("practices")}>{t("access.practice.chooseAnother")}</button>
+      <button className="cq-a-link" onClick={() => setView("invitations")}>{t("access.copy.view_my_invitations")}</button>
+      <SignOutButton />
+    </div>
+  </AccessShell>;
   if (!context.practice || context.onboarding === "required") return <PracticeEntry onCreate={() => setView("onboarding")} onInvitations={() => setView("invitations")} />;
   const manage = context.management.locations || context.management.members;
   if (context.practice.status !== "active" || ["suspended", "revoked"].includes(context.enrollmentStatus || "")) return <AccessShell account={<UserButton />}><AccessHeading title={t("access.copy.your_access_has_changed")}>{t("access.copy.you_can_t_open_this_practice_right_now_ask_the_practice_owner_to_review_yo")}</AccessHeading><PracticePicker /><div className="cq-a-actions"><button className="cq-a-secondary" onClick={refresh}>{t("access.copy.check_again")}</button><SignOutButton /></div></AccessShell>;

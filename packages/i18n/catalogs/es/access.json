@@ -677,5 +677,8 @@
   "access.copy.confirmed": "Confirmada",
   "access.role.custom": "Rol personalizado · {code}",
   "access.auth.unavailableTitle": "El inicio de sesión tarda más de lo esperado",
-  "access.auth.unavailableHelp": "No pudimos conectar con el servicio de inicio de sesión. Revisa tu conexión e inténtalo de nuevo. Si el problema continúa, contacta con tu administrador de CareIQ."
+  "access.auth.unavailableHelp": "No pudimos conectar con el servicio de inicio de sesión. Revisa tu conexión e inténtalo de nuevo. Si el problema continúa, contacta con tu administrador de CareIQ.",
+  "access.practice.unconfiguredTitle": "Completa la configuración de la clínica",
+  "access.practice.unconfiguredDescription": "El equipo seleccionado aún no tiene una clínica en CareIQ.",
+  "access.practice.chooseAnother": "Elegir otra clínica"
 }

@@ -677,5 +677,8 @@
   "access.copy.confirmed": "Confirmed",
   "access.role.custom": "Custom role · {code}",
   "access.auth.unavailableTitle": "Sign-in is taking longer than expected",
-  "access.auth.unavailableHelp": "We couldn’t connect to the sign-in service. Check your connection and try again. If it continues, contact your CareIQ administrator."
+  "access.auth.unavailableHelp": "We couldn’t connect to the sign-in service. Check your connection and try again. If it continues, contact your CareIQ administrator.",
+  "access.practice.unconfiguredTitle": "Finish practice setup",
+  "access.practice.unconfiguredDescription": "Your selected team does not have a CareIQ practice yet.",
+  "access.practice.chooseAnother": "Choose another practice"
 }
