@@ -3,7 +3,7 @@
 import { useI18n } from "@/i18n/provider";
 import { accessRoleLabel, accessZoneLabel } from "@/components/access/display";
 import { UserButton, useAuth, useOrganizationList, useUser } from "@clerk/nextjs";
-import { useEffect, useEffectEvent, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useEffectEvent, useRef, useState, type ReactNode } from "react";
 import { apiRequest, ApiError } from "@/lib/api/client";
 import { getAccessContext, resolveClinicalScope, type AccessContext } from "@/lib/api/practice";
 import { authErrorMessage } from "@/lib/auth-errors";
@@ -65,7 +65,7 @@ export function PracticeAccess({ orgId, initialView = "entry", intendedOrganizat
   const lifetime = useRef<AbortController | null>(null);
   const concealed = useRef(false);
   const clinicalVisible = view === "entry" && !!context && resolveClinicalScope(context, locationId).kind !== "blocked";
-  function refresh() { setContext(null); setLocationId(""); setAttempt(n => n + 1); }
+  const refresh = useCallback(() => { setContext(null); setLocationId(""); setAttempt(n => n + 1); }, []);
   useEffect(() => {
     if (hidden) return;
     const controller = new AbortController(); lifetime.current = controller;
