@@ -62,7 +62,7 @@ test("OAuth callback takes precedence over restored signup email verification", 
 
 test("provider hash changes keep Clerk mounted after deliberate social sign-in entry", async ({ page, harnessUrl }) => {
   await page.goto(`${harnessUrl}/?component=auth`);
-  await page.getByRole("button", { name: "Other sign-in options", exact: true }).click();
+  await page.getByRole("button", { name: "Other ways to sign in", exact: true }).click();
   await expect(page.getByText("Provider completion fixture", { exact: true })).toBeVisible();
   for (const hash of ["/sso-callback?__clerk_status=verified", "/continue"]) {
     await page.evaluate(value => { window.location.hash = value; }, hash);
@@ -99,7 +99,7 @@ test("password recovery is generic for unknown accounts and reports service outa
   await page.getByRole("button", { name: "Forgot password?" }).click();
   await page.getByLabel("Email address", { exact: true }).fill("synthetic@example.invalid");
   await page.getByRole("button", { name: /Send reset code/ }).click();
-  await expect(page.getByRole("heading", { name: "Reset your password" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Let’s get you back in." })).toBeVisible();
   await expect(page.getByRole("alert")).toContainText("Please try again");
   await expect(page.getByRole("alert")).not.toContainText("secret");
 });

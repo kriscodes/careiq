@@ -680,5 +680,18 @@
   "access.auth.unavailableHelp": "We couldn’t connect to the sign-in service. Check your connection and try again. If it continues, contact your CareIQ administrator.",
   "access.practice.unconfiguredTitle": "Finish practice setup",
   "access.practice.unconfiguredDescription": "Your selected team does not have a CareIQ practice yet.",
-  "access.practice.chooseAnother": "Choose another practice"
+  "access.practice.chooseAnother": "Choose another practice",
+  "access.auth.needAHand": "Need a hand?",
+  "access.auth.goodToSeeYou": "Good to see you.",
+  "access.auth.roomToCareStartsHere": "A little more room to care starts here.",
+  "access.auth.aLittleHello": "A little hello.",
+  "access.auth.createAccountOneStep": "Create your account. We’ll take it one step at a time.",
+  "access.auth.passwordResetTitle": "Let’s get you back in.",
+  "access.auth.freshStart": "A fresh start.",
+  "access.auth.otherWaysToSignIn": "Other ways to sign in",
+  "access.auth.otherWaysToCreateAccount": "Other ways to create an account",
+  "access.auth.continueWithGoogle": "Continue with Google",
+  "access.auth.continueWithMicrosoft": "Continue with Microsoft",
+  "access.auth.continueWithApple": "Continue with Apple",
+  "access.auth.orWithEmail": "or with email"
 }

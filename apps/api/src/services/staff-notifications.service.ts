@@ -1,3 +1,4 @@
+import { renderStaffWorkEmail, validateLittleHelloEmailConfiguration } from '../notifications/little-hello-email.js';
 import { randomUUID, createHash } from 'node:crypto';
 import type { TenantContext } from '../middleware/tenant-context.js';
 import { command, scoped, type CommandContext, type QueryClient } from '../workflow/transaction.js';
@@ -151,7 +152,7 @@ async function fanoutEvent(t:TenantContext,event:Row,resolve:typeof currentMembe
   }
   await scoped(t,async client=>{await client.query('UPDATE staff_notification_events SET processed_at=now() WHERE id=$1 AND practice_id=$2 AND location_id=$3',[event.id,...scope(t)]);});return added;
 }
-function genericStaffMessage(locale:string,count:number,origin:string){return locale==='es'?{subject:count>1?'Novedades de trabajo en CareIQ':'Nueva novedad de trabajo',text:`Tiene ${count>1?`${count} novedades de trabajo`:'una nueva novedad de trabajo'}. Inicie sesión en CareIQ para revisar su trabajo. ${origin}`}:{subject:count>1?'Your CareIQ work updates':'A new work update',text:`You have ${count>1?`${count} new work updates`:'a new work update'}. Sign in to CareIQ to review your work. ${origin}`};}
+function genericStaffMessage(locale:string,count:number,origin:string){const message=renderStaffWorkEmail(locale,count,origin,process.env.CAREIQ_EMAIL_ASSET_BASE_URL);return {subject:message.subject,text:message.text,html:message.html};}
 function appOrigin(){const raw=process.env.CAREIQ_STAFF_APP_URL;if(!raw)return null;try{const u=new URL(raw);if(u.protocol!=='https:'||u.username||u.password||u.hash||u.search)return null;return u.origin+'/';}catch{return null;}}
 async function emailCurrent(client:QueryClient,t:TenantContext,ids:string[],now:Date){
   const rows=(await client.query(`${selection} WHERE n.id=ANY($1::uuid[]) AND n.practice_id=$2 AND n.location_id=$3 AND n.recipient_user_id=$4 FOR UPDATE OF n FOR SHARE OF w`,[ids,...scope(t),t.userId])).rows;
@@ -160,6 +161,8 @@ async function emailCurrent(client:QueryClient,t:TenantContext,ids:string[],now:
 }
 async function dispatchRecipientEmail(t:TenantContext,options:StaffSweepOptions,provider:DeliveryProvider,now:Date,executorId:string){
   const origin=appOrigin();if(!origin||!provider.enabled||!provider.ready('email'))return;
+  // Reject invalid branding before a durable batch is marked submitting.
+  validateLittleHelloEmailConfiguration(origin,process.env.CAREIQ_EMAIL_ASSET_BASE_URL);
   const membership=await (options.membership??currentMembership)(t.orgId,t.userId);if(!membership||membership.id!==t.membershipId||!canReadStaffWork(membership.permissions))return;
   const emails=await (options.verifiedEmails??verifiedEmails)(t.userId);if(!emails.length)return;const destination=emails[0]!,destinationHash=hash(destination.toLowerCase());
   const batches=await scoped(t,async client=>(await client.query("SELECT * FROM staff_notification_email_batches WHERE practice_id=$1 AND location_id=$2 AND recipient_user_id=$3 AND (state IN('unknown','retry','accepted') AND (next_at IS NULL OR next_at<=$4) OR state='submitting' AND updated_at<$4::timestamptz-interval '2 minutes') ORDER BY created_at LIMIT 20",[...scope(t),t.userId,now])).rows);

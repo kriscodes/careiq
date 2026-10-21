@@ -1,6 +1,8 @@
 import { createCipheriv, createDecipheriv, createHmac, randomBytes } from 'node:crypto';
 import { WorkflowError } from '../workflow/policy.js';
 import type { DeliveryChannel, ProviderResult } from './delivery-provider.js';
+import { renderLittleHelloEmail } from './little-hello-email.js';
+import { littleHelloCatalog } from './little-hello-copy.js';
 export type DeliveryPurpose = 'initial' | 'reminder' | 'reissue' | 'paperwork_ready' | 'paperwork_resend';
 export const communicationPurpose = (purpose: DeliveryPurpose) => purpose === 'reminder' ? 'reminder' : purpose.startsWith('paperwork_') ? 'paperwork' : 'request';
 export function normalizeDestination(channel: DeliveryChannel, value: unknown): string {
@@ -22,8 +24,21 @@ export function confirmedTimeZone(value: unknown): string | null { if (value ===
 export function withinDeliveryWindow(at: Date, timeZone: string, start = 9, end = 18) { const hour = Number(new Intl.DateTimeFormat('en-US', { timeZone, hour: 'numeric', hourCycle: 'h23' }).format(at)); return hour >= start && hour < end; }
 /** Search real instants across DST gaps/folds; a durable logical occurrence is inserted once. */
 export function nextDeliveryWindow(at: Date, timeZone: string, start = 9, end = 18): Date { for (let minutes = 0; minutes <= 48 * 60; minutes++) { const candidate = new Date(at.getTime() + minutes * 60000); if (withinDeliveryWindow(candidate, timeZone, start, end)) return candidate; } throw new WorkflowError('DELIVERY_WINDOW_UNAVAILABLE', 409); }
-export const patientMessageTemplates = (['initial', 'reminder', 'paperwork_ready'] as const).flatMap(purpose => (['email', 'sms'] as const).map(channel => ({ purpose, channel, locale: 'en', version: 'en-v1', subject: purpose === 'paperwork_ready' ? 'Your secure copy is ready' : purpose === 'reminder' ? 'A reminder from your care team' : 'A secure request from your care team', body: purpose === 'paperwork_ready' ? 'Sign in to view or download your completed copy.' : purpose === 'reminder' ? 'Your secure paperwork request is still open. Please complete it when you can.' : 'Please open your secure request to complete your paperwork.' })));
-export function renderPatientMessage(purpose: DeliveryPurpose, channel: DeliveryChannel, url: string, footer = '') { const template = patientMessageTemplates.find(t => t.purpose === (purpose.startsWith('paperwork_') ? 'paperwork_ready' : purpose === 'reminder' ? 'reminder' : 'initial') && t.channel === channel)!; return { subject: template.subject, text: template.body + '\n\n' + url + (channel === 'sms' ? '\n' + footer : '') }; }
+const emailPurpose = (purpose: DeliveryPurpose) => purpose.startsWith('paperwork_') ? 'patient_paperwork_ready' : purpose === 'reminder' ? 'patient_secure_reminder' : 'patient_secure_request';
+export const patientMessageTemplates = (['initial', 'reminder', 'paperwork_ready'] as const).flatMap(purpose => (['email', 'sms'] as const).map(channel => {
+    const branded = littleHelloCatalog.find(t => t.id === emailPurpose(purpose))!;
+    return { purpose, channel, locale: 'en', version: channel === 'email' ? 'little-hello-v1' : 'en-v1', subject: branded.subject, body: channel === 'email' ? branded.body.join(' ') : purpose === 'paperwork_ready' ? 'Sign in to view or download your completed copy.' : purpose === 'reminder' ? 'Your secure paperwork request is still open. Please complete it when you can.' : 'Please open your secure request to complete your paperwork.' };
+}));
+export function renderPatientMessage(purpose: DeliveryPurpose, channel: DeliveryChannel, url: string, footer = '', email?: { origin: string; assetBaseUrl?: string }) {
+    if (!['initial','reminder','reissue','paperwork_ready','paperwork_resend'].includes(purpose) || !['email','sms'].includes(channel)) throw new WorkflowError('INVALID_DELIVERY_PURPOSE',422);
+    if (channel === 'email') {
+        if (!email) throw new WorkflowError('DELIVERY_ORIGIN_NOT_CONFIGURED',503);
+        const message = renderLittleHelloEmail({purpose:emailPurpose(purpose),origin:email.origin,actionUrl:url,assetBaseUrl:email.assetBaseUrl});
+        return {subject:message.subject,text:message.text,html:message.html};
+    }
+    const template = patientMessageTemplates.find(t => t.purpose === (purpose.startsWith('paperwork_') ? 'paperwork_ready' : purpose === 'reminder' ? 'reminder' : 'initial') && t.channel === 'sms')!;
+    return {subject:template.subject,text:template.body+'\n\n'+url+'\n'+footer};
+}
 export function publicPatientUrl(path: string, env: NodeJS.ProcessEnv = process.env) { let base: URL; try { base = new URL(env.CAREIQ_DELIVERY_PUBLIC_ORIGIN ?? ''); } catch { throw new WorkflowError('DELIVERY_ORIGIN_NOT_CONFIGURED', 503); } if (base.protocol !== 'https:' || base.username || base.password || base.pathname !== '/' || base.search || base.hash || !path.startsWith('/') || path.startsWith('//')) throw new WorkflowError('DELIVERY_ORIGIN_NOT_CONFIGURED', 503); return new URL(path, base).toString(); }
 export function deliverySecurityReady(env: NodeJS.ProcessEnv = process.env) { try { key('CAREIQ_DELIVERY_FINGERPRINT_KEY', env); key('CAREIQ_DELIVERY_PAYLOAD_KEY', env); publicPatientUrl('/patient-workflow', env); return true; } catch { return false; } }
 

@@ -17,7 +17,7 @@ test("Spanish account controls retain password-manager and accessible progress s
   assert.match(markup, /autoComplete="current-password"/i);
   assert.match(markup, /aria-label="Configuración de la clínica: paso 2 de 3"/);
   assert.match(markup, /Paso 2 de 3/);
-  assert.match(markup, /¿Necesitas ayuda\?/);
+  assert.match(markup, /¿Te echamos una mano\?/);
   assert.doesNotMatch(markup, /Need help|Your practice|Enter your password/);
 });
 

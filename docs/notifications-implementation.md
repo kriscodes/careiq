@@ -4,6 +4,8 @@ This implementation connects committed paperwork requests and completed copies t
 
 See the [design handoff](design/patient-delivery-and-staff-notifications/design-handoff.md), [existing workflow guide](workflow-implementation.md) and [API production release guide](api-production-release.md). The actual API paths below follow the application's explicit location context; they differ from some paths proposed in the design handoff.
 
+The existing patient and staff email paths now include Little hello HTML with plain-text fallbacks. See [Little hello emails](little-hello-emails.md) for the reusable authentication catalog, image configuration and separate Clerk template activation. No new authentication send events are enabled.
+
 ## Application and API boundaries
 
 | Area | Implemented interface |

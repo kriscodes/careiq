@@ -1,6 +1,6 @@
 # Web production readiness
 
-The web app keeps the approved white/sage authentication and three-step practice setup. Production builds and startup require live Clerk key mode and a remote HTTPS API. No deployment, hosted configuration change or provider account creation is part of these checks.
+The web app uses [Little hello authentication](little-hello-authentication.md), fixed white surfaces and three-step practice setup. Production builds and startup require live Clerk key mode and a remote HTTPS API. No deployment, hosted configuration change or provider account creation is part of these checks.
 
 ## Implemented safeguards
 

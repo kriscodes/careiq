@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: light;
+  color-scheme: only light;
   --cq-bg: #ffffff;
   --cq-panel: #ffffff;
   --cq-text: #202b34;
@@ -155,7 +155,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .cq-reviewer-button:hover { background: #fff5df; }
 
 /* Native dialogs use the browser top layer; sizing never depends on observers. */
-.cq-modal { color-scheme: light; position: fixed; inset: 0; margin: auto; width: min(500px, calc(100vw - 32px)); max-width: none; max-height: calc(100dvh - 40px); overflow-y: auto; overscroll-behavior: contain; scroll-padding-block: 20px; padding: 0; background: var(--cq-panel); color: var(--cq-text); border: 1px solid var(--cq-border); border-radius: 18px; box-shadow: 0 24px 80px #22332924; }
+.cq-modal { color-scheme: only light; position: fixed; inset: 0; margin: auto; width: min(500px, calc(100vw - 32px)); max-width: none; max-height: calc(100dvh - 40px); overflow-y: auto; overscroll-behavior: contain; scroll-padding-block: 20px; padding: 0; background: var(--cq-panel); color: var(--cq-text); border: 1px solid var(--cq-border); border-radius: 18px; box-shadow: 0 24px 80px #22332924; }
 .cq-modal::backdrop { background: #293b3233; }
 .cq-modal-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 26px 26px 22px; border-bottom: 1px solid var(--cq-border); }
 .cq-modal-head > div { min-width: 0; }

@@ -180,6 +180,8 @@ Database migrations are owned by the API application.
 
 ## Authentication and practice onboarding
 
+The current [Little hello authentication](docs/little-hello-authentication.md) and [email implementation](docs/little-hello-emails.md) keep white tones across sign-in, recovery, invitation and session flows. See the [October 21 verification record](docs/verification/little-hello-2026-10-21/README.md) for completed local checks and remaining provider/inbox acceptance.
+
 The current designs and implementation are documented in [the authentication/onboarding guide](docs/auth-onboarding.md). Review [web, iOS and Android designs](docs/design/auth-onboarding/design-handoff.md) and the [interactive prototype](docs/design/auth-onboarding/prototype.html).
 
 Use this existing checkout at `/Users/kristian/Documents/Server/CareIQ`; do not create fresh GitHub checkouts for routine work. The [local review guide](docs/local-review.md) starts isolated environments for these changes. No GitHub push or remote deployment was performed.

@@ -104,6 +104,44 @@ test("controlled onboarding and staff lifecycle recover safely from provider fai
       await service.activateMember(ownerAuth, staff, { role: "org:clinician", locationIds: [onboarding.location.id] });
       const context = await service.authorizeLocation(staffAuth, onboarding.location.id); assert.equal(context.capabilities.patients.create, true);
     });
+    for (const grant of [
+      { role: "org:admin", permissions: [] as string[], read: false, create: false },
+      { role: "org:member", permissions: ["org:patients:read"], read: true, create: false },
+      { role: "org:clinician", permissions: ["org:patients:read", "org:patients:create"], read: true, create: true },
+    ]) {
+      await context.test(`${grant.role} invitation requires verified acceptance, owner activation and location assignment; permissions remain explicit`, async () => {
+        const recipient = `matrix_${randomUUID()}`;
+        const principal = { isAuthenticated: true, userId: recipient, orgId: onboarding.orgId, orgRole: grant.role };
+        const issued = await service.createInvitation(ownerAuth, { email: `${recipient}@example.invalid`, role: grant.role, locationIds: [onboarding.location.id] }, randomUUID());
+        const provider = [...invitations.values()].find(item => item.privateMetadata.careiqInvitationId === issued.id);
+        memberships.set(recipient, { ...membership(recipient, onboarding.orgId, grant.role), permissions: grant.permissions });
+        await assert.rejects(service.acceptInvitations(principal), /ACCEPTED INVITATION REQUIRED/);
+        provider.status = "accepted";
+        assert.deepEqual(await service.acceptInvitations(principal), { status: "pending_assignment" });
+        const pending = await service.getPracticeContext(principal);
+        assert.equal(pending.enrollmentStatus, "pending_assignment");
+        assert.equal(pending.management.members, false);
+        assert.equal(pending.capabilities.patients.read, false);
+        assert.deepEqual(pending.locations, []);
+        await assert.rejects(service.authorizeLocation(principal, onboarding.location.id), /ENROLLMENT REQUIRED/);
+        await service.activateMember(ownerAuth, recipient, { role: grant.role, locationIds: [] });
+        assert.deepEqual((await service.getPracticeContext(principal)).locations, []);
+        await assert.rejects(service.authorizeLocation(principal, onboarding.location.id), /LOCATION ACCESS DENIED/);
+        await service.activateMember(ownerAuth, recipient, { role: grant.role, locationIds: [onboarding.location.id] });
+        const scoped = await service.authorizeLocation(principal, onboarding.location.id);
+        assert.equal(scoped.capabilities.patients.read, grant.read);
+        assert.equal(scoped.capabilities.patients.create, grant.create);
+        assert.deepEqual(scoped.permissions, grant.permissions);
+        assert.equal((await service.getPracticeContext(principal)).management.members, false);
+        await assert.rejects(service.getPracticeAdmin(principal), /OWNER REQUIRED/);
+        await service.suspendMember(ownerAuth, recipient);
+        await service.acceptInvitations(principal);
+        await assert.rejects(service.authorizeLocation(principal, onboarding.location.id), /ENROLLMENT REQUIRED/);
+      });
+    }
+    await context.test("unconfigured staff roles cannot be introduced by an invitation payload", async () => {
+      await assert.rejects(service.createInvitation(ownerAuth, { email: `unconfigured_${randomUUID()}@example.invalid`, role: "org:unconfigured", locationIds: [] }, randomUUID()), /ROLE NOT ALLOWED/);
+    });
     await context.test("failed provider role updates leave committed local denial; suspended acceptance replay cannot restore grants", async () => {
       errors.roleUpdateOnce = true;
       await assert.rejects(service.activateMember(ownerAuth, staff, { role: "org:member", locationIds: [onboarding.location.id] }), /ROLE UPDATE PENDING/);

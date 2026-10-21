@@ -8,7 +8,7 @@ for (const key of ["CAREIQ_WEB_TEST_URL", "CAREIQ_WEB_PRODUCTION_URL"]) {
 export default defineConfig({
   testDir: "./tests/browser",
   projects: [
-    { name: "components", testMatch: ["components.spec.ts", "workflow.spec.ts", "audit.spec.ts", "i18n.spec.ts", "communications.spec.ts"] },
+    { name: "components", testMatch: ["components.spec.ts", "workflow.spec.ts", "audit.spec.ts", "i18n.spec.ts", "communications.spec.ts", "little-hello.spec.ts"] },
     ...(process.env.CAREIQ_WEB_TEST_URL ? [{ name: "live", testMatch: "live.spec.ts", use: { baseURL: process.env.CAREIQ_WEB_TEST_URL } }] : []),
     ...(process.env.CAREIQ_WEB_PRODUCTION_URL ? [{ name: "production", testMatch: "production.spec.ts", use: { baseURL: process.env.CAREIQ_WEB_PRODUCTION_URL } }] : []),
   ],

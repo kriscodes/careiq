@@ -680,5 +680,18 @@
   "access.auth.unavailableHelp": "No pudimos conectar con el servicio de inicio de sesión. Revisa tu conexión e inténtalo de nuevo. Si el problema continúa, contacta con tu administrador de CareIQ.",
   "access.practice.unconfiguredTitle": "Completa la configuración de la clínica",
   "access.practice.unconfiguredDescription": "El equipo seleccionado aún no tiene una clínica en CareIQ.",
-  "access.practice.chooseAnother": "Elegir otra clínica"
+  "access.practice.chooseAnother": "Elegir otra clínica",
+  "access.auth.needAHand": "¿Te echamos una mano?",
+  "access.auth.goodToSeeYou": "Qué gusto verte.",
+  "access.auth.roomToCareStartsHere": "Un poco más de espacio para cuidar empieza aquí.",
+  "access.auth.aLittleHello": "Un pequeño saludo.",
+  "access.auth.createAccountOneStep": "Crea tu cuenta. Iremos paso a paso.",
+  "access.auth.passwordResetTitle": "Volvamos a tu cuenta.",
+  "access.auth.freshStart": "Un nuevo comienzo.",
+  "access.auth.otherWaysToSignIn": "Otras formas de iniciar sesión",
+  "access.auth.otherWaysToCreateAccount": "Otras formas de crear una cuenta",
+  "access.auth.continueWithGoogle": "Continuar con Google",
+  "access.auth.continueWithMicrosoft": "Continuar con Microsoft",
+  "access.auth.continueWithApple": "Continuar con Apple",
+  "access.auth.orWithEmail": "o con tu correo electrónico"
 }

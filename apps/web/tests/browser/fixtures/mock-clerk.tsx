@@ -1,6 +1,6 @@
 import { useSyncExternalStore, type ReactNode } from "react";
 type Call = { name: string; input?: unknown };
-declare global { interface Window { __careiqLocaleAccount?: { load: () => void; resolveNext: () => void; snapshot: () => { loaded: boolean; active: number; maximumActive: number; writes: string[]; storedLocale: string | undefined } }; __careiqAuthFetch?: { set: (source: "signin" | "signup", status: "idle" | "fetching") => void; resolvePassword: () => void }; __careiqMockCalls: Call[]; __careiqLastActivation?: { organization: string; navigate?: (input: { session: { currentTask: null }; decorateUrl: (url: string) => string }) => void }; } }
+declare global { interface Window { __careiqLocaleAccount?: { load: () => void; resolveNext: () => void; snapshot: () => { loaded: boolean; active: number; maximumActive: number; writes: string[]; storedLocale: string | undefined } }; __careiqAuthFetch?: { set: (source: "signin" | "signup", status: "idle" | "fetching") => void; resolvePassword: () => void; resolveProvider: () => void }; __careiqMockCalls: Call[]; __careiqLastActivation?: { organization: string; navigate?: (input: { session: { currentTask: null }; decorateUrl: (url: string) => string }) => void }; } }
 const scenario = new URLSearchParams(location.search).get("scenario") || "normal";
 let version = 0;
 let organization: string | null = scenario === "no-active-organization" ? null : "org_test";
@@ -26,11 +26,20 @@ const signOut = async (input: unknown) => { call("signOut", input); signOutAttem
 let signInFetchStatus = "idle";
 let signUpFetchStatus = "idle";
 let resolvePassword: (() => void) | undefined;
+let resolveProvider: (() => void) | undefined;
 window.__careiqAuthFetch = {
   set: (source, status) => { if (source === "signin") signInFetchStatus = status; else signUpFetchStatus = status; changed(); },
   resolvePassword: () => { resolvePassword?.(); resolvePassword = undefined; },
+  resolveProvider: () => { resolveProvider?.(); resolveProvider = undefined; },
 };
+async function providerAttempt(source: "signin" | "signup", input: unknown) {
+  call("providerSSO", { source, ...(input as Record<string, unknown>) });
+  if (scenario === "auth-provider-pending") await new Promise<void>(resolve => { resolveProvider = resolve; });
+  if (scenario === "auth-provider-error") return { error: { code: "network_error", message: "private provider secret" } };
+  return { error: null };
+}
 const signIn = {
+  sso: (input: unknown) => providerAttempt("signin", input),
   id: "", status: "needs_identifier", identifier: "", supportedSecondFactors: [{ strategy: "totp" }, { strategy: "backup_code" }], firstFactorVerification: { strategy: "" },
   password: async (input: { emailAddress: string; password: string }) => {
     call("password", { email: input.emailAddress });
@@ -54,6 +63,7 @@ const signIn = {
 };
 if (scenario === "auth-restored-mfa") { signIn.id = "restored_sign_in_test"; signIn.identifier = "synthetic@example.invalid"; signIn.status = "needs_second_factor"; }
 const signUp = {
+  sso: (input: unknown) => providerAttempt("signup", input),
   id: "", status: "missing_requirements", emailAddress: "", requiredFields: ["email_address", "password"], optionalFields: ["first_name", "last_name"], unverifiedFields: ["email_address"],
   password: async (input: { emailAddress: string; password: string }) => { call("createAccount", { email: input.emailAddress }); signUp.id = "sign_up_test"; signUp.emailAddress = input.emailAddress; return { error: null }; },
   update: async (input: unknown) => { call("updateName", input); return { error: null }; },
@@ -89,9 +99,11 @@ if (scenario === "locale-account") window.__careiqLocaleAccount = {
   },
   snapshot: () => ({ loaded: localeAccountLoaded, active: activeLocaleWrites, maximumActive: maximumLocaleWrites, writes: [...localeWrites], storedLocale: typeof user.unsafeMetadata.careiqLocale === "string" ? user.unsafeMetadata.careiqLocale : undefined }),
 };
-const memberships = { data: [{ id: "member_test", role: "org:admin", organization: { id: "org_test", name: "Test practice" } }], isLoading: false, error: null, hasNextPage: false, fetchNext: () => {}, revalidate: ok };
+const identityRole = new URLSearchParams(location.search).get("identityRole");
+const membershipRole = identityRole === "member" ? "org:member" : identityRole === "configured-clinician" ? "org:clinician" : "org:admin";
+const memberships = { data: [{ id: "member_test", role: membershipRole, organization: { id: "org_test", name: "Test practice" } }], isLoading: false, error: null, hasNextPage: false, fetchNext: () => {}, revalidate: ok };
 const invitations = { data: [{ id: "invite_test", emailAddress: scenario === "wrong-invite-email" ? "teammate@example.invalid" : email.emailAddress, publicOrganizationData: { id: "org_team", name: "Invited team" }, accept: async () => { call("acceptInvitation"); } }], isLoading: false, error: null, hasNextPage: false, fetchNext: () => {}, revalidate: ok };
-export function useAuth() { useObserve(); return { isLoaded: true, isSignedIn: !["normal", "signin-error", "mfa", "unknown-account", "recovery-offline", "auth-noise", "auth-deferred", "auth-restored-mfa", "auth-restored-signup", "auth-loading", "auth-failed"].includes(scenario) || new URLSearchParams(location.search).get("component") !== "auth", getToken: token, userId: user.id, orgId: organization }; }
+export function useAuth() { useObserve(); return { isLoaded: true, isSignedIn: !scenario.startsWith("auth-provider-") && !["normal", "signin-error", "mfa", "unknown-account", "recovery-offline", "auth-noise", "auth-deferred", "auth-restored-mfa", "auth-restored-signup", "auth-loading", "auth-failed"].includes(scenario) || new URLSearchParams(location.search).get("component") !== "auth", getToken: token, userId: user.id, orgId: organization }; }
 export function useClerk() { return { signOut }; }
 export function useSignIn() { useObserve(); return { signIn, fetchStatus: signInFetchStatus }; }
 export function useSignUp() { useObserve(); return { signUp, fetchStatus: signUpFetchStatus }; }
