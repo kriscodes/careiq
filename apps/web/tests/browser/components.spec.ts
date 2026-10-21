@@ -148,6 +148,62 @@ test("switching from a signed-in invitation preserves its ticket until the provi
   await page.getByRole("button", { name: "Use the invited account" }).click();
   expect((await calls(page)).find(call => call.name === "signOut")?.input).toEqual({ redirectUrl: `${harnessUrl}/?__clerk_ticket=synthetic-invite-ticket` });
 });
+test("an active unmapped team explains setup instead of repeating the practice picker", async ({ page, harnessUrl }) => {
+  const requests: { method: string; path: string }[] = [];
+  await page.route("**/api/v1/**", async route => {
+    requests.push({ method: route.request().method(), path: new URL(route.request().url()).pathname });
+    await json(route, { data: { ...access, practice: null, onboarding: "required" } });
+  });
+  await page.goto(`${harnessUrl}/?component=workspace`);
+  await expect(page.getByRole("heading", { name: "Finish practice setup", exact: true })).toBeVisible();
+  await expect(page.getByText("Your selected team does not have a CareIQ practice yet.", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Test practice/ })).toHaveCount(0);
+  await page.getByLabel("Interface language", { exact: true }).selectOption("es");
+  await expect(page.getByRole("heading", { name: "Completa la configuración de la clínica", exact: true })).toBeVisible();
+  await expect(page.getByText("El equipo seleccionado aún no tiene una clínica en CareIQ.", { exact: true })).toBeVisible();
+  await page.getByLabel("Idioma de la interfaz", { exact: true }).selectOption("en");
+  await page.getByRole("button", { name: "Choose another practice", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Choose your practice", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: /^Test practice/ }).click();
+  expect((await calls(page)).filter(call => call.name === "setActive")).toHaveLength(1);
+  // Model the full return after activation: the server still has no practice mapping.
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Finish practice setup", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "View my invitations", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Join your team", exact: true })).toBeVisible();
+  expect(requests.every(request => request.method === "GET" && request.path === "/api/v1/me")).toBe(true);
+});
+
+for (const eligible of [false, true]) {
+  test(`unmapped team setup uses the normal founder eligibility gate (${eligible ? "approved" : "unapproved"})`, async ({ page, harnessUrl }) => {
+    const requests: { method: string; path: string }[] = [];
+    await page.route("**/api/v1/**", async route => {
+      const path = new URL(route.request().url()).pathname;
+      requests.push({ method: route.request().method(), path });
+      await json(route, { data: path === "/api/v1/me" ? { ...access, practice: null, onboarding: "required" } : { ...state, eligible } });
+    });
+    await page.goto(`${harnessUrl}/?component=workspace`);
+    await expect(page.getByRole("heading", { name: "Finish practice setup", exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "Set up a new practice", exact: true }).click();
+    await expect(page.getByRole("heading", { name: eligible ? "What’s your practice called?" : "Practice setup needs approval", exact: true })).toBeVisible();
+    await expect(page.getByLabel("Practice name", { exact: true })).toHaveCount(eligible ? 1 : 0);
+    expect(requests).toEqual([{ method: "GET", path: "/api/v1/me" }, { method: "GET", path: "/api/v1/onboarding/state" }]);
+    expect((await calls(page)).filter(call => call.name === "setActive")).toHaveLength(0);
+  });
+}
+
+test("an account with no active organization keeps the normal practice chooser", async ({ page, harnessUrl }) => {
+  const paths: string[] = [];
+  await page.route("**/api/v1/**", async route => {
+    paths.push(new URL(route.request().url()).pathname);
+    await json(route, { data: { ...access, orgId: null, practice: null, onboarding: "required" } });
+  });
+  await page.goto(`${harnessUrl}/?component=workspace&scenario=no-active-organization`);
+  await expect(page.getByRole("heading", { name: "Choose your practice", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Finish practice setup", exact: true })).toHaveCount(0);
+  expect(paths).toEqual(["/api/v1/me"]);
+});
+
 test("saved setup restores its step and saves safely without provisioning", async ({ page, harnessUrl }) => {
   let draft: PracticeDraft = { ...frozen, step: 2 };
   let creations = 0;

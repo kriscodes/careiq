@@ -3,7 +3,7 @@ type Call = { name: string; input?: unknown };
 declare global { interface Window { __careiqLocaleAccount?: { load: () => void; resolveNext: () => void; snapshot: () => { loaded: boolean; active: number; maximumActive: number; writes: string[]; storedLocale: string | undefined } }; __careiqAuthFetch?: { set: (source: "signin" | "signup", status: "idle" | "fetching") => void; resolvePassword: () => void }; __careiqMockCalls: Call[]; __careiqLastActivation?: { organization: string; navigate?: (input: { session: { currentTask: null }; decorateUrl: (url: string) => string }) => void }; } }
 const scenario = new URLSearchParams(location.search).get("scenario") || "normal";
 let version = 0;
-let organization = "org_test";
+let organization: string | null = scenario === "no-active-organization" ? null : "org_test";
 const listeners = new Set<() => void>();
 function useObserve() { useSyncExternalStore(callback => { listeners.add(callback); return () => listeners.delete(callback); }, () => version); }
 function changed() { version++; listeners.forEach(callback => callback()); }
