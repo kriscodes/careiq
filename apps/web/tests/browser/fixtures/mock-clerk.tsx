@@ -51,6 +51,7 @@ const signUp = {
   finalize: async () => { call("signUpFinalize"); return { error: null }; },
   verifications: { sendEmailCode: async () => { call("sendVerificationCode"); return { error: null }; }, verifyEmailCode: async ({ code }: { code: string }) => { call("verifyEmail"); if (code !== "111111") return { error: { code: "form_code_incorrect" } }; signUp.unverifiedFields = []; signUp.status = "complete"; return { error: null }; } },
 };
+if (scenario === "auth-restored-signup") { signUp.id = "restored_sign_up_test"; signUp.emailAddress = "synthetic@example.invalid"; }
 const email = { emailAddress: "owner@example.invalid", verification: { status: "verified" }, prepareVerification: ok, attemptVerification: ok };
 let localeAccountLoaded = !(scenario === "locale-account" && new URLSearchParams(location.search).get("account") === "late");
 const localeWrites: string[] = [];
@@ -80,7 +81,7 @@ if (scenario === "locale-account") window.__careiqLocaleAccount = {
 };
 const memberships = { data: [{ id: "member_test", role: "org:admin", organization: { id: "org_test", name: "Test practice" } }], isLoading: false, error: null, hasNextPage: false, fetchNext: () => {}, revalidate: ok };
 const invitations = { data: [{ id: "invite_test", emailAddress: scenario === "wrong-invite-email" ? "teammate@example.invalid" : email.emailAddress, publicOrganizationData: { id: "org_team", name: "Invited team" }, accept: async () => { call("acceptInvitation"); } }], isLoading: false, error: null, hasNextPage: false, fetchNext: () => {}, revalidate: ok };
-export function useAuth() { useObserve(); return { isLoaded: true, isSignedIn: !["normal", "signin-error", "mfa", "unknown-account", "recovery-offline", "auth-noise", "auth-deferred", "auth-restored-mfa", "auth-loading", "auth-failed"].includes(scenario) || new URLSearchParams(location.search).get("component") !== "auth", getToken: token, userId: user.id, orgId: organization }; }
+export function useAuth() { useObserve(); return { isLoaded: true, isSignedIn: !["normal", "signin-error", "mfa", "unknown-account", "recovery-offline", "auth-noise", "auth-deferred", "auth-restored-mfa", "auth-restored-signup", "auth-loading", "auth-failed"].includes(scenario) || new URLSearchParams(location.search).get("component") !== "auth", getToken: token, userId: user.id, orgId: organization }; }
 export function useClerk() { return { signOut }; }
 export function useSignIn() { useObserve(); return { signIn, fetchStatus: signInFetchStatus }; }
 export function useSignUp() { useObserve(); return { signUp, fetchStatus: signUpFetchStatus }; }
