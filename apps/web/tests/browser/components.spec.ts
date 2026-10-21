@@ -338,6 +338,37 @@ test("in-progress nonclinical setup survives an inbox switch", async ({ page, ha
   await page.evaluate(() => window.dispatchEvent(new Event("focus")));
   await expect(page.getByLabel("Practice name", { exact: true })).toHaveValue("Unsubmitted practice draft");
 });
+test("fresh token resource updates do not restart or starve the first workflow request", async ({ page, harnessUrl }) => {
+  const paths: string[] = [];
+  await page.route("**/api/v1/**", async route => {
+    const path = new URL(route.request().url()).pathname;
+    paths.push(path);
+    if (path === "/api/v1/me") return json(route, { data: { ...access, locations: [location] } });
+    if (path === `/api/v1/locations/${location.id}/workflow`) return json(route, { data: { location, timeZone: "UTC", patients: [{ id: "patient_test", firstName: "Synthetic", lastName: "Refresh", email: null, phone: null }], appointments: [], documents: [], templates: [], requests: [], workItems: [], providers: [], visitTypes: [], documentTypes: [], capabilities: { patientsRead: true, appointmentsRead: true }, asOf: "2026-10-16T12:00:00Z" } });
+    return json(route, { error: { code: "UNEXPECTED_REQUEST" } }, 500);
+  });
+  await page.goto(`${harnessUrl}/?component=workspace&scenario=workflow-token-refresh`);
+  await expect(page.getByRole("heading", { name: "Where are you working?", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: /^Continue/ }).evaluate(button => (button as HTMLButtonElement).click());
+  const workflowPath = `/api/v1/locations/${location.id}/workflow`;
+  await expect.poll(() => paths.filter(path => path === workflowPath).length, { timeout: 3000 }).toBeGreaterThan(0);
+  await expect(page.getByText("Opening your front desk…", { exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Patients", exact: true }).click();
+  await expect(page.getByRole("button", { name: /Synthetic Refresh/ })).toBeVisible();
+  const completedRequests = paths.length;
+  const completedTokens = (await calls(page)).filter(call => call.name === "getToken");
+  expect(completedTokens.length).toBeLessThanOrEqual(4);
+  expect(completedTokens.every(call => (call.input as { organizationId?: string; skipCache?: boolean }).organizationId === "org_test" && (call.input as { skipCache?: boolean }).skipCache === true)).toBe(true);
+  await page.evaluate(async () => {
+    window.__careiqAuthFetch!.set("signin", "fetching");
+    await new Promise(requestAnimationFrame);
+    await new Promise(requestAnimationFrame);
+  });
+  expect(paths).toHaveLength(completedRequests);
+  expect((await calls(page)).filter(call => call.name === "getToken")).toHaveLength(completedTokens.length);
+  await expect(page.getByRole("button", { name: /Synthetic Refresh/ })).toBeVisible();
+});
+
 test("an opened clinical scope is discarded on backgrounding and revocation blocks reopening", async ({ page, harnessUrl }) => {
   let revoked = false;
   const clinicalPaths: string[] = [];

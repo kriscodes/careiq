@@ -9,7 +9,17 @@ function useObserve() { useSyncExternalStore(callback => { listeners.add(callbac
 function changed() { version++; listeners.forEach(callback => callback()); }
 const call = (name: string, input?: unknown) => { window.__careiqMockCalls ||= []; window.__careiqMockCalls.push({ name, input }); };
 const ok = async () => ({ error: null });
-const token = async (input?: unknown) => { call("getToken", input); if (scenario === "token-error") throw new Error("private provider secret trace"); return "synthetic-browser-test-token"; };
+const token = async (input?: unknown) => {
+  call("getToken", input);
+  if (scenario === "token-error") throw new Error("private provider secret trace");
+  if (scenario === "workflow-token-refresh") {
+    // The real SDK keeps getToken stable but emits updated resources during token refresh.
+    await new Promise(resolve => setTimeout(resolve, 0));
+    changed();
+    await new Promise(resolve => setTimeout(resolve, 25));
+  }
+  return "synthetic-browser-test-token";
+};
 const setActive = async (input: { organization: string; navigate?: (input: { session: { currentTask: null }; decorateUrl: (url: string) => string }) => void }) => { call("setActive", { organization: input.organization, hasNavigate: !!input.navigate }); window.__careiqLastActivation = input; organization = input.organization; changed(); };
 let signOutAttempts = 0;
 const signOut = async (input: unknown) => { call("signOut", input); signOutAttempts++; if (scenario === "signed-expired" && signOutAttempts === 1) throw new Error("provider secret trace"); };
