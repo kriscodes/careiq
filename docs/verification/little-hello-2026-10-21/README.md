@@ -36,3 +36,7 @@ Email examples: [verification](email-verification-dark-system-1280.png), [passwo
 Dedicated safe test inboxes/accounts are needed for actual owner, administrator, member, configured staff and adult-patient sign-in, password reset and invitation delivery/redemption. Provider connections must be enabled in the intended Clerk instance before the custom allowlist is configured. Clerk email templates need instance-specific inspection/export, review and activation; new lifecycle notification renderers do not create automatic events. Gmail, Apple Mail and Outlook rendering, sender DNS and actual delivery were not tested here.
 
 No real authentication email was sent, no hosted provider template was changed, and no remote deployment was performed as part of these checks. Local logs, provider fixture values and database connection settings remain in ignored private storage.
+
+## Dedicated-account follow-up
+
+The later [QA account verification](../qa-accounts-2026-10-21.md) records five created development identities, the real-provider new-device continuation defect and correction, confirmed reset messages for three approved aliases, provider throttling and the remaining code-entry/access boundaries. The original automated results above remain their bounded implementation evidence.

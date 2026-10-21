@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { invitationEmailMatches, onboardingInput, onboardingView, safeDestination, signInStep, validateDraft, type OnboardingState } from "../src/lib/access-flow";
+import { invitationEmailMatches, onboardingInput, onboardingView, safeDestination, signInStep, signInVerificationMethod, verificationCodePrepared, validateDraft, type OnboardingState } from "../src/lib/access-flow";
 
 const base: OnboardingState = { eligible: true, emailVerified: true, draft: null, operation: null };
 test("restored destinations cannot redirect to external or privileged routes", () => {
@@ -10,7 +10,9 @@ test("restored destinations cannot redirect to external or privileged routes", (
 test("sign-in never finalizes incomplete MFA, device-trust, or protect challenges", () => {
   assert.equal(signInStep("complete"), "complete");
   assert.equal(signInStep("needs_second_factor", [{ strategy: "totp" }]), "mfa");
-  assert.equal(signInStep("needs_client_trust", [{ strategy: "email_code" }]), "provider");
+  assert.equal(signInStep("needs_client_trust", [{ strategy: "email_code" }]), "mfa");
+  assert.equal(signInStep("needs_client_trust", [{ strategy: "email_link" }]), "provider");
+  assert.equal(signInStep("needs_client_trust", []), "provider");
   assert.equal(signInStep("needs_protect_check"), "provider");
   assert.equal(signInStep("needs_first_factor"), "provider");
   assert.equal(signInStep("needs_new_password"), "reset");
@@ -41,4 +43,16 @@ test("paperwork sign-in return keeps only a validated exact-copy hint", () => {
   assert.equal(safeDestination('/patient-paperwork'), '/patient-paperwork');
   assert.equal(safeDestination('/patient-paperwork?item=' + item), '/patient-paperwork?item=' + item);
   for (const value of ['/patient-paperwork?item=other', '/patient-paperwork?item=' + item + '&redirect_url=//evil.invalid', '/patient-paperwork?item=' + item + '#other', '/patient-paperwork/../owner']) assert.equal(safeDestination(value), '/');
+});
+
+test("new-device verification uses only supported factors and distinguishes unsent, prepared and expired codes", () => {
+  assert.equal(signInVerificationMethod([{ strategy: "email_code" }]), "email_code");
+  assert.equal(signInVerificationMethod([{ strategy: "totp" }, { strategy: "email_code" }], "email_code"), "email_code");
+  assert.equal(signInVerificationMethod([{ strategy: "email_code" }], "phone_code"), "email_code");
+  assert.equal(signInVerificationMethod([{ strategy: "email_link" }]), null);
+  assert.equal(verificationCodePrepared("email_code", { strategy: null, status: null }), false);
+  assert.equal(verificationCodePrepared("email_code", { strategy: "email_code", status: "unverified" }), true);
+  assert.equal(verificationCodePrepared("email_code", { strategy: "phone_code", status: "unverified" }), false);
+  assert.equal(verificationCodePrepared("email_code", { strategy: "email_code", status: "expired" }), false);
+  assert.equal(verificationCodePrepared("totp", { strategy: null, status: null }), true);
 });

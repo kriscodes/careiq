@@ -35,6 +35,6 @@ Authentication and access emails use the [Little hello email renderer and activa
 
 ## Review and verification
 
-Open [local sign-in](http://localhost:3101/sign-in) after starting the existing isolated local environment. The [October 21 verification record](verification/little-hello-2026-10-21/README.md) records browser, database, build and email checks with their limits.
+Open [local sign-in](http://localhost:3101/sign-in) after starting the existing isolated local environment. The [QA test account guide](qa-test-accounts.md) explains the dedicated development identities, private credential handoff and remaining role setup. The [October 21 verification record](verification/little-hello-2026-10-21/README.md) records browser, database, build and email checks with their limits.
 
-Actual provider login, password reset mail, invitation delivery/redemption and Gmail/Apple Mail/Outlook rendering still need dedicated test accounts and a reviewed provider-template rollout. Controlled provider mocks prove the local transitions, not delivery by a hosted authentication provider.
+Actual provider login, password reset mail, invitation delivery/redemption and Gmail/Apple Mail/Outlook rendering require the dedicated test identities, their remaining access setup and a reviewed provider-template rollout. Record completed real-account checks separately from the earlier component evidence. Controlled provider mocks prove the local transitions, not delivery by a hosted authentication provider.

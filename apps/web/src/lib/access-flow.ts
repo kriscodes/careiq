@@ -15,11 +15,21 @@ export function invitationOrganizationHint(value: string | undefined) {
 }
 
 export type AuthStep = "signin" | "signup" | "verify" | "forgot" | "resetcode" | "reset" | "mfa" | "recovery" | "firstcode" | "provider";
+export type VerificationMethod = "totp" | "phone_code" | "email_code" | "backup_code";
+const verificationMethods: readonly VerificationMethod[] = ["totp", "phone_code", "email_code", "backup_code"];
+/** Continue only factors offered by this sign-in, preserving an already prepared challenge. */
+export function signInVerificationMethod(factors: readonly { strategy: string }[], preferred?: string | null): VerificationMethod | null {
+  const available = verificationMethods.filter(method => factors.some(factor => factor.strategy === method));
+  return available.find(method => method === preferred) ?? available[0] ?? null;
+}
+export function verificationCodePrepared(method: VerificationMethod, verification: { strategy: string | null; status: string | null }): boolean {
+  return !["email_code", "phone_code"].includes(method) || (verification.strategy === method && verification.status === "unverified");
+}
 export function signInStep(status: string, factors: readonly { strategy: string }[] = []): AuthStep | "complete" {
   if (status === "complete") return "complete";
   if (status === "needs_new_password") return "reset";
-  if (status === "needs_second_factor" && factors.some(f => ["totp", "phone_code", "email_code", "backup_code"].includes(f.strategy))) return "mfa";
-  // Device trust, mid-flow bot challenges, and additional factors stay provider-owned.
+  if (["needs_second_factor", "needs_client_trust"].includes(status) && signInVerificationMethod(factors)) return "mfa";
+  // Mid-flow bot challenges and unsupported factors stay provider-owned.
   return "provider";
 }
 export function invitationEmailMatches(emails: readonly string[], invitationEmail: string) {

@@ -693,5 +693,8 @@
   "access.auth.continueWithGoogle": "Continuar con Google",
   "access.auth.continueWithMicrosoft": "Continuar con Microsoft",
   "access.auth.continueWithApple": "Continuar con Apple",
-  "access.auth.orWithEmail": "o con tu correo electrónico"
+  "access.auth.orWithEmail": "o con tu correo electrónico",
+  "access.auth.sendEmailVerification": "Necesitamos verificar este inicio de sesión. Envía un código a tu correo verificado para continuar.",
+  "access.auth.sendPhoneVerification": "Necesitamos verificar este inicio de sesión. Envía un código a tu teléfono verificado para continuar.",
+  "access.auth.verifySignIn": "Verifica este inicio de sesión"
 }

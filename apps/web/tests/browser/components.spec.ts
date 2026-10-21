@@ -479,10 +479,11 @@ test("a deliberate pending sign-in locks once and prevents duplicate submissions
 
 test("a restored pending MFA attempt is preserved and never silently finalized", async ({ page, harnessUrl }) => {
   await page.goto(`${harnessUrl}/?component=auth&scenario=auth-restored-mfa`);
-  await expect(page.getByText("Provider completion fixture", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "One more step", exact: true })).toBeVisible();
+  await expect(page.getByLabel("Verification code", { exact: true })).toBeVisible();
   await expect(page.getByLabel("Password", { exact: true })).toHaveCount(0);
   await page.evaluate(() => { window.__careiqAuthFetch!.set("signup", "fetching"); window.__careiqAuthFetch!.set("signin", "idle"); });
-  await expect(page.getByText("Provider completion fixture", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Verification code", { exact: true })).toBeVisible();
   expect((await calls(page)).filter(call => ["password", "signInFinalize"].includes(call.name))).toHaveLength(0);
 });
 

@@ -4,7 +4,7 @@ import { useI18n } from "@/i18n/provider";
 import Link from "next/link";
 import { ClerkFailed, ClerkLoaded, ClerkLoading, SignIn, SignUp, useAuth, useSignIn, useSignUp } from "@clerk/nextjs";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { safeDestination, signInStep, type AuthStep } from "@/lib/access-flow";
+import { safeDestination, signInStep, signInVerificationMethod, verificationCodePrepared, type AuthStep, type VerificationMethod } from "@/lib/access-flow";
 import { invitationContinuationUrl, rememberAuthDestination, sessionTaskDestination } from "@/lib/auth-intent";
 import { AccessActionError, authErrorMessage, isUnknownAccountError } from "@/lib/auth-errors";
 import { AUTH_PROVIDERS, authProviderRedirects, configuredAuthProviders, type AuthProvider } from "@/lib/auth-providers";
@@ -12,7 +12,7 @@ import { SignOutButton } from "./SignOutButton";
 import { AccessError, AccessField, AccessHeading, AccessPassword, AccessShell, AccessStatus } from "./AccessShell";
 
 type Mode = AuthStep | "resetdone";
-type MFA = "totp" | "phone_code" | "email_code" | "backup_code";
+type MFA = VerificationMethod;
 type Result = { error: unknown | null };
 
 function check(result: Result) { if (result.error) throw result.error; }
@@ -54,6 +54,7 @@ function LoadedAuthScreen({ initialMode = "signin", returnTo, invitation = false
   const [busy, setBusy] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const [mfa, setMfa] = useState<MFA>("totp");
+  const [mfaPrepared, setMfaPrepared] = useState(false);
   const locked = useRef(false);
   const restored = useRef(false);
   const alive = useRef(true);
@@ -82,12 +83,25 @@ function LoadedAuthScreen({ initialMode = "signin", returnTo, invitation = false
         setEmail(signIn.identifier || "");
         if (signIn.status === "needs_new_password") setMode("reset");
         else if (signIn.firstFactorVerification.strategy === "reset_password_email_code" && signIn.status === "needs_first_factor") setMode("resetcode");
-        else if (["needs_second_factor", "needs_client_trust", "needs_protect_check", "complete"].includes(signIn.status)) setMode("provider");
+        else if (["needs_client_trust", "needs_second_factor"].includes(signIn.status) && signInStep(signIn.status, signIn.supportedSecondFactors) === "mfa") {
+          const chosen = signInVerificationMethod(signIn.supportedSecondFactors, signIn.secondFactorVerification.strategy)!;
+          setMfa(chosen);
+          setMfaPrepared(verificationCodePrepared(chosen, signIn.secondFactorVerification));
+          setMode(chosen === "backup_code" ? "recovery" : "mfa");
+        } else if (["needs_second_factor", "needs_client_trust", "needs_protect_check", "complete"].includes(signIn.status)) setMode("provider");
       }
     });
   }, [isLoaded, isSignedIn, invitation, signupFlow, signIn, signUp]);
 
   const switchMode = (next: Mode) => { setError(""); setMessage(""); setMode(next); };
+  const recoveryAlternative = signInVerificationMethod(signIn.supportedSecondFactors.filter(factor => factor.strategy !== "backup_code"));
+  function goBack() {
+    if (mode === "recovery" && recoveryAlternative) {
+      setMfa(recoveryAlternative);
+      setMfaPrepared(verificationCodePrepared(recoveryAlternative, signIn.secondFactorVerification));
+      switchMode("mfa");
+    } else switchMode(initialMode);
+  }
   async function run(action: () => Promise<void>) {
     if (locked.current || !isLoaded) return;
     locked.current = true; setBusy(true); setError(""); setMessage("");
@@ -104,11 +118,16 @@ function LoadedAuthScreen({ initialMode = "signin", returnTo, invitation = false
     const next = signInStep(signIn.status, signIn.supportedSecondFactors);
     if (next === "complete") return finish("signin");
     if (next === "mfa") {
-      const supported = signIn.supportedSecondFactors.map(f => f.strategy);
-      const chosen: MFA = supported.includes("totp") ? "totp" : supported.includes("phone_code") ? "phone_code" : supported.includes("email_code") ? "email_code" : "backup_code";
+      const chosen = signInVerificationMethod(signIn.supportedSecondFactors, signIn.secondFactorVerification.strategy)!;
       setMfa(chosen);
+      setMfaPrepared(verificationCodePrepared(chosen, signIn.secondFactorVerification));
+      if (alive.current) switchMode(chosen === "backup_code" ? "recovery" : "mfa");
+      // New-device trust is an explicit continuation. Reloading never sends a code.
+      if (signIn.status === "needs_client_trust") return;
       if (chosen === "phone_code") check(await signIn.mfa.sendPhoneCode());
       if (chosen === "email_code") check(await signIn.mfa.sendEmailCode());
+      setMfaPrepared(true);
+      return;
     }
     if (alive.current) switchMode(next);
   }
@@ -120,10 +139,15 @@ function LoadedAuthScreen({ initialMode = "signin", returnTo, invitation = false
     } else if (alive.current) switchMode("provider");
   }
   async function chooseMFA(strategy: MFA) {
+    if (!signIn.supportedSecondFactors.some(factor => factor.strategy === strategy)) return;
     await run(async () => {
+      setMfa(strategy);
+      setMfaPrepared((strategy === mfa && mfaPrepared) || !["phone_code", "email_code"].includes(strategy));
+      switchMode(strategy === "backup_code" ? "recovery" : "mfa");
       if (strategy === "phone_code") check(await signIn.mfa.sendPhoneCode());
       if (strategy === "email_code") check(await signIn.mfa.sendEmailCode());
-      setMfa(strategy); switchMode(strategy === "backup_code" ? "recovery" : "mfa");
+      setMfaPrepared(true);
+      if (["phone_code", "email_code"].includes(strategy)) setCooldown(30);
     });
   }
   async function chooseProvider(provider: AuthProvider) {
@@ -196,6 +220,7 @@ function LoadedAuthScreen({ initialMode = "signin", returnTo, invitation = false
     });
   }
 
+  const needsCode = mode === "mfa" && ["phone_code", "email_code"].includes(mfa) && !mfaPrepared;
   const titles: Record<Mode, [string, string]> = {
     signin: [expired ? t("access.copy.sign_in_again") : t("access.auth.goodToSeeYou"), expired ? t("access.copy.your_session_has_expired_sign_in_to_continue") : t("access.auth.roomToCareStartsHere")],
     signup: [t("access.auth.aLittleHello"), t("access.auth.createAccountOneStep")],
@@ -204,7 +229,7 @@ function LoadedAuthScreen({ initialMode = "signin", returnTo, invitation = false
     resetcode: [t("access.copy.check_your_email"), t("access.auth.sentReset", { email })],
     reset: [t("access.auth.freshStart"), t("access.copy.use_a_password_you_haven_t_used_for_this_account")],
     resetdone: [t("access.copy.password_updated"), t("access.copy.your_other_sessions_have_been_signed_out_continue_to_careiq")],
-    mfa: [t("access.copy.one_more_step"), mfa === "totp" ? t("access.copy.enter_the_code_from_your_authenticator_app") : mfa === "phone_code" ? t("access.copy.enter_the_code_sent_to_your_phone") : t("access.copy.enter_the_code_sent_to_your_email")],
+    mfa: [t(needsCode ? "access.auth.verifySignIn" : "access.copy.one_more_step"), needsCode ? t(mfa === "phone_code" ? "access.auth.sendPhoneVerification" : "access.auth.sendEmailVerification") : mfa === "totp" ? t("access.copy.enter_the_code_from_your_authenticator_app") : mfa === "phone_code" ? t("access.copy.enter_the_code_sent_to_your_phone") : t("access.copy.enter_the_code_sent_to_your_email")],
     recovery: [t("access.copy.use_a_recovery_code"), t("access.copy.enter_one_of_the_recovery_codes_you_saved_when_setting_up_two_step_verific")],
     firstcode: [t("access.copy.check_your_email"), t("access.copy.enter_the_verification_code_sent_to_your_email")],
     provider: [invitation ? t("access.copy.join_your_team") : t("access.copy.continue_to_your_account"), invitation ? t("access.copy.use_the_email_address_that_received_your_practice_invitation") : t("access.copy.complete_the_remaining_steps_for_your_account")],
@@ -216,13 +241,13 @@ function LoadedAuthScreen({ initialMode = "signin", returnTo, invitation = false
   if (isLoaded && isSignedIn && expired) return <AccessShell centered><AccessHeading title={t("access.copy.sign_in_again")}>{t("access.copy.your_session_needs_to_be_refreshed_before_you_can_reopen_careiq")}</AccessHeading><SignOutButton className="cq-a-primary" redirectUrl="/sign-in?reason=expired">{t("access.copy.sign_in_again")}</SignOutButton></AccessShell>;
   if (!isLoaded || isSignedIn) return <AccessShell centered><AccessHeading title={t("access.copy.opening_careiq")} /><p role="status">{t("access.copy.one_moment_while_we_check_your_account")}</p></AccessShell>;
   return <AccessShell centered>
-    {!['signin', 'signup', 'provider'].includes(mode) && <button className="cq-a-link cq-a-back" type="button" disabled={loading} onClick={() => switchMode(mode === "recovery" ? "mfa" : initialMode)}>← {mode === "recovery" ? t("access.copy.back_to_verification") : t("access.copy.back")}</button>}
+    {!['signin', 'signup', 'provider'].includes(mode) && <button className="cq-a-link cq-a-back" type="button" disabled={loading} onClick={goBack}>← {mode === "recovery" && recoveryAlternative ? t("access.copy.back_to_verification") : t("access.copy.back")}</button>}
     <AccessHeading title={titles[mode][0]} mark={mode === "verify" || mode === "resetcode" ? "mail" : mode === "resetdone" ? "check" : undefined}>{titles[mode][1]}</AccessHeading>
     {!invitation && (mode === "signin" || mode === "signup") && providers.length > 0 && <div className="cq-a-providers" aria-busy={loading}>
       {providers.map(provider => <button key={provider} className="cq-a-social" type="button" disabled={loading} onClick={() => void chooseProvider(provider)}><span className={`cq-a-social-icon cq-a-social-${provider}`} aria-hidden="true" />{t(AUTH_PROVIDERS[provider].label)}</button>)}
       <div className="cq-a-divider"><span>{t("access.auth.orWithEmail")}</span></div>
     </div>}
-    {mode === "provider" ? <><div className="cq-a-provider">{!invitation && signupFlow ? <SignUp routing="hash" forceRedirectUrl={destination} signInUrl={`/sign-in?returnTo=${encodeURIComponent(destination)}`} /> : <SignIn routing="hash" forceRedirectUrl={destination} signUpUrl={`/sign-up?returnTo=${encodeURIComponent(destination)}`} />}</div>{!invitation && <p className="cq-a-under"><Link href={`${signupFlow ? "/sign-in" : "/sign-up"}?returnTo=${encodeURIComponent(destination)}`} className="cq-a-link">{signupFlow ? t("access.copy.already_have_an_account_sign_in") : t("access.copy.create_an_account")}</Link></p>}</> : mode === "resetdone" ? <button className="cq-a-primary" type="button" disabled={loading} onClick={() => void run(() => finish("signin"))}>{t("access.copy.continue_to_careiq")}</button> : <form className="cq-a-form" onSubmit={submit} aria-busy={loading} aria-describedby={error ? "cq-access-error" : undefined}>
+    {mode === "provider" ? <><div className="cq-a-provider">{!invitation && signupFlow ? <SignUp routing="hash" forceRedirectUrl={destination} signInUrl={`/sign-in?returnTo=${encodeURIComponent(destination)}`} /> : <SignIn routing="hash" forceRedirectUrl={destination} signUpUrl={`/sign-up?returnTo=${encodeURIComponent(destination)}`} />}</div>{!invitation && <p className="cq-a-under"><Link href={`${signupFlow ? "/sign-in" : "/sign-up"}?returnTo=${encodeURIComponent(destination)}`} className="cq-a-link">{signupFlow ? t("access.copy.already_have_an_account_sign_in") : t("access.copy.create_an_account")}</Link></p>}</> : mode === "resetdone" ? <button className="cq-a-primary" type="button" disabled={loading} onClick={() => void run(() => finish("signin"))}>{t("access.copy.continue_to_careiq")}</button> : needsCode ? <><AccessError>{error}</AccessError><button className="cq-a-primary" type="button" disabled={loading} onClick={() => void chooseMFA(mfa)}>{loading ? t("access.copy.one_moment") : t("access.copy.send_verification_code")} <span aria-hidden="true">→</span></button></> : <form className="cq-a-form" onSubmit={submit} aria-busy={loading} aria-describedby={error ? "cq-access-error" : undefined}>
       <fieldset disabled={loading}>
         {mode === "signup" && <AccessField name="name" label={t("access.copy.full_name_optional")} autoComplete="name" defaultValue={name} maxLength={120} placeholder={t("access.copy.alex_morgan")} />}
         {["signin", "signup", "forgot"].includes(mode) && <AccessField label={mode === "signup" ? t("access.copy.work_email") : t("access.copy.email_address")} name="email" type="email" required autoComplete={mode === "signin" ? "username" : "email"} defaultValue={email} placeholder={t("access.copy.you_practice_com")} />}
@@ -236,7 +261,7 @@ function LoadedAuthScreen({ initialMode = "signin", returnTo, invitation = false
     {mode === "signup" && <div id="clerk-captcha" />}
     <AccessStatus>{message}</AccessStatus>
     {["verify", "resetcode", "firstcode"].includes(mode) && <div className="cq-a-actions"><button className="cq-a-link" disabled={loading || !!cooldown} type="button" onClick={() => void resend()}>{cooldown ? t("access.auth.resendCountdown", { seconds: formatNumber(cooldown) }) : t("access.copy.resend_code")}</button>{mode === "verify" && <button className="cq-a-link" type="button" disabled={loading} onClick={() => void run(async () => { check(await signUp.reset()); switchMode("signup"); })}>{t("access.copy.use_a_different_email")}</button>}</div>}
-    {(mode === "mfa" || mode === "recovery") && <div className="cq-a-actions">{signIn.supportedSecondFactors.filter(f => ["totp", "phone_code", "email_code", "backup_code"].includes(f.strategy)).map(f => <button className="cq-a-link" type="button" disabled={loading} key={f.strategy} onClick={() => void chooseMFA(f.strategy as MFA)}>{({ totp: t("access.copy.use_authenticator_app"), phone_code: t("access.copy.send_a_text_message"), email_code: t("access.copy.send_an_email_code"), backup_code: t("access.copy.use_a_recovery_code") } as Record<string, string>)[f.strategy]}</button>)}</div>}
+    {(mode === "mfa" || mode === "recovery") && <div className="cq-a-actions">{signIn.supportedSecondFactors.filter(f => ["totp", "phone_code", "email_code", "backup_code"].includes(f.strategy) && !(needsCode && f.strategy === mfa)).map(f => <button className="cq-a-link" type="button" disabled={loading || (["phone_code", "email_code"].includes(f.strategy) && !!cooldown)} key={f.strategy} onClick={() => void chooseMFA(f.strategy as MFA)}>{["phone_code", "email_code"].includes(f.strategy) && cooldown ? t("access.auth.resendCountdown", { seconds: formatNumber(cooldown) }) : ({ totp: t("access.copy.use_authenticator_app"), phone_code: t("access.copy.send_a_text_message"), email_code: t("access.copy.send_an_email_code"), backup_code: t("access.copy.use_a_recovery_code") } as Record<string, string>)[f.strategy]}</button>)}</div>}
     {mode === "signin" && <><p className="cq-a-under">{t("access.copy.new_to_careiq")} <Link className="cq-a-link" href={`/sign-up?returnTo=${encodeURIComponent(destination)}`}>{t("access.copy.create_an_account")}</Link></p><button className="cq-a-link cq-a-other" type="button" onClick={() => switchMode("provider")}>{t("access.auth.otherWaysToSignIn")} <span aria-hidden="true">⌄</span></button></>}
     {mode === "signup" && <button className="cq-a-link cq-a-other" type="button" onClick={() => switchMode("provider")}>{t("access.auth.otherWaysToCreateAccount")} <span aria-hidden="true">⌄</span></button>}
     {mode === "signup" && <p className="cq-a-under">{t("access.copy.already_have_an_account")} <Link className="cq-a-link" href={`/sign-in?returnTo=${encodeURIComponent(destination)}`}>{t("access.copy.sign_in")}</Link></p>}

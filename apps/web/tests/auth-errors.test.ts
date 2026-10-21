@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { AccessActionError, authErrorMessage, isUnknownAccountError } from "../src/lib/auth-errors";
+import { translate } from "../../../packages/i18n";
 import { availableTimeZones } from "../src/lib/access-flow";
 
 test("provider diagnostics and unknown exceptions never become account-page copy", () => {
@@ -20,4 +21,14 @@ test("a browser without an exhaustive Intl time-zone list can still complete set
   assert.ok(zones.includes("Europe/London"));
   assert.ok(zones.includes("UTC"));
   assert.ok(zones.includes("America/Los_Angeles"));
+});
+
+test("the observed verification-code rate limit uses localized wait copy without provider details or an invented duration", () => {
+  const error = { errors: [{ code: "verification_code_rate_limit_exceeded", message: "private provider secret" }], status: 429 };
+  for (const locale of ["en", "es"] as const) {
+    const t = (key: string) => translate(locale, key);
+    const message = authErrorMessage(error, t);
+    assert.equal(message, t("access.auth.tooManyAttempts"));
+    assert.doesNotMatch(message, /secret|429|\d/);
+  }
 });

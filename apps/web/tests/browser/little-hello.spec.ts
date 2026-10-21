@@ -168,3 +168,137 @@ test("a signed-in patient without a portal grant sees no paperwork or staff work
   await expect(page.getByRole("button", { name: "Patients", exact: true })).toHaveCount(0);
   expect(requests.every(request => request.method === "GET" && request.path.startsWith("/api/v1/patient-paperwork"))).toBe(true);
 });
+
+async function submitTrustPassword(page: Page, harnessUrl: string, scenario: string) {
+  await page.goto(`${harnessUrl}/?component=auth&scenario=${scenario}`);
+  await page.getByLabel("Email address", { exact: true }).fill("synthetic@example.invalid");
+  await page.getByLabel("Password", { exact: true }).fill("synthetic-password");
+  await page.getByRole("button", { name: "Sign in", exact: true }).click();
+}
+
+test("new-device trust requires an explicit send and a valid code before finalization", async ({ page, harnessUrl }) => {
+  await submitTrustPassword(page, harnessUrl, "auth-trust");
+  await expect(page.getByRole("heading", { name: "Verify this sign-in", exact: true })).toBeFocused();
+  await expect(page.locator(".cq-a-lead")).toContainText("Send a code to your verified email");
+  await expect(page.getByLabel("Password", { exact: true })).toHaveCount(0);
+  await expect(page.getByLabel("Verification code", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Provider completion fixture", { exact: true })).toHaveCount(0);
+  expect((await calls(page)).filter(call => ["sendMFAEmailCode", "signInFinalize"].includes(call.name))).toHaveLength(0);
+  await page.getByRole("button", { name: "Send verification code", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "One more step", exact: true })).toBeFocused();
+  await expect(page.getByLabel("Verification code", { exact: true })).toHaveAttribute("autocomplete", "one-time-code");
+  expect((await calls(page)).filter(call => call.name === "sendMFAEmailCode")).toHaveLength(1);
+  await page.getByLabel("Verification code", { exact: true }).fill("000000");
+  await page.getByRole("button", { name: /Verify & continue/ }).click();
+  await expect(page.getByRole("alert")).toContainText("incorrect");
+  expect((await calls(page)).filter(call => call.name === "signInFinalize")).toHaveLength(0);
+  await page.getByLabel("Verification code", { exact: true }).fill("111111");
+  await page.getByRole("button", { name: /Verify & continue/ }).click();
+  await expect.poll(async () => (await calls(page)).filter(call => call.name === "signInFinalize").length).toBe(1);
+  expect((await calls(page)).filter(call => call.name === "password")).toHaveLength(1);
+});
+
+for (const prepared of [false, true]) {
+  test(`restored device trust ${prepared ? "keeps its prepared challenge" : "asks before sending"} without requesting another code`, async ({ page, harnessUrl }) => {
+    const scenario = prepared ? "auth-trust-restored-prepared" : "auth-trust-restored";
+    await page.goto(`${harnessUrl}/?component=auth&scenario=${scenario}`);
+    for (let attempt = 0; attempt < 2; attempt++) {
+      if (attempt) await page.reload();
+      await expect(page.getByRole("heading", { name: prepared ? "One more step" : "Verify this sign-in", exact: true })).toBeVisible();
+      await expect(page.getByLabel("Password", { exact: true })).toHaveCount(0);
+      await expect(page.getByText("Provider completion fixture", { exact: true })).toHaveCount(0);
+      if (prepared) {
+        await expect(page.getByLabel("Verification code", { exact: true })).toBeVisible();
+        await expect(page.locator(".cq-a-lead")).toContainText("code sent to your email");
+      } else {
+        await expect(page.getByLabel("Verification code", { exact: true })).toHaveCount(0);
+        await expect(page.getByRole("button", { name: "Send verification code", exact: true })).toBeEnabled();
+      }
+      expect((await calls(page)).filter(call => ["sendMFAEmailCode", "sendMFAPhoneCode", "password", "signInFinalize"].includes(call.name))).toHaveLength(0);
+    }
+    if (!prepared) {
+      await page.setViewportSize({ width: 320, height: 812 });
+      await page.emulateMedia({ colorScheme: "dark" });
+      await expectWhite(page);
+      await capture(page, "trust-unsent-dark-system-320");
+    }
+  });
+}
+
+test("a failed device-trust send stays unsent and retries without repeating the password", async ({ page, harnessUrl }) => {
+  await submitTrustPassword(page, harnessUrl, "auth-trust-send-error");
+  const send = page.getByRole("button", { name: "Send verification code", exact: true });
+  await send.click();
+  await expect(page.getByRole("alert")).toContainText("Please try again");
+  await expect(page.getByRole("alert")).not.toContainText("private provider secret");
+  await expect(page.getByLabel("Verification code", { exact: true })).toHaveCount(0);
+  await expect(send).toBeEnabled();
+  await send.click();
+  await expect(page.getByLabel("Verification code", { exact: true })).toBeVisible();
+  expect((await calls(page)).filter(call => call.name === "sendMFAEmailCode")).toHaveLength(2);
+  expect((await calls(page)).filter(call => call.name === "password")).toHaveLength(1);
+  expect((await calls(page)).filter(call => call.name === "signInFinalize")).toHaveLength(0);
+});
+
+test("the observed trust-code rate limit shows localized wait copy and never claims a code was sent", async ({ page, harnessUrl }) => {
+  await submitTrustPassword(page, harnessUrl, "auth-trust-rate-limit");
+  await page.getByRole("button", { name: "Send verification code", exact: true }).click();
+  await expect(page.getByRole("alert")).toHaveText("Too many attempts. Wait a little before trying again.");
+  await expect(page.getByLabel("Verification code", { exact: true })).toHaveCount(0);
+  await expect(page.locator(".cq-a-lead")).toContainText("Send a code");
+  await page.getByLabel("Interface language", { exact: true }).selectOption("es");
+  await expect(page.getByRole("alert")).toHaveText("Demasiados intentos. Espera un poco antes de volver a intentarlo.");
+  await expect(page.getByRole("button", { name: "Enviar código de verificación", exact: true })).toBeEnabled();
+  await expect(page.getByRole("alert")).not.toContainText(/private|429|seconds|\d/);
+  expect((await calls(page)).filter(call => call.name === "sendMFAEmailCode")).toHaveLength(1);
+  expect((await calls(page)).filter(call => call.name === "signInFinalize")).toHaveLength(0);
+});
+
+test("unsupported device-trust factors remain provider owned and OAuth callbacks retain precedence", async ({ page, harnessUrl }) => {
+  await submitTrustPassword(page, harnessUrl, "auth-trust-unsupported");
+  await expect(page.getByText("Provider completion fixture", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Send verification code", exact: true })).toHaveCount(0);
+  expect((await calls(page)).filter(call => ["sendMFAEmailCode", "signInFinalize"].includes(call.name))).toHaveLength(0);
+  await page.goto(`${harnessUrl}/?component=auth&scenario=auth-trust-restored-prepared#/sso-callback`);
+  await expect(page.getByText("Provider completion fixture", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Verification code", { exact: true })).toHaveCount(0);
+  expect((await calls(page)).filter(call => ["sendMFAEmailCode", "signInFinalize"].includes(call.name))).toHaveLength(0);
+});
+
+test("supported phone device trust verifies the actual phone factor before finalizing", async ({ page, harnessUrl }) => {
+  await submitTrustPassword(page, harnessUrl, "auth-trust-phone");
+  await expect(page.locator(".cq-a-lead")).toContainText("verified phone");
+  await page.getByRole("button", { name: "Send verification code", exact: true }).click();
+  await page.getByLabel("Verification code", { exact: true }).fill("111111");
+  await page.getByRole("button", { name: /Verify & continue/ }).click();
+  expect((await calls(page)).filter(call => call.name === "sendMFAPhoneCode")).toHaveLength(1);
+  expect((await calls(page)).filter(call => call.name === "verifyMFAPhoneCode")).toHaveLength(1);
+  expect((await calls(page)).filter(call => call.name === "sendMFAEmailCode")).toHaveLength(0);
+  await expect.poll(async () => (await calls(page)).filter(call => call.name === "signInFinalize").length).toBe(1);
+});
+
+test("a backup-only supported challenge uses the recovery-code path", async ({ page, harnessUrl }) => {
+  await submitTrustPassword(page, harnessUrl, "auth-trust-backup");
+  await expect(page.getByLabel("Recovery code", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Recovery code", { exact: true })).toHaveAttribute("autocomplete", "off");
+  await expect(page.getByLabel("Verification code", { exact: true })).toHaveCount(0);
+  await page.getByLabel("Recovery code", { exact: true }).fill("synthetic-recovery-code");
+  await page.getByRole("button", { name: /Verify & continue/ }).click();
+  expect((await calls(page)).filter(call => call.name === "verifyBackupCode")).toHaveLength(1);
+  expect((await calls(page)).filter(call => call.name === "verifyMFAEmailCode")).toHaveLength(0);
+  await expect.poll(async () => (await calls(page)).filter(call => call.name === "signInFinalize").length).toBe(1);
+});
+
+test("back from a recovery code restores a supported factor without sending a code", async ({ page, harnessUrl }) => {
+  await submitTrustPassword(page, harnessUrl, "auth-trust-backup");
+  await page.getByRole("button", { name: "← Back", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Good to see you.", exact: true })).toBeVisible();
+  await expect(page.getByLabel("Verification code", { exact: true })).toHaveCount(0);
+  expect((await calls(page)).filter(call => ["sendMFAEmailCode", "verifyMFAEmailCode", "signInFinalize"].includes(call.name))).toHaveLength(0);
+  await submitTrustPassword(page, harnessUrl, "mfa");
+  await page.getByRole("button", { name: "Use a recovery code", exact: true }).click();
+  await page.getByRole("button", { name: "← Back to verification", exact: true }).click();
+  await expect(page.getByLabel("Verification code", { exact: true })).toBeVisible();
+  await expect(page.locator(".cq-a-lead")).toContainText("authenticator app");
+  expect((await calls(page)).filter(call => ["sendMFAEmailCode", "sendMFAPhoneCode", "signInFinalize"].includes(call.name))).toHaveLength(0);
+});

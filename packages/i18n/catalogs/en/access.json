@@ -693,5 +693,8 @@
   "access.auth.continueWithGoogle": "Continue with Google",
   "access.auth.continueWithMicrosoft": "Continue with Microsoft",
   "access.auth.continueWithApple": "Continue with Apple",
-  "access.auth.orWithEmail": "or with email"
+  "access.auth.orWithEmail": "or with email",
+  "access.auth.sendEmailVerification": "We need to verify this sign-in. Send a code to your verified email to continue.",
+  "access.auth.sendPhoneVerification": "We need to verify this sign-in. Send a code to your verified phone to continue.",
+  "access.auth.verifySignIn": "Verify this sign-in"
 }
