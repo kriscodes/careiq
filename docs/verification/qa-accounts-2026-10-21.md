@@ -64,8 +64,22 @@ Administrative, short-lived Clerk development sign-in tickets were used only to 
 
 The local role-override change passed nine stored Python tests, with eleven additional isolated checks of existing runner safeguards. All six pre-existing user documentation files remained byte-for-byte unchanged.
 
+## Access removal and restoration
+
+The owner explicitly approved temporary clinician suspension, location removal and patient-binding revocation on these synthetic fixtures. Each comparison reused the same signed bearer token obtained before the corresponding access change. Baseline requests succeeded; the tokens remained valid throughout each denial/restoration sequence.
+
+| Temporary change | Observed result with the existing token | Restored result |
+| --- | --- | --- |
+| Clinician suspended through the owner endpoint | Patient read: 403 `ENROLLMENT_REQUIRED` | Original role and explicit location reactivated; patient read: 200. |
+| Clinician active with no location assignments | Patient read: 403 `LOCATION_ACCESS_DENIED` | Original explicit location restored; patient read: 200. |
+| Patient account binding revoked through the staff endpoint | Library: 200 with no items; communication profiles: 200 with none; original PDF: 404 `PAPERWORK_COPY_NOT_FOUND`. | New verified binding for the same patient/account: one library item, one profile and the original PDF: 200. |
+
+Final owner-directory readback confirmed the clinician's original active enrollment, role and location assignments. Patient restoration used a new grant, preserving the original patient/account scope, self relationship, disabled email delivery and exact original expiry. The previous grant remains revoked. The original released unsigned PDF remained unchanged at 1,181 bytes and was retrieved successfully with its `application/pdf` content type and `%PDF-` header. The dedicated staff permission and provider-signed recent-factor checks applied to both revocation and the new binding.
+
+All three approved checks passed and both accounts were restored. No password, provider role policy, email delivery or production state changed. Administrative setup sessions created for this follow-up were individually revoked after verification, with their private browser state removed.
+
 ## Remaining acceptance
 
-Complete actual password/client-trust or enrolled-MFA code entry, reset-code entry, password update and old-password rejection through the normal verification flow. Actual invitation delivery and authenticated in-app acceptance passed; invitation email-link redemption remains separate. Suspension, location-removal, patient-grant revocation and second-practice denial are not yet claimed as live acceptance results. A new production test identity and separately reviewed rollout are required for production acceptance; development accounts do not carry into production. OAuth requires an actual account at the selected identity provider, not a Gmail role alias.
+Complete actual password/client-trust or enrolled-MFA code entry, reset-code entry, password update and old-password rejection through the normal verification flow. Actual invitation delivery and authenticated in-app acceptance passed; invitation email-link redemption remains separate. Second-practice denial remains untested against an actual second practice. The approved suspension, location-removal and patient-binding revocation/restoration checks passed as recorded above. A new production test identity and separately reviewed rollout are required for production acceptance; development accounts do not carry into production. OAuth requires an actual account at the selected identity provider, not a Gmail role alias.
 
 Record provider template activation, delivery and Gmail/Apple Mail/Outlook rendering separately. See [Little hello email activation](../little-hello-emails.md) and the earlier [implementation verification](little-hello-2026-10-21/README.md).
