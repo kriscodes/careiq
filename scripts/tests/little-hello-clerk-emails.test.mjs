@@ -130,12 +130,14 @@ test('REST client uses only documented template endpoints with pinned version an
   await client.getInstance();
   await client.listTemplates(100);
   await client.getTemplate('fixture_verification');
-  await client.updateTemplate('fixture_verification', { subject: 'Hello', body: '<p>Hello</p>' });
+  await client.updateTemplate('fixture_verification', { subject: 'Hello', body: '<p>Hello</p>' }, { slug: 'fixture_verification', name: 'Fixture verification' });
   assert.deepEqual(calls.map((call) => call.options.method), ['GET', 'GET', 'GET', 'PUT']);
   assert.equal(calls[1].url, 'https://api.clerk.com/v1/templates/email?limit=100&offset=100');
   assert.equal(calls[0].options.headers['Clerk-API-Version'], '2026-05-12');
   assert.ok(calls.every((call) => call.options.redirect === 'error'));
-  assert.deepEqual(JSON.parse(calls[3].options.body), { subject: 'Hello', body: '<p>Hello</p>' });
+  assert.deepEqual(JSON.parse(calls[3].options.body), { name: 'Fixture verification', subject: 'Hello', body: '<p>Hello</p>' });
+  assert.throws(() => client.updateTemplate('fixture_verification', { subject: 'Hello', body: '<p>Hello</p>' }), /retained provider name/);
+  assert.throws(() => client.updateTemplate('fixture_verification', { subject: 'Hello', body: '<p>Hello</p>' }, { slug: 'different_slug', name: 'Changed' }), /retained provider name/);
   assert.throws(() => client.getTemplate('../users'), /Invalid provider/);
   assert.throws(() => client.updateTemplate('fixture', { body: 'Hello', subject: 'Hello', delivered_by_clerk: false }), /Unsafe/);
 });
@@ -230,4 +232,47 @@ test('offline export writes private exclusive files without using credentials or
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
+});
+
+
+test('mapped layouts preserve action multiplicity and conditional branches', () => {
+  const original = template({ required_variables: [], body: '{{#if allowed}}<a href="{{action_url}}">Open</a><a href="{{action_url}}">Fallback</a>{{else}}<p>{{otp_code}}</p>{{/if}}' });
+  const valid = { subject: original.subject, body: themeProviderBody(original.body) };
+  validateReplacement(original, valid);
+  assert.throws(() => validateReplacement(original, { ...valid, body: valid.body.replace('<a href="{{action_url}}">Fallback</a>', '') }), /action URL count/);
+  assert.throws(() => validateReplacement(original, { ...valid, body: themeProviderBody('{{#if allowed}}<p>{{otp_code}}</p>{{else}}<a href="{{action_url}}">Open</a><a href="{{action_url}}">Fallback</a>{{/if}}') }), /conditional context/);
+});
+
+test('mapped layouts cannot reorder conditions or move security facts out of their guard', () => {
+  const original = template({ required_variables: [], body: '{{#if first}}<p>{{otp_code}}</p>{{/if}}{{#if second}}<a href="{{action_url}}">Open</a>{{/if}}' });
+  const valid = { subject: original.subject, body: themeProviderBody(original.body) };
+  assert.throws(() => validateReplacement(original, { ...valid, body: themeProviderBody('{{#if second}}<a href="{{action_url}}">Open</a>{{/if}}{{#if first}}<p>{{otp_code}}</p>{{/if}}') }), /conditional structure/);
+  const guarded = template({ required_variables: [], body: '{{#if first}}<p>{{otp_code}}</p>{{/if}}<a href="{{action_url}}">Open</a>' });
+  assert.throws(() => validateReplacement(guarded, { subject: guarded.subject, body: themeProviderBody('{{#if first}}{{/if}}<p>{{otp_code}}</p><a href="{{action_url}}">Open</a>') }), /conditional context/);
+});
+
+test('only the logo presentation partial may be replaced with paired HTTPS brand assets', () => {
+  const original = template({ body: '{{> app_logo}}<p>{{otp_code}}</p><a href="{{action_url}}">Open</a>{{> footer}}' });
+  const images = '<img src="https://assets.example.test/brand/careiq-wordmark.png"><img src="https://assets.example.test/brand/little-hello-companion.png">';
+  const body = '<!-- careiq-little-hello-provider-v1 -->' + images + original.body.replace('{{> app_logo}}', '');
+  validateReplacement(original, { subject: original.subject, body });
+  for (const changed of [body.replace('<!-- careiq-little-hello-provider-v1 -->', ''), body.replace('/little-hello-companion.png', '/other.png'), body.replaceAll('https://assets.example.test', 'http://assets.example.test'), body.replace('/careiq-wordmark.png', '/careiq-wordmark.png?recipient=private'), body.replace('{{> footer}}', ''), body.replace('{{otp_code}}', '123456')]) {
+    assert.throws(() => validateReplacement(original, { subject: original.subject, body: changed }), /removed provider expression/);
+  }
+});
+
+
+test('apply forwards the exact fingerprinted name and rejects any provider rename', async () => {
+  const original = template(); const plan = buildProviderPlan(snapshot([original]));
+  let received;
+  const client = {
+    getInstance: async () => ({ id: 'ins_fixture' }),
+    getTemplate: async () => original,
+    updateTemplate: async (slug, payload, source) => { received = { slug, payload, source }; return { ...original, ...payload }; },
+  };
+  await applyProviderPlan(plan, { client, writeBackup: async () => {} });
+  assert.equal(received.source.name, original.name);
+  assert.deepEqual(Object.keys(received.payload).sort(), ['body', 'subject']);
+  client.updateTemplate = async (_slug, payload) => ({ ...original, ...payload, name: 'Unexpected rename' });
+  await assert.rejects(applyProviderPlan(plan, { client, writeBackup: async () => {} }), /changed name unexpectedly/);
 });

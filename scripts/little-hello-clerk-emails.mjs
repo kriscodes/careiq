@@ -46,6 +46,49 @@ function dynamicHrefs(value) {
     .map((match) => match[2]).filter((href) => href.includes('{{'));
 }
 
+/** Preserve conditional branches and the full action-link contract during layout changes. */
+function providerStructure(value) {
+  const controls = [], contexts = new Map(), transitions = [{ index: -1, context: '[]' }], stack = [];
+  const context = () => JSON.stringify(stack.map(({ block, branch }) => [block, branch]));
+  for (const match of (value || '').matchAll(/\{\{\{?[\s\S]*?\}\}\}?/g)) {
+    const token = match[0], expression = token.replace(/^\{\{\{?\s*|\s*\}\}\}?$/g, '');
+    if (expression.startsWith('#')) {
+      controls.push(token); stack.push({ block: expression.slice(1), branch: 'then' });
+    } else if (expression === 'else' || expression.startsWith('else ')) {
+      assert(stack.length, 'Provider conditional has an unexpected else.');
+      controls.push(token); stack.at(-1).branch = expression;
+    } else if (expression.startsWith('/')) {
+      assert(stack.length && stack.at(-1).block.split(/\s+/)[0] === expression.slice(1), 'Provider conditional nesting changed.');
+      controls.push(token); stack.pop();
+    } else {
+      const paths = contexts.get(token) || new Set(); paths.add(context()); contexts.set(token, paths);
+    }
+    transitions.push({ index: match.index, context: context() });
+  }
+  assert(!stack.length, 'Provider conditional is not closed.');
+  const actions = new Map();
+  for (const match of (value || '').matchAll(/\bhref\s*=\s*(["'])([\s\S]*?)\1/gi)) {
+    if (!match[2].includes('{{')) continue;
+    const path = transitions.findLast(item => item.index < match.index).context;
+    const key = JSON.stringify([match[2], path]); actions.set(key, (actions.get(key) || 0) + 1);
+  }
+  return { controls, contexts, actions: [...actions].sort(([a], [b]) => a.localeCompare(b)) };
+}
+
+/** Only the documented presentation partial may be replaced by the real brand images. */
+function reviewedLogoReplacement(body) {
+  if (!body.includes(`<!-- ${MARKER} -->`)) return false;
+  const images = [...body.matchAll(/<img\b[^>]*\bsrc\s*=\s*(["'])(.*?)\1[^>]*>/gi)].map(match => {
+    try {
+      const url = new URL(match[2]);
+      return url.protocol === 'https:' && !url.username && !url.password && !url.search && !url.hash ? url.href : null;
+    } catch { return null; }
+  }).filter(Boolean);
+  const marks = images.filter(url => url.endsWith('/careiq-wordmark.png'));
+  const companions = images.filter(url => url.endsWith('/little-hello-companion.png'));
+  return marks.length === 1 && companions.length === 1 && marks[0].slice(0, -'careiq-wordmark.png'.length) === companions[0].slice(0, -'little-hello-companion.png'.length);
+}
+
 function escapeAttribute(value) {
   return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
@@ -76,13 +119,24 @@ export function validateReplacement(source, payload) {
   for (const field of ['body', 'subject']) {
     const original = expressions(source[field]);
     const replacement = expressions(payload[field]);
-    for (const token of original) assert(replacement.includes(token), `${source.slug}: ${field} removed provider expression ${token}.`);
+    for (const token of original) {
+      const replacedLogo = field === 'body' && token === '{{> app_logo}}' && reviewedLogoReplacement(payload.body);
+      assert(replacement.includes(token) || replacedLogo, `${source.slug}: ${field} removed provider expression ${token}.`);
+    }
     for (const token of replacement) {
       assert(original.includes(token), `${source.slug}: ${field} introduced an unverified provider expression ${token}.`);
     }
   }
   for (const href of dynamicHrefs(source.body)) {
     assert(dynamicHrefs(payload.body).includes(href), `${source.slug}: a provider action URL changed or is no longer an href.`);
+  }
+  const originalStructure = providerStructure(source.body), replacementStructure = providerStructure(payload.body);
+  assert(JSON.stringify(originalStructure.controls) === JSON.stringify(replacementStructure.controls), `${source.slug}: provider conditional structure changed.`);
+  assert(JSON.stringify(originalStructure.actions) === JSON.stringify(replacementStructure.actions), `${source.slug}: provider action URL count or conditional context changed.`);
+  for (const [token, contexts] of originalStructure.contexts) {
+    if (token === '{{> app_logo}}' && reviewedLogoReplacement(payload.body) && !replacementStructure.contexts.has(token)) continue;
+    const next = replacementStructure.contexts.get(token);
+    assert(next && JSON.stringify([...contexts].sort()) === JSON.stringify([...next].sort()), `${source.slug}: provider expression ${token} changed conditional context.`);
   }
   for (const variable of source.required_variables) {
     const name = variable.replace(/^\{\{\{?\s*|\s*\}\}\}?$/g, '');
@@ -181,10 +235,13 @@ export function createClerkTemplateClient({ secretKey, fetchImpl = globalThis.fe
       assert(SAFE_SLUG.test(slug), 'Invalid provider template slug.');
       return request(`/templates/email/${encodeURIComponent(slug)}`);
     },
-    updateTemplate: (slug, payload) => {
+    updateTemplate: (slug, payload, source) => {
       assert(SAFE_SLUG.test(slug), 'Invalid provider template slug.');
       assert(Object.keys(payload).sort().join(',') === payloadKeys.join(','), 'Unsafe provider update keys.');
-      return request(`/templates/email/${encodeURIComponent(slug)}`, { method: 'PUT', body: payload });
+      // The live endpoint requires name although its schema marks it optional.
+      // Echo the exact inspected name; it is not an editable plan field.
+      assert(source?.slug === slug && typeof source.name === 'string' && source.name.trim(), 'An exact retained provider name is required for an update.');
+      return request(`/templates/email/${encodeURIComponent(slug)}`, { method: 'PUT', body: { name: source.name, ...payload } });
     },
   };
 }
@@ -219,6 +276,7 @@ export async function applyProviderPlan(plan, { client, writeBackup } = {}) {
     validateReplacement(item.source, item.payload);
     const template = await client.getTemplate(item.slug);
     assert(sourceFingerprint(template) === item.sourceSha256, `Clerk template ${item.slug} changed after inspection; inspect and export again. No changes were made.`);
+    assert(typeof template.name === 'string' && template.name.trim(), `Clerk template ${item.slug} lacks its retained provider name; no changes were made.`);
     current.push(template);
   }
   // Complete validation and durable backup before the first write. No send,
@@ -227,11 +285,11 @@ export async function applyProviderPlan(plan, { client, writeBackup } = {}) {
   const applied = [];
   try {
     for (const item of plan.templates) {
-      const updated = await client.updateTemplate(item.slug, item.payload);
+      const updated = await client.updateTemplate(item.slug, item.payload, item.source);
       applied.push(item.slug);
       assert(updated?.slug === item.slug && updated.body === item.payload.body && updated.subject === item.payload.subject,
         `Clerk response did not confirm content for ${item.slug}; verify the instance before continuing.`);
-      for (const field of ['delivered_by_clerk', 'enabled', 'from_email_name', 'reply_to_email_name']) {
+      for (const field of ['name', 'delivered_by_clerk', 'enabled', 'from_email_name', 'reply_to_email_name']) {
         assert(updated[field] === item.source[field], `Clerk changed ${field} unexpectedly for ${item.slug}; inspect the saved backup before continuing.`);
       }
     }

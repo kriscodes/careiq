@@ -13,6 +13,7 @@ Little hello now runs in the existing patient and staff email delivery paths. Ea
 | `apps/api/src/notifications/delivery-provider.ts` | Sends HTML beside text to Resend, with the same durable idempotency key. |
 | `scripts/export-little-hello-emails.ts` | Offline, fictional HTML/text examples for review. |
 | `scripts/little-hello-clerk-emails.mjs` | Separate inspect/export/apply tooling for provider-owned authentication templates. |
+| `scripts/little-hello-clerk-copy.mjs` | Reviewed white layouts and copy for the 16 actual Clerk authentication/security slugs. |
 
 ## Sending boundaries
 
@@ -96,9 +97,9 @@ node scripts/little-hello-clerk-emails.mjs --apply .local-review/clerk-plan.json
 
 The default transformation wraps the actual inspected provider body in a white CareIQ envelope, with the real companion beside the wordmark and the footer “A little more room to care.” It preserves the original subject, all source expressions and dynamic action hrefs. It does not guess provider slugs, role tokens, code fields, link fields or expiry values. Existing source that follows dark preferences, including `light-dark()`, requires an explicitly reviewed replacement; it is not silently rewritten.
 
-An optional reviewed bundle can use `{schemaVersion: 1, templates: [{id, subject, html, text}]}` with `{schemaVersion: 1, mappings: [{slug, templateId}]}`. Pass them with `--catalog` and `--mappings` during offline export. Slugs must exist in the inspected instance. All original expressions, required variables and dynamic action hrefs must remain; otherwise export stops. Ordinary fictional review examples will fail these checks and must not be treated as live provider templates.
+An optional reviewed bundle can use `{schemaVersion: 1, templates: [{id, subject, html, text}]}` with `{schemaVersion: 1, mappings: [{slug, templateId}]}`. Pass them with `--catalog` and `--mappings` during offline export. Slugs must exist in the inspected instance. All functional expressions, required variables, conditional branches and dynamic action hrefs must remain in their original contexts; action counts are preserved. The documented `{{> app_logo}}` presentation partial alone may be replaced by the paired Little hello PNG assets from the same public HTTPS base. The provider footer remains. Missing/unsafe brand assets or any other removed expression stop export. Ordinary fictional review examples will fail these checks and must not be treated as live provider templates.
 
-Apply rechecks the instance and every exact source fingerprint before any change, writes an exclusive private backup, and updates only subject/body. Sender, reply-to, delivery/enabled settings and provider editor markup are excluded. A partial failure stops and reports confirmed slugs; it never retries blindly or sends a message. Existing editor markup may need manual dashboard synchronization before later visual editing. Inspecting or applying a template does not validate actual inbox delivery.
+Apply rechecks the instance and every exact source fingerprint before any change, writes an exclusive private backup, and updates only subject/body. The live endpoint additionally requires `name`, despite the published schema marking it optional: transport echoes the exact inspected name, and response verification rejects a rename. Sender, reply-to, delivery/enabled settings and provider editor markup are excluded. A partial failure stops and reports confirmed slugs; it never retries blindly or sends a message. Existing editor markup may need manual dashboard synchronization before later visual editing. Inspecting or applying a template does not validate actual inbox delivery.
 
 ## Verification
 
@@ -109,4 +110,24 @@ Executed locally with synthetic fixtures and mocked provider calls:
 - Provider exporter/installer: 16 tests passed, including offline defaults, variable/action preservation, source drift, wrong instance, backup failure, partial apply and delivery-setting preservation.
 - All 56 branded examples were rendered in installed Chrome at 320 px with the computer theme emulated as dark. Backgrounds stayed white, no horizontal overflow occurred and both real brand images loaded. Desktop verification and representative mobile screenshots were inspected locally under `.local-review/little-hello-email-branded/`.
 
-The final isolated loopback run passed all 20 patient/staff delivery worker tests, including assertions that the actual mocked email-provider payload contains white, light-only HTML without patient identifiers; SMS has no HTML. The full workspace suite passed 440 tests. See the [final verification record](verification/little-hello-2026-10-21/README.md). A real Clerk instance, real provider template acceptance, synthetic mail to test inboxes, sender DNS and Gmail/Apple Mail/Outlook rendering were not exercised here. Nothing in these local checks enables delivery or representative access.
+The final isolated loopback run passed all 20 patient/staff delivery worker tests, including assertions that the actual mocked email-provider payload contains white, light-only HTML without patient identifiers; SMS has no HTML. The full workspace suite passed 440 tests. See the [final verification record](verification/little-hello-2026-10-21/README.md). Those initial local checks did not exercise a real Clerk instance, provider template acceptance, test-inbox delivery, sender DNS or Gmail/Apple Mail/Outlook rendering. The later October 22 hosted results are recorded below. Local rendering checks do not enable delivery or representative access.
+
+## Reviewed hosted authentication layouts
+
+The purpose-specific provider renderer supports these 16 inspected slugs, with English copy matching the current hosted source language:
+
+- `verification_code`, `reset_password_code`.
+- `magic_link_sign_in`, `magic_link_sign_up`, `magic_link_user_profile`.
+- `invitation`, `organization_invitation`, `organization_invitation_accepted`.
+- `account_locked`, `mfa_enabled`, `new_device_sign_in`.
+- `password_changed`, `password_removed`, `primary_email_address_changed`, `passkey_added`, `passkey_removed`.
+
+Billing, commerce, opaque-token and waitlist templates are outside this authentication rollout. A shared verification code template remains neutral about signup, sign-in, client trust and MFA. Organization acceptance emails ask the owner to review current access; they do not activate access or infer a practice role. New-device recovery guidance remains visible when optional sign-out/support links are absent. Unsupported event purposes are not given invented provider slugs or new senders.
+
+`renderClerkLittleHelloCopy(source, {assetBaseUrl, expectedSourceSha256})` is pure and offline. Pass the fingerprint of the exact reviewed inspection. It returns `{subject, body}` for an explicit catalog/mapping plan; it preserves the original subject byte-for-byte and checks the actual provider expression contract before rendering. Export only the supported selected slugs with `buildProviderPlan`; do not use the default all-editable selection for an authentication-only rollout. Already branded sources require a fresh reviewed update rather than a second envelope.
+
+The layout uses white canvas/cards, explicit light-only metadata, readable Georgia/Arial fallbacks and the approved public PNG images. The preserved Clerk footer receives responsive width styling. The application’s public asset paths were not yet deployed during QA, so this rollout uses the existing immutable public GitHub asset URLs pinned to commit `42b81b78186580f670c6934130481b6f11518ca9`. Both downloads were verified byte-for-byte against the approved local files. No recipient information is added to asset URLs. Future deployment can move these URLs to the application host after public availability is verified.
+
+Provider previews use Clerk’s fictional sample data. They establish rendering, variable expansion and layout—not live code validity, successful authentication or mail-client acceptance. Use the [manual authentication walkthrough](qa-auth-manual-checks.md) for the remaining five-persona sign-in/reset checks. Keep verification codes and new passwords private.
+
+The [October 22 hosted activation record](verification/hosted-auth-emails-2026-10-22.md) confirms the 16 Development updates, unchanged settings/unrelated templates, expanded previews, white-layout checks and fresh branded owner reset receipt. Complete sign-in/reset and actual mail-client acceptance remain tracked separately in the walkthrough.

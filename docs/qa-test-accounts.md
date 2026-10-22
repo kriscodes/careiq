@@ -49,3 +49,5 @@ The approved setup now includes CareIQ QA Practice, QA Main Location, four activ
 Start staff testing at `http://localhost:3101/`; start patient testing at `http://localhost:3101/patient-paperwork`, which preserves its destination through sign-in. The patient has a released unsigned synthetic PDF for positive access checks. Account addresses and current authority are in the Notion inventory. Generated passwords remain only in the ignored, mode-600 local handoff file `.local-review/test-accounts/credentials.json` until transferred into the owner’s password manager; never paste them into Notion or Git.
 
 Actual password/client-trust and reset-code completion require private human entry. The Gmail connection withholds authentication codes. Administrative setup sessions do not satisfy those acceptance checks. See the [verified setup record](verification/qa-accounts-2026-10-21.md#approved-role-and-patient-setup) for exact positive and negative results and remaining work.
+
+Use the [manual authentication acceptance walkthrough](qa-auth-manual-checks.md) for the five-role password, challenge, reset and unchanged-access checks.
