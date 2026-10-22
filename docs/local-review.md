@@ -58,6 +58,22 @@ python3 scripts/local-review.py restart api
 
 Resolve an email to its existing test identity before entering a user ID; this configuration requires no provider writes.
 
+An independent optional `.local-review/roles.env` may contain only one `CAREIQ_STAFF_ROLES` assignment. It overrides the API's local custom-role allowlist without editing `apps/api/.env` or changing `owner.env`. For the approved QA clinician role:
+
+```dotenv
+CAREIQ_STAFF_ROLES=org:qa_clinician_20261021
+```
+
+Use unique comma-separated keys matching `org:[a-z][a-z0-9_]{0,63}`. Blank lines and comments are allowed; unknown variables, duplicate assignments/roles, empty list entries, wildcards and malformed keys are rejected. A missing file preserves the original API environment fallback. `CAREIQ_STAFF_ROLES=` explicitly disables custom roles locally; built-in `org:admin` and `org:member` remain recognized.
+
+Keep the file ignored and owner-only (`chmod 600 .local-review/roles.env`), then use `python3 scripts/local-review.py restart api`. Start and restart reject malformed role overrides before launching services or stopping a managed app. This setting does not create a Clerk role, grant permissions, approve a founder, activate a membership or assign locations; complete those existing reviewed provider/application flows separately.
+
+The role-override guard tests run without Docker, services, provider credentials or network:
+
+```sh
+python3 -B -m unittest discover -s scripts/tests -p 'test_local_review.py'
+```
+
 For diagnostic output, use:
 
 ```sh

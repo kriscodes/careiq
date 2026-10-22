@@ -291,10 +291,37 @@ def test_clerk_configuration():
     return api, publishable, secret
 
 
+def parse_staff_role_override(content: str):
+    lines = [line.strip() for line in content.splitlines() if line.strip() and not line.strip().startswith("#")]
+    if len(lines) != 1:
+        raise ReviewError("roles.env may contain only one CAREIQ_STAFF_ROLES assignment.")
+    line = lines[0]
+    if line.startswith("export "):
+        line = line[7:]
+    key, separator, value = line.partition("=")
+    if not separator or key.strip() != "CAREIQ_STAFF_ROLES":
+        raise ReviewError("roles.env may override only CAREIQ_STAFF_ROLES.")
+    value = value.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+        value = value[1:-1]
+    else:
+        value = value.split(" #", 1)[0].rstrip()
+    roles = [] if value == "" else [role.strip() for role in value.split(",")]
+    if any(not re.fullmatch(r"org:[a-z][a-z0-9_]{0,63}", role) for role in roles) or len(roles) != len(set(roles)):
+        raise ReviewError("roles.env requires unique comma-separated org: role keys; empty entries, wildcards and malformed keys are rejected.")
+    return ",".join(roles)
+
+
+def local_staff_roles(api):
+    path = STATE / "roles.env"
+    return parse_staff_role_override(path.read_text()) if path.exists() else api.get("CAREIQ_STAFF_ROLES", "")
+
+
 def app_environment(name: str):
     if name not in APPS:
         raise ReviewError("Review application must be api, web or marketing.")
     api, publishable, secret = test_clerk_configuration()
+    staff_roles = local_staff_roles(api)
     runtime = read_env(STATE / "runtime.env")
     local_url(runtime["DATABASE_URL"], RUNTIME_ROLE, "careiq_review")
     environment = {**clean_environment(), "NODE_ENV": "development", "NEXT_TELEMETRY_DISABLED": "1", "CI": "1"}
@@ -323,7 +350,7 @@ def app_environment(name: str):
         environment.update({"CLERK_PUBLISHABLE_KEY": publishable, "CLERK_SECRET_KEY": secret, "CORS_ORIGINS": ",".join(origins),
                             "TRUSTED_PROXY_CIDRS": "", "CLERK_NATIVE_AUTHORIZED_PARTIES": "", "CLERK_WEBHOOK_SIGNING_SECRET": "",
                             "CAREIQ_PRACTICE_CREATOR_USER_IDS": founder_ids,
-                            "CAREIQ_STAFF_ROLES": api.get("CAREIQ_STAFF_ROLES", ""), "CAREIQ_INVITATION_REDIRECT_URL": "http://localhost:3101/?invitations=1"})
+                            "CAREIQ_STAFF_ROLES": staff_roles, "CAREIQ_INVITATION_REDIRECT_URL": "http://localhost:3101/?invitations=1"})
     elif name == "web":
         environment.update({"NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": publishable, "CLERK_SECRET_KEY": secret,
                             "NEXT_PUBLIC_API_URL": "http://localhost:3100", "NEXT_PUBLIC_INTERVIEW_MODE": "false",
@@ -412,7 +439,8 @@ def start():
         if occupied(application["port"]):
             raise ReviewError(f"Port {application['port']} is occupied by an unmanaged service; nothing was stopped or replaced.")
         app_command(name)
-    test_clerk_configuration()
+    api, _publishable, _secret = test_clerk_configuration()
+    local_staff_roles(api)
     setup()
     for name, application in APPS.items():
         if owned(name, records.get(name)):
