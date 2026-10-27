@@ -26,7 +26,7 @@ export function registerPatientDeliveryRoutes(app:Express,practiceAccess:Practic
 export type DeliveryCallbackOptions={resolveTenant:(routeKey:string,provider:'resend'|'twilio',reference?:{providerMessageId?:string;intentId?:string;inbound?:boolean})=>Promise<TenantContext|null>;services?:Pick<DeliveryServices,'receivePatientDeliveryCallback'|'receivePatientSmsOptOut'|'receivePatientSmsOptIn'>;env?:NodeJS.ProcessEnv};
 /** Register before express.json(). The opaque route is resolved exclusively from trusted worker enrollment. */
 export function registerPatientDeliveryCallbackRoutes(app:Express,options:DeliveryCallbackOptions){
-    const env=options.env??process.env,raw=express.raw({type:['application/json','application/x-www-form-urlencoded'],limit:'64kb'}),base='/api/v1/delivery-callbacks/:routeKey';
+    const env=options.env??process.env,raw=express.raw({type:['application/json','application/x-www-form-urlencoded'],limit:'64kb',inflate:false}),base='/api/v1/delivery-callbacks/:routeKey';
     app.post(base+'/resend',raw,async(req,res)=>{try{
         if(!Buffer.isBuffer(req.body)||!verifyResendSignature(req.body,{'svix-id':req.get('svix-id'),'svix-timestamp':req.get('svix-timestamp'),'svix-signature':req.get('svix-signature')},[env.CAREIQ_RESEND_WEBHOOK_SECRET??'',env.CAREIQ_RESEND_PREVIOUS_WEBHOOK_SECRET??'']))throw new WorkflowError('INVALID_PROVIDER_SIGNATURE',401);
         const parsed=JSON.parse(req.body.toString('utf8'));if(!parsed||typeof parsed.type!=='string'||typeof parsed.data?.email_id!=='string')throw new WorkflowError('INVALID_PROVIDER_EVENT',400);

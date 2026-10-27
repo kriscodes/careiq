@@ -1,5 +1,7 @@
 # CareIQ
 
+October 26 security updates: [runtime and authorization fixes](docs/verification/security-release-2026-10-26.md).
+
 Security implementation and rollout: [hardening guide](docs/security-hardening.md) · [release status and owner actions](docs/deployment/security-release-status.md).
 
 CareIQ is a healthcare operations platform being built for small and independent medical practices.

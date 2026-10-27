@@ -9,9 +9,13 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
 minimumReleaseAgeStrict: true
+engineStrict: true
 
 # Reviewed pins retained by the API, web and marketing dependency graph.
 overrides:
+  # October 2026 security fixes; reject compressed-body crashes and collection OOM.
+  "body-parser@>=2.0.0 <2.4.0": 2.4.0
+  "zod@>=4.0.0 <4.6.6": 4.6.6
   qs: 6.16.0
   "brace-expansion@>=5.0.0 <5.0.12": 5.0.12
   "sharp@>=0.35.0 <0.35.5": 0.35.5
