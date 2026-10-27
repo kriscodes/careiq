@@ -2,9 +2,11 @@
 
 The public site is `apps/marketing`; the authenticated product remains `apps/web`. The existing Express API owns database access. Read [ADR-016](decisions/016-public-marketing-interviews.md) for the public/tenant boundary and [marketing verification](marketing-verification.md) for actual checks and remaining evidence.
 
+October 26 runtime and dependency patches: [marketing security verification](verification/marketing-security-2026-10-26.md).
+
 ## Start locally
 
-Use the repository's Node 22.23+ and pnpm 11.22.0. From the repository root:
+Use the repository's Node 22.23.4 and pnpm 11.22.0. From the repository root:
 
 ```sh
 pnpm install --frozen-lockfile

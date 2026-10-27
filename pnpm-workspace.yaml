@@ -6,7 +6,16 @@ allowBuilds:
   esbuild: true
   sharp: true
   unrs-resolver: true
+engineStrict: true
 
 # Pin patched transitive query parsing until upstream minimums catch up.
 overrides:
+  "body-parser@>=2.0.0 <2.4.0": 2.4.0
+  "zod@>=4.0.0 <4.6.6": 4.6.6
+  "sharp@>=0.35.0 <0.35.5": 0.35.5
+  "source-map-js@>=1.0.0 <1.2.2": 1.2.2
+  "brace-expansion@>=1.0.0 <1.1.21": 1.1.21
+  "brace-expansion@>=5.0.0 <5.0.12": 5.0.12
+  "proxy-addr@>=2.0.0 <2.0.8": 2.0.8
+  "@esbuild-kit/core-utils@3.3.2>esbuild": 0.25.12
   qs: 6.16.0
