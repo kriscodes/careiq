@@ -69,7 +69,7 @@ export function createApiApp(dependencies: ApiDependencies, configuration: {
     }
   });
 
-  if (dependencies.clerkWebhook) app.post("/api/v1/webhooks/clerk", express.raw({ type: "application/json", limit: "64kb" }), async (req, res) => {
+  if (dependencies.clerkWebhook) app.post("/api/v1/webhooks/clerk", express.raw({ type: "application/json", limit: "64kb", inflate: false }), async (req, res) => {
     try {
       await dependencies.clerkWebhook!(req.body, { "svix-id": req.get("svix-id") ?? "", "svix-timestamp": req.get("svix-timestamp") ?? "", "svix-signature": req.get("svix-signature") ?? "" });
       res.status(200).json({ received: true });
@@ -81,8 +81,8 @@ export function createApiApp(dependencies: ApiDependencies, configuration: {
   if (dependencies.deliveryCallbacks) registerPatientDeliveryCallbackRoutes(app, dependencies.deliveryCallbacks);
   app.use(dependencies.authenticate);
   if (dependencies.workflow) registerPatientPaperworkPortalRoutes(app, dependencies.getAuth);
-  app.use("/api/v1/locations/:locationId/workflow", express.json({ limit: "256kb" }));
-  app.use(express.json({ limit: "16kb" }));
+  app.use("/api/v1/locations/:locationId/workflow", express.json({ limit: "256kb", inflate: false }));
+  app.use(express.json({ limit: "16kb", inflate: false }));
   if (dependencies.portalCommunications) registerPortalCommunicationRoutes(app, dependencies.getAuth, dependencies.portalCommunications);
   const tenantContextMiddleware = createTenantContextMiddleware(dependencies);
 

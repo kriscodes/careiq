@@ -40,17 +40,17 @@ class ReviewError(Exception):
 
 
 def check_node_runtime():
-    guidance = "Use the repository-pinned Node.js 22.23.2 (for nvm, run nvm use)."
+    guidance = "Use the repository-pinned Node.js 22.23.4 (for nvm, run nvm use)."
     binary = shutil.which("node")
     if not binary:
-        raise ReviewError(f"Node.js 22.13 or newer is required. {guidance}")
+        raise ReviewError(f"Node.js 22.23.4 or newer within the 22.x line is required. {guidance}")
     result = subprocess.run([binary, "--version"], text=True, capture_output=True)
     version = result.stdout.strip()
-    match = re.fullmatch(r"v(\d+)\.(\d+)\.(\d+)(?:[-+].*)?", version)
+    match = re.fullmatch(r"v(\d+)\.(\d+)\.(\d+)", version)
     if result.returncode or not match:
         raise ReviewError(f"Could not validate the Node.js runtime. {guidance}")
-    if tuple(int(part) for part in match.groups()) < (22, 13, 0):
-        raise ReviewError(f"Node.js {version} is unsupported; 22.13 or newer is required. {guidance}")
+    if int(match.group(1)) != 22 or tuple(int(part) for part in match.groups()) < (22, 23, 4):
+        raise ReviewError(f"Node.js {version} is unsupported; 22.23.4 or newer within the 22.x line is required. {guidance}")
 
 
 def private_state():

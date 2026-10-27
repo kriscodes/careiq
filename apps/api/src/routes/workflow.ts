@@ -226,7 +226,7 @@ export function registerWorkflowRoutes(app: Express, deps: WorkflowDependencies,
             }
         });
     }
-    app.put([base + '/workflow/upload-sessions/:id/content', base + '/workflow/uploads/:id/content'], authorize, requireCap('documentsUpload'), express.raw({ type: () => true, limit: maximumFileBytes }), async (req, res) => {
+    app.put([base + '/workflow/upload-sessions/:id/content', base + '/workflow/uploads/:id/content'], authorize, requireCap('documentsUpload'), express.raw({ type: () => true, limit: maximumFileBytes, inflate: false }), async (req, res) => {
         try {
             if (!Buffer.isBuffer(req.body))
                 throw new WorkflowError('BINARY_BODY_REQUIRED');
@@ -276,7 +276,7 @@ export function registerPatientWorkflowRoutes(app: Express, deps: WorkflowDepend
         count: number;
         until: number;
     }>();
-    app.use(base, cors({ origin: origins, credentials: true }), express.json({ limit: '256kb' }), (req, res, next) => {
+    app.use(base, cors({ origin: origins, credentials: true }), express.json({ limit: '256kb', inflate: false }), (req, res, next) => {
         requestId(res);
         res.setHeader('Cache-Control', 'no-store');
         res.setHeader('Referrer-Policy', 'no-referrer');
@@ -351,7 +351,7 @@ export function registerPatientWorkflowRoutes(app: Express, deps: WorkflowDepend
             await fail(error, req, res);
         }
     });
-    app.put(base + '/uploads/:id/content', express.raw({ type: () => true, limit: maximumFileBytes }), async (req, res) => {
+    app.put(base + '/uploads/:id/content', express.raw({ type: () => true, limit: maximumFileBytes, inflate: false }), async (req, res) => {
         try {
             if (!Buffer.isBuffer(req.body))
                 throw new WorkflowError('BINARY_BODY_REQUIRED');
