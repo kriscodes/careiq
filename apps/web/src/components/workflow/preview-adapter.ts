@@ -1,3 +1,4 @@
+import { instantFromLocal } from "../../lib/workflow-dates";
 import { createInsurancePreviewAdapter } from "./insurance-preview";
 import { type WorkflowAdapter, type WorkflowSnapshot, type WorkflowAppointment, type WorkflowDocument, type WorkflowTemplate, type WorkflowRequest, type WorkflowActivity, type DocumentVersion, type Requirement } from "../../lib/api/workflow";
 
@@ -78,7 +79,18 @@ export function createPreviewAdapter(): WorkflowAdapter {
     insurance: createInsurancePreviewAdapter(() => state),
     async load() { restore(); return copy(state); },
     async page<T>() { return { data: [] as T[], pagination: { hasMore: false, nextCursor: null } }; },
-    async detail<T>(resource: string) { restore(); if (resource.startsWith("activity")) return copy(activity) as T; const [group, id, extra] = resource.split("/"); if (group === "availability") return { slots: ["09:00", "10:30", "13:00", "14:30"].map(time => ({ startsAt: `${sampleDay}T${time}:00-07:00` })) } as T; const record = find(group, id); return copy(extra === "versions" ? record.versions : record) as T; },
+    async detail<T>(resource: string) { restore(); if (resource.startsWith("activity")) return copy(activity) as T; const [pathname, queryString] = resource.split("?"); const [group, id, extra] = pathname.split("/"); if (group === "availability") {
+      const query = new URLSearchParams(queryString); const date = query.get("date") ?? sampleDay; const providerId = query.get("providerId") ?? ""; const durationMinutes = Number(query.get("durationMinutes") ?? 30);
+      if (!state.providers.some(provider => provider.id === providerId) || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !Number.isInteger(durationMinutes) || durationMinutes < 5 || durationMinutes > 480) throw new Error("Choose a valid sample provider, date, and duration.");
+      // These clearly marked synthetic hours never represent production availability.
+      const slots = Array.from({ length: 32 }, (_, index) => 9 * 60 + index * 15).filter(minutes => minutes + durationMinutes <= 17 * 60).flatMap(minutes => {
+        let startsAt: string; try { startsAt = instantFromLocal(`${date}T${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`, state.timeZone); } catch { return []; }
+        const start = Date.parse(startsAt); const end = start + durationMinutes * 60000;
+        if (state.appointments.some(appointment => appointment.providerId === providerId && appointment.id !== query.get("excludeAppointmentId") && ["scheduled", "confirmed", "checked_in", "in_progress"].includes(appointment.status) && Date.parse(appointment.scheduledAt) < end && Date.parse(appointment.endsAt ?? appointment.scheduledAt) > start)) return [];
+        return [{ startsAt, endsAt: new Date(end).toISOString() }];
+      });
+      return { providerId, date, timeZone: state.timeZone, durationMinutes, slots } as T;
+    } const record = find(group, id); return copy(extra === "versions" ? record.versions : record) as T; },
     async command<T>(resource: string, body: unknown, options?: { method?: "POST" | "PATCH"; revision?: string; key?: string; signal?: AbortSignal }) {
       restore(); const input = body as Record<string, unknown>; const [group, id, action] = resource.split("/"); let result: unknown;
       if (!id && ["providers", "visit-types", "document-types"].includes(group)) { const entry = { id: crypto.randomUUID(), name: String(input.name ?? input.displayName), displayName: input.displayName ? String(input.displayName) : undefined, defaultDurationMinutes: input.defaultDurationMinutes ? Number(input.defaultDurationMinutes) : undefined, revision: 1 }; if (group === "providers") state.providers.push(entry); if (group === "visit-types") state.visitTypes.push(entry); if (group === "document-types") state.documentTypes.push(entry); result = entry; }

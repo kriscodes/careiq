@@ -17,6 +17,7 @@ test("header language changes the workflow without replacing entered form values
 test("locale preference survives reload and keeps workflow command codes unchanged",async({page,harnessUrl})=>{
   await page.goto(`${harnessUrl}/?component=workflow`);
   await page.getByRole("combobox",{name:"Interface language",exact:true}).selectOption("es");
+  if (await page.getByRole("button",{name:"Expandir navegación",exact:true}).isVisible()) await page.getByRole("button",{name:"Expandir navegación",exact:true}).click();
   await expect(page.getByRole("button",{name:"Pacientes",exact:true})).toBeVisible();
   await page.reload();
   await expect(page.getByRole("combobox",{name:"Idioma de la interfaz",exact:true})).toHaveValue("es");
@@ -57,6 +58,7 @@ test("Spanish layout and popup controls fit at a narrow width",async({page,harne
   await page.setViewportSize({width:390,height:844});
   await page.goto(`${harnessUrl}/?component=workflow`);
   await page.getByRole("combobox",{name:"Interface language",exact:true}).selectOption("es");
+  if (await page.getByRole("button",{name:"Expandir navegación",exact:true}).isVisible()) await page.getByRole("button",{name:"Expandir navegación",exact:true}).click();
   await expect(page.getByRole("button",{name:"Pacientes",exact:true})).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
 });

@@ -16,7 +16,7 @@ export const test = base.extend<{ harnessUrl: string }, { harnessServer: string 
       const js = await readFile(bundle);
       const styles = await Promise.all(["globals.css", "access.css"].map(name => readFile(resolve(web, "src/app", name), "utf8")));
       styles.push(await readFile(resolve(web, "../../packages/i18n/web.css"), "utf8"));
-      const workflowStyles = await readFile(resolve(web, "src/components/workflow/workflow.css"), "utf8");
+      const workflowStyles = (await Promise.all(["workflow.css", "application-frame.css", "appointment-planner.css", "today-operations.css"].map(name => readFile(resolve(web, "src/components/workflow", name), "utf8")))).join("\n");
       const server = createServer(async (request, response) => {
         const path = new URL(request.url || "/", "http://localhost").pathname;
         response.setHeader("Cache-Control", "no-store");

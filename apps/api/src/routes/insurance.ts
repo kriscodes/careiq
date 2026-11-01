@@ -34,7 +34,7 @@ export function registerInsuranceRoutes(app: Express, deps: InsuranceDependencie
             const auth = getAuth(req); res.locals.insuranceAuth = auth;
             const context = await practiceAccess.authorizeLocation(auth, id(req.params.locationId));
             res.locals.insuranceTenant = context.tenant;
-            const caps = workflowCapabilities(auth, context.capabilities, context.permissions);
+            const caps = workflowCapabilities(auth, context.capabilities, context.permissions, context.ownerOperator);
             const read = caps.patientsRead === true && caps.appointmentsRead === true;
             res.locals.insuranceCapabilities = { read, manage: read && caps.workManage === true, evidence: read && caps.workManage === true && caps.documentsReview === true, activity: read && caps.activityRead === true };
             if (!read) throw new WorkflowError('FORBIDDEN', 403);

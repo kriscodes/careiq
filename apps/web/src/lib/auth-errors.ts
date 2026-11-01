@@ -16,6 +16,7 @@ const messages: Record<string, string> = {
   rate_limit_exceeded: "access.auth.tooManyAttempts",
   verification_code_rate_limit_exceeded: "access.auth.tooManyAttempts",
   session_exists: "access.auth.alreadySignedIn",
+  user_banned: "error.auth.accountUnavailable",
 };
 export function authErrorCodes(error: unknown, depth = 0): string[] {
   if (!error || typeof error !== "object" || depth > 2) return [];

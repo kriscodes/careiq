@@ -54,3 +54,27 @@ test("display dates honor a supplied clinic time zone and do not change stored i
   assert.equal(instant,"2026-10-16T16:00:00.000Z");
   assert.equal(formatNumber("es",12345),new Intl.NumberFormat("es").format(12345));
 });
+
+
+test("ownership confirmation errors tell the user what to review before retrying", () => {
+  for (const locale of ["en", "es"] as const) {
+    assert.equal(uiError(locale, { code: "OWNERSHIP_CONFIRMATION_REQUIRED", status: 400 }), translate(locale, "error.access.ownershipConfirmationRequired"));
+    assert.equal(uiError(locale, { code: "OWNERSHIP_CONFIRMATION_MISMATCH", status: 409 }), translate(locale, "error.access.ownershipConfirmationMismatch"));
+    const warning = translate(locale, "access.ownership.warning", { practice: "Synthetic Clinic", recipient: "Synthetic Admin" });
+    assert.match(warning, /Synthetic Clinic/);
+    assert.match(warning, /Synthetic Admin/);
+    assert.doesNotMatch(warning, /\{(?:practice|recipient)\}/);
+  }
+});
+
+
+test("personal archive and deletion failures keep recovery guidance distinct from generic permission errors", () => {
+  for (const locale of ["en", "es"] as const) {
+    for (const [code, key] of [["ACCOUNT_ARCHIVED", "archived"], ["ACCOUNT_ARCHIVE_INCOMPLETE", "archiveIncomplete"], ["ACCOUNT_OWNS_PRACTICES", "ownsPractices"], ["RECENT_AUTHENTICATION_REQUIRED", "recentAuthentication"]]) {
+      assert.equal(uiError(locale, { code, status: code === "ACCOUNT_ARCHIVE_INCOMPLETE" ? 503 : 403 }), translate(locale, `error.account.${key}`));
+    }
+    const confirmation = translate(locale, "access.account.confirmation", { phrase: "ARCHIVE" });
+    assert.match(confirmation, /ARCHIVE/);
+    assert.doesNotMatch(confirmation, /\{phrase\}/);
+  }
+});

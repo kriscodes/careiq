@@ -13,6 +13,7 @@ import { createApiApp } from "./app.js";
 import { pool } from "./db/client.js";
 import { findPracticeByClerkOrgId } from "./services/practice.service.js";
 import { practiceAccess } from "./services/practice-access.service.js";
+import { accountLifecycle } from "./services/account-lifecycle.service.js";
 import { createPatient, listPatients } from "./services/patient.service.js";
 import { createAppointment, listAppointments } from "./services/appointment.service.js";
 import { createInterviewRequest } from "./services/interview-request.service.js";
@@ -38,6 +39,7 @@ const app = createApiApp({
   getAuth,
   health: () => pool.query("SELECT 1"),
   practiceAccess,
+  accountLifecycle,
   clerkWebhook: async (body, headers) => {
     let event;
     if (!process.env.CLERK_WEBHOOK_SIGNING_SECRET) throw new Error("WEBHOOK_NOT_CONFIGURED");

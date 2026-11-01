@@ -10,6 +10,12 @@ The [Forms Studio implementation guide](forms-studio-implementation.md) records 
 
 October 17: dialog forms, template editors and footers now share consistent inner spacing; Today rows and dropdown arrows have inset padding. Visit document requirements open an action chooser for review, secure viewing, upload/replacement, requests, existing evidence and reasoned waiver/revocation. Actions preserve the clicked patient, visit, requirement and exact version. See [visual measurements and screenshots](verification/workflow-spacing-2026-10-17/README.md).
 
+October 31: the appointment popup now uses a direct booking heading/action, consistent control styling, grouped time and availability controls, and compact optional notes. Existing booking commands and authorization behavior are preserved. See [booking visual review and screenshots](verification/booking-popup-2026-10-31/README.md).
+
+## Today and Appointments — October 31
+
+Today now focuses on the current location-local day's queue, paperwork blockers and immediate visit actions. Appointments provides the weekly calendar, provider filters, date navigation, verified available times and rescheduling; phones use an agenda. The week loader preserves authorized pagination and visit dependencies, and availability shares the server's booking rules and conflict guard. See [implementation, verification and screenshots](verification/today-appointments-2026-10-31/README.md).
+
 ## Open the application
 
 The supervised local environment uses the isolated PostgreSQL container on `127.0.0.1:55434` and existing Clerk **test** configuration.
@@ -23,7 +29,7 @@ The supervised local environment uses the isolated PostgreSQL container on `127.
 
 The synthetic preview is an interactive review surface with its own sample adapter. It does not prove a database write or a provider delivery. The authenticated workspace uses the implemented API and PostgreSQL. Existing owner approval, organization membership and assigned-location rules still apply. The new workflow opens for location-based practices; the legacy practice slice remains available for older practices.
 
-From the repository root, select Node.js 22.23.2 (`nvm use` with nvm), then use:
+From the repository root, select Node.js 22.23.4 (`nvm use` with nvm), then use:
 
 ```sh
 pnpm local:setup
@@ -37,7 +43,8 @@ The runner never uses the original hosted database URL. It applies migrations on
 
 | Area | Implemented behavior |
 | --- | --- |
-| Today and schedule | Location-local dates, document-readiness counts, visit details, booking/editing, legal status transitions, cancellation, overlap and provider availability checks, checklist reconciliation |
+| Today | Current location-local day, readiness counts and blockers, queue filters, check-in/start/complete actions, visit context and checklist reconciliation |
+| Appointments | Weekly calendar and phone agenda, provider/date filters, real available-time search, booking/rescheduling, selected-visit context and concurrency-safe conflict checks |
 | Patient directory | Server search, paged lists, direct profile loading, contact changes, patient-linked visits, documents, requests and activity |
 | Document workspace | Private upload reservation and binary transfer, size/hash/type validation, scan quarantine, immutable versions, current version, staff review and correction, exact requirement evidence, waiver/revocation, archive/restore, authenticated byte access |
 | Forms and templates | Typed structured field editor, draft revisions, immutable publication, frozen generated PDFs and patient preparation |

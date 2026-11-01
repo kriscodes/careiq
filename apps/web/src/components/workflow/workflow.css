@@ -97,3 +97,47 @@
 @media(max-width:760px){.ci-dashboard-grid{grid-template-columns:1fr}.ci-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.ci-panel{padding:18px}.ci-queue{padding:0}.ci-table thead{display:none}.ci-table,.ci-table tbody{display:block}.ci-table tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;border-bottom:1px solid #e3ebf3;padding:17px}.ci-table td{padding:0!important;border:0}.ci-table td:first-child{grid-column:1;grid-row:1}.ci-table td:nth-child(2){grid-column:1;grid-row:2}.ci-table td:nth-child(3){grid-column:2;grid-row:2}.ci-table td:nth-child(4){grid-column:1;grid-row:3;white-space:normal}.ci-table td:nth-child(5){grid-column:2;grid-row:3}.ci-table td:nth-child(6){grid-column:2;grid-row:1}.ci-toolbar{padding:13px 17px}.ci-search{min-width:100%;order:3}.ci-benefits{grid-template-columns:1fr}.ci-benefits>div{display:flex;justify-content:space-between;align-items:center}.ci-scope{gap:12px}.ci-scope>.wf-link{margin-inline-start:0}.ci-metric strong{font-size:29px}.ci-facts{gap:20px 12px}}
 @media(max-width:760px){.ci-toolbar .wf-filters{flex:1 0 100%;min-width:0;width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px}.ci-toolbar .wf-filters button{font-size:11px;padding:8px 6px;min-height:40px;text-align:center}.ci-toolbar .ci-owner{margin-inline-start:auto}.ci-toolbar .ci-search{order:2}.ci-toolbar .ci-owner{order:3}.ci-queue>.wf-section-head{gap:15px}.ci-scope{margin-bottom:16px}}
 @media(max-width:600px){.wf-sidebar nav,.wf-shell[data-collapsed=true] .wf-sidebar nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;width:100%}.wf-sidebar nav button,.wf-shell[data-collapsed=true] .wf-sidebar nav button{justify-content:center;min-width:0;flex-direction:column;padding:7px 3px;font-size:10px}.wf-sidebar nav button>.wf-nav-label{font-size:10px;white-space:nowrap}}
+
+/* Appointment booking keeps its timing controls together in a compact, scoped dialog. */
+.wf-booking-dialog { width: min(560px, calc(100vw - 32px)); }
+.wf-booking-dialog .cq-modal-head { padding-bottom: 20px; }
+.wf-booking-dialog .cq-modal-head h2 { font-size: 22px; letter-spacing: -.5px; }
+.wf-booking-dialog .cq-modal-head p { line-height: 1.6; }
+.wf-booking-dialog .cq-modal-body { padding-top: 20px; }
+.wf-booking-form, .wf-booking-form > fieldset { gap: 18px; }
+.wf-booking-form .wf-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.wf-booking-form .wf-field { gap: 8px; font-size: 12px; font-weight: 550; }
+.wf-booking-form .wf-field :is(input, select, textarea) { min-height: 46px; border: 1px solid #8896a5; border-radius: 9px; background-color: #fff; color: #26332d; padding: 11px 12px; font-size: 13px; font-weight: 400; line-height: 1.5; box-shadow: 0 1px 2px #23395203; }
+.wf-booking-form .wf-field select { padding-inline-end: 42px; }
+@supports (appearance: base-select) {
+  .wf-booking-form .wf-field select { padding-inline-end: 12px; }
+}
+.wf-booking-form .wf-field :is(input, select, textarea):hover:not(:disabled) { border-color: #6a7d93; }
+.wf-booking-form .wf-field :is(input, select, textarea):focus-visible { border-color: #0067e8; outline: 3px solid #0067e824; outline-offset: 1px; }
+.wf-booking-schedule { display: grid; gap: 12px; padding: 16px; border: 1px solid #e0e9f5; border-radius: 12px; background: #f7faff; min-width: 0; }
+.wf-booking-schedule-heading { display: flex; align-items: center; gap: 8px; color: #34526f; }
+.wf-booking-schedule-heading .cq-icon { width: 17px; height: 17px; }
+.wf-booking-schedule-heading h3 { margin: 0; font-size: 12px; font-weight: 600; line-height: 1.5; }
+.wf-booking-form .wf-booking-time-grid { grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); }
+.wf-booking-zone { margin: -5px 0 0; color: #586a7c; font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }
+.wf-booking-availability { width: 100%; justify-content: flex-start; gap: 9px; border-color: #d4e3f7; color: #005bc9; font-size: 12px; min-height: 44px; }
+.wf-booking-availability .cq-icon { width: 16px; height: 16px; flex: 0 0 16px; }
+.wf-booking-availability .cq-icon:last-child { margin-inline-start: auto; }
+.wf-booking-slots .wf-button { font-size: 12px; }
+.wf-booking-notes > span { display: flex; justify-content: space-between; gap: 12px; }
+.wf-booking-notes > span > small { font-size: 11px; color: #586a7c; font-weight: 400; }
+.wf-booking-form .wf-booking-notes textarea { min-height: 76px; resize: vertical; }
+.wf-booking-notes textarea::placeholder { color: #586a7c; opacity: 1; }
+.wf-booking-form .wf-dialog-footer { margin-top: 0; padding-top: 18px; }
+.wf-booking-form .wf-dialog-footer .wf-button { min-height: 44px; }
+.wf-booking-form .wf-dialog-footer .wf-primary { min-width: 150px; }
+@media (max-width: 480px) {
+  .wf-booking-dialog .cq-modal-head h2 { font-size: 20px; }
+  .wf-booking-form .wf-form-grid { grid-template-columns: minmax(0, 1fr); }
+  .wf-booking-schedule { padding: 14px; }
+}
+@media (forced-colors: active) {
+  .wf-booking-form .wf-field :is(input, select, textarea):focus-visible { outline: 3px solid Highlight; }
+}
+
+.wf-planner-visit-detail{margin-top:24px;padding:24px;border:1px solid #dce5ee;border-radius:12px;max-width:800px}.wf-planner-visit-detail>.wf-detail-panel{border:0;padding:0}.wf-planner-visit-detail .wf-detail-actions{align-items:center}.wf-planner-visit-detail .wf-detail-actions>.wf-field{max-width:280px}

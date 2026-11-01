@@ -149,8 +149,11 @@ for (const role of ["owner", "administrator", "member", "configured-clinician"] 
       await json(route, { data: { userId: "user_test", orgId: "org_test", practice: { id: "practice_test", name: "Synthetic practice", authorizationMode: "location", status: "active" }, onboarding: "pending", enrollmentStatus: "pending_assignment", capabilities: { patients: { read: false, create: false }, appointments: { read: false, create: false } }, management: { locations: false, members: false }, locations: [] } });
     });
     await page.goto(`${harnessUrl}/?component=workspace&identityRole=${role}`);
-    await expect(page.getByRole("heading", { name: "You’ve joined the team", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Practice home", exact: true })).toBeVisible();
+    await expect(page.locator(".cq-home").getByRole("status")).toContainText("Your practice owner will confirm your role and locations before you can open patient records.");
+    await expect(page.getByRole("button", { name: "Check access again", exact: true })).toBeVisible();
     expect(paths).toEqual(["/api/v1/me"]);
+    await expect(page.getByRole("button", { name: "Open workspace", exact: true })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Patients", exact: true })).toHaveCount(0);
   });
 }

@@ -1,16 +1,23 @@
 "use client";
 import { useAuth } from "@clerk/nextjs";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { useI18n } from "@/i18n/provider";
 import { apiRequestUrl } from "@/lib/web-config";
 import { ApiError } from "@/lib/api/client";
 type Purpose = "request" | "reminder" | "paperwork";
 type Endpoint = { id: string; channel: "email" | "sms"; masked: string; suppressed: boolean; paperworkEligible: boolean; choices: Record<Purpose, boolean> };
 type Profile = { contextToken: string; revision: number; practiceName: string; locationName: string; endpoints: Endpoint[] };
-export function PatientCommunicationChoices() {
+export function PatientCommunicationChoices({ onNavigationState }: { onNavigationState?: (state: { dirty: boolean; busy: boolean }) => void } = {}) {
   const { getToken, userId } = useAuth(); const { locale, uiError } = useI18n(); const es = locale === "es";
   const [profiles, setProfiles] = useState<Profile[]>([]), [loading, setLoading] = useState(true), [error, setError] = useState(""), [saved, setSaved] = useState(false), [busy, setBusy] = useState(false), [uncertain, setUncertain] = useState(false), [pendingContext, setPendingContext] = useState(""), [reload, setReload] = useState(0);
   const pending = useRef<{ key: string; body: string; revision: number; contextToken: string } | null>(null), lifetime = useRef<AbortController | null>(null), lock = useRef(false);
+  const [baseline, setBaseline] = useState(new Map<string, string>());
+  const choicesKey = (profile: Profile) => JSON.stringify(profile.endpoints.map(endpoint => ({ id: endpoint.id, choices: endpoint.choices })));
+  const dirty = uncertain || profiles.some(profile => baseline.get(profile.contextToken) !== choicesKey(profile));
+  const reportNavigation = useEffectEvent((state: { dirty: boolean; busy: boolean }) => onNavigationState?.(state));
+  useEffect(() => { reportNavigation({ dirty, busy }); }, [dirty, busy]);
+  useEffect(() => () => reportNavigation({ dirty: false, busy: false }), []);
+  useEffect(() => { const warn = (event: BeforeUnloadEvent) => { if (dirty || busy) { event.preventDefault(); event.returnValue = ""; } }; window.addEventListener("beforeunload", warn); return () => window.removeEventListener("beforeunload", warn); }, [dirty, busy]);
   const labels: Record<Purpose, string> = es ? { request: "Solicitudes de documentos", reminder: "Recordatorios", paperwork: "Avisos de copias completadas" } : { request: "Paperwork requests", reminder: "Reminders", paperwork: "Completed-copy notices" };
   async function request(method: string, signal?: AbortSignal, change?: { key: string; body: string; revision: number }) {
     const token = await getToken({ skipCache: true }); if (!token) throw new ApiError(401, "SESSION_EXPIRED", "SESSION_EXPIRED");
@@ -21,7 +28,7 @@ export function PatientCommunicationChoices() {
   useEffect(() => {
     const controller = new AbortController(); lifetime.current = controller;
     queueMicrotask(() => { setProfiles([]); setLoading(true); setError(""); setSaved(false); setUncertain(false); setPendingContext(""); pending.current = null; });
-    void request("GET", controller.signal).then(data => { if (!controller.signal.aborted) setProfiles(data.profiles); }).catch(cause => { if (!controller.signal.aborted) setError(uiError(cause)); }).finally(() => { if (!controller.signal.aborted) setLoading(false); });
+    void request("GET", controller.signal).then(data => { if (!controller.signal.aborted) { setBaseline(new Map(data.profiles.map(profile => [profile.contextToken, choicesKey(profile)]))); setProfiles(data.profiles); } }).catch(cause => { if (!controller.signal.aborted) setError(uiError(cause)); }).finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => { controller.abort(); pending.current = null; };
     // Authentication token getter can refresh internally; user identity/reload own the protected lifetime.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -34,7 +41,7 @@ export function PatientCommunicationChoices() {
     if (lock.current || pending.current && pending.current.contextToken !== profile.contextToken) return; lock.current = true; setBusy(true); setError(""); setSaved(false);
     const change = pending.current ?? { key: crypto.randomUUID(), contextToken: profile.contextToken, revision: profile.revision, body: JSON.stringify({ contextToken: profile.contextToken, choices: profile.endpoints.flatMap(endpoint => (Object.keys(labels) as Purpose[]).filter(purpose => !(endpoint.suppressed || purpose === "paperwork" && !endpoint.paperworkEligible) || !endpoint.choices[purpose]).map(purpose => ({ endpointId: endpoint.id, purpose, allowed: endpoint.choices[purpose] }))) }) };
     pending.current = change; setUncertain(true); setPendingContext(profile.contextToken);
-    try { const data = await request("PATCH", lifetime.current?.signal, change); if (lifetime.current?.signal.aborted) return; pending.current = null; setUncertain(false); setPendingContext(""); setProfiles(old => old.map(value => value.contextToken === profile.contextToken ? data.profiles[0] : value)); setSaved(true); }
+    try { const data = await request("PATCH", lifetime.current?.signal, change); if (lifetime.current?.signal.aborted) return; pending.current = null; setUncertain(false); setPendingContext(""); if (data.profiles[0]) setBaseline(old => new Map(old).set(profile.contextToken, choicesKey(data.profiles[0]))); setProfiles(old => old.map(value => value.contextToken === profile.contextToken ? data.profiles[0] : value)); setSaved(true); }
     catch (cause) { if (!lifetime.current?.signal.aborted) { if (cause instanceof ApiError && cause.status < 500) { pending.current = null; setUncertain(false); setPendingContext(""); } if (cause instanceof ApiError && [401, 403, 404].includes(cause.status)) setProfiles([]); setError(uiError(cause)); } }
     finally { lock.current = false; if (!lifetime.current?.signal.aborted) setBusy(false); }
   }

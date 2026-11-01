@@ -6,15 +6,16 @@ import type { PracticeAccess } from './practice-access.js';
 import type * as service from '../services/workflow.service.js';
 import { WorkflowError, id, revision } from '../workflow/policy.js';
 import type { WorkflowReadOptions, WorkflowCollection } from '../workflow/read-model.js';
+import { availabilityInput } from "../workflow/availability.js";
 import { maximumFileBytes } from '../workflow/storage.js';
 import { logFailure } from '../logging.js';
 import { requirePortalBindingAuthority } from '../workflow/paperwork-policy.js';
 import { registerPatientPaperworkRoutes } from './patient-paperwork.js';
 const staffPortalGrants = async (tenant: TenantContext, patientId: string, requestId: string, cursor?: string) => (await import('../services/portal-admin.service.js')).staffPortalGrants(tenant,patientId,requestId,cursor);
 export type WorkflowDependencies = typeof service;
-export function workflowCapabilities(auth: RequestAuthentication, clinical?: Record<string, any>, permissions?: string[]): service.WorkflowCapabilities {
+export function workflowCapabilities(auth: RequestAuthentication, clinical?: Record<string, any>, permissions?: string[], ownerOperator = false): service.WorkflowCapabilities {
     const has = (permission: string) => permissions?.includes(permission) === true;
-    return { patientsRead: clinical?.patients?.read === true || has('org:patients:read'), patientsCreate: clinical?.patients?.create === true || has('org:patients:create'), patientsUpdate: has('org:patients:update'), appointmentsRead: clinical?.appointments?.read === true || has('org:appointments:read'), appointmentsCreate: clinical?.appointments?.create === true || has('org:appointments:create'), appointmentsUpdate: has('org:appointments:update'), documentsRead: has('org:documents:read'), documentsUpload: has('org:documents:upload'), documentsReview: has('org:documents:review'), documentsArchive: has('org:documents:archive'), requestsSend: has('org:requests:send'), requirementsWaive: has('org:requirements:waive'), requirementsManage: has('org:requirements:manage'), workManage: has('org:work:manage'), configurationManage: has('org:workflow:configure'), paperworkManage: auth.has?.({permission:'org:paperwork:manage'}) === true && has('org:workflow:configure') && has('org:documents:read'), activityRead: has('org:activity:read') };
+    return { patientsRead: clinical?.patients?.read === true || has('org:patients:read'), patientsCreate: clinical?.patients?.create === true || has('org:patients:create'), patientsUpdate: has('org:patients:update'), appointmentsRead: clinical?.appointments?.read === true || has('org:appointments:read'), appointmentsCreate: clinical?.appointments?.create === true || has('org:appointments:create'), appointmentsUpdate: has('org:appointments:update'), documentsRead: has('org:documents:read'), documentsUpload: has('org:documents:upload'), documentsReview: has('org:documents:review'), documentsArchive: has('org:documents:archive'), requestsSend: has('org:requests:send'), requirementsWaive: has('org:requirements:waive'), requirementsManage: has('org:requirements:manage'), workManage: has('org:work:manage'), configurationManage: has('org:workflow:configure'), paperworkManage: (ownerOperator ? has('org:paperwork:manage') : auth.has?.({permission:'org:paperwork:manage'}) === true) && has('org:workflow:configure') && has('org:documents:read'), activityRead: has('org:activity:read') };
 }
 function requestId(res: Response) {
     if (!res.locals.workflowRequestId)
@@ -81,7 +82,8 @@ export function registerWorkflowRoutes(app: Express, deps: WorkflowDependencies,
             requestId(res);
             const context = await practiceAccess.authorizeLocation(getAuth(req), String(req.params.locationId));
             res.locals.tenant = context.tenant;
-            res.locals.workflowCapabilities = workflowCapabilities(getAuth(req), context.capabilities, context.permissions);
+            res.locals.ownerOperator = context.ownerOperator === true;
+            res.locals.workflowCapabilities = workflowCapabilities(getAuth(req), context.capabilities, context.permissions, context.ownerOperator);
             next();
         }
         catch (error) {
@@ -110,7 +112,7 @@ export function registerWorkflowRoutes(app: Express, deps: WorkflowDependencies,
     app.get([base + '/workflow', base + '/workspace'], authorize, snapshotRoute);
     app.get(base + '/workflow/paperwork/patients/:id/portal-grants', authorize, requireCap('paperworkManage'), async (req,res) => {
         try {
-            requirePortalBindingAuthority(getAuth(req));
+            requirePortalBindingAuthority(getAuth(req), res.locals.ownerOperator === true);
             if (req.query.cursor !== undefined && typeof req.query.cursor !== 'string') throw new WorkflowError('INVALID_PAPERWORK_CURSOR',400);
             res.json({data:await portalAdminRead(res.locals.tenant,id(req.params.id),requestId(res),req.query.cursor as string | undefined)});
         } catch (error) { await fail(error,req,res,res.locals.tenant); }
@@ -167,6 +169,13 @@ export function registerWorkflowRoutes(app: Express, deps: WorkflowDependencies,
                 await fail(error, req, res, res.locals.tenant);
             }
         });
+    app.get(base + '/workflow/availability', authorize, requireCap('appointmentsRead'), async (req, res) => {
+        try {
+            const input = availabilityInput(req.query);
+            if (input.excludeAppointmentId && !res.locals.workflowCapabilities.appointmentsUpdate) throw new WorkflowError('FORBIDDEN', 403);
+            res.json({ data: await deps.availability(res.locals.tenant, input, requestId(res)) });
+        } catch (error) { await fail(error, req, res, res.locals.tenant); }
+    });
     app.get(base + '/workflow/providers/:id/availability', authorize, requireCap('appointmentsRead', 'configurationManage'), async (req, res) => {
         try {
             res.json({ data: await deps.providerAvailability(res.locals.tenant, String(req.params.id), requestId(res)) });
@@ -215,7 +224,7 @@ export function registerWorkflowRoutes(app: Express, deps: WorkflowDependencies,
     for (const [method, path, action, cap, precondition] of commands) {
         (app as any)[method](base + '/workflow/' + path, authorize, requireCap(cap), async (req: Request, res: Response) => {
             try {
-                if (['paperwork.portal.bind','paperwork.portal.revoke'].includes(action)) { if (!res.locals.workflowCapabilities.documentsRead) throw new WorkflowError('FORBIDDEN',403); requirePortalBindingAuthority(getAuth(req)); }
+                if (['paperwork.portal.bind','paperwork.portal.revoke'].includes(action)) { if (!res.locals.workflowCapabilities.paperworkManage) throw new WorkflowError('FORBIDDEN',403); requirePortalBindingAuthority(getAuth(req), res.locals.ownerOperator === true); }
                 const expectedRevision = precondition ? revision(req.get('If-Match')) : undefined;
                 const payload = req.params.versionId ? { ...req.body, versionId: req.params.versionId } : req.body;
                 const result = await deps.execute(res.locals.tenant, action, req.params.id ? String(req.params.id) : '', payload, { requestId: requestId(res), idempotencyKey: req.get('Idempotency-Key'), expectedRevision });
@@ -226,7 +235,7 @@ export function registerWorkflowRoutes(app: Express, deps: WorkflowDependencies,
             }
         });
     }
-    app.put([base + '/workflow/upload-sessions/:id/content', base + '/workflow/uploads/:id/content'], authorize, requireCap('documentsUpload'), express.raw({ type: () => true, limit: maximumFileBytes }), async (req, res) => {
+    app.put([base + '/workflow/upload-sessions/:id/content', base + '/workflow/uploads/:id/content'], authorize, requireCap('documentsUpload'), express.raw({ type: () => true, limit: maximumFileBytes, inflate: false }), async (req, res) => {
         try {
             if (!Buffer.isBuffer(req.body))
                 throw new WorkflowError('BINARY_BODY_REQUIRED');
@@ -276,7 +285,7 @@ export function registerPatientWorkflowRoutes(app: Express, deps: WorkflowDepend
         count: number;
         until: number;
     }>();
-    app.use(base, cors({ origin: origins, credentials: true }), express.json({ limit: '256kb' }), (req, res, next) => {
+    app.use(base, cors({ origin: origins, credentials: true }), express.json({ limit: '256kb', inflate: false }), (req, res, next) => {
         requestId(res);
         res.setHeader('Cache-Control', 'no-store');
         res.setHeader('Referrer-Policy', 'no-referrer');
@@ -351,7 +360,7 @@ export function registerPatientWorkflowRoutes(app: Express, deps: WorkflowDepend
             await fail(error, req, res);
         }
     });
-    app.put(base + '/uploads/:id/content', express.raw({ type: () => true, limit: maximumFileBytes }), async (req, res) => {
+    app.put(base + '/uploads/:id/content', express.raw({ type: () => true, limit: maximumFileBytes, inflate: false }), async (req, res) => {
         try {
             if (!Buffer.isBuffer(req.body))
                 throw new WorkflowError('BINARY_BODY_REQUIRED');

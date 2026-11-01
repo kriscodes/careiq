@@ -128,3 +128,13 @@ test("preview replacement uploads append processing versions and preserve the re
     assert.equal(snapshot.appointments[0].requirements![1].candidateDocumentId, added.documentId); assert.equal(snapshot.appointments[0].requirements![1].progressState, "processing");
   });
 });
+
+
+test("a revoked capability overrides older per-record grants while absent capability context preserves record authority", () => {
+  const record = { id: "appointment", allowedActions: ["edit", "cancel", "checked_in"] };
+  assert.equal(allowed(record, "appointment.update", { appointmentsUpdate: false }), false);
+  assert.equal(allowed(record, "appointment.update", { appointmentsUpdate: true }), true);
+  assert.equal(allowed(record, "appointment.update"), true);
+  assert.equal(allowed({ id: "document", allowedActions: ["review"] }, "document.review", { documentsReview: false }), false);
+  assert.equal(allowed({ id: "requirement", allowedActions: ["waive"] }, "requirement.waive", { requirementsWaive: false }), false);
+});

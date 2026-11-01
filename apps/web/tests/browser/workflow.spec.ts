@@ -70,6 +70,7 @@ test("read-only permissions hide mutation controls and mobile layout has no over
   await expect(page.getByText("You have read-only access", { exact: false })).toBeVisible();
   await expect(page.getByRole("button", { name: /^＋ (New patient|Book appointment)$/ })).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.getByRole("button", { name: "Expand navigation", exact: true }).click();
   await page.getByRole("button", { name: "Templates", exact: true }).click();
   await expect(page.getByRole("button", { name: /New template/ })).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -101,7 +102,7 @@ test("booking and cancellation send the strict scheduling command payloads", asy
   await page.getByLabel("Patient", { exact: true }).selectOption("p1");
   await page.getByLabel("Date and time", { exact: true }).fill("2026-10-16T14:00");
   await page.getByLabel("Reason for visit", { exact: true }).fill("Synthetic scheduling check");
-  await page.getByRole("button", { name: "Save changes", exact: true }).click();
+  await page.getByRole("button", { name: "Book appointment", exact: true }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await page.getByRole("button", { name: /Synthetic scheduling check/ }).click();
   await page.getByRole("button", { name: "Cancel appointment", exact: true }).click();
@@ -415,9 +416,9 @@ test("insurance lost-save retry keeps evidence entries and reuses one attempt ke
   await expect(page.locator(".ci-evidence")).toHaveCount(1);
 });
 
-test("insurance read-only grants hide manager and all mutation controls", async ({ page, harnessUrl }) => {
+test("insurance read-only grants keep the consistent menu and hide all mutation controls", async ({ page, harnessUrl }) => {
   await page.goto(`${harnessUrl}/?component=workflow&scenario=insurance-readonly`);
-  await expect(page.getByRole("button", { name: "Manager", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("navigation", { name: "Practice navigation", exact: true }).getByRole("button", { name: "Manager", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Insurance", exact: true }).click();
   await expect(page.getByRole("button", { name: "New verification case", exact: false })).toHaveCount(0);
   await page.getByRole("button", { name: "Review insurance for Alex Morgan", exact: true }).click();
@@ -451,6 +452,7 @@ test("insurance views fit desktop and narrow web layouts", async ({ page, harnes
     await page.screenshot({ path: resolve(directory, "manager-desktop.png"), fullPage: true });
   }
   await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "Expand navigation", exact: true }).click();
   await page.getByRole("button", { name: "Insurance", exact: true }).click();
   await expect(page.getByRole("button", { name: "Review insurance for Alex Morgan", exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -477,4 +479,110 @@ test("insurance manager export contains only authorized aggregate summary fields
   expect(content).not.toContain("synthetic-insurance");
   expect(content).not.toContain("0123");
   await expect(page.getByRole("status").filter({ hasText: "Summary export authorized" })).toBeVisible();
+});
+
+for (const width of [320, 1280]) for (const colorScheme of ["light", "dark"] as const) test(`shared frame opens the requested Documents view and returns home at ${width}px ${colorScheme}`, async ({ page, harnessUrl }) => {
+  await page.setViewportSize({ width, height: 900 });
+  await page.emulateMedia({ colorScheme });
+  await page.goto(`${harnessUrl}/?component=workflow&initialView=Documents&home=1`);
+  await expect(page.getByRole("heading", { name: "Paperwork, in its place.", exact: true })).toBeVisible();
+  if (width <= 760) await page.getByRole("button", { name: "Expand navigation", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Documents", exact: true })).toHaveAttribute("aria-current", "page");
+  await expect(page.locator(width <= 760 ? ".wf-mobile-wordmark" : ".wf-application-logo .cq-a-wordmark")).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  expect(await page.locator(".wf-root").evaluate(node => getComputedStyle(node).backgroundColor)).toBe("rgb(255, 255, 255)");
+  await page.getByRole("button", { name: "Home", exact: true }).click();
+  expect(await page.evaluate(() => window.__careiqMockCalls.filter(call => call.name === "workflowHome"))).toHaveLength(1);
+});
+
+test("shared Home navigation confirms before leaving a dirty forms studio", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=workflow&initialView=Templates&home=1`);
+  await page.getByRole("button", { name: "＋ New form", exact: true }).click();
+  const studio = page.getByRole("region", { name: "Forms studio", exact: true });
+  await studio.getByLabel("Form title", { exact: true }).fill("Unfinished synthetic form");
+  page.once("dialog", dialog => dialog.dismiss());
+  await page.getByRole("button", { name: "Home", exact: true }).click();
+  await expect(studio).toBeVisible();
+  expect(await page.evaluate(() => window.__careiqMockCalls.filter(call => call.name === "workflowHome"))).toHaveLength(0);
+  page.once("dialog", dialog => dialog.accept());
+  await page.getByRole("button", { name: "Home", exact: true }).click();
+  expect(await page.evaluate(() => window.__careiqMockCalls.filter(call => call.name === "workflowHome"))).toHaveLength(1);
+});
+
+
+test("shared Settings header navigation confirms before leaving a dirty forms studio", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=workflow&initialView=Templates&headerTools=1`);
+  const settings = page.getByRole("banner").getByRole("button", { name: "Practice settings", exact: true });
+  await page.getByRole("button", { name: "＋ New form", exact: true }).click();
+  const studio = page.getByRole("region", { name: "Forms studio", exact: true });
+  await studio.getByLabel("Form title", { exact: true }).fill("Unfinished header navigation form");
+  page.once("dialog", dialog => dialog.dismiss());
+  await settings.click();
+  await expect(studio.getByLabel("Form title", { exact: true })).toHaveValue("Unfinished header navigation form");
+  expect(await page.evaluate(() => window.__careiqMockCalls.filter(call => call.name === "workflowSettings"))).toHaveLength(0);
+  page.once("dialog", dialog => dialog.accept());
+  await settings.click();
+  expect(await page.evaluate(() => window.__careiqMockCalls.filter(call => call.name === "workflowSettings"))).toHaveLength(1);
+});
+
+
+test("switching practice confirms before activating another membership from a dirty forms studio", async ({ page, harnessUrl }) => {
+  await page.goto(`${harnessUrl}/?component=workflow&initialView=Templates&contextPicker=1&scenario=memberships-paged`);
+  await page.getByRole("button", { name: "＋ New form", exact: true }).click();
+  const studio = page.getByRole("region", { name: "Forms studio", exact: true });
+  await studio.getByLabel("Form title", { exact: true }).fill("Unfinished practice switch form");
+  await expect(page.locator(".wf-application-symbol")).toBeVisible();
+  await page.getByRole("button", { name: "Expand navigation", exact: true }).click();
+  const picker = page.getByRole("combobox", { name: "Your practice", exact: true });
+  page.once("dialog", dialog => dialog.dismiss());
+  await picker.selectOption("org_other");
+  await expect(picker).toHaveValue("org_test");
+  await expect(studio.getByLabel("Form title", { exact: true })).toHaveValue("Unfinished practice switch form");
+  expect(await page.evaluate(() => window.__careiqMockCalls.filter(call => call.name === "setActive"))).toHaveLength(0);
+  page.once("dialog", dialog => dialog.accept());
+  await picker.selectOption("org_other");
+  await expect(picker).toHaveValue("org_other");
+  expect(await page.evaluate(() => window.__careiqMockCalls.filter(call => call.name === "setActive"))).toEqual([{ name: "setActive", input: { organization: "org_other", hasNavigate: false } }]);
+});
+
+for (const phase of ["initial", "reload"] as const) test(`new workflow200 capabilities close an unauthorized Today view on ${phase} without retrying it`, async ({ page, harnessUrl }) => {
+  const assigned = { id: "11111111-1111-4111-8111-111111111111", name: "Synthetic location", timeZone: "UTC", status: "active" };
+  const previous = { patientsRead: false, appointmentsRead: true, documentsRead: true, configurationManage: false };
+  const changed = { ...previous, appointmentsRead: false };
+  let revoked = phase === "initial", reads = 0, checks = 0;
+  await page.route("**/api/v1/**", async route => {
+    const path = new URL(route.request().url()).pathname;
+    const respond = (data: unknown) => route.fulfill({ contentType: "application/json", body: JSON.stringify({ data }) });
+    if (path === "/api/v1/me") {
+      checks++;
+      const caps = reads && revoked ? changed : previous;
+      return respond({ userId: "user_test", orgId: "org_test", practice: { id: "practice_test", name: "Synthetic practice", authorizationMode: "location", status: "active" }, onboarding: "ready", enrollmentStatus: "active", capabilities: { patients: { read: false, create: false }, appointments: { read: caps.appointmentsRead, create: false } }, workspaceCapabilities: caps, management: { locations: false, members: false }, locations: [assigned] });
+    }
+    if (path.endsWith("/workflow")) {
+      reads++;
+      return respond({ location: assigned, timeZone: "UTC", patients: [], appointments: [], documents: [], templates: [], requests: [], workItems: [], providers: [], visitTypes: [], documentTypes: [], capabilities: revoked ? changed : previous, summary: { activeAppointments: 7, appointmentsNeedingDocuments: 0, openWorkItems: 0 }, asOf: "2026-10-30T12:00:00Z" });
+    }
+    if (path.endsWith("/notifications")) return route.fulfill({ contentType: "application/json", body: JSON.stringify({ data: [], unreadCount: 0 }) });
+    return respond([]);
+  });
+  await page.goto(`${harnessUrl}/?component=workspace`);
+  await page.getByRole("button", { name: "Open workspace", exact: true }).click();
+  await page.getByRole("button", { name: /^Continue/ }).click();
+  if (phase === "reload") {
+    await expect(page.locator(".wf-kpis")).toBeVisible();
+    await expect(page.locator(".wf-kpis")).toContainText("7");
+    revoked = true;
+    await page.getByRole("button", { name: "Refresh Today", exact: true }).click();
+  }
+  await expect(page.getByRole("heading", { name: "Hello again.", exact: true })).toBeVisible();
+  await expect(page.getByRole("status").filter({ hasText: "Workspace access could not be confirmed. No records are open. Check your access before trying again." })).toBeVisible();
+  await expect(page.locator(".wf-kpis")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Good morning, care team.", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("navigation", { name: "Practice navigation", exact: true }).locator('[aria-current="page"]')).toHaveAccessibleName("Home");
+  const deniedReads = reads;
+  expect(checks).toBe(2);
+  await page.getByRole("button", { name: "Check access again", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Hello again.", exact: true })).toBeVisible();
+  expect(checks).toBe(3);
+  expect(reads).toBe(deniedReads);
 });

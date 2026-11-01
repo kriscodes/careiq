@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { invitationEmailMatches, onboardingInput, onboardingView, safeDestination, signInStep, signInVerificationMethod, verificationCodePrepared, validateDraft, type OnboardingState } from "../src/lib/access-flow";
+import { availableTimeZones, timeZoneOptionLabelKey, invitationEmailMatches, onboardingInput, onboardingView, safeDestination, signInStep, signInVerificationMethod, verificationCodePrepared, validateDraft, type OnboardingState } from "../src/lib/access-flow";
 
 const base: OnboardingState = { eligible: true, emailVerified: true, draft: null, operation: null };
 test("restored destinations cannot redirect to external or privileged routes", () => {
@@ -55,4 +55,26 @@ test("new-device verification uses only supported factors and distinguishes unse
   assert.equal(verificationCodePrepared("email_code", { strategy: "phone_code", status: "unverified" }), false);
   assert.equal(verificationCodePrepared("email_code", { strategy: "email_code", status: "expired" }), false);
   assert.equal(verificationCodePrepared("totp", { strategy: null, status: null }), true);
+});
+
+test("timezone choices cover U.S. daylight-saving exceptions and territories without an exhaustive list", () => {
+  const zones = availableTimeZones("America/Los_Angeles");
+  for (const zone of ["America/New_York", "America/Chicago", "America/Denver", "America/Phoenix", "America/Los_Angeles", "America/Anchorage", "America/Adak", "Pacific/Honolulu", "America/Puerto_Rico", "America/St_Thomas", "Pacific/Guam", "Pacific/Pago_Pago", "UTC"]) {
+    assert.ok(zones.includes(zone), zone);
+    assert.ok(timeZoneOptionLabelKey(zone), `Localized label for ${zone}`);
+    assert.doesNotThrow(() => new Intl.DateTimeFormat("en-US", { timeZone: zone }));
+  }
+  assert.equal(new Set(zones).size, zones.length);
+  assert.ok(zones.length < 20);
+  assert.notEqual(timeZoneOptionLabelKey("America/Denver"), timeZoneOptionLabelKey("America/Phoenix"));
+});
+
+test("timezone choices preserve a valid saved non-U.S. zone and never retain invalid input", () => {
+  assert.equal(availableTimeZones("Europe/London")[0], "Europe/London");
+  assert.equal(availableTimeZones("Asia/Kolkata").filter(zone => zone === "Asia/Kolkata").length, 1);
+  assert.equal(timeZoneOptionLabelKey("Europe/London"), undefined);
+  for (const value of ["", "Unknown/Zone", "__proto__", "constructor"]) {
+    assert.ok(!availableTimeZones(value).includes(value));
+    assert.equal(timeZoneOptionLabelKey(value), undefined);
+  }
 });

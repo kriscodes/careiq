@@ -1,0 +1,51 @@
+{
+  "time": "2026-10-27T03:18:44.346504+00:00",
+  "mainCommit": "6274a40b10f89c1592e67f2831975d1d363d7b3a",
+  "checks": [
+    {
+      "url": "https://careiq-api-7ssz.onrender.com/health",
+      "status": 200,
+      "responseSha256": "167b37c602ab43df8e2734df3cfde285ee9b63fc2a300211dcff6ed7a672194a",
+      "health": {
+        "status": "ok",
+        "service": "careiq-api",
+        "database": "connected"
+      }
+    },
+    {
+      "url": "https://careiq-api-7ssz.onrender.com/api/v1/me",
+      "status": 401,
+      "responseSha256": "293dc3f8c7913aa3ebb584b6ce7b85a1e97f8e98a028c6d1627a45fe5b815b51"
+    },
+    {
+      "url": "https://app.careiqlabs.com/sign-in",
+      "status": 200,
+      "responseSha256": "9d1d2fa73d97ee1570aede8e7b6647a3fa97145c83db10511162dd04acd4c6e9"
+    },
+    {
+      "url": "https://careiqlabs.com/",
+      "status": 200,
+      "responseSha256": "d91302cbf60662d2d54545ec13ecb5a27eddf94fb0f9dbe4c39133770bab4782"
+    },
+    {
+      "check": "compressed unsigned callback rejected before signature handling",
+      "encoding": "gzip",
+      "status": 415
+    },
+    {
+      "check": "compressed unsigned callback rejected before signature handling",
+      "encoding": "deflate",
+      "status": 415
+    },
+    {
+      "check": "compressed unsigned callback rejected before signature handling",
+      "encoding": "br",
+      "status": 415
+    }
+  ],
+  "healthAfterCompression": {
+    "status": "ok",
+    "service": "careiq-api",
+    "database": "connected"
+  }
+}

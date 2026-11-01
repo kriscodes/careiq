@@ -181,13 +181,15 @@ export async function exportAudit(tenant: TenantContext, filter: AuditFilter, re
   await logAccess(tenant, requestId, "audit.export.prepared", exportId, { count: existing.eventIds.length, outputHash: hash, purpose });
   return { id: exportId, state: "ready", recordCount: existing.eventIds.length, sha256: hash, expiresAt: existing.expiresAt };
 }
-export async function auditExportContent(tenant: TenantContext, exportId: string, requestId: string) {
+export async function auditExportContent(tenant: TenantContext, exportId: string, requestId: string, canReadEvidence = false) {
   if (!/^[a-f0-9]{64}$/.test(exportId)) throw new WorkflowError("INVALID_EXPORT_ID", 422);
   auditReader();
   await verifyConfiguredAuditReader();
   const bytes = await readPrivate(`${exportId}.json`, archiveEnvironment()).catch(() => { throw new WorkflowError("RESOURCE_NOT_FOUND", 404); });
   const manifest = JSON.parse(bytes.toString());
   if (manifest.practiceId !== tenant.practiceId || manifest.locationId !== tenant.locationId || manifest.actorId !== tenant.userId) throw new WorkflowError("RESOURCE_NOT_FOUND", 404);
+  if (typeof manifest.filter?.includeEvidence !== "boolean") throw new WorkflowError("AUDIT_EXPORT_INVALID", 503);
+  if ((manifest.filter.includeEvidence || Object.hasOwn(manifest, "databaseRecords")) && canReadEvidence !== true) throw new WorkflowError("AUDIT_EVIDENCE_ACCESS_DENIED", 403);
   if (Date.parse(manifest.expiresAt) <= Date.now()) throw new WorkflowError("AUDIT_EXPORT_EXPIRED", 410);
   await logAccess(tenant, requestId, "audit.export.access_authorized", exportId, { count: manifest.eventIds.length });
   return bytes;

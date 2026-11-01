@@ -2,6 +2,8 @@
 
 Implementation date: October 5, 2026. Decision: [ADR-017](decisions/017-practice-location-membership-model.md). This is a repository implementation and staged rollout guide; production has not been migrated by this change.
 
+Current policy update: October 31, 2026 adds the reviewed owner-operator preset and editable owner restrictions described below. The [consistent navigation record](verification/consistent-navigation-2026-10-31.md) documents the shared signed-in frame, stable destination order and guarded auxiliary pages. The original rollout history remains applicable; see [owner-operator verification and pending acceptance](verification/owner-operator-2026-10-31.md).
+
 ## Product behavior
 
 An owner signs in with Clerk, creates a CareIQ practice and its first location, then manages locations and employees in **Practice settings**. Practice creation is coordinated by the API. Merely selecting a Clerk organization or reading `/me` no longer creates a practice.
@@ -12,7 +14,13 @@ Staff select an assigned working location before opening patients and appointmen
 
 The initial administrative policy is deliberately small: the accountable owner must have a fresh `org:admin` membership and active local enrollment to manage locations, invitations, roles, assignments, or ownership transfer. Other administrators do not automatically gain CareIQ management authority. Owner transfer requires another active Clerk administrator and is audited. The owner cannot suspend themselves or change their own role through these endpoints.
 
-Neither `org:admin` nor `org:member` implies clinical access in location mode. Clinical access requires current Clerk permissions plus an active enrollment and explicit location assignment. Owners can explicitly assign themselves locations; creating a location never grants all staff access to it.
+For ordinary staff, neither `org:admin` nor `org:member` implies clinical access in location mode: their current Clerk permissions remain unchanged. The current recorded practice owner receives the reviewed 17-permission operational preset while their fresh membership is `org:admin`, local enrollment matches and is active, and the personal account is active. The preset covers patients, appointments, documents, requests, requirements, work, workflow configuration, patient-account administration and activity. Protected audit permissions and platform/global operations are excluded.
+
+The owner starts with all active locations and **All current and future locations** enabled. **My workspace access** can remove operational areas and choose specific active locations; saved denials override both preset and provider grants. These restrictions preserve owner management and recovery, including when all workspace areas and locations are off. Locations remain ordinary explicit assignments: onboarding, transfer, location creation/reopening and saved owner choices maintain them without a row-security bypass. Creating a location never grants access to all staff.
+
+The effective permission resolver checks the current database owner, current organization/membership, active local enrollment and personal-account state under the existing practice/actor context. A role label or client-supplied owner flag cannot grant the preset. Staff notifications and other off-HTTP checks use the same effective grants with the recipient’s own actor context. Patient binding retains its dedicated effective permissions, verified identity and recent-factor requirement. Existing sensitive-action confirmations and protected-audit checks remain in force.
+
+Ownership transfer initializes the verified recipient’s full owner preset and all active/future-location choice in the existing transaction. The former owner loses owner management and the preset as soon as current authority is checked again; only independently granted staff permissions and their valid assignments remain. Named-recipient and exact current practice-name confirmation, active administrator enrollment, account-state checks and transfer auditing still apply.
 
 ## API surface
 
@@ -20,9 +28,9 @@ All application endpoints require verified Clerk authentication and return `Cach
 
 | Endpoint | Purpose |
 | --- | --- |
-| `GET /api/v1/me` | Read current practice, enrollment, management capabilities and assigned active locations. No provisioning side effects. |
+| `GET /api/v1/me` | Read current practice, enrollment, effective workspace/management capabilities, assigned active locations and the current owner’s saved access profile. No provisioning side effects. |
 | `POST /api/v1/onboarding` | Create/reconcile the approved owner's practice and initial location. Requires a UUIDv4 `Idempotency-Key`. |
-| `GET /api/v1/practice/admin` | Owner-only nonclinical locations, membership and invitation directory. |
+| `GET /api/v1/practice/admin` | Owner-only nonclinical locations, membership/invitation directory and owner access profile/revision. |
 | `POST /api/v1/locations` | Create a location with name, IANA time zone and optional address. |
 | `POST /api/v1/locations/:locationId/status` | Close or reopen a location without deleting its history. |
 | `POST /api/v1/practice/invitations` | Send/reconcile an organization-bound invitation with role and proposed location IDs. Requires a UUIDv4 `Idempotency-Key`. |
@@ -30,7 +38,8 @@ All application endpoints require verified Clerk authentication and return `Cach
 | `POST /api/v1/practice/invitations/:id/revoke` | Revoke the local invitation before attempting provider revocation. |
 | `POST /api/v1/practice/members/:userId/activate` | Confirm the current membership, approved role and explicit locations. |
 | `POST /api/v1/practice/members/:userId/suspend` | Disable local access and assignments. |
-| `POST /api/v1/practice/ownership` | Transfer accountability to an active administrator. |
+| `POST /api/v1/practice/owner-access` | Save only the authenticated current owner’s `disabledPermissions`, `allLocations`, `locationIds` and expected `revision`; reject stale revisions with `OWNER_ACCESS_CHANGED`. |
+| `POST /api/v1/practice/ownership` | Transfer accountability to an active administrator and initialize that verified recipient’s owner preset. |
 | `GET/POST /api/v1/locations/:locationId/patients` | List/create patients inside validated location scope. |
 | `GET/POST /api/v1/locations/:locationId/appointments` | List/create appointments referencing patients in that same location. |
 
@@ -38,13 +47,15 @@ The API never trusts client-supplied practice IDs, permissions or assignment arr
 
 ## Provider and environment setup
 
-Keep Clerk identities, organization memberships, roles and permissions authoritative. Configure the selected Clerk application before testing with real accounts:
+Keep Clerk identities, organization memberships and ordinary staff role permissions authoritative. CareIQ adds only the reviewed current-owner preset and actor-bound restrictions; it does not mutate provider roles to supply that preset. Configure the selected Clerk application before testing with real accounts:
 
 1. Turn off unrestricted organization creation and organization suggestions/join paths in client configuration. The app now offers a CareIQ practice creator and an existing-memberships selector.
-2. Set `CAREIQ_PRACTICE_CREATOR_USER_IDS` on the API to the approved founding Clerk user IDs. Founders must have a verified email. The bootstrap is closed to arbitrary practice creation; a future commercial signup eligibility policy can replace this allowlist.
-3. Configure reviewed staff roles in Clerk, then list their keys in `CAREIQ_STAFF_ROLES`. Built-in member/admin roles remain recognized. Custom clinical permissions are `org:patients:read`, `org:patients:create`, `org:appointments:read`, and `org:appointments:create`. Grant only those appropriate to the role. The API does not create a parallel role directory.
+2. Set `CAREIQ_PRACTICE_CREATOR_USER_IDS` on the API to the approved founding Clerk user IDs. Founders must have a verified email. The bootstrap is closed to arbitrary practice creation; a future commercial signup eligibility policy can replace this allowlist. In Clerk organization settings, enable **Organization slugs** and keep the creator's initial role as `org:admin`. CareIQ reconciles external creation using the deterministic `careiq-<operation UUID>` slug and private owner/operation markers. With slugs disabled, Clerk rejects the create request; the current API preserves the pending setup and returns `PROVISIONING_PENDING`. After correcting the setting, use **Check setup status** with the original submitted details. Do not create a replacement organization or change the pending payload. See [Clerk organization settings](https://clerk.com/docs/guides/organizations/configure) and [OrganizationSlugsDisabled](https://clerk.com/docs/guides/development/errors/platform-api).
+3. Configure reviewed staff roles in Clerk, then list their keys in `CAREIQ_STAFF_ROLES`. Built-in member/admin roles remain recognized. Custom clinical permissions are `org:patients:read`, `org:patients:create`, `org:appointments:read`, and `org:appointments:create`. Grant only those appropriate to the role. The API does not create a parallel staff role directory; the separate current-owner profile is limited to the reviewed operational preset.
 4. Set `CAREIQ_INVITATION_REDIRECT_URL` to the matching web application. Configure Clerk's `organizationMembership.created`, `organizationMembership.updated`, `organizationMembership.deleted`, `organizationInvitation.created`, `organizationInvitation.accepted`, and `organizationInvitation.revoked` events to `POST /api/v1/webhooks/clerk`, with `CLERK_WEBHOOK_SIGNING_SECRET` stored only on the API. Raw-body signature verification precedes processing; this endpoint uses provider signatures rather than a user session.
 5. Keep the existing CORS/authorized-party policy. Native auth remains a separate mobile integration task; do not weaken browser token validation to make an untested native flow pass.
+
+For a read-only front desk, assign `org:patients:read` and `org:appointments:read` to the intended Clerk role (feature keys `patients`/`appointments`, permission key `read`). An Admin label alone does not grant clinical access; the current recorded owner additionally has the bounded preset described above. Clerk role permissions apply across the application; CareIQ still checks current practice enrollment and explicit location assignments. Review that scope with the owner before changing a production role.
 
 Fresh Clerk membership lookups are required for location-mode access; failures deny access with retryable errors. Webhooks and the membership reconciliation command only narrow local grants. They never activate a member. Duplicate or reordered provider notifications cannot replace the owner's activation review. Rejoining with a different Clerk membership requires a new enrollment review.
 
@@ -55,6 +66,8 @@ Founding onboarding supports one practice per approved identity in this rollout.
 ## Database and migration
 
 Migration `0016_location-membership.sql` adds locations, local enrollment references, assignments, invitation/provisioning state, administrative audit events, and provider-event deduplication. Patients, appointments, clinical audit and retry keys gain location scope. Composite foreign keys bind clinical references to both practice and location.
+
+Migration `0045_owner_operator_access.sql` adds `practice_owner_access`, keyed by practice and owner identity, with the 17-key restriction allowlist, all-locations choice and optimistic revision. The reviewed migration initializes existing active location-mode owners and ordinary active-location assignments. The table uses forced practice/actor row security and narrow runtime grants. New onboarding and handoffs initialize the same state through checked services; selecting a practice or reading `/me` does not write a profile. Legacy mode keeps its existing compatibility authorization.
 
 The non-owning runtime role uses forced row-level security. Clinical transactions set practice, actor and location locally, then recheck and lock active enrollment, location and assignment rows. Local revocation or location closure serializes with already authorized work: committed work is retained, and requests beginning after revocation cannot keep using the old grant. External provider changes are checked at request authorization, not retroactively applied to an already committed request.
 

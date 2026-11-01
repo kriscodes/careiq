@@ -1,7 +1,13 @@
 import type { CSSProperties } from "react";
 
-export type InterviewIconName = "calendar" | "users" | "plus" | "user-plus" | "arrow" | "chevron-left" | "chevron-right" | "phone" | "mail" | "clock" | "building" | "code" | "workflow" | "check";
+export type InterviewIconName = "calendar" | "users" | "plus" | "user-plus" | "arrow" | "chevron-left" | "chevron-right" | "phone" | "mail" | "clock" | "building" | "code" | "workflow" | "check" | "home" | "file" | "settings" | "bell" | "shield" | "chart";
 const paths: Record<InterviewIconName, string[]> = {
+  home: ["m3 10 9-7 9 7", "M5 9v12h14V9M9 21v-7h6v7"],
+  file: ["M6 3h8l4 4v14H6z", "M14 3v5h4M9 12h6m-6 4h6"],
+  settings: ["M9 4h6l1 3 3 1 1 6-3 2-1 4H8l-1-3-3-2V9l3-1z", "M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0"],
+  bell: ["M5 17h14l-2-3V9a5 5 0 0 0-10 0v5z", "M10 21h4M12 2v2"],
+  shield: ["m12 3 8 3v6c0 5-5 8-8 10-3-2-8-5-8-10V6z", "m8 12 3 3 5-6"],
+  chart: ["M4 3v18h17", "M8 16v-5m5 5V6m5 10v-7"],
   calendar: ["M5 5h14v15H5z", "M8 3v4m8-4v4M5 10h14"],
   users: ["M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6", "M3 20v-2a6 6 0 0 1 12 0v2M17 5a3 3 0 0 1 0 6m1 3a5 5 0 0 1 3 4v2"],
   plus: ["M12 5v14M5 12h14"],

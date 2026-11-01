@@ -8,7 +8,7 @@ export type WorkflowRecord = { id: string; revision?: number; concurrency?: Conc
 export type WorkflowPatient = WorkflowRecord & { firstName: string; lastName: string; email: string | null; phone: string | null; dateOfBirth?: string | null; preferredContactMethod?: string; status?: string };
 export type Requirement = WorkflowRecord & { patientId?: string; appointmentId?: string; labelSnapshot?: string; progressState?: string; lifecycleState?: string; label?: string; name?: string; documentTypeId?: string; state?: string; status?: string; reason?: string; reasonCodes?: string[]; reviewRequired?: boolean; signatureRequired?: boolean; candidateVersionId?: string | null; candidateDocumentId?: string | null; selectedEvidence?: { id?: string; documentId?: string | null; documentVersionId: string; acceptedReviewId?: string | null } | null; evidenceVersionId?: string | null; documentVersionId?: string | null };
 export type Readiness = { requiredCount?: number; satisfiedCount?: number; waivedCount?: number; needsReviewCount?: number; missingCount?: number; state?: string; status?: string; ready?: number; total?: number; satisfied?: number; missing?: number; pendingReview?: number; label?: string };
-export type WorkflowAppointment = WorkflowRecord & { patientId: string; providerId?: string | null; visitTypeId?: string | null; scheduledAt: string; endsAt?: string | null; durationMinutes?: number; status: string; reason: string | null; patient?: WorkflowPatient; provider?: { id: string; name?: string; displayName?: string }; readiness?: Readiness; requirements?: Requirement[] };
+export type WorkflowAppointment = WorkflowRecord & { patientId: string; providerId?: string | null; visitTypeId?: string | null; scheduledAt: string; endsAt?: string | null; durationMinutes?: number; status: string; reason: string | null; patient?: Partial<WorkflowPatient> & { id: string; displayName?: string }; provider?: { id: string; name?: string; displayName?: string }; readiness?: Readiness; requirements?: Requirement[] };
 export type DocumentVersion = WorkflowRecord & { versionNumber?: number; originalFilename?: string; contentType?: string; review?: { decision: string; id?: string } | null; fileName?: string; mimeType?: string; sizeBytes?: number; createdAt?: string; scanStatus?: string; reviewStatus?: string; status?: string; contentHash?: string };
 export type WorkflowDocument = WorkflowRecord & { patientId: string; documentTypeId?: string; title?: string; name?: string; status?: string; reviewStatus?: string; scanStatus?: string; archivedAt?: string | null; currentVersionId?: string | null; candidateVersionId?: string | null; currentVersion?: DocumentVersion | null; candidateVersion?: DocumentVersion | null; versions?: DocumentVersion[]; createdAt?: string; updatedAt?: string };
 export type TemplateField = { id?: string; key: string; label: string; type: string; required?: boolean; options?: string[]; sectionId?: string; helpText?: string; placeholder?: string; signerRole?: string; maxLength?: number; min?: number; max?: number };
@@ -41,7 +41,7 @@ export function workflowPath(locationId: string, resource = "") {
   return `/api/v1/locations/${locationId}/workflow${resource ? `${resource.startsWith("?") ? "" : "/"}${resource}` : ""}`;
 }
 export function concurrencyOf(record?: WorkflowRecord) { return record?.concurrency?.ifMatch ?? `"${record?.revision ?? 1}"`; }
-export function patientName(patient?: WorkflowPatient, locale = "en") { return patient ? `${patient.firstName} ${patient.lastName}` : translate(locale,"common.patientUnavailable"); }
+export function patientName(patient?: { firstName?: string; lastName?: string; displayName?: string }, locale = "en") { return patient?.displayName || [patient?.firstName, patient?.lastName].filter(Boolean).join(" ") || translate(locale,"common.patientUnavailable"); }
 export function readinessLabel(readiness?: Readiness, locale = "en") {
   if (!readiness) return translate(locale,"workflow.readiness.unavailable");
   if (readiness.label) return readiness.label;
@@ -52,8 +52,9 @@ export function readinessLabel(readiness?: Readiness, locale = "en") {
   return translate(locale,"workflow.readiness.attention");
 }
 export function allowed(record: WorkflowRecord | undefined, action: string, capabilities?: Record<string, unknown>) {
-  if (record?.allowedActions) { const names: Record<string, string[]> = { "appointment.update": ["edit", "cancel"], "document.review": ["review"], "document.archive": ["archive", "restore"], "requirement.waive": ["waive", "revoke_waiver"], "request.send": ["remind", "reissue", "cancel"] }; return record.allowedActions.includes(action) || record.allowedActions.includes("*") || (names[action] ?? []).some(name => record.allowedActions!.includes(name)); }
   const keys: Record<string, string> = { "patient.create": "patientsCreate", "patient.update": "patientsUpdate", "appointment.create": "appointmentsCreate", "appointment.update": "appointmentsUpdate", "document.upload": "documentsUpload", "document.review": "documentsReview", "document.archive": "documentsArchive", "request.send": "requestsSend", "requirement.waive": "requirementsWaive", "configuration.manage": "configurationManage", "activity.read": "activityRead" };
+  if (capabilities?.[keys[action] ?? action] === false) return false;
+  if (record?.allowedActions) { const names: Record<string, string[]> = { "appointment.update": ["edit", "cancel"], "document.review": ["review"], "document.archive": ["archive", "restore"], "requirement.waive": ["waive", "revoke_waiver"], "request.send": ["remind", "reissue", "cancel"] }; return record.allowedActions.includes(action) || record.allowedActions.includes("*") || (names[action] ?? []).some(name => record.allowedActions!.includes(name)); }
   return capabilities?.[keys[action] ?? action] === true;
 }
 export function createWorkflowAdapter(locationId: string, getToken: () => Promise<string>, onAccessDenied: () => void): WorkflowAdapter {
@@ -92,6 +93,78 @@ export function createWorkflowAdapter(locationId: string, getToken: () => Promis
 
 export function normalizeSnapshot(input: WorkflowSnapshot): WorkflowSnapshot {
   return { ...input, timeZone: input.timeZone ?? input.location?.timeZone ?? "UTC", patients: input.patients ?? [], appointments: input.appointments ?? [], documents: (input.documents ?? []).map(doc => { const versions = [...doc.versions ?? []].sort((a,b) => (b.versionNumber ?? 0) - (a.versionNumber ?? 0)); return { ...doc, versions, candidateVersion: doc.candidateVersion ?? versions.find(v => (v.versionNumber ?? 0) > (doc.currentVersion?.versionNumber ?? 0)) ?? null }; }), templates: (input.templates ?? []).map(template => ({ ...template, name: template.name ?? template.title ?? "Untitled template", versions: [...template.versions ?? []].sort((a,b) => (a.versionNumber ?? 0) - (b.versionNumber ?? 0)) })), requests: (input.requests ?? []).map(request => ({ ...request, status: request.status ?? request.state ?? "open" })), workItems: input.workItems ?? [], providers: (input.providers ?? []).map(provider => ({ ...provider, name: provider.name ?? provider.displayName ?? "Provider" })), visitTypes: input.visitTypes ?? [], documentTypes: input.documentTypes ?? [] };
+}
+
+export type WorkflowAvailabilityInput = { providerId: string; date: string; durationMinutes: number; excludeAppointmentId?: string };
+export type WorkflowAvailability = WorkflowAvailabilityInput & { timeZone: string; slots: Array<{ startsAt: string; endsAt: string }> };
+
+/** Slots are suggestions from the same server policy that validates a booking. */
+export function loadWorkflowAvailability(adapter: WorkflowAdapter, input: WorkflowAvailabilityInput, signal?: AbortSignal) {
+  const query = new URLSearchParams({ providerId: input.providerId, date: input.date, durationMinutes: String(input.durationMinutes) });
+  if (input.excludeAppointmentId) query.set("excludeAppointmentId", input.excludeAppointmentId);
+  return adapter.detail<WorkflowAvailability>(`availability?${query}`, signal);
+}
+
+/** Drain visible dates and the previous boundary day so overnight visits remain visible. */
+export async function loadWorkflowSchedule(adapter: WorkflowAdapter, dates: string[], signal?: AbortSignal): Promise<WorkflowSnapshot> {
+  const uniqueDates = [...new Set(dates)].sort();
+  if (!uniqueDates.length || uniqueDates.length > 7 || uniqueDates.some(date => !/^\d{4}-\d{2}-\d{2}$/.test(date) || new Date(`${date}T00:00:00Z`).toISOString().slice(0, 10) !== date)) throw new Error("Choose up to seven consecutive valid schedule dates.");
+  const previousDay = new Date(`${uniqueDates[0]}T00:00:00Z`); previousDay.setUTCDate(previousDay.getUTCDate() - 1);
+  const boundaryDate = previousDay.toISOString().slice(0, 10);
+  if (uniqueDates.some((date, index) => index > 0 && Date.parse(`${date}T00:00:00Z`) - Date.parse(`${uniqueDates[index - 1]}T00:00:00Z`) !== 86400000)) throw new Error("Choose consecutive schedule dates.");
+  signal?.throwIfAborted();
+  const snapshots = await Promise.all(uniqueDates.map(date => adapter.load(date, signal)));
+  signal?.throwIfAborted();
+  if (snapshots.some(snapshot => snapshot.capabilities?.appointmentsRead !== true)) throw new ApiError(403, "FORBIDDEN", "FORBIDDEN");
+  const base = snapshots[0];
+  if (snapshots.some(snapshot => snapshot.location?.id !== base.location?.id || snapshot.timeZone !== base.timeZone)) throw new Error("The schedule location changed. Refresh before continuing.");
+  async function complete<T extends WorkflowRecord>(resource: string, initial: T[], pagination: WorkflowPagination | undefined, date: string) {
+    const items = new Map(initial.map(item => [item.id, item]));
+    const cursors = new Set<string>();
+    let page = pagination;
+    while (page?.hasMore) {
+      signal?.throwIfAborted();
+      if (!page.nextCursor || cursors.has(page.nextCursor) || cursors.size >= 100) throw new Error("The complete schedule could not be loaded. Refresh before continuing.");
+      cursors.add(page.nextCursor);
+      const query = new URLSearchParams({ date, limit: String(page.limit ?? pagination?.limit ?? 50), cursor: page.nextCursor });
+      const next = await adapter.page<T>(`${resource}?${query}`, signal);
+      signal?.throwIfAborted();
+      for (const item of next.data) items.set(item.id, item);
+      page = next.pagination;
+    }
+    return [...items.values()];
+  }
+  const [days, providers, visitTypes, boundary] = await Promise.all([
+    Promise.all(snapshots.map((snapshot, index) => complete("appointments", snapshot.appointments, snapshot.pagination?.appointments, uniqueDates[index]))),
+    complete("providers", snapshots.flatMap(snapshot => snapshot.providers), base.pagination?.providers, uniqueDates[0]),
+    complete("visit-types", snapshots.flatMap(snapshot => snapshot.visitTypes), base.pagination?.visitTypes, uniqueDates[0]),
+    adapter.page<WorkflowAppointment>(`appointments?${new URLSearchParams({ date: boundaryDate, limit: "50" })}`, signal).then(page => complete("appointments", page.data, page.pagination, boundaryDate)),
+  ]);
+  signal?.throwIfAborted();
+  const merge = <T extends WorkflowRecord,>(items: T[]) => {
+    const records = new Map<string, T>();
+    for (const item of items) { const existing = records.get(item.id); if (!existing || (item.revision ?? item.concurrency?.revision ?? 0) >= (existing.revision ?? existing.concurrency?.revision ?? 0)) records.set(item.id, item); }
+    return [...records.values()];
+  };
+  const localStamp = (instant: string) => {
+    const parts = new Intl.DateTimeFormat("en-CA", { timeZone: base.timeZone, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" }).formatToParts(new Date(instant));
+    const value = (type: string) => parts.find(part => part.type === type)?.value;
+    return `${value("year")}-${value("month")}-${value("day")}T${value("hour")}:${value("minute")}:${value("second")}`;
+  };
+  const nextDay = new Date(`${uniqueDates.at(-1)}T00:00:00Z`); nextDay.setUTCDate(nextDay.getUTCDate() + 1);
+  const rangeStart = `${uniqueDates[0]}T00:00:00`; const rangeEnd = `${nextDay.toISOString().slice(0, 10)}T00:00:00`;
+  return normalizeSnapshot({ ...base, asOf: snapshots.map(snapshot => snapshot.asOf).sort().at(-1) ?? base.asOf, summary: undefined,
+    appointments: merge([...days.flat(), ...boundary]).filter(appointment => localStamp(appointment.scheduledAt) < rangeEnd && localStamp(appointment.endsAt ?? new Date(Date.parse(appointment.scheduledAt) + (appointment.durationMinutes ?? 30) * 60000).toISOString()) > rangeStart),
+    capabilities: Object.fromEntries([...new Set(snapshots.flatMap(snapshot => Object.keys(snapshot.capabilities ?? {})))].map(key => [key, snapshots.every(snapshot => snapshot.capabilities?.[key] === true)])),
+    patients: merge(snapshots.flatMap(snapshot => snapshot.patients)), providers, visitTypes,
+    documents: merge(snapshots.flatMap(snapshot => snapshot.documents)), requests: merge(snapshots.flatMap(snapshot => snapshot.requests)),
+    workItems: merge(snapshots.flatMap(snapshot => snapshot.workItems)), documentTypes: merge(snapshots.flatMap(snapshot => snapshot.documentTypes)), templates: merge(snapshots.flatMap(snapshot => snapshot.templates)),
+    relatedPagination: {
+      documentVersions: Object.assign({}, ...[...snapshots].sort((a, b) => a.asOf.localeCompare(b.asOf)).map(snapshot => snapshot.relatedPagination?.documentVersions)),
+      templateVersions: Object.assign({}, ...[...snapshots].sort((a, b) => a.asOf.localeCompare(b.asOf)).map(snapshot => snapshot.relatedPagination?.templateVersions)),
+    },
+    pagination: { ...base.pagination, appointments: { hasMore: false, nextCursor: null }, providers: { hasMore: false, nextCursor: null }, visitTypes: { hasMore: false, nextCursor: null } },
+  });
 }
 
 /** Multi-stage operations retain stable, distinct UUID keys for each server command. */

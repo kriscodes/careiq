@@ -32,3 +32,12 @@ test("the observed verification-code rate limit uses localized wait copy without
     assert.doesNotMatch(message, /secret|429|\d/);
   }
 });
+
+
+test("an unavailable identity gets fixed support guidance without provider ban diagnostics", () => {
+  for (const locale of ["en", "es"] as const) {
+    const payload = { errors: [{ code: "user_banned", message: "private provider reason", longMessage: "private account history" }] };
+    assert.equal(authErrorMessage(payload, key => translate(locale, key)), translate(locale, "error.auth.accountUnavailable"));
+    assert.doesNotMatch(authErrorMessage(payload, key => translate(locale, key)), /private|banned|archiv/);
+  }
+});

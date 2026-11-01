@@ -1,6 +1,6 @@
 import { useSyncExternalStore, type ReactNode } from "react";
 type Call = { name: string; input?: unknown };
-declare global { interface Window { __careiqLocaleAccount?: { load: () => void; resolveNext: () => void; snapshot: () => { loaded: boolean; active: number; maximumActive: number; writes: string[]; storedLocale: string | undefined } }; __careiqAuthFetch?: { set: (source: "signin" | "signup", status: "idle" | "fetching") => void; resolvePassword: () => void; resolveProvider: () => void }; __careiqMockCalls: Call[]; __careiqLastActivation?: { organization: string; navigate?: (input: { session: { currentTask: null }; decorateUrl: (url: string) => string }) => void }; } }
+declare global { interface Window { __careiqMemberships?: { resolve: () => void }; __careiqLocaleAccount?: { load: () => void; resolveNext: () => void; snapshot: () => { loaded: boolean; active: number; maximumActive: number; writes: string[]; storedLocale: string | undefined } }; __careiqAuthFetch?: { set: (source: "signin" | "signup", status: "idle" | "fetching") => void; resolvePassword: () => void; resolveProvider: () => void }; __careiqMockCalls: Call[]; __careiqLastActivation?: { organization: string; navigate?: (input: { session: { currentTask: null }; decorateUrl: (url: string) => string }) => void }; } }
 const scenario = new URLSearchParams(location.search).get("scenario") || "normal";
 let version = 0;
 let organization: string | null = scenario === "no-active-organization" ? null : "org_test";
@@ -127,8 +127,12 @@ if (scenario === "locale-account") window.__careiqLocaleAccount = {
 };
 const identityRole = new URLSearchParams(location.search).get("identityRole");
 const membershipRole = identityRole === "member" ? "org:member" : identityRole === "configured-clinician" ? "org:clinician" : "org:admin";
-const memberships = { data: [{ id: "member_test", role: membershipRole, organization: { id: "org_test", name: "Test practice" } }], isLoading: false, error: null, hasNextPage: false, fetchNext: () => {}, revalidate: ok };
-const invitations = { data: [{ id: "invite_test", emailAddress: scenario === "wrong-invite-email" ? "teammate@example.invalid" : email.emailAddress, publicOrganizationData: { id: "org_team", name: "Invited team" }, accept: async () => { call("acceptInvitation"); } }], isLoading: false, error: null, hasNextPage: false, fetchNext: () => {}, revalidate: ok };
+const loadedMemberships = [{ id: "member_test", role: membershipRole, organization: { id: "org_test", name: "Test practice" } }];
+const memberships = { data: scenario === "memberships-loading" ? [] : scenario === "memberships-paged" ? [{ id: "member_other", role: membershipRole, organization: { id: "org_other", name: "Another practice" } }] : scenario === "navigation-two-practices" ? [...loadedMemberships, { id: "member_other", role: membershipRole, organization: { id: "org_other", name: "Another practice" } }] : loadedMemberships, isLoading: scenario === "memberships-loading", error: null, hasNextPage: scenario === "memberships-paged", fetchNext: () => {}, revalidate: ok };
+if (scenario === "memberships-loading" || scenario === "memberships-paged") window.__careiqMemberships = {
+  resolve: () => { memberships.data = loadedMemberships; memberships.isLoading = false; memberships.hasNextPage = false; changed(); },
+};
+const invitations = { data: [{ id: "invite_test", emailAddress: scenario === "wrong-invite-email" ? "teammate@example.invalid" : email.emailAddress, publicOrganizationData: { id: "org_team", name: "Invited team" }, accept: async () => { call("acceptInvitation"); if (scenario === "navigation-invitation-pending") await new Promise<void>(() => {}); } }], isLoading: false, error: null, hasNextPage: false, fetchNext: () => {}, revalidate: ok };
 export function useAuth() { useObserve(); return { isLoaded: true, isSignedIn: !scenario.startsWith("auth-provider-") && !scenario.startsWith("auth-trust") && !["normal", "signin-error", "mfa", "unknown-account", "recovery-offline", "auth-noise", "auth-deferred", "auth-restored-mfa", "auth-restored-signup", "auth-loading", "auth-failed"].includes(scenario) || new URLSearchParams(location.search).get("component") !== "auth", getToken: token, userId: user.id, orgId: organization }; }
 export function useClerk() { return { signOut }; }
 export function useSignIn() { useObserve(); return { signIn, fetchStatus: signInFetchStatus }; }
@@ -136,7 +140,7 @@ export function useSignUp() { useObserve(); return { signUp, fetchStatus: signUp
 export function useUser() { useObserve(); return { user: localeAccountLoaded ? user : null, isLoaded: localeAccountLoaded }; }
 export function useSession() { useObserve(); return { isLoaded: true, session: { currentTask: null } }; }
 export function useOrganizationList() { useObserve(); return { isLoaded: true, setActive, userMemberships: memberships, userInvitations: invitations }; }
-export function UserButton() { return <button type="button">Test account</button>; }
+export function UserButton() { return <div className="cl-rootBox cl-userButton-root"><button className="cl-userButtonTrigger" type="button" aria-label="Test account" style={{ width: 44, height: 44 }}><span aria-hidden="true">QA</span></button></div>; }
 export function SignIn() { return <p>Provider completion fixture</p>; }
 export function SignUp() { return <p>Provider signup fixture</p>; }
 export function TaskResetPassword() { return <p>Required password task fixture</p>; }

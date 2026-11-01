@@ -46,3 +46,11 @@ test('paperwork cursors preserve PostgreSQL microseconds and reject tampering, a
     assert.throws(()=>paperworkCursorFrom(cursor+'.extra','patient-A',now),code('INVALID_PAPERWORK_CURSOR'));
     assert.equal(paperworkCursorFrom(undefined,'patient-A'),undefined);
 });
+
+
+test('verified owner binding authority still requires an authenticated principal and a recent verified factor',()=>{
+    const owner={...auth,has:()=>false};
+    assert.doesNotThrow(()=>requirePortalBindingAuthority(owner,true));
+    assert.throws(()=>requirePortalBindingAuthority({...owner,isAuthenticated:false},true),code('UNAUTHENTICATED'));
+    for(const fva of [undefined,[6,-1],[-1,-1]])assert.throws(()=>requirePortalBindingAuthority({...owner,sessionClaims:{fva}} as typeof auth,true),code('RECENT_AUTHENTICATION_REQUIRED'));
+});

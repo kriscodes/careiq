@@ -55,5 +55,6 @@ export function registerPracticeRoutes(app: Express, access: PracticeAccess, get
   app.post("/api/v1/practice/invitations/:id/revoke", route((req) => access.revokeInvitation(getAuth(req), param(req, "id"))));
   app.post("/api/v1/practice/members/:userId/activate", route((req) => access.activateMember(getAuth(req), param(req, "userId"), body(req))));
   app.post("/api/v1/practice/members/:userId/suspend", route((req) => access.suspendMember(getAuth(req), param(req, "userId"))));
-  app.post("/api/v1/practice/ownership", route((req) => access.transferOwnership(getAuth(req), String(body(req).userId ?? ""))));
+  app.post("/api/v1/practice/owner-access", route((req) => access.updateOwnerAccess(getAuth(req), body(req))));
+  app.post("/api/v1/practice/ownership", route((req) => access.transferOwnership(getAuth(req), body(req))));
 }

@@ -62,6 +62,17 @@ test('workflow services persist booking, rules, versions, reviews, requests and 
             requirementId = snapshot.appointments[0].requirements[0].id;
             assert.equal(snapshot.appointments[0].requirements.length, 1);
         });
+        await context.test('available slots use authorized scope and preserve the current appointment when editing', async () => {
+            const query = { providerId, date: '2027-01-04', durationMinutes: 30 };
+            const slots = await service.availability(tenant, query, randomUUID());
+            assert.equal(slots.timeZone, 'America/Los_Angeles');
+            assert.equal(slots.slots.some(slot => slot.startsAt === '2027-01-04T17:00:00.000Z'), false);
+            assert.ok(slots.slots.some(slot => slot.startsAt === '2027-01-04T17:30:00.000Z'));
+            const editing = await service.availability(tenant, { ...query, excludeAppointmentId: appointmentId }, randomUUID());
+            assert.ok(editing.slots.some(slot => slot.startsAt === '2027-01-04T17:00:00.000Z'));
+            await assert.rejects(service.availability(tenant, { ...query, excludeAppointmentId: randomUUID() }, randomUUID()), error => error instanceof WorkflowError && error.status === 404);
+            await assert.rejects(service.availability({ ...tenant, locationId: randomUUID() }, query, randomUUID()), error => error instanceof WorkflowError && error.status === 403);
+        });
         await context.test('rescheduling preserves snapshotted rules and visit-type changes reconcile due dates exactly once', async () => {
             const secondType = (await run('visit-types.create', '', { code: 'follow_up', name: 'Synthetic follow-up', defaultDurationMinutes: 30 })).id as string;
             await run('rules.publication', '', { title: 'New synthetic rules', rules: [{ documentTypeId, required: true, reviewRequired: true, reusePolicy: 'none', dueOffsetMinutes: -60 }] });

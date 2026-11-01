@@ -15,7 +15,8 @@
     "lint": "tsc --noEmit",
     "members:reconcile": "tsx src/db/reconcile-practices.ts",
     "release:verify": "tsx src/db/verify-release.ts",
-    "db:verify": "tsx src/db/verify-release.ts --database-only"
+    "db:verify": "tsx src/db/verify-release.ts --database-only",
+    "account:restore": "tsx src/account-restore.ts"
   },
   "keywords": [],
   "author": "",

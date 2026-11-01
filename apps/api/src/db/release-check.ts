@@ -1,3 +1,5 @@
+import { verifyOwnerAccessDatabaseRelease } from "./owner-access-release-check.js";
+import { verifyAccountLifecycleDatabaseRelease } from "./account-lifecycle-release-check.js";
 import { verifyWorkflowDatabaseRelease } from "./workflow-release-check.js";
 import { readFile } from "node:fs/promises";
 import type { PoolClient } from "pg";
@@ -70,7 +72,9 @@ export async function verifyDatabaseRelease(client: Pick<PoolClient, "query">, m
   }
   if (!columns.some((column) => column.relname === "practices" && column.attname === "owner_user_id" && column.can_update) || (marketingEnabled && !columns.some((column) => column.relname === "marketing_interview_requests" && column.attname === "submission_key" && column.can_select))) throw new ReleaseCheckError("Required narrowly scoped column grants are missing.");
   const policies = (await client.query("SELECT tablename,policyname,cmd,roles::text[],qual,with_check FROM pg_policies WHERE schemaname='public' AND tablename=ANY($1::text[])", [protectedTables])).rows as Policy[];
-  if (policies.length !== expectedPolicies.length || expectedPolicies.some((expected) => !policies.some((actual) => actual.tablename === expected.tablename && actual.policyname === expected.policyname && actual.cmd === expected.cmd && actual.roles.join() === expected.roles.join() && normalize(actual.qual) === normalize(expected.qual) && normalize(actual.with_check) === normalize(expected.with_check)))) throw new ReleaseCheckError("Row-level security policies differ from the reviewed release.");
+  // The dedicated availability reader policy is validated separately with its role and column grants.
+  const clinicalPolicies = policies.filter(actual => !(actual.tablename === "appointments" && actual.policyname === "appointments_availability_projection"));
+  if (clinicalPolicies.length !== expectedPolicies.length || expectedPolicies.some((expected) => !clinicalPolicies.some((actual) => actual.tablename === expected.tablename && actual.policyname === expected.policyname && actual.cmd === expected.cmd && actual.roles.join() === expected.roles.join() && normalize(actual.qual) === normalize(expected.qual) && normalize(actual.with_check) === normalize(expected.with_check)))) throw new ReleaseCheckError("Row-level security policies differ from the reviewed release.");
   const functions = (await client.query(`SELECT p.proname,p.prosecdef,p.proconfig,p.prosrc FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
     WHERE n.nspname='public' AND p.proname=ANY($1::text[])`, [["careiq_context_uuid", "careiq_clinical_scope", "careiq_location_activation_guard"]])).rows;
   const migration = await readFile(`${migrationsFolder}/0016_location-membership.sql`, "utf8");
@@ -92,4 +96,6 @@ export async function verifyDatabaseRelease(client: Pick<PoolClient, "query">, m
     WHERE t.tgrelid='public.practices'::regclass AND t.tgname='practices_location_activation' AND NOT t.tgisinternal`)).rows;
   if (constraints.length !== expectedConstraints.length || expectedConstraints.some(([table, name, definition]) => !constraints.some((actual) => actual.relname === table && actual.conname === name && actual.convalidated && normalize(actual.definition) === normalize(definition!))) || trigger.length !== 1 || !["O", "A"].includes(trigger[0].tgenabled) || trigger[0].proname !== "careiq_location_activation_guard" || trigger[0].nspname !== "public" || normalize(trigger[0].definition) !== "CREATE TRIGGER practices_location_activation BEFORE UPDATE OF authorization_mode ON public.practices FOR EACH ROW EXECUTE FUNCTION careiq_location_activation_guard()") throw new ReleaseCheckError("Location constraint definitions or the reviewed activation trigger differ from this release.");
   await verifyWorkflowDatabaseRelease(client);
+  await verifyAccountLifecycleDatabaseRelease(client);
+  await verifyOwnerAccessDatabaseRelease(client);
 }

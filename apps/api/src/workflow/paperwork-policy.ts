@@ -6,10 +6,10 @@ export function portalPrincipal(auth: RequestAuthentication) {
     if (!auth.isAuthenticated || typeof auth.userId !== 'string' || !/^user_[A-Za-z0-9]+$/.test(auth.userId) || typeof auth.sessionId !== 'string' || !/^sess_[A-Za-z0-9]+$/.test(auth.sessionId)) throw new WorkflowError('UNAUTHENTICATED',401);
     return { subject: auth.userId, sessionId: auth.sessionId };
 }
-/** Dedicated permission and recent verified factor; administrator role alone is insufficient. */
-export function requirePortalBindingAuthority(auth: RequestAuthentication) {
+/** Callers may pass the verified owner flag only after effective paperwork/configuration/document grants pass. Recent verification remains mandatory. */
+export function requirePortalBindingAuthority(auth: RequestAuthentication, trustedOwnerOperator = false) {
     portalPrincipal(auth);
-    if (auth.has?.({permission:'org:paperwork:manage'}) !== true) throw new WorkflowError('FORBIDDEN',403);
+    if (!trustedOwnerOperator && auth.has?.({permission:'org:paperwork:manage'}) !== true) throw new WorkflowError('FORBIDDEN',403);
     const claims=(auth as RequestAuthentication & {sessionClaims?:{fva?:unknown}}).sessionClaims;
     const ages=claims?.fva;
     if (!Array.isArray(ages) || typeof ages[0] !== 'number' || !Number.isFinite(ages[0]) || ages[0]<0 || ages[0]>5) throw new WorkflowError('RECENT_AUTHENTICATION_REQUIRED',403);

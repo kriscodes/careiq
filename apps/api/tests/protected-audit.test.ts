@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { randomBytes, randomUUID } from "node:crypto";
-import { chmod, mkdtemp, rm } from "node:fs/promises";
+import { chmod, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { execFile } from "node:child_process";
@@ -128,6 +128,12 @@ test("protected audit uses a dedicated reader, isolates locations, rejects chang
       assert.equal((await auditDetail(tenant, eventId, randomUUID(), "evidence-review")).databaseRecords, undefined);
       const detail = await auditDetail(tenant, eventId, randomUUID(), "evidence-review", true);
       assert.equal(detail.databaseRecords.length, 1); assert.equal(detail.databaseRecords[0].locationId, locationId);
+      const evidenceFilter = { ...filter, includeEvidence: true, action: "evidence.audit" };
+      const exported = await exportAudit(tenant, evidenceFilter, randomUUID(), "evidence-review", randomUUID());
+      const manifest = JSON.parse((await auditExportContent(tenant, exported.id, randomUUID(), true)).toString());
+      assert.equal(manifest.databaseRecords.length, 1);
+      assert.equal(manifest.databaseRecords[0].location_id, locationId);
+      for (const permission of [undefined, false]) await assert.rejects(auditExportContent(tenant, exported.id, randomUUID(), permission), error => (error as { code: string }).code === "AUDIT_EVIDENCE_ACCESS_DENIED");
     });
     await context.test("export materializes an immutable manifest and reauthorizes each download", async () => {
       const exported = await exportAudit(tenant, filter, randomUUID(), "local-test-case", randomUUID());
@@ -139,6 +145,12 @@ test("protected audit uses a dedicated reader, isolates locations, rejects chang
       const secondBytes = await auditExportContent(tenant, exported.id, randomUUID());
       assert.deepEqual(secondBytes, firstBytes);
       const file = join(temporary, exported.id + ".json");
+      try {
+        await writeFile(file, JSON.stringify({ ...manifest, databaseRecords: [] }));
+        await assert.rejects(auditExportContent(tenant, exported.id, randomUUID()), error => (error as { code: string }).code === "AUDIT_EVIDENCE_ACCESS_DENIED");
+        await writeFile(file, JSON.stringify({ ...manifest, filter: {} }));
+        await assert.rejects(auditExportContent(tenant, exported.id, randomUUID(), true), error => (error as { code: string }).code === "AUDIT_EXPORT_INVALID");
+      } finally { await writeFile(file, firstBytes); }
       await chmod(file, 0o644);
       try { await assert.rejects(auditExportContent(tenant, exported.id, randomUUID()), error => (error as {code:string}).code === "RESOURCE_NOT_FOUND"); }
       finally { await chmod(file, 0o600); }
