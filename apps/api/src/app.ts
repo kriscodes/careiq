@@ -8,6 +8,8 @@ import { registerPatientPaperworkPortalRoutes } from "./routes/patient-paperwork
 import express, { type Request, type RequestHandler } from "express";
 import cors from "cors";
 import { registerPracticeRoutes, accessFailure, type PracticeAccess } from "./routes/practice-access.js";
+import { registerAccountLifecycleRoutes } from "./routes/account-lifecycle.js";
+import { createAccountStatusMiddleware } from "./middleware/account-status.js";
 import { logFailure } from "./logging.js";
 import { isDatabaseBusy } from "./availability.js";
 import { createTenantContextMiddleware, type RequestAuthentication, type TenantContext } from "./middleware/tenant-context.js";
@@ -33,6 +35,7 @@ export type ApiDependencies = {
   /** Compatibility injection only; never called. */
   provisionPractice?: (orgId: string) => Promise<unknown>;
   practiceAccess?: PracticeAccess;
+  accountLifecycle?: typeof import("./services/account-lifecycle.service.js").accountLifecycle;
   clerkWebhook?: (body: Buffer, headers: Record<string, string>) => Promise<void>;
   listPatients: (tenant: TenantContext, page: Pagination) => Promise<unknown[]>;
   listAppointments: (tenant: TenantContext, page: Pagination) => Promise<unknown[]>;
@@ -80,9 +83,11 @@ export function createApiApp(dependencies: ApiDependencies, configuration: {
   });
   if (dependencies.deliveryCallbacks) registerPatientDeliveryCallbackRoutes(app, dependencies.deliveryCallbacks);
   app.use(dependencies.authenticate);
+  if (dependencies.accountLifecycle) app.use(createAccountStatusMiddleware(dependencies.getAuth, dependencies.accountLifecycle));
   if (dependencies.workflow) registerPatientPaperworkPortalRoutes(app, dependencies.getAuth);
   app.use("/api/v1/locations/:locationId/workflow", express.json({ limit: "256kb", inflate: false }));
   app.use(express.json({ limit: "16kb", inflate: false }));
+  if (dependencies.accountLifecycle) registerAccountLifecycleRoutes(app, dependencies.accountLifecycle, dependencies.getAuth);
   if (dependencies.portalCommunications) registerPortalCommunicationRoutes(app, dependencies.getAuth, dependencies.portalCommunications);
   const tenantContextMiddleware = createTenantContextMiddleware(dependencies);
 

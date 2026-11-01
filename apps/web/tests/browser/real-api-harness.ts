@@ -31,7 +31,7 @@ export const test=base.extend<object, {realApi:Harness}>({realApi:[async({},prov
   if(childEnded&&!await waitWithin(childEnded,5_000)){child.kill('SIGKILL');await waitWithin(childEnded,5_000);}
  }
  try{
-  await build({entryPoints:[resolve(web,'tests/browser/fixtures/real-api-entry.tsx')],outfile:resolve(output,'app.js'),bundle:true,platform:'browser',jsx:'automatic',nodePaths:[resolve(web,'node_modules')],define:{'process.env.NODE_ENV':'"test"','process.env.NEXT_PUBLIC_API_URL':'window.location.origin'},alias:{'@clerk/nextjs':resolve(web,'tests/browser/fixtures/real-api-clerk.tsx'),'next/link':resolve(web,'tests/browser/fixtures/mock-link.tsx'),'@':resolve(web,'src')},logLevel:'silent'});
+  await build({entryPoints:[resolve(web,'tests/browser/fixtures/real-api-entry.tsx')],outfile:resolve(output,'app.js'),bundle:true,platform:'browser',jsx:'automatic',nodePaths:[resolve(web,'node_modules')],define:{'process.env.NODE_ENV':'"test"','process.env.NEXT_PUBLIC_API_URL':'window.location.origin','process.env.NEXT_PUBLIC_CAREIQ_AUTH_PROVIDERS':'""'},alias:{'@clerk/nextjs':resolve(web,'tests/browser/fixtures/real-api-clerk.tsx'),'next/link':resolve(web,'tests/browser/fixtures/mock-link.tsx'),'@':resolve(web,'src')},logLevel:'silent'});
   const styles=await Promise.all([resolve(web,'src/app/globals.css'),resolve(web,'src/app/access.css'),resolve(root,'packages/i18n/web.css'),resolve(web,'src/components/workflow/workflow.css')].map(path=>readFile(path,'utf8')));
   await writeFile(resolve(output,'styles.css'),styles.join('\n').replace(/@import\s+["']tailwindcss["'];/g,''),{mode:0o600});
   // API imports stay in the child, outside the web TypeScript tree. The child

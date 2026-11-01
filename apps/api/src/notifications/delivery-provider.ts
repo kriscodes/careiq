@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
 export type DeliveryChannel = 'email' | 'sms';
-export type DeliveryMessage = { channel: DeliveryChannel; destination: string; subject?: string; text: string; externalKey: string };
+export type DeliveryMessage = { channel: DeliveryChannel; destination: string; subject?: string; text: string; html?: string; externalKey: string };
 export type ProviderResult = { state: 'accepted' | 'delivered' | 'retry' | 'failed' | 'unknown'; providerMessageId?: string; code?: string; retryAfterSeconds?: number };
 export type DeliveryProvider = { enabled: boolean; ready(channel: DeliveryChannel): boolean; account(channel: DeliveryChannel): string; provider(channel: DeliveryChannel): string; send(message: DeliveryMessage): Promise<ProviderResult>; reconcile(externalKey: string, providerMessageId?: string, channel?: DeliveryChannel): Promise<ProviderResult> };
 type Environment = Record<string, string | undefined>;
@@ -37,7 +37,7 @@ export function createDeliveryProvider(env: Environment = process.env, fetcher: 
         async send(message) {
             if (!ready(message.channel)) return { state: 'failed', code: 'DELIVERY_PROVIDER_UNAVAILABLE' };
             if (!/^[A-Za-z0-9:_-]{8,200}$/.test(message.externalKey)) return { state: 'failed', code: 'INVALID_PROVIDER_KEY' };
-            if (message.channel === 'email') return call('email', 'https://api.resend.com/emails', { method: 'POST', headers: { Authorization: `Bearer ${env.CAREIQ_RESEND_API_KEY}`, 'Content-Type': 'application/json', 'Idempotency-Key': message.externalKey }, body: JSON.stringify({ from: env.CAREIQ_RESEND_FROM, to: [message.destination], subject: message.subject, text: message.text, ...(/^patient-delivery:[0-9a-f-]{36}$/.test(message.externalKey)?{tags:[{name:"careiq_intent",value:message.externalKey.slice(17)},{name:"careiq_audience",value:"patient"}]}:{tags:[{name:"careiq_audience",value:"staff"}]}) }) }, true);
+            if (message.channel === 'email') return call('email', 'https://api.resend.com/emails', { method: 'POST', headers: { Authorization: `Bearer ${env.CAREIQ_RESEND_API_KEY}`, 'Content-Type': 'application/json', 'Idempotency-Key': message.externalKey }, body: JSON.stringify({ from: env.CAREIQ_RESEND_FROM, to: [message.destination], subject: message.subject, text: message.text, ...(message.html ? { html: message.html } : {}), ...(/^patient-delivery:[0-9a-f-]{36}$/.test(message.externalKey)?{tags:[{name:"careiq_intent",value:message.externalKey.slice(17)},{name:"careiq_audience",value:"patient"}]}:{tags:[{name:"careiq_audience",value:"staff"}]}) }) }, true);
             const callback = new URL(env.CAREIQ_TWILIO_CALLBACK_URL!); callback.searchParams.set('intent', message.externalKey.replace(/^patient-delivery:/, ''));
             return call('sms', `https://api.twilio.com/2010-04-01/Accounts/${account('sms')}/Messages.json`, { method: 'POST', headers: { Authorization: `Basic ${Buffer.from(`${account('sms')}:${env.CAREIQ_TWILIO_AUTH_TOKEN}`).toString('base64')}`, 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ To: message.destination, From: env.CAREIQ_TWILIO_FROM!, Body: message.text, StatusCallback: callback.toString(), ValidityPeriod: '900' }).toString() }, true);
         },

@@ -11,11 +11,11 @@ const locationId=randomUUID(),patientId=randomUUID();
 test('portal administration API denies document-only/admin/stale access before reading or mutating account bindings',async context=>{
     // Negative-route audit fallback must never contact any configured review database.
     const old={url:process.env.DATABASE_URL,ssl:process.env.DATABASE_SSL_MODE};process.env.DATABASE_URL='postgresql://synthetic:synthetic@127.0.0.1:1/careiq_test';process.env.DATABASE_SSL_MODE='disable';
-    let permitted=false,ages:unknown=[0,-1],reads=0,commands=0;
+    let permitted=false,ownerOperator=false,ages:unknown=[0,-1],reads=0,commands=0;
     const auth=()=>({isAuthenticated:true,userId:'user_Staff123',sessionId:'sess_Staff123',orgId:'org_Synthetic',orgRole:'org:admin',has:()=>permitted,sessionClaims:{fva:ages}} as RequestAuthentication);
     const tenant={practiceId:randomUUID(),locationId,userId:'user_Staff123',membershipId:'membership_Synthetic',orgId:'org_Synthetic'};
     const permissions=['org:documents:read','org:workflow:configure'];
-    const access={authorizeLocation:async()=>({tenant,capabilities:{},permissions})} as unknown as PracticeAccess;
+    const access={authorizeLocation:async()=>({tenant,capabilities:{},permissions,ownerOperator})} as unknown as PracticeAccess;
     const deps={execute:async()=>{commands++;return{id:randomUUID(),state:'active'};}} as unknown as WorkflowDependencies;
     const app=express();app.use(express.json());registerWorkflowRoutes(app,deps,access,auth,async(t,id)=>{reads++;assert.equal(t.locationId,locationId);assert.equal(id,patientId);return{items:[],adultSelfEligible:true,pagination:{limit:50,hasMore:false,nextCursor:null}};});
     const server=app.listen(0,'127.0.0.1');await new Promise<void>(accept=>server.once('listening',accept));const url=`http://127.0.0.1:${(server.address() as AddressInfo).port}/api/v1/locations/${locationId}/workflow/paperwork/patients/${patientId}/portal-grants`;
@@ -33,6 +33,14 @@ test('portal administration API denies document-only/admin/stale access before r
         await context.test('a fresh verified principal with all permissions can read the exact patient scope',async()=>{
             ages=[0,-1];assert.equal(workflowCapabilities(auth(),{},permissions).paperworkManage,true);
             const response=await fetch(url);assert.equal(response.status,200);assert.deepEqual((await response.json()).data.items,[]);assert.equal(reads,1);
+        });
+        await context.test('verified owner effective binding grants still honor individual denial and recent verification',async()=>{
+            ownerOperator=true;permitted=false;ages=[0,-1];permissions.push('org:paperwork:manage');
+            const allowed=await fetch(url);assert.equal(allowed.status,200);assert.equal(reads,2);
+            ages=[6,-1];const stale=await fetch(url);assert.equal(stale.status,403);assert.equal((await stale.json()).error.code,'RECENT_AUTHENTICATION_REQUIRED');assert.equal(reads,2);
+            ages=[0,-1];permissions.splice(permissions.indexOf('org:paperwork:manage'),1);permitted=true;
+            const denied=await fetch(url);assert.equal(denied.status,403);assert.equal(reads,2);
+            const mutation=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':randomUUID()},body:'{}'});assert.equal(mutation.status,403);assert.equal(commands,0);
         });
     }finally{await new Promise<void>(accept=>server.close(()=>accept()));const {pool}=await import('../src/db/client.js');await pool.end();for(const [key,value]of Object.entries({DATABASE_URL:old.url,DATABASE_SSL_MODE:old.ssl})){if(value===undefined)delete process.env[key];else process.env[key]=value;}}
 });

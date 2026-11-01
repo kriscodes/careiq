@@ -140,5 +140,21 @@
   "error.auth.tooManyAttempts": "Demasiados intentos. Espera un poco antes de volver a intentarlo.",
   "error.auth.alreadySignedIn": "Ya hay una cuenta con sesión iniciada. Continúa con ella o usa otra cuenta.",
   "error.validation.duration": "Elige una duración en minutos enteros de entre 1 y 1440.",
-  "error.validation.appointment": "Elige un paciente y una fecha y hora de cita válidas."
+  "error.validation.appointment": "Elige un paciente y una fecha y hora de cita válidas.",
+  "error.access.ownershipConfirmationRequired": "Escribe el nombre actual de la clínica y confirma el nuevo propietario seleccionado.",
+  "error.access.ownershipConfirmationMismatch": "Revisa la clínica y el destinatario actuales y escribe el nombre de la clínica exactamente.",
+  "error.account.closureConfirmationRequired": "Elige una acción para tu cuenta y escribe la frase de confirmación.",
+  "error.account.closureConfirmationMismatch": "Escribe la frase de confirmación exacta antes de enviar.",
+  "error.account.ownsPractices": "Transfiere la propiedad de todas tus clínicas antes de cerrar tu cuenta personal.",
+  "error.account.closureAlreadyPending": "Ya tienes una solicitud de cierre de cuenta pendiente. Revísala antes de enviar otra.",
+  "error.account.operationUnavailable": "No pudimos confirmar tu solicitud. Comprueba su estado antes de volver a intentarlo.",
+  "error.account.recentAuthentication": "Verifica tu identidad de nuevo para continuar con este cambio de cuenta.",
+  "error.account.archived": "Tu cuenta está archivada o se está archivando. Contacta a soporte para restaurar el acceso.",
+  "error.account.archiveIncomplete": "El acceso a la aplicación está bloqueado. Completa el archivo o contacta a soporte para confirmar que el inicio de sesión esté desactivado.",
+  "error.account.restoreIncomplete": "La restauración no ha terminado. El acceso sigue bloqueado; contacta a soporte.",
+  "error.account.restoreNotAvailable": "Esta cuenta no se puede restaurar con esta acción. Contacta a soporte.",
+  "error.auth.accountUnavailable": "Esta cuenta no está disponible. Contacta a soporte para obtener ayuda.",
+  "error.access.ownerAccessChanged": "Tu acceso al espacio de trabajo cambió en otro lugar. Revisa el acceso actual antes de volver a guardar.",
+  "error.access.ownerAccessInvalid": "Revisa las áreas y sedes seleccionadas y vuelve a intentarlo.",
+  "error.access.ownerAccessUnavailable": "No se pudo confirmar tu acceso al espacio de trabajo. Actualiza y vuelve a intentarlo."
 }

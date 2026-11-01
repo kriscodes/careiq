@@ -1,15 +1,23 @@
+import { renderStaffWorkEmail, validateLittleHelloEmailConfiguration } from '../notifications/little-hello-email.js';
 import { randomUUID, createHash } from 'node:crypto';
 import type { TenantContext } from '../middleware/tenant-context.js';
 import { command, scoped, type CommandContext, type QueryClient } from '../workflow/transaction.js';
 import { body, camel, checkRevision, concurrency, fingerprint, id, instant, WorkflowError } from '../workflow/policy.js';
 import { currentMembership, verifiedEmails } from './clerk-directory.js';
-import type { CurrentMembership } from './practice-policy.js';
+import { AccessError, type CurrentMembership } from './practice-policy.js';
+import { effectivePermissionsForMember } from './owner-operator-access.js';
 import { recordWorkflowAudit, recordWorkflowFailure } from './workflow-audit.js';
 import { createDeliveryProvider, type DeliveryProvider, type ProviderResult } from '../notifications/delivery-provider.js';
 import { businessMinutesElapsed, canReadStaffWork, defaultPreferences, defaultStaffPolicy, eventAudience, isQuiet, localParts, notificationFilter, parsePreferences, parseStaffPolicy, snapshotCursor, subjectState } from '../notifications/staff-notification-policy.js';
 
 type Row = Record<string, any> & {event_kind:string;due_generation:unknown;owner_generation:unknown};
 type Access = {permissions:string[]};
+async function effectiveNotificationMember(t:TenantContext,userId:string,resolve:typeof currentMembership=currentMembership):Promise<CurrentMembership|null>{
+  const membership=await resolve(t.orgId,userId);if(!membership)return null;
+  try { const effective=await effectivePermissionsForMember(t,userId,membership);return {...membership,permissions:effective.permissions}; }
+  catch(error){if(error instanceof AccessError&&error.status===403)return null;throw error;}
+}
+
 const scope=(t:TenantContext)=>[t.practiceId,t.locationId];
 const hash=(value:string)=>createHash('sha256').update(value).digest('hex');
 const permissionHash=(t:TenantContext,a:Access)=>fingerprint({userId:t.userId,practiceId:t.practiceId,locationId:t.locationId,membershipId:t.membershipId,permissions:[...a.permissions].sort()});
@@ -101,7 +109,7 @@ export async function staffNotificationPolicy(t:TenantContext,requestId:string,i
   const result=await scoped(t,async client=>({policy:policyDto((await client.query('SELECT * FROM staff_notification_policies WHERE practice_id=$1 AND location_id=$2',scope(t))).rows[0]),candidates:includeRecipients?(await client.query("SELECT m.user_id,m.membership_id FROM practice_member_access m JOIN location_assignments a ON a.practice_id=m.practice_id AND a.user_id=m.user_id WHERE m.practice_id=$1 AND a.location_id=$2 AND m.status='active' AND a.active ORDER BY m.user_id LIMIT 500",scope(t))).rows:[]}),requestId);
   if(!includeRecipients)return result.policy;
   const eligibleRecipients: {userId:string;displayName:string}[]=[];
-  for(const candidate of result.candidates){const member=await currentMembership(t.orgId,candidate.user_id);if(member&&member.id===candidate.membership_id&&canReadStaffWork(member.permissions))eligibleRecipients.push({userId:candidate.user_id,displayName:member.displayName??candidate.user_id});}
+  for(const candidate of result.candidates){const member=await effectiveNotificationMember(t,candidate.user_id);if(member&&member.id===candidate.membership_id&&canReadStaffWork(member.permissions))eligibleRecipients.push({userId:candidate.user_id,displayName:member.displayName??candidate.user_id});}
   return {...result.policy,eligibleRecipients,allowedActions:['save']};
 }
 export async function saveStaffNotificationPolicy(t:TenantContext,input:unknown,context:CommandContext){
@@ -117,7 +125,7 @@ export async function saveStaffNotificationPolicy(t:TenantContext,input:unknown,
 
 export type StaffSweepOptions={membership?:typeof currentMembership;verifiedEmails?:typeof verifiedEmails;provider?:DeliveryProvider;now?:Date};
 async function eligibleRecipient(worker:TenantContext,userId:string,resolve:typeof currentMembership):Promise<TenantContext|null>{
-  const member=await resolve(worker.orgId,userId);if(!member||!canReadStaffWork(member.permissions))return null;
+  const member=await effectiveNotificationMember(worker,userId,resolve);if(!member||!canReadStaffWork(member.permissions))return null;
   return scoped(worker,async client=>{const r=(await client.query("SELECT m.membership_id FROM practice_member_access m JOIN location_assignments a ON a.practice_id=m.practice_id AND a.user_id=m.user_id WHERE m.practice_id=$1 AND a.location_id=$2 AND m.user_id=$3 AND m.status='active' AND a.active",[...scope(worker),userId])).rows[0];return r?.membership_id===member.id?{...worker,userId,membershipId:member.id}:null;});
 }
 async function produceOverdue(t:TenantContext,now:Date){
@@ -151,7 +159,7 @@ async function fanoutEvent(t:TenantContext,event:Row,resolve:typeof currentMembe
   }
   await scoped(t,async client=>{await client.query('UPDATE staff_notification_events SET processed_at=now() WHERE id=$1 AND practice_id=$2 AND location_id=$3',[event.id,...scope(t)]);});return added;
 }
-function genericStaffMessage(locale:string,count:number,origin:string){return locale==='es'?{subject:count>1?'Novedades de trabajo en CareIQ':'Nueva novedad de trabajo',text:`Tiene ${count>1?`${count} novedades de trabajo`:'una nueva novedad de trabajo'}. Inicie sesión en CareIQ para revisar su trabajo. ${origin}`}:{subject:count>1?'Your CareIQ work updates':'A new work update',text:`You have ${count>1?`${count} new work updates`:'a new work update'}. Sign in to CareIQ to review your work. ${origin}`};}
+function genericStaffMessage(locale:string,count:number,origin:string){const message=renderStaffWorkEmail(locale,count,origin,process.env.CAREIQ_EMAIL_ASSET_BASE_URL);return {subject:message.subject,text:message.text,html:message.html};}
 function appOrigin(){const raw=process.env.CAREIQ_STAFF_APP_URL;if(!raw)return null;try{const u=new URL(raw);if(u.protocol!=='https:'||u.username||u.password||u.hash||u.search)return null;return u.origin+'/';}catch{return null;}}
 async function emailCurrent(client:QueryClient,t:TenantContext,ids:string[],now:Date){
   const rows=(await client.query(`${selection} WHERE n.id=ANY($1::uuid[]) AND n.practice_id=$2 AND n.location_id=$3 AND n.recipient_user_id=$4 FOR UPDATE OF n FOR SHARE OF w`,[ids,...scope(t),t.userId])).rows;
@@ -160,7 +168,9 @@ async function emailCurrent(client:QueryClient,t:TenantContext,ids:string[],now:
 }
 async function dispatchRecipientEmail(t:TenantContext,options:StaffSweepOptions,provider:DeliveryProvider,now:Date,executorId:string){
   const origin=appOrigin();if(!origin||!provider.enabled||!provider.ready('email'))return;
-  const membership=await (options.membership??currentMembership)(t.orgId,t.userId);if(!membership||membership.id!==t.membershipId||!canReadStaffWork(membership.permissions))return;
+  // Reject invalid branding before a durable batch is marked submitting.
+  validateLittleHelloEmailConfiguration(origin,process.env.CAREIQ_EMAIL_ASSET_BASE_URL);
+  const membership=await effectiveNotificationMember(t,t.userId,options.membership??currentMembership);if(!membership||membership.id!==t.membershipId||!canReadStaffWork(membership.permissions))return;
   const emails=await (options.verifiedEmails??verifiedEmails)(t.userId);if(!emails.length)return;const destination=emails[0]!,destinationHash=hash(destination.toLowerCase());
   const batches=await scoped(t,async client=>(await client.query("SELECT * FROM staff_notification_email_batches WHERE practice_id=$1 AND location_id=$2 AND recipient_user_id=$3 AND (state IN('unknown','retry','accepted') AND (next_at IS NULL OR next_at<=$4) OR state='submitting' AND updated_at<$4::timestamptz-interval '2 minutes') ORDER BY created_at LIMIT 20",[...scope(t),t.userId,now])).rows);
   for(const existing of batches){
@@ -214,7 +224,7 @@ async function finalizeEmailBatch(t:TenantContext,batchId:string,result:Provider
 }
 /** Called only for an operator-configured explicit scope; recipient context is reauthorized before inbox fan-out or generic external delivery. */
 export async function runStaffNotificationSweep(t:TenantContext,options:StaffSweepOptions={}){
-  const resolve=options.membership??currentMembership,worker=await resolve(t.orgId,t.userId),now=options.now??new Date();
+  const resolve=options.membership??currentMembership,worker=await effectiveNotificationMember(t,t.userId,resolve),now=options.now??new Date();
   if(!worker||worker.id!==t.membershipId||!canReadStaffWork(worker.permissions))throw new WorkflowError('WORKER_AUTHORIZATION_UNAVAILABLE',403);
   // Losing membership/location/read permission returns current work to the configured queue. Assignment never substitutes for access.
   const owners=await scoped(t,async client=>(await client.query("SELECT DISTINCT assignee_user_id FROM work_items WHERE practice_id=$1 AND location_id=$2 AND state IN('open','in_progress') AND assignee_user_id IS NOT NULL LIMIT 500",scope(t))).rows);

@@ -34,13 +34,13 @@ export default async function RootLayout({
         {configured ? <ClerkProvider localization={locale === "es" ? esES : enUS} dynamic={process.env.NODE_ENV === "production"} signInUrl="/sign-in" signUpUrl="/sign-up" signInFallbackRedirectUrl="/" signUpFallbackRedirectUrl="/" taskUrls={{ "choose-organization": "/session-tasks", "reset-password": "/session-tasks", "setup-mfa": "/session-tasks" }} appearance={{ variables: {
           colorPrimary: "#0067e8",
           colorBackground: "#ffffff",
-          colorForeground: "#202b34",
-          colorMutedForeground: "#617080",
+          colorForeground: "#23313c",
+          colorMutedForeground: "#536473",
           colorInput: "#ffffff",
-          colorInputForeground: "#202b34",
-          colorBorder: "#e1e7ef",
-          borderRadius: "10px",
-          fontFamily: "ui-sans-serif, system-ui, -apple-system, sans-serif",
+          colorInputForeground: "#23313c",
+          colorBorder: "#dce4ec",
+          borderRadius: "8px",
+          fontFamily: '"Nunito Sans", ui-sans-serif, system-ui, -apple-system, sans-serif',
         } }}>
           <AccountLocaleBridge />{children}
         </ClerkProvider> : children}

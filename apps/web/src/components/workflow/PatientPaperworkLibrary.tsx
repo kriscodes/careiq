@@ -1,17 +1,46 @@
 "use client";
-import { useAuth } from "@clerk/nextjs";
+import { UserButton, useAuth, useUser } from "@clerk/nextjs";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { ApplicationFrame } from "./ApplicationFrame";
+import { InterviewIcon } from "../InterviewIcon";
+import type { ApplicationPageFrame } from "@/lib/application-navigation";
 import { useI18n } from "@/i18n/provider";
 import { LanguageSelector } from "@/i18n/LanguageSelector";
 import { apiRequestUrl } from "@/lib/web-config";
 import { ApiError } from "@/lib/api/client";
 import { PatientCommunicationChoices } from "./PatientCommunicationChoices";
 import { PatientAccountCode } from "./PatientAccountCode";
+import { PersonalAccountSettings } from "../access/PersonalAccountSettings";
 import "./workflow.css";
 type PaperworkCopy = { id: string; documentVersionId: string; title: string; versionNumber: number; signed: boolean; completedAt: string; releaseState: string };
 type LibraryPage = { items: PaperworkCopy[]; hasMore: boolean; nextCursor: string | null };
 const copyIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export function PatientPaperworkLibrary() {
+  const { isLoaded, isSignedIn, userId } = useAuth();
+  const { user } = useUser();
+  const { t } = useI18n();
+  const [accountUser, setAccountUser] = useState<string | null>(null);
+  const [collapsed, setCollapsed] = useState(false);
+  const [choices, setChoices] = useState({ dirty: false, busy: false });
+  const leave = useRef<(() => void) | null>(null);
+  const dialog = useRef<HTMLDialogElement | null>(null);
+  const keep = useRef<HTMLButtonElement | null>(null);
+  const opener = useRef<HTMLElement | null>(null);
+  const frame = (destination: string): ApplicationPageFrame => function renderPatientPage(content, options = {}) { return <ApplicationFrame practiceName={t("access.navigation.patient")} pageLabel={destination === "Account" ? t("access.home.personalAccount") : t("workflow.studio.library")} items={[{ id: "Paperwork", label: t("workflow.studio.library"), icon: <InterviewIcon name="workflow" /> }, { id: "Account", label: t("access.home.personalAccount"), icon: <InterviewIcon name="users" /> }]} activeItem={destination} navigationLabel={t("access.navigation.patient")} collapsed={collapsed} onCollapsedChange={setCollapsed} navigationDisabled={options.blocked || choices.busy} account={<div className="cq-app-account"><UserButton /><span>{user?.firstName || t("access.copy.your_account")}</span></div>} onNavigate={id => {
+    if (id === destination || options.blocked || choices.busy) return;
+    const action = () => setAccountUser(id === "Account" ? userId ?? null : null);
+    const source = document.activeElement instanceof HTMLElement ? document.activeElement : undefined;
+    if (options.guard) options.guard(action, source);
+    else if (choices.dirty) { leave.current = action; opener.current = source ?? null; dialog.current?.showModal(); keep.current?.focus(); }
+    else action();
+  }}>{content}</ApplicationFrame>; };
+  // Each page switch unmounts the protected library and revokes its object URLs.
+  const content = isLoaded && isSignedIn && userId && accountUser === userId
+    ? <PersonalAccountSettings onBack={() => setAccountUser(null)} renderFrame={frame("Account")} />
+    : <PatientPaperworkLibraryContent key={userId ?? "signed-out"} onPersonalAccount={() => { if (userId) setAccountUser(userId); }} renderFrame={isLoaded && isSignedIn ? frame("Paperwork") : undefined} onChoicesState={setChoices} />;
+  return <>{content}<dialog className="cq-settings-unsaved" ref={dialog} aria-labelledby="cq-patient-leave-title" onClose={() => { leave.current = null; if (opener.current?.isConnected) opener.current.focus(); }}><h2 id="cq-patient-leave-title">{t("access.settings.unsavedTitle")}</h2><p>{t("access.navigation.unsavedChoices")}</p><div className="cq-settings-dialog-actions"><button type="button" className="cq-a-primary" ref={keep} onClick={() => dialog.current?.close()}>{t("access.settings.keepEditing")}</button><button type="button" className="cq-a-secondary" onClick={() => { const action = leave.current; dialog.current?.close(); action?.(); }}>{t("access.settings.discardChanges")}</button></div></dialog></>;
+}
+function PatientPaperworkLibraryContent({ onPersonalAccount, renderFrame, onChoicesState }: { onPersonalAccount: () => void; renderFrame?: ApplicationPageFrame; onChoicesState: (state: { dirty: boolean; busy: boolean }) => void }) {
   const { isLoaded, isSignedIn, userId, getToken } = useAuth(); const { t, locale, direction, uiError, formatDate } = useI18n(); const es = locale === "es";
   const [items, setItems] = useState<PaperworkCopy[]>([]); const [nextCursor, setNextCursor] = useState<string | null>(null); const [loading, setLoading] = useState(true); const [error, setError] = useState(""); const [fileUrl, setFileUrl] = useState(""); const [busy, setBusy] = useState(""); const [reload, setReload] = useState(0);
   const [requestedCopyId, setRequestedCopyId] = useState<string | null>(null); const [invalidCopyLink, setInvalidCopyLink] = useState(false); const [requestedCopyError, setRequestedCopyError] = useState(""); const [openedCopyId, setOpenedCopyId] = useState("");
@@ -43,12 +72,14 @@ export function PatientPaperworkLibrary() {
     } finally { lock.current = false; if (current === generation.current) setBusy(""); }
   }
   const returnPath = requestedCopyId ? `/patient-paperwork?item=${encodeURIComponent(requestedCopyId)}` : "/patient-paperwork";
-  return <div className="wf-root" lang={locale} dir={direction}><main className="wf-paperwork-library">
-    <div className="wf-logo" aria-label="careiq"><span aria-hidden="true">✚</span>careiq</div><div className="wf-public-language"><LanguageSelector /></div><h1>{t("workflow.studio.library")}</h1><p>{t("workflow.studio.libraryHelp")}</p>
+  const Body = renderFrame ? "section" : "main";
+  const content = <Body className="wf-paperwork-library">
+    {!renderFrame && <><div className="wf-logo" aria-label="careiq"><span aria-hidden="true">✚</span>careiq</div><div className="wf-public-language"><LanguageSelector /></div></>}<h1>{t("workflow.studio.library")}</h1><p>{t("workflow.studio.libraryHelp")}</p>
     {invalidCopyLink && <p className="wf-notice wf-error" role="alert">{es ? "El enlace a la copia no es válido. Solicite ayuda al consultorio." : "This copy link is invalid. Contact the practice for help."}</p>}
     {isLoaded && isSignedIn && <>
+      {!renderFrame && <button type="button" className="wf-link" onClick={onPersonalAccount}>{t("access.home.personalAccount")}</button>}
       <PatientAccountCode key={userId} />
-      <PatientCommunicationChoices key={`communication-${userId}`} />
+      <PatientCommunicationChoices key={`communication-${userId}`} onNavigationState={onChoicesState} />
       {requestedCopyId && <section className="wf-paperwork-card" aria-label={es ? "Copia de este aviso" : "Copy from this notice"}><div><h2>{es ? "Copia de este aviso" : "Copy from this notice"}</h2><p>{es ? "Abra la versión exacta indicada en el aviso. Se comprobará su acceso actual antes de mostrarla." : "Open the exact version referenced by this notice. Your current access will be checked before it is shown."}</p>{requestedCopyError && <p role="alert" className="wf-notice wf-error">{requestedCopyError}</p>}</div><button className="wf-button wf-primary" disabled={!!busy || loading} onClick={() => void open(requestedCopyId, true)}>{busy === requestedCopyId ? t("workflow.studio.loading") : es ? "Abrir copia solicitada" : "Open requested copy"}</button></section>}
     </>}
     {!isLoaded || loading ? <p role="status">{t("workflow.studio.loading")}</p> : !isSignedIn ? <div className="wf-notice"><p>{t("workflow.studio.librarySignIn")}</p><a className="wf-button wf-primary" href={`/sign-in?returnTo=${encodeURIComponent(returnPath)}`}>{t("workflow.studio.signIn")}</a></div> : <>
@@ -58,5 +89,6 @@ export function PatientPaperworkLibrary() {
       <div className="wf-paperwork-list">{items.map(item => <article className="wf-paperwork-card" key={item.id}><div><h2>{item.title}</h2><p>{t("workflow.studio.version")} {item.versionNumber} · {item.signed ? t("workflow.studio.signedCopy") : t("workflow.studio.completedCopy")} · {formatDate(item.completedAt)}</p>{item.releaseState !== "released" && <p>{t("workflow.studio.copyUnavailable")}</p>}</div><button className="wf-button" disabled={!!busy || item.releaseState !== "released"} onClick={() => void open(item.id)}>{t(busy === item.id ? "workflow.studio.loading" : "workflow.studio.openCopy")}</button></article>)}</div>
       {nextCursor && <button className="wf-button" disabled={!!busy} onClick={() => void more()}>{t("workflow.studio.moreCopies")}</button>}
     </>}
-  </main></div>;
+  </Body>;
+  return renderFrame ? renderFrame(content, { blocked: !!busy }) : <div className="wf-root" lang={locale} dir={direction}>{content}</div>;
 }

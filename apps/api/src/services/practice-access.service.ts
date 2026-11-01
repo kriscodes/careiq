@@ -8,6 +8,9 @@ import { clerk, currentMembership, verifiedEmails } from "./clerk-directory.js";
 import { AccessError, allowedRoles, assertCurrentEnrollment, assertOwner, assertRoleGrant, currentCapabilities, parseLocation, parseLocationIds, type CurrentMembership } from "./practice-policy.js";
 import { approvedFounder, lockOnboardingActor, writeOnboardingDraft } from "./onboarding-draft.js";
 import { getOnboardingState, saveOnboardingDraft } from "./onboarding-state.service.js";
+import { lockActiveAccount } from "./account-lifecycle.service.js";
+import { resolveEffectivePracticePermissions, type OwnerAccess } from "./owner-operator-access.js";
+import { parseOwnerOperatorDisabledPermissions } from "./owner-operator-policy.js";
 
 const hash = (value: unknown) => createHash("sha256").update(JSON.stringify(value)).digest("hex");
 const uuid = (value: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
@@ -33,14 +36,35 @@ async function audit(client: PoolClient, practiceId: string, actor: string, acti
 async function ownerTransaction<T>(auth: RequestAuthentication, callback: (client: PoolClient, context: Awaited<ReturnType<typeof resolve>>) => Promise<T>) {
   const context = await resolve(auth);
   return practiceTransaction(context.practice.id, context.userId, async (client) => {
-    const { rows: [practice] } = await client.query("SELECT owner_user_id,status FROM practices WHERE id=$1 FOR SHARE", [context.practice.id]);
+    const { rows: [practice] } = await client.query("SELECT owner_user_id,name,status FROM practices WHERE id=$1 FOR SHARE", [context.practice.id]);
     assertOwner(practice, context.userId, context.membership);
     if (practice.status !== "active") throw new AccessError("PRACTICE_UNAVAILABLE");
     const { rows: [member] } = await client.query("SELECT * FROM practice_member_access WHERE practice_id=$1 AND user_id=$2 FOR SHARE", [context.practice.id, context.userId]);
     assertCurrentEnrollment(member, context.membership);
     context.practice.ownerUserId = practice.owner_user_id;
+    context.practice.name = practice.name;
     return callback(client, context);
   });
+}
+async function lockOwnerAccess(client: PoolClient, practiceId: string, userId: string): Promise<OwnerAccess> {
+  await client.query("INSERT INTO practice_owner_access(practice_id,owner_user_id) VALUES($1,$2) ON CONFLICT DO NOTHING", [practiceId, userId]);
+  const row = (await client.query('SELECT disabled_permissions AS "disabledPermissions",all_locations AS "allLocations",revision FROM practice_owner_access WHERE practice_id=$1 AND owner_user_id=$2 FOR UPDATE', [practiceId, userId])).rows[0];
+  if (!row) throw new AccessError("AUTHORIZATION_UNAVAILABLE", 503);
+  return row;
+}
+async function grantOwnerLocation(client: PoolClient, practiceId: string, userId: string, locationId: string) {
+  await client.query("INSERT INTO location_assignments(practice_id,user_id,location_id,active,granted_by) VALUES($1,$2,$3,true,$2) ON CONFLICT(practice_id,user_id,location_id) DO UPDATE SET active=true,granted_by=EXCLUDED.granted_by,updated_at=now() WHERE NOT location_assignments.active", [practiceId, userId, locationId]);
+}
+/** The reviewed onboarding/handoff operation initializes only its verified owner. */
+async function initializeOwnerOperator(client: PoolClient, practiceId: string, userId: string) {
+  const previous = (await client.query("SELECT current_setting('app.actor_user_id',true) AS actor")).rows[0]?.actor ?? "";
+  try {
+    await client.query("SELECT set_config('app.actor_user_id',$1,true)", [userId]);
+    await client.query("INSERT INTO practice_owner_access(practice_id,owner_user_id) VALUES($1,$2) ON CONFLICT(practice_id,owner_user_id) DO UPDATE SET disabled_permissions='{}',all_locations=true,revision=practice_owner_access.revision+1,updated_at=now()", [practiceId, userId]);
+  } finally { await client.query("SELECT set_config('app.actor_user_id',$1,true)", [previous]); }
+  const locations = (await client.query("SELECT id FROM locations WHERE practice_id=$1 AND status='active' ORDER BY id FOR SHARE", [practiceId])).rows;
+  for (const location of locations) await grantOwnerLocation(client, practiceId, userId, location.id);
+  await audit(client, practiceId, previous, "owner.operator_access_initialized", userId);
 }
 async function checkLocations(client: PoolClient, practiceId: string, ids: string[]) {
   const rows = await client.query("SELECT id FROM locations WHERE practice_id=$1 AND id=ANY($2::uuid[]) AND status='active' FOR SHARE", [practiceId, ids]);
@@ -49,7 +73,8 @@ async function checkLocations(client: PoolClient, practiceId: string, ids: strin
 export async function getPracticeContext(auth: RequestAuthentication) {
   const userId = authenticated(auth);
   const base = { userId, orgId: auth.orgId ?? null, sessionId: auth.sessionId ?? null };
-  const none = { capabilities: currentCapabilities(null), management: { locations: false, members: false }, locations: [], enrollmentStatus: null };
+  const noWorkspace = { patientsRead: false, appointmentsRead: false, documentsRead: false, configurationManage: false };
+  const none = { capabilities: currentCapabilities(null), workspaceCapabilities: noWorkspace, management: { locations: false, members: false }, locations: [], enrollmentStatus: null };
   if (!auth.orgId) {
     const onboardingOrgId = await practiceTransaction(null, userId, async (client) => (await client.query("SELECT clerk_org_id FROM practice_onboarding WHERE actor_user_id=$1 AND status='complete'", [userId])).rows[0]?.clerk_org_id ?? null);
     return { ...base, ...none, practice: null, onboarding: "required", onboardingOrgId };
@@ -57,25 +82,33 @@ export async function getPracticeContext(auth: RequestAuthentication) {
   const practice = await findPracticeByClerkOrgId(auth.orgId);
   if (!practice) return { ...base, ...none, practice: null, onboarding: "required" };
   if (practice.status !== "active") return { ...base, ...none, practice, onboarding: "pending" };
-  if (practice.authorizationMode === "legacy") return { ...base, ...none, practice, onboarding: "ready", capabilities: clinicalCapabilities(auth) };
+  if (practice.authorizationMode === "legacy") {
+    const capabilities = clinicalCapabilities(auth);
+    return { ...base, ...none, practice, onboarding: "ready", capabilities, workspaceCapabilities: { ...noWorkspace, patientsRead: capabilities.patients.read, appointmentsRead: capabilities.appointments.read } };
+  }
   const membership = await currentMembership(auth.orgId, userId);
   return practiceTransaction(practice.id, userId, async (client) => {
     const { rows: [member] } = await client.query("SELECT * FROM practice_member_access WHERE practice_id=$1 AND user_id=$2", [practice.id, userId]);
     const active = membership && member?.status === "active" && member.membership_id === membership.id;
-    const owner = active && practice.ownerUserId === userId && membership.role === "org:admin";
+    const effective = active ? await resolveEffectivePracticePermissions(client, { practiceId: practice.id, orgId: auth.orgId!, userId, membership }) : { permissions: [] as string[], ownerOperator: false, ownerAccess: null };
+    const owner = active && effective.ownerOperator;
     const locations = active ? (await client.query(`SELECT l.id,l.name,l.time_zone AS "timeZone",l.address,l.status FROM locations l JOIN location_assignments a ON a.location_id=l.id AND a.practice_id=l.practice_id WHERE l.practice_id=$1 AND a.user_id=$2 AND a.active AND l.status='active' ORDER BY l.name,l.id`, [practice.id, userId])).rows : [];
-    return { ...base, practice, onboarding: active ? "ready" : "pending", enrollmentStatus: membership ? (member?.membership_id === membership.id ? member?.status : "pending_assignment") : "revoked", capabilities: currentCapabilities(active ? membership : null), management: { locations: Boolean(owner), members: Boolean(owner) }, locations };
+    const capabilities = currentCapabilities(active ? { ...membership, permissions: effective.permissions } : null);
+    const permissions = effective.permissions;
+    const workspaceCapabilities = { patientsRead: capabilities.patients.read, appointmentsRead: capabilities.appointments.read, documentsRead: permissions.includes("org:documents:read"), configurationManage: permissions.includes("org:workflow:configure") };
+    return { ...base, practice, onboarding: active ? "ready" : "pending", enrollmentStatus: membership ? (member?.membership_id === membership.id ? member?.status : "pending_assignment") : "revoked", capabilities, workspaceCapabilities, management: { locations: Boolean(owner), members: Boolean(owner) }, locations, ...(effective.ownerAccess ? { ownerAccess: effective.ownerAccess } : {}) };
   });
 }
-export async function authorizeLocation(auth: RequestAuthentication, locationId: string): Promise<{ tenant: TenantContext; capabilities: ClinicalCapabilities; permissions?: string[] }> {
+export async function authorizeLocation(auth: RequestAuthentication, locationId: string): Promise<{ tenant: TenantContext; capabilities: ClinicalCapabilities; permissions?: string[]; ownerOperator?: boolean }> {
   if (!uuid(locationId)) throw new AccessError("INVALID_LOCATION", 400);
   const context = await resolve(auth);
   return practiceTransaction(context.practice.id, context.userId, async (client) => {
     const { rows: [member] } = await client.query("SELECT * FROM practice_member_access WHERE practice_id=$1 AND user_id=$2", [context.practice.id, context.userId]);
     assertCurrentEnrollment(member, context.membership);
+    const effective = await resolveEffectivePracticePermissions(client, { practiceId: context.practice.id, orgId: context.orgId, userId: context.userId, membership: context.membership });
     const permitted = await client.query("SELECT l.id FROM locations l JOIN location_assignments a ON a.location_id=l.id AND a.practice_id=l.practice_id WHERE l.practice_id=$1 AND l.id=$2 AND l.status='active' AND a.user_id=$3 AND a.active", [context.practice.id, locationId, context.userId]);
     if (!permitted.rowCount) throw new AccessError("LOCATION_ACCESS_DENIED");
-    return { tenant: { userId: context.userId, orgId: context.orgId, practiceId: context.practice.id, locationId, membershipId: context.membership!.id } satisfies TenantContext, capabilities: currentCapabilities(context.membership), permissions: context.membership!.permissions };
+    return { tenant: { userId: context.userId, orgId: context.orgId, practiceId: context.practice.id, locationId, membershipId: context.membership!.id } satisfies TenantContext, capabilities: currentCapabilities({ ...context.membership!, permissions: effective.permissions }), permissions: effective.permissions, ownerOperator: effective.ownerOperator };
   });
 }
 export async function onboardPractice(auth: RequestAuthentication, body: Record<string, unknown>, requestKey: string) {
@@ -93,6 +126,7 @@ export async function onboardPractice(auth: RequestAuthentication, body: Record<
     if (created.rowCount) await writeOnboardingDraft(client, userId, { practiceName: name, locationName: location.name, timeZone: location.timeZone, address: location.address ?? "", step: 3 });
   });
   return practiceTransaction(null, userId, async (client) => {
+    await lockActiveAccount(client, userId);
     const { rows: [attempt] } = await client.query("SELECT * FROM practice_onboarding WHERE actor_user_id=$1 FOR UPDATE", [userId]);
     if (attempt.request_hash !== requestHash) throw new AccessError("ONBOARDING_RETRY_CONFLICT", 409);
     if (attempt.status === "complete") {
@@ -117,6 +151,7 @@ export async function onboardPractice(auth: RequestAuthentication, body: Record<
     await client.query("SELECT set_config('app.practice_id',$1,true)", [practice.id]);
     await client.query("INSERT INTO practice_member_access(practice_id,user_id,membership_id,status) VALUES($1,$2,$3,'active')", [practice.id, userId, membership.id]);
     const { rows: [first] } = await client.query(`INSERT INTO locations(practice_id,name,time_zone,address) VALUES($1,$2,$3,$4) RETURNING ${locationSelect}`, [practice.id, location.name, location.timeZone, location.address]);
+    await initializeOwnerOperator(client, practice.id, userId);
     await audit(client, practice.id, userId, "practice.created", practice.id);
     await audit(client, practice.id, userId, "location.created", first.id);
     await client.query("UPDATE practice_onboarding SET clerk_org_id=$2,practice_id=$3,status='complete' WHERE actor_user_id=$1", [userId, organization.id, practice.id]);
@@ -137,13 +172,16 @@ export async function getPracticeAdmin(auth: RequestAuthentication) {
       members.push({ ...member, proposedLocationIds: proposal, displayName: current?.displayName, email: current?.email, role: current?.role ?? null, status: current?.id === member.membershipId ? member.status : "revoked", locationIds: assignments.map((row) => row.location_id), isOwner: context.practice.ownerUserId === member.userId });
     }
     const invitations = (await client.query(`SELECT ${invitationSelect} FROM practice_invitations WHERE practice_id=$1 ORDER BY created_at DESC LIMIT 500`, [context.practice.id])).rows;
-    return { locations, members, invitations, allowedRoles: allowedRoles() };
+    const effective = await resolveEffectivePracticePermissions(client, { practiceId: context.practice.id, orgId: context.orgId, userId: context.userId, membership: context.membership });
+    return { locations, members, invitations, allowedRoles: allowedRoles(), ownerAccess: effective.ownerAccess! };
   });
 }
 export async function createLocation(auth: RequestAuthentication, body: unknown) {
   const input = parseLocation(body);
   return ownerTransaction(auth, async (client, context) => {
+    const ownerAccess = await lockOwnerAccess(client, context.practice.id, context.userId);
     const { rows: [location] } = await client.query(`INSERT INTO locations(practice_id,name,time_zone,address) VALUES($1,$2,$3,$4) RETURNING ${locationSelect}`, [context.practice.id, input.name, input.timeZone, input.address]);
+    if (ownerAccess.allLocations) await grantOwnerLocation(client, context.practice.id, context.userId, location.id);
     await audit(client, context.practice.id, context.userId, "location.created", location.id);
     return location;
   });
@@ -151,8 +189,10 @@ export async function createLocation(auth: RequestAuthentication, body: unknown)
 export async function setLocationStatus(auth: RequestAuthentication, locationId: string, status: unknown) {
   if (!uuid(locationId) || !["active", "closed"].includes(status as string)) throw new AccessError("INVALID_LOCATION", 400);
   return ownerTransaction(auth, async (client, context) => {
+    const ownerAccess = await lockOwnerAccess(client, context.practice.id, context.userId);
     const { rows: [location] } = await client.query(`UPDATE locations SET status=$3,updated_at=now() WHERE practice_id=$1 AND id=$2 RETURNING ${locationSelect}`, [context.practice.id, locationId, status]);
     if (!location) throw new AccessError("LOCATION_NOT_FOUND", 404);
+    if (status === "active" && ownerAccess.allLocations) await grantOwnerLocation(client, context.practice.id, context.userId, location.id);
     await audit(client, context.practice.id, context.userId, status === "closed" ? "location.closed" : "location.reopened", locationId);
     return location;
   });
@@ -270,6 +310,10 @@ export async function activateMember(auth: RequestAuthentication, targetUserId: 
       if (!membership || membership.id !== member.membership_id || membership.role !== body.role) throw new AccessError("ROLE_UPDATE_PENDING", 503);
       await audit(client, context.practice.id, context.userId, "member.role_changed", targetUserId);
     }
+    if (targetUserId === context.userId) {
+      await lockOwnerAccess(client, context.practice.id, context.userId);
+      await client.query("UPDATE practice_owner_access SET all_locations=false,revision=revision+1,updated_at=now() WHERE practice_id=$1 AND owner_user_id=$2", [context.practice.id, context.userId]);
+    }
     await client.query("UPDATE location_assignments SET active=false,updated_at=now() WHERE practice_id=$1 AND user_id=$2", [context.practice.id, targetUserId]);
     for (const id of ids) await client.query("INSERT INTO location_assignments(practice_id,user_id,location_id,active,granted_by) VALUES($1,$2,$3,true,$4) ON CONFLICT(practice_id,user_id,location_id) DO UPDATE SET active=true,granted_by=EXCLUDED.granted_by,updated_at=now()", [context.practice.id, targetUserId, id, context.userId]);
     await client.query("UPDATE practice_member_access SET status='active',review_token=NULL,updated_at=now() WHERE practice_id=$1 AND user_id=$2", [context.practice.id, targetUserId]);
@@ -327,16 +371,50 @@ export async function revokeInvitation(auth: RequestAuthentication, invitationId
   return { id: invitationId, status: "revoked", providerRevocationPending: false };
 }
 
-export async function transferOwnership(auth: RequestAuthentication, targetUserId: string) {
-  if (!targetUserId || targetUserId === authenticated(auth)) throw new AccessError("INVALID_OWNER", 400);
+export async function updateOwnerAccess(auth: RequestAuthentication, body: Record<string, unknown>) {
+  if (Object.keys(body).some(key => !["disabledPermissions", "allLocations", "locationIds", "revision"].includes(key)) || typeof body.allLocations !== "boolean" || !Number.isSafeInteger(body.revision) || (body.revision as number) < 0) throw new AccessError("INVALID_OWNER_ACCESS", 400);
+  const disabledPermissions = parseOwnerOperatorDisabledPermissions(body.disabledPermissions);
+  const requestedIds = parseLocationIds(body.locationIds);
   return ownerTransaction(auth, async (client, context) => {
+    const previous = await lockOwnerAccess(client, context.practice.id, context.userId);
+    if (previous.revision !== body.revision) throw new AccessError("OWNER_ACCESS_CHANGED", 409, "Your access settings changed. Refresh and review them before saving again.");
+    const ids: string[] = body.allLocations ? (await client.query("SELECT id FROM locations WHERE practice_id=$1 AND status='active' ORDER BY id FOR SHARE", [context.practice.id])).rows.map(row => row.id) : requestedIds;
+    if (!body.allLocations) await checkLocations(client, context.practice.id, ids);
+    const previousIds: string[] = (await client.query("SELECT location_id FROM location_assignments WHERE practice_id=$1 AND user_id=$2 AND active", [context.practice.id, context.userId])).rows.map(row => row.location_id);
+    await client.query("UPDATE location_assignments SET active=false,updated_at=now() WHERE practice_id=$1 AND user_id=$2", [context.practice.id, context.userId]);
+    for (const id of ids) await grantOwnerLocation(client, context.practice.id, context.userId, id);
+    const profile = (await client.query('UPDATE practice_owner_access SET disabled_permissions=$3,all_locations=$4,revision=revision+1,updated_at=now() WHERE practice_id=$1 AND owner_user_id=$2 RETURNING disabled_permissions AS "disabledPermissions",all_locations AS "allLocations",revision', [context.practice.id, context.userId, disabledPermissions, body.allLocations])).rows[0] as OwnerAccess;
+    for (const permission of disabledPermissions.filter(permission => !previous.disabledPermissions.includes(permission))) await audit(client, context.practice.id, context.userId, "owner.permission_disabled", permission);
+    for (const permission of previous.disabledPermissions.filter(permission => !disabledPermissions.includes(permission as typeof disabledPermissions[number]))) await audit(client, context.practice.id, context.userId, "owner.permission_enabled", permission);
+    for (const id of previousIds.filter(id => !ids.includes(id))) await audit(client, context.practice.id, context.userId, "location.assignment_revoked", `${context.userId}:${id}`);
+    for (const id of ids.filter(id => !previousIds.includes(id))) await audit(client, context.practice.id, context.userId, "location.assignment_granted", `${context.userId}:${id}`);
+    await audit(client, context.practice.id, context.userId, "owner.access_changed", context.userId);
+    return profile;
+  });
+}
+export async function transferOwnership(auth: RequestAuthentication, input: unknown) {
+  authenticated(auth);
+  if (!input || typeof input !== "object" || Array.isArray(input)) throw new AccessError("OWNERSHIP_CONFIRMATION_REQUIRED", 400, "Type the current practice name and confirm the selected new owner.");
+  const body = input as Record<string, unknown>;
+  const limits = { userId: 128, practiceId: 36, confirmationName: 120, acknowledgedUserId: 128 };
+  if (Object.keys(body).some(key => !Object.hasOwn(limits, key))) throw new AccessError("INVALID_REQUEST", 400);
+  for (const [field, maximum] of Object.entries(limits)) {
+    if (typeof body[field] !== "string" || !body[field]) throw new AccessError("OWNERSHIP_CONFIRMATION_REQUIRED", 400, "Type the current practice name and confirm the selected new owner.");
+    if ((body[field] as string).length > maximum || /[\u0000-\u001f\u007f]/.test(body[field] as string)) throw new AccessError("INVALID_REQUEST", 400);
+  }
+  const targetUserId = body.userId as string;
+  if (targetUserId === auth.userId) throw new AccessError("INVALID_OWNER", 400);
+  return ownerTransaction(auth, async (client, context) => {
+    if (body.practiceId !== context.practice.id || body.confirmationName !== context.practice.name || body.acknowledgedUserId !== targetUserId) throw new AccessError("OWNERSHIP_CONFIRMATION_MISMATCH", 409, "Review the current practice and recipient, then type the practice name exactly.");
+    await lockActiveAccount(client, targetUserId);
     const membership = await currentMembership(context.orgId, targetUserId);
     const member = (await client.query("SELECT * FROM practice_member_access WHERE practice_id=$1 AND user_id=$2 FOR SHARE", [context.practice.id, targetUserId])).rows[0];
     assertCurrentEnrollment(member, membership);
     if (membership?.role !== "org:admin") throw new AccessError("OWNER_ROLE_REQUIRED");
+    await initializeOwnerOperator(client, context.practice.id, targetUserId);
     await client.query("UPDATE practices SET owner_user_id=$2 WHERE id=$1", [context.practice.id, targetUserId]);
     await audit(client, context.practice.id, context.userId, "practice.ownership_transferred", targetUserId);
     return { ownerUserId: targetUserId };
   });
 }
-export const practiceAccess = { getContext: getPracticeContext, getOnboardingState, saveOnboardingDraft, authorizeLocation, onboard: onboardPractice, admin: getPracticeAdmin, createLocation, setLocationStatus, createInvitation, acceptInvitations, activateMember, suspendMember, revokeInvitation, transferOwnership };
+export const practiceAccess = { getContext: getPracticeContext, getOnboardingState, saveOnboardingDraft, authorizeLocation, onboard: onboardPractice, admin: getPracticeAdmin, createLocation, setLocationStatus, createInvitation, acceptInvitations, activateMember, suspendMember, revokeInvitation, transferOwnership, updateOwnerAccess };

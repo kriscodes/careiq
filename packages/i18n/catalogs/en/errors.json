@@ -140,5 +140,21 @@
   "error.auth.tooManyAttempts": "Too many attempts. Wait a little before trying again.",
   "error.auth.alreadySignedIn": "An account is already signed in. Continue with it or use another account.",
   "error.validation.duration": "Choose a whole-number duration from 1 to 1,440 minutes.",
-  "error.validation.appointment": "Choose a patient and a valid appointment date and time."
+  "error.validation.appointment": "Choose a patient and a valid appointment date and time.",
+  "error.access.ownershipConfirmationRequired": "Type the current practice name and confirm the selected new owner.",
+  "error.access.ownershipConfirmationMismatch": "Review the current practice and recipient, then type the practice name exactly.",
+  "error.account.closureConfirmationRequired": "Choose an account action and enter its confirmation phrase.",
+  "error.account.closureConfirmationMismatch": "Enter the confirmation phrase exactly before submitting.",
+  "error.account.ownsPractices": "Transfer ownership of every practice you own before closing your personal account.",
+  "error.account.closureAlreadyPending": "You already have an account closure request pending. Review that request before submitting another.",
+  "error.account.operationUnavailable": "We couldn’t confirm your account request. Check its status before trying again.",
+  "error.account.recentAuthentication": "Verify your identity again to continue with this account change.",
+  "error.account.archived": "Your account is archived or being archived. Contact support to restore access.",
+  "error.account.archiveIncomplete": "Your application access is blocked. Finish archiving or contact support to confirm sign-in is disabled.",
+  "error.account.restoreIncomplete": "Restoration is not complete. Access remains blocked; contact support.",
+  "error.account.restoreNotAvailable": "This account can’t be restored through this action. Contact support.",
+  "error.auth.accountUnavailable": "This account is unavailable. Contact support for help.",
+  "error.access.ownerAccessChanged": "Your workspace access changed elsewhere. Review the current access before saving again.",
+  "error.access.ownerAccessInvalid": "Check your selected areas and locations, then try again.",
+  "error.access.ownerAccessUnavailable": "Your workspace access could not be confirmed. Refresh and try again."
 }

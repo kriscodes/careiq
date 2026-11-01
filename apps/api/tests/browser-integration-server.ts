@@ -6,6 +6,7 @@ import {mkdtemp,readFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {resolve,join} from 'node:path';
 import {Pool} from 'pg';
+import express from 'express';
 import {PDFDocument} from 'pdf-lib';
 import {isolatedTestDatabaseUrl} from './local-test-database.js';
 import type {TenantContext,RequestAuthentication} from '../src/middleware/tenant-context.js';
@@ -107,6 +108,7 @@ async function start(){
  server=createServer((req,res)=>{res.once('finish',()=>{const value=res.getHeader('X-Request-Id');if(typeof value==='string')requestIds.add(value);});if(!app){res.statusCode=503;res.end();return;}app(req,res);});await new Promise<void>(ok=>server!.listen(0,'127.0.0.1',ok));
  const origin='http://127.0.0.1:'+(server.address() as {port:number}).port;
  app=createApiApp({authenticate:(_req,_res,next)=>next(),getAuth,practiceAccess,workflow:service,insurance,health:()=>runtime!.query('SELECT 1'),findPracticeByClerkOrgId:practices.findPracticeByClerkOrgId,listPatients:patients.listPatients,listAppointments:appointments.listAppointments,createPatient:patients.createPatient,createAppointment:appointments.createAppointment},{origins:[origin],trustedProxies:false,interviews:{enabled:false,store:async()=>{throw new Error('PUBLIC_INTERVIEW_DISABLED');},log:()=>{}}});
+ app.use('/brand',express.static(resolve(import.meta.dirname,'../../web/public/brand'),{index:false,dotfiles:'deny',fallthrough:false,maxAge:0}));
  const js=await readFile(join(assets!,'app.js')),css=await readFile(join(assets!,'styles.css'));
  app.get('/app.js',(_req,res)=>res.type('js').set('Cache-Control','no-store').send(js));app.get('/styles.css',(_req,res)=>res.type('css').set('Cache-Control','no-store').send(css));
  app.get(['/','/patient-paperwork','/staff'],(_req,res)=>res.type('html').set('Cache-Control','no-store').send('<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="/styles.css"></head><body><p style="font:12px system-ui">Isolated synthetic identity · Real loopback API and restricted test database</p><div id="root"></div><script src="/app.js"></script></body></html>'));

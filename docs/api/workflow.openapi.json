@@ -13075,6 +13075,150 @@
           }
         }
       }
+    },
+    "/api/v1/locations/{locationId}/workflow/availability": {
+      "get": {
+        "operationId": "get_api_v1_locations_locationId_workflow_availability",
+        "summary": "Find provider appointment times on one location-local day",
+        "description": "At most 96 suggestions at 15-minute intervals, using the same configured provider rules, exceptions and active appointment conflicts as booking validation. The appointment save rechecks availability. Repeated and nonexistent local times are omitted. Excluding an appointment requires appointment update permission and an appointment in the current authorized location.",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          },
+          {
+            "name": "providerId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "durationMinutes",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 5,
+              "maximum": 480
+            }
+          },
+          {
+            "name": "excludeAppointmentId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Authorized suggestions; an empty list means no matching times.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "providerId",
+                        "date",
+                        "timeZone",
+                        "durationMinutes",
+                        "slots"
+                      ],
+                      "properties": {
+                        "providerId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "date": {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        "timeZone": {
+                          "type": "string"
+                        },
+                        "durationMinutes": {
+                          "type": "integer",
+                          "minimum": 5,
+                          "maximum": 480
+                        },
+                        "slots": {
+                          "type": "array",
+                          "maxItems": 96,
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "startsAt",
+                              "endsAt"
+                            ],
+                            "properties": {
+                              "startsAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "endsAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "org:appointments:read"
+      }
     }
   },
   "components": {

@@ -8,7 +8,7 @@ const url=isolatedTestDatabaseUrl();
 
 test('staff inbox binds current authorization, exact read-all membership and finite assignment/overdue fanout under restricted runtime',{skip:!url},async context=>{
   const admin=new Pool({connectionString:url,ssl:false}),role='careiq_staff_test_'+randomBytes(6).toString('hex'),password=randomBytes(24).toString('hex');
-  const practiceId=randomUUID(),locationId=randomUUID(),patientId=randomUUID(),orgId='org_'+practiceId,owner='staff_'+randomUUID(),recipient='staff_'+randomUUID(),other='staff_'+randomUUID();
+  const practiceId=randomUUID(),locationId=randomUUID(),patientId=randomUUID(),orgId='org_'+practiceId,owner='user_StaffOwner'+randomBytes(10).toString('hex'),recipient='user_StaffRecipient'+randomBytes(10).toString('hex'),other='user_StaffOther'+randomBytes(10).toString('hex');
   const members=new Map([owner,recipient,other].map(userId=>[userId,{id:'membership_'+userId,userId,role:'org:member',permissions:['org:appointments:read','org:workflow:configure']}]));
   const worker={practiceId,locationId,userId:owner,membershipId:members.get(owner)!.id,orgId},tenant={...worker,userId:recipient,membershipId:members.get(recipient)!.id},otherTenant={...worker,userId:other,membershipId:members.get(other)!.id};
   const access={permissions:['org:appointments:read','org:workflow:configure']},ctx=(expectedRevision?:number)=>({requestId:randomUUID(),idempotencyKey:randomUUID(),expectedRevision});
@@ -69,10 +69,33 @@ test('staff inbox binds current authorization, exact read-all membership and fin
     await context.test('unknown staff email keeps the original key and only reconciles; pending messages never expose patient fields',async()=>{
       await service.saveStaffNotificationPreferences(tenant,{emailMode:'immediate',confirmedTimeZone:'America/Los_Angeles',quietStart:'18:00',quietEnd:'08:00'},ctx(1));
       await createWork();let sends=0,lookups=0;let externalKey='';
-      const provider:DeliveryProvider={...disabled,enabled:true,ready:()=>true,send:async message=>{sends++;externalKey=message.externalKey;assert.equal(message.destination,'synthetic@example.invalid');assert.equal(message.text.includes(patientId),false);assert.equal(message.text.includes('Synthetic'),false);return {state:'unknown',code:'PROVIDER_RESULT_UNKNOWN'};},reconcile:async key=>{lookups++;assert.equal(key,externalKey);return {state:'accepted',providerMessageId:'synthetic_provider_id'};}};
+      const provider:DeliveryProvider={...disabled,enabled:true,ready:()=>true,send:async message=>{sends++;externalKey=message.externalKey;assert.equal(message.destination,'synthetic@example.invalid');assert.equal(message.text.includes(patientId),false);assert.equal(message.text.includes('Synthetic'),false);assert.match(message.html!,/color-scheme:light only/);assert.match(message.html!,/bgcolor="#ffffff"/);assert.equal(message.html!.includes(patientId),false);assert.equal(message.html!.includes('Synthetic'),false);return {state:'unknown',code:'PROVIDER_RESULT_UNKNOWN'};},reconcile:async key=>{lookups++;assert.equal(key,externalKey);return {state:'accepted',providerMessageId:'synthetic_provider_id'};}};
       // Outbox availability uses the database clock; tomorrow at 19:00 UTC is after creation and outside Los Angeles quiet hours.
       const now=(await admin.query("SELECT date_trunc('day',clock_timestamp(),'UTC')+interval '43 hours' AS dispatch_at")).rows[0].dispatch_at as Date;await service.runStaffNotificationSweep(worker,{membership,provider,verifiedEmails:async()=>['synthetic@example.invalid'],now});
       assert.equal(sends,1);await service.runStaffNotificationSweep(worker,{membership,provider,verifiedEmails:async()=>['synthetic@example.invalid'],now:new Date(now.getTime()+360000)});assert.equal(sends,1);assert.equal(lookups,1);
+    });
+    await context.test('owner default recipient access respects saved denial, current transfer and inactive personal account',async()=>{
+      const recipientMembership=members.get(recipient)!;
+      try{
+        await admin.query('UPDATE practices SET owner_user_id=$2 WHERE id=$1',[practiceId,recipient]);recipientMembership.role='org:admin';recipientMembership.permissions=[];
+        const allowed=await createWork(recipient);await service.runStaffNotificationSweep(worker,options);
+        assert.equal(Number((await admin.query('SELECT count(*) FROM staff_notifications WHERE work_item_id=$1 AND recipient_user_id=$2',[allowed.id,recipient])).rows[0].count),1);
+        await admin.query("INSERT INTO practice_owner_access(practice_id,owner_user_id,disabled_permissions) VALUES($1,$2,ARRAY['org:appointments:read'])",[practiceId,recipient]);
+        const denied=await createWork(recipient);await service.runStaffNotificationSweep(worker,options);
+        assert.equal((await admin.query('SELECT assignee_user_id FROM work_items WHERE id=$1',[denied.id])).rows[0].assignee_user_id,null);
+        assert.equal(Number((await admin.query('SELECT count(*) FROM staff_notifications WHERE work_item_id=$1 AND recipient_user_id=$2',[denied.id,recipient])).rows[0].count),0);
+        await admin.query("UPDATE practice_owner_access SET disabled_permissions='{}' WHERE practice_id=$1 AND owner_user_id=$2",[practiceId,recipient]);
+        await admin.query('UPDATE practices SET owner_user_id=$2 WHERE id=$1',[practiceId,other]);
+        const former=await createWork(recipient);await service.runStaffNotificationSweep(worker,options);
+        assert.equal((await admin.query('SELECT assignee_user_id FROM work_items WHERE id=$1',[former.id])).rows[0].assignee_user_id,null);
+        recipientMembership.permissions=['org:appointments:read'];
+        await admin.query("INSERT INTO personal_account_lifecycle(user_id,status,archive_session_id) VALUES($1,'archiving','sess_StaffArchive123')",[recipient]);
+        const inactive=await createWork(recipient);await service.runStaffNotificationSweep(worker,options);
+        assert.equal((await admin.query('SELECT assignee_user_id FROM work_items WHERE id=$1',[inactive.id])).rows[0].assignee_user_id,null);
+        assert.equal(Number((await admin.query('SELECT count(*) FROM staff_notifications WHERE work_item_id=$1 AND recipient_user_id=$2',[inactive.id,recipient])).rows[0].count),0);
+      }finally{
+        await admin.query('DELETE FROM personal_account_lifecycle WHERE user_id=$1',[recipient]);await admin.query('DELETE FROM practice_owner_access WHERE practice_id=$1 AND owner_user_id=$2',[practiceId,recipient]);await admin.query('UPDATE practices SET owner_user_id=NULL WHERE id=$1',[practiceId]);recipientMembership.role='org:member';recipientMembership.permissions=['org:appointments:read','org:workflow:configure'];
+      }
     });
     await context.test('local location revocation removes recipient access immediately',async()=>{
       await admin.query('UPDATE location_assignments SET active=false WHERE practice_id=$1 AND location_id=$2 AND user_id=$3',[practiceId,locationId,recipient]);

@@ -1,0 +1,54 @@
+{
+  "time": "2026-10-27T03:23:35.123075+00:00",
+  "marketingCommit": "a07c700c3a9d96c5f8bcb44e12eab34fb149dce8",
+  "pages": {
+    "/": {
+      "visibleTextSha256": "96b70f4be78907577e86596d9fa4c559e936f99ea1459b1de6dfcf72b8852f41",
+      "characters": 4893,
+      "contentUnchanged": true
+    },
+    "/privacy/": {
+      "visibleTextSha256": "239fd3f1cabff2c749ed4b671b1a5c85d60f0234748ac5b70da6467d12cd2c3a",
+      "characters": 2810,
+      "contentUnchanged": true
+    }
+  },
+  "assets": [
+    {
+      "url": "https://careiqlabs.com/_next/static/chunks/0cz1d0mv5g_q7.js",
+      "status": 200
+    },
+    {
+      "url": "https://careiqlabs.com/_next/static/chunks/1fm3_wwr_xvdt.js",
+      "status": 200
+    },
+    {
+      "url": "https://careiqlabs.com/_next/static/chunks/1n1wli3t8-q9j.js",
+      "status": 200
+    },
+    {
+      "url": "https://careiqlabs.com/_next/static/chunks/32egku3d039gj.css",
+      "status": 200
+    },
+    {
+      "url": "https://careiqlabs.com/_next/static/chunks/32j9keddktaho.js",
+      "status": 200
+    },
+    {
+      "url": "https://careiqlabs.com/_next/static/chunks/3bnlqyjfkyq9u.js",
+      "status": 200
+    },
+    {
+      "url": "https://careiqlabs.com/_next/static/chunks/3h1-49wh7ax1k.js",
+      "status": 200
+    },
+    {
+      "url": "https://careiqlabs.com/_next/static/chunks/3uw6e52thx4l5.js",
+      "status": 200
+    },
+    {
+      "url": "https://careiqlabs.com/_next/static/chunks/turbopack-3-ry682tkyiqk.js",
+      "status": 200
+    }
+  ]
+}

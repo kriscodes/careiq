@@ -1,0 +1,82 @@
+[
+  {
+    "locale": "en",
+    "viewportWidth": 1440,
+    "width": 558,
+    "scrollWidth": 558,
+    "height": 750,
+    "pageOverflow": false,
+    "inputBorders": [
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)"
+    ]
+  },
+  {
+    "locale": "en",
+    "viewportWidth": 768,
+    "width": 558,
+    "scrollWidth": 558,
+    "height": 750,
+    "pageOverflow": false,
+    "inputBorders": [
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)"
+    ]
+  },
+  {
+    "locale": "en",
+    "viewportWidth": 320,
+    "width": 286,
+    "scrollWidth": 286,
+    "height": 958,
+    "pageOverflow": false,
+    "inputBorders": [
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)"
+    ]
+  },
+  {
+    "locale": "es",
+    "viewportWidth": 1440,
+    "width": 558,
+    "scrollWidth": 558,
+    "height": 769,
+    "pageOverflow": false,
+    "inputBorders": [
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)"
+    ]
+  },
+  {
+    "locale": "es",
+    "viewportWidth": 320,
+    "width": 286,
+    "scrollWidth": 286,
+    "height": 958,
+    "pageOverflow": false,
+    "inputBorders": [
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)",
+      "rgb(136, 150, 165)"
+    ]
+  }
+]

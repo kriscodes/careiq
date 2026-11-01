@@ -15,11 +15,21 @@ export function invitationOrganizationHint(value: string | undefined) {
 }
 
 export type AuthStep = "signin" | "signup" | "verify" | "forgot" | "resetcode" | "reset" | "mfa" | "recovery" | "firstcode" | "provider";
+export type VerificationMethod = "totp" | "phone_code" | "email_code" | "backup_code";
+const verificationMethods: readonly VerificationMethod[] = ["totp", "phone_code", "email_code", "backup_code"];
+/** Continue only factors offered by this sign-in, preserving an already prepared challenge. */
+export function signInVerificationMethod(factors: readonly { strategy: string }[], preferred?: string | null): VerificationMethod | null {
+  const available = verificationMethods.filter(method => factors.some(factor => factor.strategy === method));
+  return available.find(method => method === preferred) ?? available[0] ?? null;
+}
+export function verificationCodePrepared(method: VerificationMethod, verification: { strategy: string | null; status: string | null }): boolean {
+  return !["email_code", "phone_code"].includes(method) || (verification.strategy === method && verification.status === "unverified");
+}
 export function signInStep(status: string, factors: readonly { strategy: string }[] = []): AuthStep | "complete" {
   if (status === "complete") return "complete";
   if (status === "needs_new_password") return "reset";
-  if (status === "needs_second_factor" && factors.some(f => ["totp", "phone_code", "email_code", "backup_code"].includes(f.strategy))) return "mfa";
-  // Device trust, mid-flow bot challenges, and additional factors stay provider-owned.
+  if (["needs_second_factor", "needs_client_trust"].includes(status) && signInVerificationMethod(factors)) return "mfa";
+  // Mid-flow bot challenges and unsupported factors stay provider-owned.
   return "provider";
 }
 export function invitationEmailMatches(emails: readonly string[], invitationEmail: string) {
@@ -48,9 +58,34 @@ export function timeZoneLabel(zone: string) {
   return common[zone] || zone.replaceAll("_", " ").replace("/", " · ");
 }
 
-/** Keep setup usable in browsers without the optional exhaustive Intl zone list. */
+// Each U.S. state/territory has a choice without requiring an IANA identifier.
+// Arizona and the Aleutians stay distinct because their daylight-saving rules differ.
+const timeZoneOptionKeys: Readonly<Record<string, string>> = {
+  "America/New_York": "access.timeZone.eastern",
+  "America/Chicago": "access.timeZone.central",
+  "America/Denver": "access.timeZone.mountain",
+  "America/Phoenix": "access.timeZone.arizona",
+  "America/Los_Angeles": "access.timeZone.pacific",
+  "America/Anchorage": "access.timeZone.alaska",
+  "America/Adak": "access.timeZone.aleutian",
+  "Pacific/Honolulu": "access.timeZone.hawaii",
+  "America/Puerto_Rico": "access.timeZone.puertoRico",
+  "America/St_Thomas": "access.timeZone.virginIslands",
+  "Pacific/Guam": "access.timeZone.guam",
+  "Pacific/Pago_Pago": "access.timeZone.samoa",
+  "UTC": "access.timeZone.utc",
+};
+
+export function timeZoneOptionLabelKey(zone: string): string | undefined {
+  return Object.prototype.hasOwnProperty.call(timeZoneOptionKeys, zone) ? timeZoneOptionKeys[zone] : undefined;
+}
+
+/** Preserve a valid saved/device zone without exposing an exhaustive, hard-to-scan list. */
 export function availableTimeZones(current: string): string[] {
-  let zones: string[] = [];
-  try { if (typeof Intl.supportedValuesOf === "function") zones = Intl.supportedValuesOf("timeZone"); } catch { /* Use valid common zones below. */ }
-  return [...new Set([current, "UTC", "America/Los_Angeles", "America/Denver", "America/Chicago", "America/New_York", ...zones])];
+  const zones = Object.keys(timeZoneOptionKeys);
+  if (!current || zones.includes(current)) return zones;
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: current });
+    return [current, ...zones];
+  } catch { return zones; }
 }

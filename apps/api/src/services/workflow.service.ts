@@ -6,6 +6,7 @@ import { body, camel, checkRevision, concurrency, id, instant, isoDate, readines
 import { authoringFromVersion, authoringHash, validateAuthoring, validateFormAnswers, renderFormTemplate, type FormSchema } from '../workflow/forms.js';
 import { loadWorkflowReadModel, type WorkflowReadOptions, type WorkflowCollection } from '../workflow/read-model.js';
 import { command, row, scoped, type CommandContext, type QueryClient } from '../workflow/transaction.js';
+import { availabilityInput, availableSlots, providerSlotChecks } from "../workflow/availability.js";
 import { detectType, maximumFileBytes, readPrivate, renderSigned, renderTemplate, scanPrivate, sha256, storePrivate } from '../workflow/storage.js';
 export type WorkflowCapabilities = Record<string, boolean>;
 const scope = (t: TenantContext) => [t.practiceId, t.locationId];
@@ -159,15 +160,10 @@ async function verifyAvailability(client: QueryClient, t: TenantContext, provide
     const assignment = await client.query('SELECT id FROM provider_locations WHERE practice_id=$1 AND location_id=$2 AND provider_id=$3 AND active FOR SHARE', [...scope(t), providerId]);
     if (!assignment.rowCount)
         throw new WorkflowError('PROVIDER_UNAVAILABLE', 409);
-    const exceptions = (await client.query("SELECT * FROM provider_availability_exceptions WHERE practice_id=$1 AND location_id=$2 AND provider_id=$3 AND active AND starts_at<$5 AND ends_at>$4", [...scope(t), providerId, start, end])).rows;
-    if (exceptions.some(e => e.kind === 'unavailable'))
-        throw new WorkflowError('PROVIDER_UNAVAILABLE', 409);
-    const available = await client.query("SELECT r.id FROM provider_availability_rules r JOIN locations l ON l.id=r.location_id WHERE r.practice_id=$1 AND r.location_id=$2 AND r.provider_id=$3 AND r.active AND extract(isodow FROM $4::timestamptz AT TIME ZONE l.time_zone)=r.iso_weekday AND ($4::timestamptz AT TIME ZONE l.time_zone)::date>=r.effective_from AND (r.effective_until IS NULL OR ($4::timestamptz AT TIME ZONE l.time_zone)::date<=r.effective_until) AND ($4::timestamptz AT TIME ZONE l.time_zone)::date=($5::timestamptz AT TIME ZONE l.time_zone)::date AND ($4::timestamptz AT TIME ZONE l.time_zone)::time>=r.starts_at_local AND ($5::timestamptz AT TIME ZONE l.time_zone)::time<=r.ends_at_local", [...scope(t), providerId, start, end]);
-    if (!available.rowCount && !exceptions.some(e => e.kind === 'available' && new Date(e.starts_at) <= start && new Date(e.ends_at) >= end))
-        throw new WorkflowError('OUTSIDE_PROVIDER_AVAILABILITY', 409);
-    const conflict = await client.query("SELECT id FROM appointments WHERE practice_id=$1 AND provider_id=$2 AND status IN ('scheduled','confirmed','checked_in','in_progress') AND ends_at>$3 AND scheduled_at<$4 AND ($5::uuid IS NULL OR id<>$5)", [t.practiceId, providerId, start, end, excludeId ?? null]);
-    if (conflict.rowCount)
-        throw new WorkflowError('APPOINTMENT_CONFLICT', 409);
+    const checks = (await client.query(`WITH candidates AS (SELECT $5::timestamptz AS starts_at,$6::timestamptz AS ends_at) ${providerSlotChecks}`, [...scope(t), providerId, excludeId ?? null, start, end])).rows[0];
+    if (!checks || checks.blocked) throw new WorkflowError('PROVIDER_UNAVAILABLE', 409);
+    if (!checks.configured) throw new WorkflowError('OUTSIDE_PROVIDER_AVAILABILITY', 409);
+    if (checks.conflict) throw new WorkflowError('APPOINTMENT_CONFLICT', 409);
 }
 export async function execute(t: TenantContext, action: string, target: string, input: unknown, context: CommandContext) {
     if (action === 'form-changes.decisions') return (await import('./form-changes.service.js')).decideFormChange(t,target,input,context);
@@ -1123,6 +1119,19 @@ export async function patientUploadCompletion(token: string, sessionId: string, 
         }
         return result;
     });
+}
+export async function availability(t: TenantContext, input: unknown, requestId: string) {
+    const query = availabilityInput(input);
+    return scoped(t, async client => {
+        const provider = await row(client, 'providers', t, query.providerId, false, true);
+        const assignment = (await client.query('SELECT id FROM provider_locations WHERE practice_id=$1 AND location_id=$2 AND provider_id=$3 AND active', [...scope(t), query.providerId])).rows[0];
+        if (provider.status !== 'active' || !assignment) throw new WorkflowError('PROVIDER_UNAVAILABLE', 409);
+        if (query.excludeAppointmentId) await row(client, 'appointments', t, query.excludeAppointmentId, false);
+        const location = (await client.query('SELECT time_zone FROM locations WHERE practice_id=$1 AND id=$2', scope(t))).rows[0];
+        const slots = await availableSlots(client, t, query);
+        await recordWorkflowAudit(client, t, { action: 'appointments.availability.read', entityType: 'provider', entityId: query.providerId, requestId, metadata: { count: slots.length } });
+        return { ...query, timeZone: location.time_zone, slots };
+    }, requestId, true);
 }
 export async function providerAvailability(t: TenantContext, providerId: string, requestId: string) {
     return scoped(t, async (client) => {

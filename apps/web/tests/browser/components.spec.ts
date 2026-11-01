@@ -62,7 +62,7 @@ test("OAuth callback takes precedence over restored signup email verification", 
 
 test("provider hash changes keep Clerk mounted after deliberate social sign-in entry", async ({ page, harnessUrl }) => {
   await page.goto(`${harnessUrl}/?component=auth`);
-  await page.getByRole("button", { name: "Other sign-in options", exact: true }).click();
+  await page.getByRole("button", { name: "Other ways to sign in", exact: true }).click();
   await expect(page.getByText("Provider completion fixture", { exact: true })).toBeVisible();
   for (const hash of ["/sso-callback?__clerk_status=verified", "/continue"]) {
     await page.evaluate(value => { window.location.hash = value; }, hash);
@@ -99,7 +99,7 @@ test("password recovery is generic for unknown accounts and reports service outa
   await page.getByRole("button", { name: "Forgot password?" }).click();
   await page.getByLabel("Email address", { exact: true }).fill("synthetic@example.invalid");
   await page.getByRole("button", { name: /Send reset code/ }).click();
-  await expect(page.getByRole("heading", { name: "Reset your password" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Let’s get you back in." })).toBeVisible();
   await expect(page.getByRole("alert")).toContainText("Please try again");
   await expect(page.getByRole("alert")).not.toContainText("secret");
 });
@@ -298,21 +298,20 @@ test("an uncertain invitation keeps its email, role, locations and attempt immut
   await expect(page.getByRole("heading", { name: "Invitation sent" })).toBeVisible();
   expect(invitations[0]).toEqual(invitations[1]);
 });
-test("owner clinical access starts unassigned and requires explicit location selection", async ({ page, harnessUrl }) => {
+test("owner location limits use the revisioned owner profile without changing their role", async ({ page, harnessUrl }) => {
   const grants: unknown[] = [];
   await page.route("**/api/v1/**", async route => {
-    if (route.request().method() === "POST") { grants.push(route.request().postDataJSON()); return json(route, { data: {} }); }
-    return json(route, { data: { locations: [location], members: [{ userId: "user_test", isOwner: true, role: "org:admin", locationIds: [] }], invitations: [], allowedRoles: ["org:member", "org:admin"] } });
+    if (route.request().method() === "POST") { grants.push({ path: new URL(route.request().url()).pathname, body: route.request().postDataJSON() }); return json(route, { data: {} }); }
+    return json(route, { data: { locations: [location], members: [{ userId: "user_test", isOwner: true, role: "org:admin", status: "active", locationIds: [] }], invitations: [], allowedRoles: ["org:member", "org:admin"], ownerAccess: { disabledPermissions: [], allLocations: false, revision: 2 } } });
   });
   await page.goto(`${harnessUrl}/?component=owneraccess`);
   const choice = page.getByRole("checkbox", { name: /Main location/ });
-  await expect(choice).not.toBeChecked();
-  expect(grants).toHaveLength(0);
-  await choice.check();
-  await page.getByRole("button", { name: "Save my location access" }).click();
+  await expect(choice).not.toBeChecked(); expect(grants).toHaveLength(0);
+  await choice.check(); await page.getByRole("button", { name: "Save my access", exact: true }).click();
   await expect.poll(() => grants.length).toBe(1);
-  expect(grants[0]).toEqual({ role: "org:admin", locationIds: [location.id] });
+  expect(grants[0]).toEqual({ path: "/api/v1/practice/owner-access", body: { disabledPermissions: [], allLocations: false, locationIds: [location.id], revision: 2 } });
 });
+
 test("the wrong verified email cannot accept an invitation or open records", async ({ page, harnessUrl }) => {
   const clinical: string[] = [];
   await page.route("**/api/v1/**", async route => { const path = new URL(route.request().url()).pathname; if (path !== "/api/v1/me") clinical.push(path); await json(route, { data: access }); });
@@ -326,7 +325,9 @@ test("pending membership never dispatches clinical reads even if a role is visib
   const paths: string[] = [];
   await page.route("**/api/v1/**", async route => { paths.push(new URL(route.request().url()).pathname); await json(route, { data: { ...access, onboarding: "pending", enrollmentStatus: "pending_assignment" } }); });
   await page.goto(`${harnessUrl}/?component=workspace`);
-  await expect(page.getByRole("heading", { name: "You’ve joined the team" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Practice home", exact: true })).toBeVisible();
+  await expect(page.locator(".cq-home").getByRole("status")).toContainText("Your practice owner");
+  await expect(page.getByRole("button", { name: "Open workspace", exact: true })).toHaveCount(0);
   expect(paths).toEqual(["/api/v1/me"]);
 });
 test("in-progress nonclinical setup survives an inbox switch", async ({ page, harnessUrl }) => {
@@ -348,6 +349,8 @@ test("fresh token resource updates do not restart or starve the first workflow r
     return json(route, { error: { code: "UNEXPECTED_REQUEST" } }, 500);
   });
   await page.goto(`${harnessUrl}/?component=workspace&scenario=workflow-token-refresh`);
+  await expect(page.getByRole("heading", { name: "Hello again.", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Open workspace", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Where are you working?", exact: true })).toBeVisible();
   await page.getByRole("button", { name: /^Continue/ }).evaluate(button => (button as HTMLButtonElement).click());
   const workflowPath = `/api/v1/locations/${location.id}/workflow`;
@@ -380,8 +383,10 @@ test("an opened clinical scope is discarded on backgrounding and revocation bloc
     return json(route, { data: path.endsWith("/patients") ? [{ id: "patient_test", firstName: "Synthetic", lastName: "Browser", email: null, phone: null }] : [] });
   });
   await page.goto(`${harnessUrl}/?component=workspace`);
-  await expect(page.getByRole("heading", { name: "Where are you working?" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Hello again.", exact: true })).toBeVisible();
   expect(clinicalPaths).toHaveLength(0);
+  await page.getByRole("button", { name: "Open workspace", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Where are you working?" })).toBeVisible();
   await page.getByRole("button", { name: /Continue/ }).click();
   await page.getByRole("button", { name: /^Patients/ }).click();
   await expect(page.getByRole("button", { name: /Synthetic Browser/ })).toBeVisible();
@@ -392,7 +397,9 @@ test("an opened clinical scope is discarded on backgrounding and revocation bloc
   await expect(page.getByRole("heading", { name: "Your workspace is paused" })).toBeVisible();
   await expect(page.getByText("Synthetic Browser", { exact: true })).toHaveCount(0);
   await page.evaluate(() => window.dispatchEvent(new Event("focus")));
-  await expect(page.getByRole("heading", { name: "Your access has changed" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Practice home", exact: true })).toBeVisible();
+  await expect(page.locator(".cq-home").getByRole("status")).toContainText("You can’t open this practice");
+  await expect(page.getByRole("button", { name: "Open workspace", exact: true })).toHaveCount(0);
   expect(clinicalPaths).toHaveLength(reads);
 });
 
@@ -479,10 +486,11 @@ test("a deliberate pending sign-in locks once and prevents duplicate submissions
 
 test("a restored pending MFA attempt is preserved and never silently finalized", async ({ page, harnessUrl }) => {
   await page.goto(`${harnessUrl}/?component=auth&scenario=auth-restored-mfa`);
-  await expect(page.getByText("Provider completion fixture", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "One more step", exact: true })).toBeVisible();
+  await expect(page.getByLabel("Verification code", { exact: true })).toBeVisible();
   await expect(page.getByLabel("Password", { exact: true })).toHaveCount(0);
   await page.evaluate(() => { window.__careiqAuthFetch!.set("signup", "fetching"); window.__careiqAuthFetch!.set("signin", "idle"); });
-  await expect(page.getByText("Provider completion fixture", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Verification code", { exact: true })).toBeVisible();
   expect((await calls(page)).filter(call => ["password", "signInFinalize"].includes(call.name))).toHaveLength(0);
 });
 

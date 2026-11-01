@@ -10,9 +10,10 @@ type InterviewModalProps = {
   onClose: () => void;
   busy?: boolean;
   developerNotes?: boolean;
+  className?: string;
 };
 
-export function InterviewModal({ title, description, children, onClose, busy = false, developerNotes = false }: InterviewModalProps) {
+export function InterviewModal({ title, description, children, onClose, busy = false, developerNotes = false, className = "" }: InterviewModalProps) {
   const { t } = useI18n();
   const ref = useRef<HTMLDialogElement>(null);
   const id = useId();
@@ -42,7 +43,7 @@ export function InterviewModal({ title, description, children, onClose, busy = f
   }, []);
 
   return (
-    <dialog ref={ref} className={`cq-modal${developerNotes ? " cq-modal-developer" : ""}`} aria-labelledby={`${id}-title`} aria-describedby={`${id}-description`} onCancel={(event) => { event.preventDefault(); if (!busy) onClose(); }}>
+    <dialog ref={ref} className={`cq-modal${developerNotes ? " cq-modal-developer" : ""}${className ? ` ${className}` : ""}`} aria-labelledby={`${id}-title`} aria-describedby={`${id}-description`} onCancel={(event) => { event.preventDefault(); if (!busy) onClose(); }}>
       <header className="cq-modal-head">
         <div>
           {developerNotes && <p className="cq-form-note">{t("access.copy.developer_notes_interview_demo")}</p>}

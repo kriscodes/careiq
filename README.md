@@ -1,6 +1,6 @@
 # CareIQ
 
-October 26 security updates: [runtime and authorization fixes](docs/verification/security-release-2026-10-26.md).
+October 26 security patches and verification: [main security review](docs/verification/security-2026-10-26/README.md).
 
 Security implementation and rollout: [hardening guide](docs/security-hardening.md) · [release status and owner actions](docs/deployment/security-release-status.md).
 
@@ -181,6 +181,8 @@ Important database conventions include:
 Database migrations are owned by the API application.
 
 ## Authentication and practice onboarding
+
+The current [Little hello authentication](docs/little-hello-authentication.md) and [email implementation](docs/little-hello-emails.md) keep white tones across sign-in, recovery, invitation and session flows. See the [October 21 verification record](docs/verification/little-hello-2026-10-21/README.md) for completed local checks and remaining provider/inbox acceptance.
 
 The current designs and implementation are documented in [the authentication/onboarding guide](docs/auth-onboarding.md). Review [web, iOS and Android designs](docs/design/auth-onboarding/design-handoff.md) and the [interactive prototype](docs/design/auth-onboarding/prototype.html).
 
