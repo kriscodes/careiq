@@ -53,3 +53,7 @@ temp/
 
 # Generated isolated Next.js build directories can contain private build metadata
 .next-*/
+
+# Python bytecode
+__pycache__/
+*.py[cod]

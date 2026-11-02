@@ -337,6 +337,13 @@
       "when": 1793491200002,
       "tag": "0047_managed_owner_availability",
       "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "7",
+      "when": 1793664000000,
+      "tag": "0048_manager_activity",
+      "breakpoints": true
     }
   ]
 }

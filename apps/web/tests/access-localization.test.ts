@@ -13,12 +13,12 @@ const spanish = (key: string, values?: Record<string, string | number>) => trans
 test("Spanish account controls retain password-manager and accessible progress semantics", () => {
   const shell = createElement(AccessShell, { step: 2 } as Parameters<typeof AccessShell>[0], createElement(AccessPassword));
   const markup = renderToStaticMarkup(createElement(I18nProvider, { initialLocale: "es", scope: "staff" } as Parameters<typeof I18nProvider>[0], shell));
-  assert.match(markup, /aria-label="Mostrar contraseña"/);
+  assert.match(markup, /aria-label="Mostrar Contraseña"/);
   assert.match(markup, /autoComplete="current-password"/i);
   assert.match(markup, /aria-label="Configuración de la clínica: paso 2 de 3"/);
   assert.match(markup, /Paso 2 de 3/);
-  assert.match(markup, /¿Te echamos una mano\?/);
-  assert.doesNotMatch(markup, /Need help|Your practice|Enter your password/);
+  assert.match(markup, /¿Te Echamos Una Mano\?/);
+  assert.doesNotMatch(markup, /Need A Hand|Your Practice|Enter your password/);
 });
 
 test("provider errors localize by safe code without exposing provider diagnostics or account existence", () => {
@@ -39,11 +39,11 @@ test("visible fixed notifications can change language while preserving interpola
 
 test("role, audit and status labels translate while canonical codes remain stable", () => {
   assert.equal(accessRoleLabel(spanish, "org:admin"), "Administrador");
-  assert.equal(accessRoleLabel(spanish, "org:custom_clinician"), "Rol personalizado · org:custom_clinician");
+  assert.equal(accessRoleLabel(spanish, "org:custom_clinician"), "Rol Personalizado · org:custom_clinician");
   assert.equal(accessStatusLabel(spanish, "confirmed"), "Confirmada");
-  assert.equal(accessStatusLabel(spanish, "pending_assignment"), "Pendiente de asignación");
-  assert.equal(accessAuditLabel(spanish, "action", "documents.review"), "Revisar documento");
-  assert.equal(accessAuditLabel(spanish, "action", "future.code"), "Acción de auditoría");
+  assert.equal(accessStatusLabel(spanish, "pending_assignment"), "Pendiente De Asignación");
+  assert.equal(accessAuditLabel(spanish, "action", "documents.review"), "Revisar Documento");
+  assert.equal(accessAuditLabel(spanish, "action", "future.code"), "Acción De Auditoría");
   assert.equal(accessStatusLabel(spanish, undefined), translate("es", "common.unknownLabel"));
 });
 

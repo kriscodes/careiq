@@ -1,5 +1,7 @@
 "use client";
 
+import { AccessLoading } from "@/components/access/AccessLoading";
+
 import type { ReactNode } from "react";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { useI18n } from "@/i18n/provider";
@@ -31,7 +33,7 @@ export function PracticeHome({ context, notice, receipt, error, busy, practicePi
     <AccessHeading title={t("access.home.title")}>{t("access.home.welcome", { practice: practice.name })}</AccessHeading>
     <AccessStatus>{receipt}</AccessStatus><AccessError>{error}</AccessError>
     <p className="cq-a-note" role="status">{t(pending ? "access.copy.your_practice_owner_will_confirm_your_role_and_locations_before_you_can_op" : "access.copy.you_can_t_open_this_practice_right_now_ask_the_practice_owner_to_review_yo")}</p>
-    {pending && context.enrollmentStatus !== "pending_assignment" && <button type="button" className="cq-a-primary" disabled={busy} onClick={onFinishJoining}>{busy ? t("access.copy.confirming") : t("access.copy.finish_joining_this_practice")}</button>}
+    {pending && context.enrollmentStatus !== "pending_assignment" && <button type="button" className="cq-a-primary" disabled={busy} onClick={onFinishJoining}>{busy ? <AccessLoading label={t("access.copy.confirming")} inline /> : t("access.copy.finish_joining_this_practice")}</button>}
     <button type="button" className="cq-a-secondary" disabled={busy} onClick={onRefresh}>{t("access.copy.check_access_again")}</button>{practicePicker}
     <button type="button" className="cq-a-link" onClick={onInvitations}>{t("access.copy.view_invitations")}</button><button type="button" className="cq-a-link" onClick={onPersonalAccount}>{t("access.home.personalAccount")}</button>
   </div></AccessShell>;

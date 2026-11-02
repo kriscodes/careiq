@@ -1,4 +1,6 @@
 "use client";
+
+import { AccessLoading } from "@/components/access/AccessLoading";
 import { useI18n } from "@/i18n/provider";
 import { localizeAccessText } from "@/components/access/display";
 import { useClerk } from "@clerk/nextjs";
@@ -16,5 +18,5 @@ export function SignOutButton({ children, redirectUrl = "/sign-in", className = 
     try { await signOut({ redirectUrl: typeof redirectUrl === "function" ? redirectUrl() : redirectUrl }); }
     catch (cause) { setError(authErrorMessage(cause, t)); }
     finally { locked.current = false; setBusy(false); }
-  }}>{busy ? t("access.copy.one_moment") : children ?? t("access.copy.sign_out")}</button>{error && <p className="cq-a-error" role="alert">{localizeAccessText(t, error)}</p>}</div>;
+  }}>{busy ? <AccessLoading label={t("access.copy.one_moment")} inline /> : children ?? t("access.copy.sign_out")}</button>{error && <p className="cq-a-error" role="alert">{localizeAccessText(t, error)}</p>}</div>;
 }

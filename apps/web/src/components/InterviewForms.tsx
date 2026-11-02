@@ -1,5 +1,7 @@
 "use client";
 
+import { AccessLoading } from "@/components/access/AccessLoading";
+
 import { useI18n } from "@/i18n/provider";
 import { localizeAccessText, accessZoneLabel } from "@/components/access/display";
 import { type SubmitEvent, useId, useRef, useState } from "react";
@@ -104,7 +106,7 @@ export function PatientForm({
         {error && <p className="cq-error" role="alert">{localizeAccessText(t, error)}</p>}
         <div className="cq-form-foot">
           <button type="button" className="cq-button" onClick={onCancel}>{continueBooking ? t("access.copy.back_to_appointment") : t("access.copy.cancel")}</button>
-          <button type="submit" className="cq-button cq-primary">{pending ? t("access.copy.creating_patient") : continueBooking ? t("access.copy.create_continue") : t("access.copy.create_patient_84e7b1")}</button>
+          <button type="submit" className="cq-button cq-primary">{pending ? <AccessLoading label={t("access.copy.creating_patient")} inline /> : continueBooking ? t("access.copy.create_continue") : t("access.copy.create_patient_84e7b1")}</button>
         </div>
       </fieldset>
     </form>
@@ -211,7 +213,7 @@ export function BookingForm({ patients, practiceName, timeZone, draft, onChange,
         {error && <p className="cq-error" role="alert">{localizeAccessText(t, error)}</p>}
         <div className="cq-form-foot">
           <button type="button" className="cq-button" onClick={onCancel}>{t("access.copy.cancel")}</button>
-          <button type="submit" className="cq-button cq-primary" disabled={!patients.length}>{pending ? t("access.copy.scheduling_0e44db") : t("access.copy.schedule_appointment_d5c7f2")}</button>
+          <button type="submit" className="cq-button cq-primary" disabled={!patients.length}>{pending ? <AccessLoading label={t("access.copy.scheduling_0e44db")} inline /> : t("access.copy.schedule_appointment_d5c7f2")}</button>
         </div>
       </fieldset>
     </form>

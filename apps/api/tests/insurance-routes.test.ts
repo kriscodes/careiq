@@ -30,6 +30,7 @@ async function withInsurance(options: Options, run: (base: string, calls: Record
     const dependencies = {
         listCases: store('listCases', { items: [], pagination: { hasMore: false, nextCursor: null }, from: '2026-10-18', to: '2026-10-18', timeZone: 'America/Los_Angeles', asOf: '2026-10-18T17:00:00Z', payerConnection: 'unavailable' }),
         managerSummary: store('managerSummary', { summary: { appointments: 0 } }),
+        managerActivity: store('managerActivity', { summary: { total: 0 }, actors: [], items: [], pagination: { hasMore: false, nextCursor: null } }),
         assignees: store('assignees', []),
         caseDetail: store('caseDetail', { case: { id: caseId, concurrency: { ifMatch: '"1"' } }, evidence: [] }),
         evidenceHistory: store('evidenceHistory', { items: [], pagination: { hasMore: false, nextCursor: null } }),
@@ -158,5 +159,30 @@ test('missing case preconditions and unavailable payer attempts produce explicit
         assert.equal(check.status, 503); assert.equal((await check.json()).error.code, 'PAYER_CONNECTION_UNAVAILABLE');
         assert.equal(failures[1]?.event.outcome, 'failed'); assert.equal(failures[1]?.event.reasonCode, 'PAYER_CONNECTION_UNAVAILABLE');
         assert.equal(calls.length, 0);
+    });
+});
+
+
+test('manager activity requires both management and activity rights and validates location-date filters', async () => {
+    for (const permissions of [[], ['org:work:manage'], ['org:activity:read']]) {
+        await withInsurance({ permissions }, async (base, calls) => {
+            const response = await fetch(`${base}/manager/activity?from=2026-11-01&to=2026-11-01`);
+            assert.equal(response.status, 403); assert.equal(calls.length, 0);
+        });
+    }
+    await withInsurance({ permissions: ['org:work:manage','org:activity:read'] }, async (base, calls) => {
+        const response = await fetch(`${base}/manager/activity?from=2026-11-01&to=2026-11-01&actorId=former_staff&category=insurance&limit=2`);
+        assert.equal(response.status, 200); assert.equal(response.headers.get('Cache-Control'), 'no-store');
+        const call = calls[0]!; assert.equal(call.operation, 'managerActivity');
+        assert.deepEqual(call.args[1], { from: '2026-11-01', to: '2026-11-01', actorId: 'former_staff', category: 'insurance', limit: 2 });
+        assert.equal(call.args[2], response.headers.get('X-Request-Id'));
+        for (const query of ['category=audit', 'actorId=a&actorId=b', 'from=2026-02-30', 'practiceId=forged']) {
+            const invalid = await fetch(`${base}/manager/activity?from=2026-11-01&to=2026-11-01&${query}`);
+            assert.ok([400,422].includes(invalid.status));
+        }
+        assert.equal(calls.length, 1);
+    });
+    await withInsurance({ permissions: ['org:work:manage','org:activity:read'], clinicalRead: false }, async (base, calls) => {
+        assert.equal((await fetch(`${base}/manager/activity?from=2026-11-01&to=2026-11-01`)).status, 403); assert.equal(calls.length, 0);
     });
 });

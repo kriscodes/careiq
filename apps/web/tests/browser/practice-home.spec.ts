@@ -10,7 +10,7 @@ const snapshot = (caps: WorkspaceCapabilities, location = first) => ({ location,
 const json = (route: Route, data: unknown, status = 200) => route.fulfill({ status, contentType: "application/json", body: JSON.stringify(data) });
 const home = (page: Page) => page.getByRole("heading", { name: "Hello again.", exact: true });
 async function enterWorkspace(page: Page) {
-  await page.getByRole("button", { name: "Open workspace", exact: true }).click();
+  await page.getByRole("button", { name: "Open Workspace", exact: true }).click();
   const choose = page.getByRole("heading", { name: "Where are you working?", exact: true });
   await expect(choose).toBeVisible();
   await page.getByRole("button", { name: /^Continue/ }).click();
@@ -25,16 +25,16 @@ for (const owner of [false, true]) test(`${owner ? "owner" : "member"} without w
   await page.route("**/api/v1/**", async route => { paths.push(new URL(route.request().url()).pathname); await json(route, { data: context(noWorkspace, owner) }); });
   await page.goto(`${harnessUrl}/?component=workspace&identityRole=${owner ? "admin" : "member"}`);
   await expect(home(page)).toBeVisible();
-  await expect(page.getByRole("button", { name: "Open workspace", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Open Workspace", exact: true })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Where are you working?", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Manage team & locations", exact: true })).toHaveCount(owner ? 1 : 0);
+  await expect(page.getByRole("button", { name: "Manage Team & Locations", exact: true })).toHaveCount(owner ? 1 : 0);
   await expect(page.locator(".wf-shell")).toBeVisible();
-  const today = page.getByRole("navigation", { name: "Practice navigation", exact: true }).getByRole("button", { name: "Today", exact: true });
+  const today = page.getByRole("navigation", { name: "Practice Navigation", exact: true }).getByRole("button", { name: "Today", exact: true });
   await today.click();
   await expect(page.getByRole("heading", { name: "This area needs permission", exact: true })).toBeVisible();
   await expect(page.getByText("Your current role does not include Today. You can keep using the rest of CareIQ.", { exact: true })).toBeVisible();
   await expect(page.locator(".wf-kpis")).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Personal account", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Personal Account", exact: true })).toBeVisible();
   expect(paths).toEqual(["/api/v1/me"]);
 });
 
@@ -52,9 +52,9 @@ for (const grant of Object.keys(noWorkspace) as Array<keyof WorkspaceCapabilitie
   await expect(home(page)).toBeVisible(); expect(reads).toBe(0);
   await enterWorkspace(page);
   await expect(page.locator(".wf-page-head")).toBeVisible();
-  await expect(page.getByText("Opening your front desk…", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Opening Your Front Desk…", { exact: true })).toHaveCount(0);
   expect(reads).toBeGreaterThan(0);
-  await page.getByRole("navigation", { name: "Practice navigation", exact: true }).getByRole("button", { name: "Home", exact: true }).click();
+  await page.getByRole("navigation", { name: "Practice Navigation", exact: true }).getByRole("button", { name: "Home", exact: true }).click();
   await expect(home(page)).toBeVisible();
 });
 
@@ -72,7 +72,7 @@ for (const status of [401, 403]) test(`workflow${status} removes records and lan
   await expect(page.locator(".cq-app-home").getByRole("status").filter({ hasText: "Workspace access could not be confirmed. No records are open. Check your access before trying again." })).toBeVisible();
   await expect(page.locator(".wf-page-head")).toHaveCount(0);
   expect(reads).toBe(1); expect(checks).toBe(2);
-  await page.getByRole("button", { name: "Check access again", exact: true }).click();
+  await page.getByRole("button", { name: "Check Access Again", exact: true }).click();
   await expect(home(page)).toBeVisible();
   expect(reads).toBe(1); expect(checks).toBe(3);
 });
@@ -86,8 +86,8 @@ test("a failed authorization recheck after workflow401 stays on a retryable home
   });
   await page.goto(`${harnessUrl}/?component=workspace`);
   await enterWorkspace(page);
-  await expect(page.getByRole("heading", { name: "Practice home", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Try again", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Practice Home", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Try Again", exact: true })).toBeVisible();
   await expect(page.locator(".wf-page-head")).toHaveCount(0);
   expect(reads).toBe(2); expect(checks).toBe(2);
 });
@@ -107,11 +107,11 @@ for (const changed of ["none", "assignment", "permission"] as const) test(`backg
     paths.push(path); return json(route, { data: snapshot(caps, second) });
   });
   await page.goto(`${harnessUrl}/?component=workspace`);
-  await page.getByRole("button", { name: "Open workspace", exact: true }).click();
+  await page.getByRole("button", { name: "Open Workspace", exact: true }).click();
   await page.getByRole("radio", { name: /Second location/ }).check();
   await page.getByRole("button", { name: /^Continue/ }).click();
   await expect(page.locator(".wf-page-head")).toBeVisible();
-  await expect(page.getByText("Opening your front desk…", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Opening Your Front Desk…", { exact: true })).toHaveCount(0);
   const readsBeforePause = paths.length;
   expect(readsBeforePause).toBeGreaterThan(0);
   expect(paths.every(path => path === `/api/v1/locations/${second.id}/workflow`)).toBe(true);
@@ -125,7 +125,7 @@ for (const changed of ["none", "assignment", "permission"] as const) test(`backg
   release();
   if (changed === "none") {
     await expect(page.locator(".wf-page-head")).toBeVisible();
-    await expect(page.getByRole("combobox", { name: "Working location", exact: true })).toHaveValue(second.id);
+    await expect(page.getByRole("combobox", { name: "Working Location", exact: true })).toHaveValue(second.id);
     await expect.poll(() => paths.length).toBeGreaterThan(readsBeforePause);
     expect(paths.every(path => path === `/api/v1/locations/${second.id}/workflow`)).toBe(true);
   } else {
@@ -150,19 +150,19 @@ test("ownership transfer keeps its receipt visible through refresh and returns t
     return json(route, { data: admin });
   });
   await page.goto(`${harnessUrl}/?component=workspace`);
-  await page.getByRole("button", { name: "Manage team & locations", exact: true }).click();
+  await page.getByRole("button", { name: "Manage Team & Locations", exact: true }).click();
   await page.getByRole("tab", { name: "Ownership", exact: true }).click();
-  await page.getByRole("combobox", { name: "New owner", exact: true }).selectOption("user_recipient");
-  await page.getByRole("textbox", { name: "Type Synthetic practice to confirm", exact: true }).fill("Synthetic practice");
-  await page.getByRole("button", { name: "Transfer ownership to Synthetic recipient (recipient@example.invalid)", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Practice home", exact: true })).toBeVisible();
+  await page.getByRole("combobox", { name: "New Owner", exact: true }).selectOption("user_recipient");
+  await page.getByRole("textbox", { name: "Type Synthetic practice To Confirm", exact: true }).fill("Synthetic practice");
+  await page.getByRole("button", { name: "Transfer Ownership To Synthetic recipient (recipient@example.invalid)", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Practice Home", exact: true })).toBeVisible();
   const receipt = page.getByText("Ownership of Synthetic practice was transferred to Synthetic recipient (recipient@example.invalid). Your personal account was not transferred.", { exact: true });
   await expect(receipt).toBeVisible();
   await expect.poll(() => checks).toBe(2);
   release();
-  await expect(page.getByRole("heading", { name: "Your workspace", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Your Workspace", exact: true })).toBeVisible();
   await expect(receipt).toBeVisible();
-  await expect(page.getByRole("button", { name: "Manage team & locations", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Manage Team & Locations", exact: true })).toHaveCount(0);
   expect(writes).toEqual([{ userId: "user_recipient", practiceId: "practice_test", confirmationName: "Synthetic practice", acknowledgedUserId: "user_recipient" }]);
 });
 
@@ -176,7 +176,7 @@ test("legacy clinical-read403 returns to explained home without repeating the de
   });
   await page.goto(`${harnessUrl}/?component=workspace`);
   await expect(home(page)).toBeVisible(); expect(reads).toBe(0);
-  await page.getByRole("button", { name: "Open workspace", exact: true }).click();
+  await page.getByRole("button", { name: "Open Workspace", exact: true }).click();
   await expect(page.locator(".cq-app-home").getByRole("status").filter({ hasText: "Workspace access could not be confirmed. No records are open. Check your access before trying again." })).toBeVisible();
   await expect(home(page)).toBeVisible();
   await expect(page.locator(".cq-shell")).toHaveCount(0);
@@ -191,12 +191,12 @@ for (const scenario of ["memberships-loading", "memberships-paged"]) test(`curre
   const picker = page.getByRole("combobox", { name: "Workspace", exact: true });
   await expect(picker).toHaveValue("org_test");
   await expect(picker.locator("option:checked")).toHaveText("Synthetic practice");
-  await expect(page.getByRole("button", { name: "Open workspace", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Open Workspace", exact: true })).toHaveCount(0);
   await page.evaluate(() => { if (!window.__careiqMemberships) throw new Error("Deferred membership fixture missing"); window.__careiqMemberships.resolve(); });
   await expect(picker.locator("option:checked")).toHaveText("Test practice");
   await expect(picker.locator('option[value="org_test"]')).toHaveCount(1);
   await expect(picker).toHaveValue("org_test");
-  await expect(page.getByRole("button", { name: "Open workspace", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Open Workspace", exact: true })).toHaveCount(0);
   expect(paths).toEqual(["/api/v1/me"]);
   expect(await page.evaluate(() => window.__careiqMockCalls.filter(call => call.name === "setActive"))).toEqual([]);
 });

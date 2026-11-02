@@ -1,5 +1,7 @@
 "use client";
 
+import { AccessLoading } from "@/components/access/AccessLoading";
+
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useI18n } from "@/i18n/provider";
 import { InterviewIcon } from "@/components/InterviewIcon";
@@ -9,20 +11,20 @@ import { workflowStatus } from "./workflow-i18n";
 import "./appointment-planner.css";
 
 const english = {
-  week: "Week view", previous: "Previous week", next: "Next week", current: "Current week", jump: "Jump to date",
-  provider: "Provider", allProviders: "All providers", unavailableProvider: "Provider not assigned", unavailablePatient: "Patient unavailable", visit: "Appointment",
-  findTime: "Find a time", findHint: "Choose a provider, date and visit length to check their availability.", date: "Date", duration: "Duration in minutes", chooseProvider: "Choose a provider", check: "Check availability", checking: "Checking…", close: "Close availability",
-  noSlots: "No available times match this search. Try another date or provider.", available: "Available times", bookTime: "Book this time", availabilityHint: "Times reflect provider hours and existing bookings. Availability is checked again when you book.",
-  calendar: "Weekly appointment calendar", agenda: "Appointments this week", empty: "No appointments this week", emptyProvider: "No appointments for this provider this week", emptyDay: "No appointments", emptyHint: "Use Find a time to check provider availability.",
-  loading: "Loading the week…", incomplete: "More appointments are available. Load the remaining appointments to complete this week.", loadMore: "Load more appointments", loaded: "appointments loaded", singular: "appointment", plural: "appointments", selectedHint: "Select a visit to view its details or reschedule.", locationTime: "Location time", unknownDuration: "Duration not recorded", minutes: "min", continues: "Continues", until: "until",
+  week: "Week View", previous: "Previous Week", next: "Next Week", current: "Current Week", jump: "Jump To Date",
+  provider: "Provider", allProviders: "All Providers", unavailableProvider: "Provider Not Assigned", unavailablePatient: "Patient Unavailable", visit: "Appointment",
+  findTime: "Find A Time", findHint: "Choose a provider, date and visit length to check their availability.", date: "Date", duration: "Duration In Minutes", chooseProvider: "Choose A Provider", check: "Check Availability", checking: "Checking…", close: "Close Availability",
+  noSlots: "No available times match this search. Try another date or provider.", available: "Available Times", bookTime: "Book This Time", availabilityHint: "Times reflect provider hours and existing bookings. Availability is checked again when you book.",
+  calendar: "Weekly Appointment Calendar", agenda: "Appointments This Week", empty: "No Appointments This Week", emptyProvider: "No Appointments For This Provider This Week", emptyDay: "No Appointments", emptyHint: "Use Find a time to check provider availability.",
+  loading: "Loading The Week…", incomplete: "More appointments are available. Load the remaining appointments to complete this week.", loadMore: "Load More Appointments", loaded: "appointments loaded", singular: "appointment", plural: "appointments", selectedHint: "Select a visit to view its details or reschedule.", locationTime: "Location Time", unknownDuration: "Duration Not Recorded", minutes: "min", continues: "Continues", until: "until",
 } as const;
 const spanish: Record<keyof typeof english, string> = {
-  week: "Vista semanal", previous: "Semana anterior", next: "Semana siguiente", current: "Semana actual", jump: "Ir a la fecha",
-  provider: "Proveedor", allProviders: "Todos los proveedores", unavailableProvider: "Sin proveedor asignado", unavailablePatient: "Paciente no disponible", visit: "Cita",
-  findTime: "Buscar horario", findHint: "Seleccione un proveedor, la fecha y la duración para consultar su disponibilidad.", date: "Fecha", duration: "Duración en minutos", chooseProvider: "Seleccione un proveedor", check: "Consultar disponibilidad", checking: "Consultando…", close: "Cerrar disponibilidad",
-  noSlots: "No hay horarios disponibles para esta búsqueda. Pruebe otra fecha u otro proveedor.", available: "Horarios disponibles", bookTime: "Reservar este horario", availabilityHint: "Los horarios consideran la disponibilidad del proveedor y las citas existentes. Se verifican de nuevo al reservar.",
-  calendar: "Calendario semanal de citas", agenda: "Citas de esta semana", empty: "No hay citas esta semana", emptyProvider: "Este proveedor no tiene citas esta semana", emptyDay: "Sin citas", emptyHint: "Use Buscar horario para consultar la disponibilidad del proveedor.",
-  loading: "Cargando la semana…", incomplete: "Hay más citas disponibles. Cargue las restantes para completar esta semana.", loadMore: "Cargar más citas", loaded: "citas cargadas", singular: "cita", plural: "citas", selectedHint: "Seleccione una cita para ver sus detalles o reprogramarla.", locationTime: "Hora local", unknownDuration: "Duración no registrada", minutes: "min", continues: "Continúa", until: "hasta",
+  week: "Vista Semanal", previous: "Semana Anterior", next: "Semana Siguiente", current: "Semana Actual", jump: "Ir A La Fecha",
+  provider: "Proveedor", allProviders: "Todos Los Proveedores", unavailableProvider: "Sin Proveedor Asignado", unavailablePatient: "Paciente No Disponible", visit: "Cita",
+  findTime: "Buscar Horario", findHint: "Seleccione un proveedor, la fecha y la duración para consultar su disponibilidad.", date: "Fecha", duration: "Duración En Minutos", chooseProvider: "Seleccione Un Proveedor", check: "Consultar Disponibilidad", checking: "Consultando…", close: "Cerrar Disponibilidad",
+  noSlots: "No hay horarios disponibles para esta búsqueda. Pruebe otra fecha u otro proveedor.", available: "Horarios Disponibles", bookTime: "Reservar Este Horario", availabilityHint: "Los horarios consideran la disponibilidad del proveedor y las citas existentes. Se verifican de nuevo al reservar.",
+  calendar: "Calendario Semanal De Citas", agenda: "Citas De Esta Semana", empty: "No Hay Citas Esta Semana", emptyProvider: "Este Proveedor No Tiene Citas Esta Semana", emptyDay: "Sin Citas", emptyHint: "Use Buscar horario para consultar la disponibilidad del proveedor.",
+  loading: "Cargando La Semana…", incomplete: "Hay más citas disponibles. Cargue las restantes para completar esta semana.", loadMore: "Cargar Más Citas", loaded: "citas cargadas", singular: "cita", plural: "citas", selectedHint: "Seleccione una cita para ver sus detalles o reprogramarla.", locationTime: "Hora Local", unknownDuration: "Duración No Registrada", minutes: "min", continues: "Continúa", until: "hasta",
 };
 
 export type AppointmentPlannerAvailabilityInput = { date: string; providerId: string; durationMinutes: number; signal?: AbortSignal };
@@ -126,14 +128,14 @@ export function AppointmentPlanner({ date, timeZone, appointments, patients, pro
         <label className="wf-field"><span>{text.provider}</span><select required value={availableProvider} disabled={busy} onChange={event => { cancelAvailability(); setAvailableProvider(event.target.value); }}><option value="">{text.chooseProvider}</option>{providers.filter(provider => provider.status !== "inactive").map(provider => <option key={provider.id} value={provider.id}>{provider.name}</option>)}</select></label>
         <label className="wf-field"><span>{text.date}</span><input type="date" required value={availableDate} disabled={busy} onChange={event => { cancelAvailability(); setAvailableDate(event.target.value); }} /></label>
         <label className="wf-field"><span>{text.duration}</span><input type="number" min="5" max="480" step="1" required value={duration} disabled={busy} onChange={event => { cancelAvailability(); setDuration(event.target.value); }} /></label>
-        <button type="submit" className="wf-button" disabled={!canSearch || busy || loading || !!currentAvailability?.loading}>{currentAvailability?.loading ? text.checking : text.check}</button>
+        <button type="submit" className="wf-button" disabled={!canSearch || busy || loading || !!currentAvailability?.loading}>{currentAvailability?.loading ? <AccessLoading label={text.checking} inline /> : text.check}</button>
       </form>
       <div aria-live="polite">{currentAvailability?.error && <p className="wf-notice wf-error" role="alert">{currentAvailability.error}</p>}{currentAvailability?.slots && (currentAvailability.slots.length ? <div className="wf-planner-slots" aria-label={text.available}>{currentAvailability.slots.map(slot => <button type="button" className="wf-button" key={slot.startsAt} disabled={busy || loading} aria-label={`${text.bookTime}: ${time(slot.startsAt, true)}`} onClick={() => onBook({ scheduledAt: slot.startsAt, providerId: availableProvider, durationMinutes: Number(duration) })}>{time(slot.startsAt)}</button>)}</div> : <p className="wf-planner-no-slots">{text.noSlots}</p>)}</div>
       <p className="wf-planner-availability-note">{text.availabilityHint}</p>
     </section>}
     {error && <p className="wf-notice wf-error" role="alert">{error}</p>}
-    {loading ? <div className="wf-planner-loading" role="status">{text.loading}</div> : !error && <>
-      {hasMore && <div className="wf-planner-incomplete" role="status"><p>{text.incomplete}</p>{onLoadMore && <button type="button" className="wf-button" disabled={loadingMore || busy} onClick={onLoadMore}>{loadingMore ? text.loading : text.loadMore}</button>}</div>}
+    {loading ? <AccessLoading label={text.loading} panel /> : !error && <>
+      {hasMore && <div className="wf-planner-incomplete"><p role="status">{text.incomplete}</p>{onLoadMore && <button type="button" className="wf-button" disabled={loadingMore || busy} onClick={onLoadMore}>{loadingMore ? <AccessLoading label={text.loading} inline /> : text.loadMore}</button>}</div>}
       <div className="wf-planner-calendar">
         <div className="wf-planner-desktop"><div className="wf-planner-scroll">
           <div className="wf-planner-week-header"><div className="wf-planner-time-corner"><InterviewIcon name="clock" /></div>{dates.map(day => <div key={day} data-today={day === today}><span>{calendarDate(day, { weekday: "short" })}</span><strong>{calendarDate(day, { day: "numeric" })}</strong></div>)}</div>

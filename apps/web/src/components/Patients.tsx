@@ -1,5 +1,7 @@
 "use client";
 
+import { AccessLoading } from "@/components/access/AccessLoading";
+
 import { useI18n } from "@/i18n/provider";
 import { useAuth } from "@clerk/nextjs";
 import {
@@ -113,7 +115,7 @@ export function Patients({ patients, onCreated }: { patients: Patient[]; onCreat
                 disabled={loading}
                 className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
                 >
-                    {loading ? t("access.copy.creating") : t("access.copy.create_patient")}
+                    {loading ? <AccessLoading label={t("access.copy.creating")} inline /> : t("access.copy.create_patient")}
                 </button>
             </form>
 

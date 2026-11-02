@@ -1,0 +1,11 @@
+$ CAREIQ_REAL_API_E2E=true pnpm --fail-if-no-match --filter ./apps/web exec playwright test --config playwright.integration.config.ts
+
+Running 3 tests using 1 worker
+
+(node:36687) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/browser/real-api.spec.ts:13:6 › real HTTP/restricted DB: unsigned patient form, immutable PDF, library and foreign-copy refusal (2.2s)
+  ✓  2 tests/browser/real-api.spec.ts:13:6 › real HTTP/restricted DB: signed patient form, immutable PDF, library and foreign-copy refusal (3.4s)
+  ✓  3 tests/browser/real-api.spec.ts:48:5 › real HTTP/restricted DB: manager insurance review preserves evidence and links the staff action audit (3.8s)
+
+  3 passed (23.8s)

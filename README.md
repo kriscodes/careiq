@@ -10,6 +10,16 @@ The platform is focused on reducing administrative workload around patient intak
 
 Manager dashboard and manual insurance verification: [implementation and audit coverage](docs/manager-insurance-implementation.md).
 
+Manager team activity by person and action day: [scope, permissions and verification](docs/manager-team-activity.md).
+
+UI capitalization: [November 2 review, exact change inventory and local checklist](docs/verification/ui-capitalization-2026-11-02.md).
+
+Patient list hover spacing: [desktop and phone review](docs/verification/patient-row-spacing-2026-11-02.md).
+
+Shared loading indicators: [coverage, verification and local checklist](docs/verification/shared-loading-2026-11-02.md).
+
+November 2 end-to-end release: [local verification and promotion status](docs/verification/e2e-release-2026-11-02.md).
+
 ## Status
 
 🚧 **Active development**

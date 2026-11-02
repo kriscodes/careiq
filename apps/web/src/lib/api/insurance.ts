@@ -14,7 +14,7 @@ export type InsuranceCase = {
   status: string; recordedState?: string; reviewState?: "unverified" | "current" | "stale"; reviewReason?: string | null; stale?: boolean; revision: number; currentEvidenceId: string | null; latestEvidence?: InsuranceEvidence | null;
   allowedActions: string[]; updatedAt?: string;
 };
-export type InsuranceActivity = { id: string; action: string; occurredAt: string; actorLabel: string; summary: string; outcome?: string };
+export type InsuranceActivity = { id: string; action: string; occurredAt: string; actorLabel: string; summary: string; outcome?: string; result?: string | null; source?: InsuranceSource | null };
 export type InsuranceDetail = { case: InsuranceCase; evidence: InsuranceEvidence[]; activity: InsuranceActivity[]; evidenceHasMore?: boolean; activityHasMore?: boolean; activityCursor?: string | null; evidenceCursor?: string | null };
 export type InsuranceCapabilities = { read: boolean; manage: boolean; evidence: boolean; activity: boolean };
 export type InsurancePage = { data: InsuranceCase[]; meta?: { capabilities: InsuranceCapabilities; asOf?: string }; pagination: { hasMore: boolean; nextCursor: string | null } };
@@ -34,8 +34,22 @@ export type InsuranceFollowUp = { assigneeUserId: string | null; dueAt: string |
 export type InsuranceReceipt = { id: string; revision: number; state: string; evidenceId?: string };
 export type InsuranceHistoryPage<T> = { data: T[]; pagination: { hasMore: boolean; nextCursor: string | null } };
 export type InsuranceCommandOptions = { key: string; revision?: number; signal?: AbortSignal };
+export type ManagerActivityCategory = "appointments" | "insurance" | "followups";
+export type ManagerActivityQuery = { from: string; to: string; actorId?: string; category?: ManagerActivityCategory | "all"; cursor?: string | null };
+export type ManagerActivityEvent = {
+  id: string; occurredAt: string; action: string; category: ManagerActivityCategory;
+  entityType: string; entityId: string | null; actorId: string; actorType: string; actorLabel: string;
+  outcome: string; result: string | null; source: InsuranceSource | null;
+};
+export type ManagerActivityPage = {
+  from: string; to: string; timeZone: string; asOf: string;
+  summary: { total: number; appointments: number; insurance: number; followups: number };
+  actors: Array<{ id: string; label: string }>; items: ManagerActivityEvent[];
+  pagination: { hasMore: boolean; nextCursor: string | null };
+};
 export type InsuranceAdapter = {
   preview?: boolean;
+  managerActivity(query: ManagerActivityQuery, signal?: AbortSignal): Promise<ManagerActivityPage>;
   exportSummary(from: string, to: string, options?: { key?: string; signal?: AbortSignal }): Promise<InsuranceExport>;
   cases(from: string, to: string, cursor?: string | null, signal?: AbortSignal): Promise<InsurancePage>;
   detail(id: string, signal?: AbortSignal): Promise<InsuranceDetail>;
@@ -68,6 +82,12 @@ export function createInsuranceAdapter(locationId: string, getToken: () => Promi
     return result.data;
   }
   return {
+    async managerActivity(query, signal) {
+      const parameters = new URLSearchParams({ from: query.from, to: query.to, category: query.category ?? "all", limit: "50" });
+      if (query.actorId) parameters.set("actorId", query.actorId);
+      if (query.cursor) parameters.set("cursor", query.cursor);
+      return (await request<Envelope<ManagerActivityPage>>(`manager/activity?${parameters}`, { signal })).data;
+    },
     async cases(from, to, cursor, signal) {
       const result = await request<{ data: CaseWire[]; pagination: InsurancePage["pagination"]; meta?: InsurancePage["meta"] }>(`cases?${insuranceRange(from, to)}&limit=50${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`, { signal });
       return { ...result, data: result.data.map(item => normalizeCase(item, result.meta?.capabilities)) };

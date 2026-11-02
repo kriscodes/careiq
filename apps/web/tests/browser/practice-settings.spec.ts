@@ -10,8 +10,8 @@ async function openSettings(page: Page, harnessUrl: string, respond?: (route: Ro
     return respond ? respond(route) : json(route, { data: admin });
   });
   await page.goto(`${harnessUrl}/?component=workspace`);
-  await page.getByRole("button", { name: "Manage team & locations", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Practice settings", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Manage Team & Locations", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Practice Settings", exact: true })).toBeVisible();
 }
 
 test.beforeEach(async ({ page }) => {
@@ -26,19 +26,19 @@ test("settings retains the shared header while loading and puts Done after its c
   const gate = new Promise<void>(resolve => { release = resolve; });
   await openSettings(page, harnessUrl, async route => { await gate; await json(route, { data: admin }); });
   const header = page.locator(".cq-application-frame .wf-topbar");
-  await expect(header.getByLabel("Interface language", { exact: true })).toBeVisible();
+  await expect(header.getByLabel("Interface Language", { exact: true })).toBeVisible();
   await expect(page.locator(".wf-sidebar").getByRole("button", { name: "Test account", exact: true })).toBeVisible();
-  await expect(page.getByRole("navigation", { name: "Practice navigation", exact: true }).getByRole("button", { name: "Practice", exact: true })).toHaveAttribute("aria-current", "page");
+  await expect(page.getByRole("navigation", { name: "Practice Navigation", exact: true }).getByRole("button", { name: "Practice", exact: true })).toHaveAttribute("aria-current", "page");
   await expect(page.locator(".cq-a-header")).toHaveCount(0);
   await expect(header.getByRole("button", { name: "Done", exact: true })).toHaveCount(0);
-  await expect(page.locator(".cq-a-loading")).toHaveText("Opening practice settings…");
+  await expect(page.locator(".cq-a-loading")).toHaveText("Opening Practice Settings…");
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await expect(page.locator(".cq-a-loading-character")).toHaveCSS("animation-name", "cq-a-loading-float");
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(page.locator(".cq-a-loading-character")).toHaveCSS("animation-name", "none");
   release();
-  await page.getByRole("tab", { name: "Team & access", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Team access", exact: true })).toBeVisible();
+  await page.getByRole("tab", { name: "Team & Access", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Team Access", exact: true })).toBeVisible();
   await expect(page.locator("main")).toHaveCount(1);
   expect((await page.locator(".cq-settings").boundingBox())!.width).toBeGreaterThan(700);
   expect(await page.locator(".cq-settings").evaluate(element => Boolean(element.querySelector('[role="tabpanel"]:not([hidden])')!.compareDocumentPosition(element.querySelector(".cq-settings-done")!) & Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);
@@ -54,7 +54,7 @@ test("settings loading failure keeps account controls and a working retry", asyn
   });
   await expect(page.getByRole("alert")).toBeVisible();
   await expect(page.locator(".wf-sidebar").getByRole("button", { name: "Test account", exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Try again", exact: true }).click();
+  await page.getByRole("button", { name: "Try Again", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Locations", exact: true })).toBeVisible();
   expect(reads).toBe(2);
 });
@@ -65,18 +65,18 @@ test("adding a location submits the selected territory zone without typing an IA
     if (route.request().method() === "POST") writes.push({ path: new URL(route.request().url()).pathname, body: route.request().postDataJSON() });
     return json(route, { data: admin });
   });
-  const form = page.getByRole("group", { name: "Add a location", exact: true });
-  const zone = form.getByRole("combobox", { name: "Time zone", exact: true });
-  await expect(form.getByRole("textbox", { name: "Time zone", exact: true })).toHaveCount(0);
+  const form = page.getByRole("group", { name: "Add A Location", exact: true });
+  const zone = form.getByRole("combobox", { name: "Time Zone", exact: true });
+  await expect(form.getByRole("textbox", { name: "Time Zone", exact: true })).toHaveCount(0);
   await expect(zone.getByRole("option", { name: "Arizona (no daylight saving)", exact: true })).toHaveAttribute("value", "America/Phoenix");
   await expect(zone.getByRole("option", { name: "American Samoa", exact: true })).toHaveAttribute("value", "Pacific/Pago_Pago");
   await form.getByLabel("Name", { exact: true }).fill("  Synthetic territory office  ");
   await zone.selectOption("America/Puerto_Rico");
-  const address = form.getByLabel("Address (optional)", { exact: true });
+  const address = form.getByLabel("Address (Optional)", { exact: true });
   await expect(address).toHaveAttribute("autocomplete", "street-address");
   await expect(address).toHaveAttribute("maxlength", "500");
   await address.fill("  1 Synthetic Street  ");
-  await form.getByRole("button", { name: "Add location", exact: true }).click();
+  await form.getByRole("button", { name: "Add Location", exact: true }).click();
   await expect.poll(() => writes.length).toBe(1);
   expect(writes[0]).toEqual({ path: "/api/v1/locations", body: { name: "Synthetic territory office", timeZone: "America/Puerto_Rico", address: "1 Synthetic Street" } });
 });
@@ -89,15 +89,15 @@ test("onboarding preserves a valid saved non-US zone and reuses localized US cho
     return json(route, { data: { eligible: true, emailVerified: true, draft, operation: null } });
   });
   await page.goto(`${harnessUrl}/?component=onboarding`);
-  const zone = page.getByRole("combobox", { name: "Time zone", exact: true });
+  const zone = page.getByRole("combobox", { name: "Time Zone", exact: true });
   await expect(zone).toHaveValue("Europe/London");
   await expect(zone.getByRole("option")).toHaveCount(14);
   await expect(zone.getByRole("option", { name: "Guam & Northern Mariana Islands", exact: true })).toHaveAttribute("value", "Pacific/Guam");
-  await page.getByLabel("Interface language", { exact: true }).selectOption("es");
-  await expect(page.getByRole("combobox", { name: "Zona horaria", exact: true })).toHaveValue("Europe/London");
-  await expect(page.getByRole("option", { name: "Hora del Pacífico", exact: true })).toHaveAttribute("value", "America/Los_Angeles");
-  await page.getByRole("combobox", { name: "Zona horaria", exact: true }).selectOption("Pacific/Guam");
-  await page.getByRole("button", { name: "Guardar y terminar más tarde", exact: true }).click();
+  await page.getByLabel("Interface Language", { exact: true }).selectOption("es");
+  await expect(page.getByRole("combobox", { name: "Zona Horaria", exact: true })).toHaveValue("Europe/London");
+  await expect(page.getByRole("option", { name: "Hora Del Pacífico", exact: true })).toHaveAttribute("value", "America/Los_Angeles");
+  await page.getByRole("combobox", { name: "Zona Horaria", exact: true }).selectOption("Pacific/Guam");
+  await page.getByRole("button", { name: "Guardar Y Terminar Más Tarde", exact: true }).click();
   await expect.poll(() => saved.length).toBe(1);
   expect(saved[0]).toEqual({ ...draft, timeZone: "Pacific/Guam" });
 });
@@ -108,7 +108,7 @@ test("settings stays white and its primary hover stays blue at a narrow dark-sys
   await openSettings(page, harnessUrl);
   await expect(page.getByRole("heading", { name: "Locations", exact: true })).toBeVisible();
   await expect(page.locator(".cq-access")).toHaveCSS("background-color", "rgb(255, 255, 255)");
-  await expect(page.getByRole("combobox", { name: "Time zone", exact: true })).toHaveCSS("background-color", "rgb(255, 255, 255)");
+  await expect(page.getByRole("combobox", { name: "Time Zone", exact: true })).toHaveCSS("background-color", "rgb(255, 255, 255)");
   for (const button of await page.locator(".cq-settings .cq-primary:visible").all()) {
     await button.hover();
     await expect(button).toHaveCSS("background-color", "rgb(0, 87, 197)");
@@ -135,20 +135,20 @@ test("ownership failure preserves confirmation and success exits settings before
   }, () => transferred ? { ...context, management: { locations: false, members: false } } : context);
   await page.getByRole("tab", { name: "Ownership", exact: true }).click();
   const transfer = page.locator(".cq-ownership-transfer");
-  await transfer.getByRole("combobox", { name: "New owner", exact: true }).selectOption(recipient.userId);
-  const phrase = transfer.getByRole("textbox", { name: "Type Synthetic practice to confirm", exact: true });
+  await transfer.getByRole("combobox", { name: "New Owner", exact: true }).selectOption(recipient.userId);
+  const phrase = transfer.getByRole("textbox", { name: "Type Synthetic practice To Confirm", exact: true });
   await phrase.fill("Synthetic practice");
-  const submit = transfer.getByRole("button", { name: "Transfer ownership to Synthetic administrator (administrator@example.invalid)", exact: true });
+  const submit = transfer.getByRole("button", { name: "Transfer Ownership To Synthetic administrator (administrator@example.invalid)", exact: true });
   await submit.click();
   await expect(page.getByRole("alert")).toBeVisible();
   await expect(phrase).toHaveValue("Synthetic practice");
-  await expect(transfer.getByRole("combobox", { name: "New owner", exact: true })).toHaveValue(recipient.userId);
+  await expect(transfer.getByRole("combobox", { name: "New Owner", exact: true })).toHaveValue(recipient.userId);
   await submit.click();
   await expect(page.locator(".cq-app-home")).toBeVisible();
   await expect(page.locator(".cq-app-home").getByRole("status")).toContainText(recipient.displayName);
   await expect(page.locator(".cq-app-home").getByRole("status")).toContainText(context.practice.name);
-  await expect(page.getByRole("button", { name: "Manage team & locations", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("heading", { name: "Practice settings", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Manage Team & Locations", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Practice Settings", exact: true })).toHaveCount(0);
   expect(directoryReads).toBe(1);
   expect(transfers).toEqual(Array(2).fill({ userId: recipient.userId, practiceId: context.practice.id, confirmationName: context.practice.name, acknowledgedUserId: recipient.userId }));
 });
@@ -164,7 +164,7 @@ test("ownership selection survives separate input and change events before confi
     return json(route, { data: { ...admin, members: [...admin.members, ...recipients] } });
   });
   await page.getByRole("tab", { name: "Ownership", exact: true }).click();
-  const select = page.getByRole("combobox", { name: "New owner", exact: true });
+  const select = page.getByRole("combobox", { name: "New Owner", exact: true });
   // A browser can finish input before dispatching change; selectOption batches both.
   const choose = async (userId: string) => {
     await select.evaluate((element, value) => {
@@ -177,14 +177,14 @@ test("ownership selection survives separate input and change events before confi
     await expect(select).toHaveValue(userId);
   };
   await choose(recipients[0].userId);
-  const phrase = page.getByRole("textbox", { name: "Type Synthetic practice to confirm", exact: true });
+  const phrase = page.getByRole("textbox", { name: "Type Synthetic practice To Confirm", exact: true });
   await expect(phrase).toBeVisible();
   await phrase.fill("Synthetic practice");
-  await expect(page.getByRole("button", { name: "Transfer ownership to Synthetic Alex (alex@example.invalid)", exact: true })).toBeEnabled();
+  await expect(page.getByRole("button", { name: "Transfer Ownership To Synthetic Alex (alex@example.invalid)", exact: true })).toBeEnabled();
   await expect(page.locator(".cq-settings")).toHaveAttribute("data-unsaved", "true");
   await choose(recipients[1].userId);
   await expect(phrase).toHaveValue("");
-  await expect(page.getByRole("button", { name: "Transfer ownership to Synthetic Blair (blair@example.invalid)", exact: true })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Transfer Ownership To Synthetic Blair (blair@example.invalid)", exact: true })).toBeDisabled();
   expect(writes).toBe(0);
 });
 
@@ -200,10 +200,10 @@ test("selected ownership confirmation keeps a long recipient readable at 320px",
   });
   await page.getByRole("tab", { name: "Ownership", exact: true }).click();
   const transfer = page.locator(".cq-ownership-transfer");
-  await transfer.getByRole("combobox", { name: "New owner", exact: true }).selectOption(recipient.userId);
-  await transfer.getByRole("textbox", { name: "Type Synthetic practice to confirm", exact: true }).fill("Synthetic practice");
+  await transfer.getByRole("combobox", { name: "New Owner", exact: true }).selectOption(recipient.userId);
+  await transfer.getByRole("textbox", { name: "Type Synthetic practice To Confirm", exact: true }).fill("Synthetic practice");
   const warning = transfer.locator(".cq-ownership-warning");
-  const confirmation = transfer.getByRole("button", { name: `Transfer ownership to ${recipient.displayName} (${recipient.email})`, exact: true });
+  const confirmation = transfer.getByRole("button", { name: `Transfer Ownership To ${recipient.displayName} (${recipient.email})`, exact: true });
   await expect(warning).toContainText(recipient.displayName);
   await expect(warning).toContainText(recipient.email);
   await expect(warning).toContainText("lose owner controls");
@@ -225,7 +225,7 @@ test("selected ownership confirmation keeps a long recipient readable at 320px",
 test("settings tabs expose matching panels and keyboard activation", async ({ page, harnessUrl }) => {
   await openSettings(page, harnessUrl);
   const locations = page.getByRole("tab", { name: "Locations", exact: true });
-  const team = page.getByRole("tab", { name: "Team & access", exact: true });
+  const team = page.getByRole("tab", { name: "Team & Access", exact: true });
   await expect(locations).toHaveAttribute("aria-selected", "true");
   await expect(page.getByRole("tabpanel")).toHaveCount(1);
   await expect(page.getByRole("tabpanel", { name: "Locations", exact: true })).toBeVisible();
@@ -235,8 +235,8 @@ test("settings tabs expose matching panels and keyboard activation", async ({ pa
   await expect(locations).toHaveAttribute("aria-selected", "true");
   await page.keyboard.press("Enter");
   await expect(team).toHaveAttribute("aria-selected", "true");
-  await expect(page.getByRole("tabpanel", { name: "Team & access", exact: true })).toBeVisible();
-  await expect(page.getByRole("group", { name: "Add a location", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("tabpanel", { name: "Team & Access", exact: true })).toBeVisible();
+  await expect(page.getByRole("group", { name: "Add A Location", exact: true })).toHaveCount(0);
   await page.keyboard.press("End");
   await expect(page.getByRole("tab", { name: "Ownership", exact: true })).toBeFocused();
   await page.keyboard.press("Home");
@@ -245,48 +245,48 @@ test("settings tabs expose matching panels and keyboard activation", async ({ pa
 
 test("unsaved tab and Done transitions require an accessible deliberate discard", async ({ page, harnessUrl }) => {
   await openSettings(page, harnessUrl);
-  const name = page.getByRole("group", { name: "Add a location", exact: true }).getByLabel("Name", { exact: true });
+  const name = page.getByRole("group", { name: "Add A Location", exact: true }).getByLabel("Name", { exact: true });
   await name.fill("Synthetic unsaved location");
-  const team = page.getByRole("tab", { name: "Team & access", exact: true });
+  const team = page.getByRole("tab", { name: "Team & Access", exact: true });
   await team.click();
   const modal = page.getByRole("dialog", { name: "Leave without saving?", exact: true });
   await expect(modal).toBeVisible();
-  await expect(modal.getByRole("button", { name: "Keep editing", exact: true })).toBeFocused();
+  await expect(modal.getByRole("button", { name: "Keep Editing", exact: true })).toBeFocused();
   await page.keyboard.press("Shift+Tab");
-  await expect(modal.getByRole("button", { name: "Discard changes", exact: true })).toBeFocused();
+  await expect(modal.getByRole("button", { name: "Discard Changes", exact: true })).toBeFocused();
   await page.keyboard.press("Tab");
-  await expect(modal.getByRole("button", { name: "Keep editing", exact: true })).toBeFocused();
+  await expect(modal.getByRole("button", { name: "Keep Editing", exact: true })).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(modal).not.toBeVisible();
   await expect(team).toBeFocused();
   await expect(name).toHaveValue("Synthetic unsaved location");
   await page.getByRole("button", { name: "Done", exact: true }).click();
   await expect(modal).toBeVisible();
-  await modal.getByRole("button", { name: "Keep editing", exact: true }).click();
+  await modal.getByRole("button", { name: "Keep Editing", exact: true }).click();
   await expect(name).toHaveValue("Synthetic unsaved location");
   await team.click();
-  await modal.getByRole("button", { name: "Discard changes", exact: true }).click();
-  await expect(page.getByRole("tabpanel", { name: "Team & access", exact: true })).toBeVisible();
+  await modal.getByRole("button", { name: "Discard Changes", exact: true }).click();
+  await expect(page.getByRole("tabpanel", { name: "Team & Access", exact: true })).toBeVisible();
   await page.getByRole("tab", { name: "Locations", exact: true }).click();
-  await expect(page.getByRole("group", { name: "Add a location", exact: true }).getByLabel("Name", { exact: true })).toHaveValue("");
+  await expect(page.getByRole("group", { name: "Add A Location", exact: true }).getByLabel("Name", { exact: true })).toHaveValue("");
 });
 
 test("typed ownership confirmation survives cancelled tab and Home navigation", async ({ page, harnessUrl }) => {
   const recipient = { ...admin.members[0], userId: "user_confirmation_recipient", membershipId: "membership_confirmation_recipient", displayName: "Synthetic recipient", email: "recipient@example.invalid", isOwner: false };
   await openSettings(page, harnessUrl, route => json(route, { data: { ...admin, members: [...admin.members, recipient] } }));
   await page.getByRole("tab", { name: "Ownership", exact: true }).click();
-  await page.getByRole("combobox", { name: "New owner", exact: true }).selectOption(recipient.userId);
-  const phrase = page.getByRole("textbox", { name: "Type Synthetic practice to confirm", exact: true });
+  await page.getByRole("combobox", { name: "New Owner", exact: true }).selectOption(recipient.userId);
+  const phrase = page.getByRole("textbox", { name: "Type Synthetic practice To Confirm", exact: true });
   await phrase.fill("Synthetic practice");
   await page.getByRole("tab", { name: "Invitations", exact: true }).click();
   const modal = page.getByRole("dialog", { name: "Leave without saving?", exact: true });
-  await modal.getByRole("button", { name: "Keep editing", exact: true }).click();
+  await modal.getByRole("button", { name: "Keep Editing", exact: true }).click();
   await expect(phrase).toHaveValue("Synthetic practice");
-  await page.getByRole("navigation", { name: "Practice navigation", exact: true }).getByRole("button", { name: "Home", exact: true }).click();
+  await page.getByRole("navigation", { name: "Practice Navigation", exact: true }).getByRole("button", { name: "Home", exact: true }).click();
   await expect(modal).toBeVisible();
-  await modal.getByRole("button", { name: "Keep editing", exact: true }).click();
+  await modal.getByRole("button", { name: "Keep Editing", exact: true }).click();
   await expect(phrase).toHaveValue("Synthetic practice");
-  await expect(page.getByRole("combobox", { name: "New owner", exact: true })).toHaveValue(recipient.userId);
+  await expect(page.getByRole("combobox", { name: "New Owner", exact: true })).toHaveValue(recipient.userId);
 });
 
 test("ordinary saves keep the tab and unrelated draft mounted while refreshed data is pending", async ({ page, harnessUrl }) => {
@@ -299,20 +299,20 @@ test("ordinary saves keep the tab and unrelated draft mounted while refreshed da
     if (reads > 1) await gate;
     return json(route, { data: admin });
   });
-  const draft = page.getByRole("group", { name: "Add a location", exact: true }).getByLabel("Name", { exact: true });
+  const draft = page.getByRole("group", { name: "Add A Location", exact: true }).getByLabel("Name", { exact: true });
   await draft.fill("Synthetic work in progress");
-  await page.getByRole("button", { name: "Close location", exact: true }).click();
+  await page.getByRole("button", { name: "Close Location", exact: true }).click();
   await expect.poll(() => reads).toBe(2);
   await expect(draft).toHaveValue("Synthetic work in progress");
   await expect(draft).toBeDisabled();
   await expect(page.getByRole("tab", { name: "Locations", exact: true })).toHaveAttribute("aria-selected", "true");
   for (const tab of await page.getByRole("tab").all()) await expect(tab).toBeDisabled();
   await expect(page.getByRole("button", { name: "Done", exact: true })).toBeDisabled();
-  await expect(page.locator(".cq-a-loading")).toContainText("Updating settings");
+  await expect(page.locator(".cq-a-loading")).toContainText("Updating Settings");
   release();
   await expect(draft).toBeEnabled();
   await expect(draft).toHaveValue("Synthetic work in progress");
-  await page.getByRole("tab", { name: "Team & access", exact: true }).click();
+  await page.getByRole("tab", { name: "Team & Access", exact: true }).click();
   await expect(page.getByRole("dialog", { name: "Leave without saving?", exact: true })).toBeVisible();
   expect(writes).toBe(1);
 });
@@ -323,8 +323,8 @@ test("genuine owner-access loss clears settings and returns to newly checked Hom
     if (route.request().method() === "POST") { lost = true; return json(route, { error: { code: "OWNER_REQUIRED", message: "Owner access required." } }, 403); }
     return json(route, { data: admin });
   }, () => lost ? { ...context, management: { locations: false, members: false } } : context);
-  await page.getByRole("button", { name: "Close location", exact: true }).click();
+  await page.getByRole("button", { name: "Close Location", exact: true }).click();
   await expect(page.locator(".cq-app-home")).toBeVisible();
   await expect(page.locator(".cq-settings")).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Manage team & locations", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Manage Team & Locations", exact: true })).toHaveCount(0);
 });

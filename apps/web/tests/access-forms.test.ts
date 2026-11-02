@@ -18,7 +18,7 @@ test("credentials support password managers without placing secrets in HTML defa
   const creation = renderToStaticMarkup(React.createElement(AccessPassword, { creating: true }));
   assert.match(login, /autoComplete="current-password"/i);
   assert.match(creation, /autoComplete="new-password"/i);
-  assert.match(login, /aria-label="Show password"/);
+  assert.match(login, /aria-label="Show Password"/);
   assert.doesNotMatch(login, /value=/);
   assert.match(login, /type="button"/);
 });

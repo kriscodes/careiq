@@ -30,38 +30,109 @@ async function api(page: Page, options: { queuedAttempts?: Array<{ key: string; 
   });
 }
 test("delivery detail keeps queued intent separate from attempts and cancel leaves request intact", async ({ page, harnessUrl }) => {
-  await api(page); await page.setViewportSize({ width: 390, height: 844 }); await page.goto(harnessUrl); await page.getByRole("button", { name: "Patient delivery", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Delivery log" })).toBeVisible(); await page.getByRole("button", { name: /Open details · Sam Rivera/ }).click();
+  await api(page); await page.setViewportSize({ width: 390, height: 844 }); await page.goto(harnessUrl); await page.getByRole("button", { name: "Patient Delivery", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Delivery Log" })).toBeVisible(); await page.getByRole("button", { name: /Open Details · Sam Rivera/ }).click();
   await expect(page.getByRole("dialog").getByText("No provider attempt has been made.")).toBeVisible(); await expect(page.getByRole("dialog").getByText("Delivery does not confirm", { exact: false })).toBeVisible();
-  await page.getByRole("button", { name: "Cancel unsent delivery" }).click(); await expect(page.getByText("Unsent delivery cancelled.", { exact: false })).toBeVisible(); await expect(page.getByRole("dialog").getByText("Cancelled", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Cancel Unsent Delivery" }).click(); await expect(page.getByText("Unsent delivery cancelled.", { exact: false })).toBeVisible(); await expect(page.getByRole("dialog").getByText("Cancelled", { exact: true })).toBeVisible();
   await page.keyboard.press("Escape"); expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 test("reviewed send uses bound permitted endpoints and retries a lost response with the original key", async ({ page, harnessUrl }) => {
-  const attempts: Array<{ key: string; body: unknown; revision: string }> = []; await api(page, { queuedAttempts: attempts, dropFirst: true }); await page.goto(harnessUrl); await page.getByRole("button", { name: "Patient delivery", exact: true }).click(); await page.getByRole("button", { name: "Queue patient message", exact: true }).click();
-  await page.getByLabel("Choose an existing request").selectOption("q1"); await expect(page.getByRole("checkbox", { name: /Email/ })).toBeVisible(); await expect(page.getByRole("checkbox", { name: /SMS/ })).toHaveCount(0); await page.getByRole("checkbox", { name: /Email/ }).check(); await page.getByRole("button", { name: "Review message", exact: true }).click();
-  await expect(page.getByText("Please open your secure request. {{secure_url}}", { exact: true })).toBeVisible(); await expect(page.getByRole("button", { name: "Queue message", exact: true })).toBeDisabled(); await page.getByLabel("I reviewed the patient, request and selected channel.").check(); await page.getByRole("button", { name: "Queue message", exact: true }).click();
-  await expect(page.getByRole("alert")).toContainText("result is uncertain"); await expect(page.getByRole("button", { name: "Edit", exact: true })).toBeDisabled(); await page.getByRole("button", { name: "Queue message", exact: true }).click(); await expect(page.getByRole("dialog")).toHaveCount(0);
+  const attempts: Array<{ key: string; body: unknown; revision: string }> = []; await api(page, { queuedAttempts: attempts, dropFirst: true }); await page.goto(harnessUrl); await page.getByRole("button", { name: "Patient Delivery", exact: true }).click(); await page.getByRole("button", { name: "Queue Patient Message", exact: true }).click();
+  await page.getByLabel("Choose An Existing Request").selectOption("q1"); await expect(page.getByRole("checkbox", { name: /Email/ })).toBeVisible(); await expect(page.getByRole("checkbox", { name: /SMS/ })).toHaveCount(0); await page.getByRole("checkbox", { name: /Email/ }).check(); await page.getByRole("button", { name: "Review Message", exact: true }).click();
+  await expect(page.getByText("Please open your secure request. {{secure_url}}", { exact: true })).toBeVisible(); await expect(page.getByRole("button", { name: "Queue Message", exact: true })).toBeDisabled(); await page.getByLabel("I reviewed the patient, request and selected channel.").check(); await page.getByRole("button", { name: "Queue Message", exact: true }).click();
+  await expect(page.getByRole("alert")).toContainText("result is uncertain"); await expect(page.getByRole("button", { name: "Edit", exact: true })).toBeDisabled(); await page.getByRole("button", { name: "Queue Message", exact: true }).click(); await expect(page.getByRole("dialog")).toHaveCount(0);
   expect(attempts).toHaveLength(2); expect(attempts[0].key).toBe(attempts[1].key); expect(attempts[0].revision).toBe('"1"'); expect(attempts[0].body).toEqual({ purpose: "initial", endpointIds: ["endpoint-email"] });
 });
 test("opening a staff alert marks its receipt read while current work stays open", async ({ page, harnessUrl }) => {
   await api(page); const workMutations: string[] = []; page.on("request", request => { if (request.method() !== "GET" && request.url().includes("/work-items/")) workMutations.push(request.url()); });
   await page.goto(harnessUrl); await page.getByRole("button", { name: /Notifications · 1 unread/ }).click(); await page.getByRole("button", { name: /Assigned Sam Rivera/ }).click();
-  await expect(page.getByRole("dialog").getByText(/· Read$/)).toBeVisible(); await expect(page.getByRole("dialog").getByText("Open", { exact: true })).toBeVisible(); await expect(page.getByRole("button", { name: "Mark unread", exact: true })).toBeVisible(); expect(workMutations).toHaveLength(0);
-  await page.getByRole("button", { name: "Mark unread", exact: true }).click(); await page.keyboard.press("Escape"); await page.getByRole("button", { name: "Mark all read", exact: true }).click(); await expect(page.getByRole("heading", { name: "Notifications · 0 unread" })).toBeVisible();
+  await expect(page.getByRole("dialog").getByText(/· Read$/)).toBeVisible(); await expect(page.getByRole("dialog").getByText("Open", { exact: true })).toBeVisible(); await expect(page.getByRole("button", { name: "Mark Unread", exact: true })).toBeVisible(); expect(workMutations).toHaveLength(0);
+  await page.getByRole("button", { name: "Mark Unread", exact: true }).click(); await page.keyboard.press("Escape"); await page.getByRole("button", { name: "Mark All Read", exact: true }).click(); await expect(page.getByRole("heading", { name: "Notifications · 0 unread" })).toBeVisible();
 });
 test("location reminder policy and personal preferences carry their own revisions", async ({ page, harnessUrl }) => {
-  await api(page); await page.goto(harnessUrl); await page.getByRole("button", { name: "Patient delivery", exact: true }).click(); await page.getByRole("button", { name: "Reminder policy", exact: true }).click(); await page.getByLabel("Enable automatic reminders").check();
-  const policy = page.waitForRequest(request => request.method() === "PUT" && request.url().endsWith("/reminder-policy")); await page.getByRole("button", { name: "Save changes", exact: true }).click(); expect((await policy).headers()["if-match"]).toBe('"0"');
-  await page.getByRole("navigation", { name: "Practice navigation" }).getByRole("button", { name: "Notifications", exact: true }).click(); await page.getByRole("button", { name: "My preferences", exact: true }).click(); await page.getByLabel("External staff email").selectOption("digest"); const preferences = page.waitForRequest(request => request.method() === "PATCH" && request.url().endsWith("/notification-preferences")); await page.getByRole("button", { name: "Save changes", exact: true }).click(); const saved = await preferences; expect(saved.headers()["if-match"]).toBe('"1"'); expect(saved.postDataJSON()).toMatchObject({ emailMode: "digest", confirmedTimeZone: "America/Los_Angeles", digestTime: "08:30" });
+  await api(page); await page.goto(harnessUrl); await page.getByRole("button", { name: "Patient Delivery", exact: true }).click(); await page.getByRole("button", { name: "Reminder Policy", exact: true }).click(); await page.getByLabel("Enable Automatic Reminders").check();
+  const policy = page.waitForRequest(request => request.method() === "PUT" && request.url().endsWith("/reminder-policy")); await page.getByRole("button", { name: "Save Changes", exact: true }).click(); expect((await policy).headers()["if-match"]).toBe('"0"');
+  await page.getByRole("navigation", { name: "Practice Navigation" }).getByRole("button", { name: "Notifications", exact: true }).click(); await page.getByRole("button", { name: "My Preferences", exact: true }).click(); await page.getByLabel("External Staff Email").selectOption("digest"); const preferences = page.waitForRequest(request => request.method() === "PATCH" && request.url().endsWith("/notification-preferences")); await page.getByRole("button", { name: "Save Changes", exact: true }).click(); const saved = await preferences; expect(saved.headers()["if-match"]).toBe('"1"'); expect(saved.postDataJSON()).toMatchObject({ emailMode: "digest", confirmedTimeZone: "America/Los_Angeles", digestTime: "08:30" });
 });
 test("read-only staff see delivery evidence without sending or manager controls", async ({ page, harnessUrl }) => {
-  await api(page); await page.goto(`${harnessUrl}/?readonly=1`); await page.getByRole("button", { name: "Patient delivery", exact: true }).click(); await expect(page.getByRole("heading", { name: "Delivery log" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Queue patient message", exact: true })).toHaveCount(0); await expect(page.getByRole("button", { name: "Reminder policy", exact: true })).toHaveCount(0); await expect(page.getByRole("button", { name: "Sender readiness", exact: true })).toHaveCount(0);
+  await api(page); await page.goto(`${harnessUrl}/?readonly=1`); await page.getByRole("button", { name: "Patient Delivery", exact: true }).click(); await expect(page.getByRole("heading", { name: "Delivery Log" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Queue Patient Message", exact: true })).toHaveCount(0); await expect(page.getByRole("button", { name: "Reminder Policy", exact: true })).toHaveCount(0); await expect(page.getByRole("button", { name: "Sender Readiness", exact: true })).toHaveCount(0);
 });
 
 test("explicit reissue reviews both channels, reason and revocation before queueing", async ({ page, harnessUrl }) => {
-  const attempts: Array<{ key: string; body: unknown; revision: string }> = []; await api(page, { queuedAttempts: attempts }); await page.goto(harnessUrl); await page.getByRole("button", { name: "Patient delivery", exact: true }).click(); await page.getByRole("button", { name: "Queue patient message", exact: true }).click(); await page.getByLabel("Choose an existing request").selectOption("q1"); await expect(page.getByRole("checkbox", { name: /Email/ })).toBeVisible(); await page.getByRole("combobox", { name: "Purpose", exact: true }).selectOption("reissue"); await page.getByLabel("Reason for reissuing").selectOption("channel_changed"); await page.getByRole("checkbox", { name: /Email/ }).check(); await page.getByRole("checkbox", { name: /SMS/ }).check(); await page.getByRole("button", { name: "Review message", exact: true }).click(); await page.getByLabel("I reviewed the patient, request and selected channel.").check(); await expect(page.getByRole("button", { name: "Queue message", exact: true })).toBeDisabled(); await page.getByLabel("I understand that previous request links and sessions will be revoked.").check(); await page.getByRole("button", { name: "Queue message", exact: true }).click(); await expect(page.getByRole("dialog")).toHaveCount(0); expect(attempts[0].body).toEqual({ purpose: "reissue", endpointIds: ["endpoint-email", "endpoint-sms"], reasonCode: "channel_changed" });
+  const attempts: Array<{ key: string; body: unknown; revision: string }> = []; await api(page, { queuedAttempts: attempts }); await page.goto(harnessUrl); await page.getByRole("button", { name: "Patient Delivery", exact: true }).click(); await page.getByRole("button", { name: "Queue Patient Message", exact: true }).click(); await page.getByLabel("Choose An Existing Request").selectOption("q1"); await expect(page.getByRole("checkbox", { name: /Email/ })).toBeVisible(); await page.getByRole("combobox", { name: "Purpose", exact: true }).selectOption("reissue"); await page.getByLabel("Reason For Reissuing").selectOption("channel_changed"); await page.getByRole("checkbox", { name: /Email/ }).check(); await page.getByRole("checkbox", { name: /SMS/ }).check(); await page.getByRole("button", { name: "Review Message", exact: true }).click(); await page.getByLabel("I reviewed the patient, request and selected channel.").check(); await expect(page.getByRole("button", { name: "Queue Message", exact: true })).toBeDisabled(); await page.getByLabel("I understand that previous request links and sessions will be revoked.").check(); await page.getByRole("button", { name: "Queue Message", exact: true }).click(); await expect(page.getByRole("dialog")).toHaveCount(0); expect(attempts[0].body).toEqual({ purpose: "reissue", endpointIds: ["endpoint-email", "endpoint-sms"], reasonCode: "channel_changed" });
 });
 test("staff routing requires an explicit eligible fallback audience before overdue activation", async ({ page, harnessUrl }) => {
-  await api(page); await page.goto(harnessUrl); await page.getByRole("navigation", { name: "Practice navigation" }).getByRole("button", { name: "Notifications", exact: true }).click(); await page.getByRole("button", { name: "Staff routing", exact: true }).click(); await page.getByLabel("Enable overdue alerts", { exact: true }).check(); await expect(page.getByRole("button", { name: "Save changes", exact: true })).toBeDisabled(); await page.getByRole("group", { name: "Unassigned work audience", exact: true }).getByLabel("Synthetic staff").check(); const request = page.waitForRequest(req => req.method() === "PATCH" && req.url().endsWith("/notification-policy")); await page.getByRole("button", { name: "Save changes", exact: true }).click(); const saved = await request; expect(saved.postDataJSON()).toMatchObject({ overdueEnabled: true, queueUserIds: ["staff-1"], escalationEnabled: false, escalationUserIds: [] }); expect(saved.headers()["if-match"]).toBe('"1"'); await expect(page.getByRole("button", { name: "Save changes", exact: true })).toBeEnabled();
+  await api(page); await page.goto(harnessUrl); await page.getByRole("navigation", { name: "Practice Navigation" }).getByRole("button", { name: "Notifications", exact: true }).click(); await page.getByRole("button", { name: "Staff Routing", exact: true }).click(); await page.getByLabel("Enable Overdue Alerts", { exact: true }).check(); await expect(page.getByRole("button", { name: "Save Changes", exact: true })).toBeDisabled(); await page.getByRole("group", { name: "Unassigned Work Audience", exact: true }).getByLabel("Synthetic staff").check(); const request = page.waitForRequest(req => req.method() === "PATCH" && req.url().endsWith("/notification-policy")); await page.getByRole("button", { name: "Save Changes", exact: true }).click(); const saved = await request; expect(saved.postDataJSON()).toMatchObject({ overdueEnabled: true, queueUserIds: ["staff-1"], escalationEnabled: false, escalationUserIds: [] }); expect(saved.headers()["if-match"]).toBe('"1"'); await expect(page.getByRole("button", { name: "Save Changes", exact: true })).toBeEnabled();
+});
+
+test("communication choices opens and refreshes without a selected patient", async ({ page, harnessUrl }) => {
+  await api(page);
+  const preferenceReads: string[] = [];
+  page.on("request", request => { if (request.url().includes("/communications/patients/") && request.url().endsWith("/preferences")) preferenceReads.push(request.url()); });
+  await page.goto(harnessUrl);
+  await page.getByRole("button", { name: "Patient Delivery", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Delivery Log", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Communication Choices", exact: true }).click();
+  const patient = page.getByRole("combobox", { name: "Choose A Patient", exact: true });
+  await expect(patient).toBeVisible();
+  await expect(patient).toHaveValue("");
+  await expect(page.getByRole("button", { name: "Refresh", exact: true })).toBeEnabled();
+  expect(preferenceReads).toEqual([]);
+  await page.getByRole("button", { name: "Refresh", exact: true }).click();
+  await expect(patient).toBeVisible();
+  await expect(page.locator(".cq-communications [role=status]")).toHaveCount(0);
+  expect(preferenceReads).toEqual([]);
+});
+
+test("communication choices recovers from a failed patient read and clears an empty selection", async ({ page, harnessUrl }) => {
+  await api(page);
+  let reads = 0;
+  await page.route("**/communications/patients/p3/preferences", async route => {
+    reads++;
+    if (reads === 1) return route.fulfill({ status: 500, json: { error: { code: "TEST_READ_FAILURE", message: "Synthetic failure" } } });
+    return route.fulfill({ json: { data: { patientId: "p3", endpoints: [{ id: "contact-retry", channel: "email", maskedDestination: "r•••@example.test", status: "active", verifiedAt: createdAt, timeZone: "America/Los_Angeles", permissions: { request: true, reminder: false, paperwork: false } }] } } });
+  });
+  await page.goto(harnessUrl);
+  await page.getByRole("button", { name: "Patient Delivery", exact: true }).click();
+  await page.getByRole("button", { name: "Communication Choices", exact: true }).click();
+  const patient = page.getByRole("combobox", { name: "Choose A Patient", exact: true });
+  await patient.selectOption("p3");
+  await expect(page.getByRole("alert")).toContainText("Unable to load communications.");
+  await page.getByRole("button", { name: "Refresh", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Email · r•••@example.test", exact: true })).toBeVisible();
+  expect(reads).toBe(2);
+  await patient.selectOption("");
+  await expect(patient).toBeVisible();
+  await expect(patient).toHaveValue("");
+  await expect(page.locator(".cq-communications .cq-cards article")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Refresh", exact: true })).toBeEnabled();
+  expect(reads).toBe(2);
+});
+
+test("communication choices ignores a pending patient read after switching tabs", async ({ page, harnessUrl }) => {
+  await api(page);
+  let release!: () => void;
+  let started!: () => void;
+  const pending = new Promise<void>(resolve => { release = resolve; });
+  const requested = new Promise<void>(resolve => { started = resolve; });
+  await page.route("**/communications/patients/p3/preferences", async route => {
+    started();
+    await pending;
+    return route.fulfill({ json: { data: { patientId: "p3", endpoints: [] } } });
+  });
+  await page.goto(harnessUrl);
+  await page.getByRole("button", { name: "Patient Delivery", exact: true }).click();
+  await page.getByRole("button", { name: "Communication Choices", exact: true }).click();
+  await page.getByRole("combobox", { name: "Choose A Patient", exact: true }).selectOption("p3");
+  await requested;
+  try {
+    await expect(page.locator(".cq-communications [role=status]")).toBeVisible();
+    await page.getByRole("button", { name: "Message Templates", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "Message Templates", exact: true })).toBeVisible();
+    release();
+    await expect(page.getByRole("heading", { name: "Message Templates", exact: true })).toBeVisible();
+    await expect(page.getByRole("combobox", { name: "Choose A Patient", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("alert")).toHaveCount(0);
+  } finally { release(); }
 });

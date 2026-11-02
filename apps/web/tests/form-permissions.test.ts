@@ -24,6 +24,6 @@ test("members see disabled clinical forms; administrators can enter records", ()
       if (canCreate) assert.doesNotMatch(markup, /<fieldset[^>]*disabled/);
       else assert.match(markup, /<fieldset[^>]*disabled/);
     }
-    if (!canCreate) assert.match(booking, /<button[^>]*disabled[^>]*>\+ Add a new patient/);
+    if (!canCreate) assert.match(booking, /<button[^>]*disabled[^>]*>\+ Add A New Patient/);
   }
 });
