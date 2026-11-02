@@ -26,7 +26,11 @@ export function CommunicationsWorkspace({ adapter, snapshot, onChanged }: { adap
   const reportEffect = useEffectEvent(report);
   useEffect(() => { const controller = new AbortController(); lifecycle.current = controller; return () => controller.abort(); }, [adapter]);
   useEffect(() => {
-    const controller = new AbortController(); queueMicrotask(() => { if (!controller.signal.aborted) { setLoading(true); setError(""); setChoices(null); } });
+    const controller = new AbortController();
+    const needsRequest = section !== "contacts" || !!patientId;
+    queueMicrotask(() => { if (!controller.signal.aborted) { setLoading(needsRequest); setError(""); setChoices(null); } });
+    // Choosing a patient is an idle state; there is no preferences request to finish yet.
+    if (!needsRequest) return () => controller.abort();
     void (async () => { try {
       if (section === "deliveries") { const data = await adapter.deliveries(controller.signal); if (!controller.signal.aborted) { setItems(data.items); setAsOf(data.asOf); setNextCursor(data.nextCursor ?? null); } }
       else if (section === "readiness") { const data = await adapter.readiness(controller.signal); if (!controller.signal.aborted) setReadiness(data); }

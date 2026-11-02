@@ -65,3 +65,74 @@ test("explicit reissue reviews both channels, reason and revocation before queue
 test("staff routing requires an explicit eligible fallback audience before overdue activation", async ({ page, harnessUrl }) => {
   await api(page); await page.goto(harnessUrl); await page.getByRole("navigation", { name: "Practice Navigation" }).getByRole("button", { name: "Notifications", exact: true }).click(); await page.getByRole("button", { name: "Staff Routing", exact: true }).click(); await page.getByLabel("Enable Overdue Alerts", { exact: true }).check(); await expect(page.getByRole("button", { name: "Save Changes", exact: true })).toBeDisabled(); await page.getByRole("group", { name: "Unassigned Work Audience", exact: true }).getByLabel("Synthetic staff").check(); const request = page.waitForRequest(req => req.method() === "PATCH" && req.url().endsWith("/notification-policy")); await page.getByRole("button", { name: "Save Changes", exact: true }).click(); const saved = await request; expect(saved.postDataJSON()).toMatchObject({ overdueEnabled: true, queueUserIds: ["staff-1"], escalationEnabled: false, escalationUserIds: [] }); expect(saved.headers()["if-match"]).toBe('"1"'); await expect(page.getByRole("button", { name: "Save Changes", exact: true })).toBeEnabled();
 });
+
+test("communication choices opens and refreshes without a selected patient", async ({ page, harnessUrl }) => {
+  await api(page);
+  const preferenceReads: string[] = [];
+  page.on("request", request => { if (request.url().includes("/communications/patients/") && request.url().endsWith("/preferences")) preferenceReads.push(request.url()); });
+  await page.goto(harnessUrl);
+  await page.getByRole("button", { name: "Patient Delivery", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Delivery Log", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Communication Choices", exact: true }).click();
+  const patient = page.getByRole("combobox", { name: "Choose A Patient", exact: true });
+  await expect(patient).toBeVisible();
+  await expect(patient).toHaveValue("");
+  await expect(page.getByRole("button", { name: "Refresh", exact: true })).toBeEnabled();
+  expect(preferenceReads).toEqual([]);
+  await page.getByRole("button", { name: "Refresh", exact: true }).click();
+  await expect(patient).toBeVisible();
+  await expect(page.locator(".cq-communications [role=status]")).toHaveCount(0);
+  expect(preferenceReads).toEqual([]);
+});
+
+test("communication choices recovers from a failed patient read and clears an empty selection", async ({ page, harnessUrl }) => {
+  await api(page);
+  let reads = 0;
+  await page.route("**/communications/patients/p3/preferences", async route => {
+    reads++;
+    if (reads === 1) return route.fulfill({ status: 500, json: { error: { code: "TEST_READ_FAILURE", message: "Synthetic failure" } } });
+    return route.fulfill({ json: { data: { patientId: "p3", endpoints: [{ id: "contact-retry", channel: "email", maskedDestination: "r•••@example.test", status: "active", verifiedAt: createdAt, timeZone: "America/Los_Angeles", permissions: { request: true, reminder: false, paperwork: false } }] } } });
+  });
+  await page.goto(harnessUrl);
+  await page.getByRole("button", { name: "Patient Delivery", exact: true }).click();
+  await page.getByRole("button", { name: "Communication Choices", exact: true }).click();
+  const patient = page.getByRole("combobox", { name: "Choose A Patient", exact: true });
+  await patient.selectOption("p3");
+  await expect(page.getByRole("alert")).toContainText("Unable to load communications.");
+  await page.getByRole("button", { name: "Refresh", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Email · r•••@example.test", exact: true })).toBeVisible();
+  expect(reads).toBe(2);
+  await patient.selectOption("");
+  await expect(patient).toBeVisible();
+  await expect(patient).toHaveValue("");
+  await expect(page.locator(".cq-communications .cq-cards article")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Refresh", exact: true })).toBeEnabled();
+  expect(reads).toBe(2);
+});
+
+test("communication choices ignores a pending patient read after switching tabs", async ({ page, harnessUrl }) => {
+  await api(page);
+  let release!: () => void;
+  let started!: () => void;
+  const pending = new Promise<void>(resolve => { release = resolve; });
+  const requested = new Promise<void>(resolve => { started = resolve; });
+  await page.route("**/communications/patients/p3/preferences", async route => {
+    started();
+    await pending;
+    return route.fulfill({ json: { data: { patientId: "p3", endpoints: [] } } });
+  });
+  await page.goto(harnessUrl);
+  await page.getByRole("button", { name: "Patient Delivery", exact: true }).click();
+  await page.getByRole("button", { name: "Communication Choices", exact: true }).click();
+  await page.getByRole("combobox", { name: "Choose A Patient", exact: true }).selectOption("p3");
+  await requested;
+  try {
+    await expect(page.locator(".cq-communications [role=status]")).toBeVisible();
+    await page.getByRole("button", { name: "Message Templates", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "Message Templates", exact: true })).toBeVisible();
+    release();
+    await expect(page.getByRole("heading", { name: "Message Templates", exact: true })).toBeVisible();
+    await expect(page.getByRole("combobox", { name: "Choose A Patient", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("alert")).toHaveCount(0);
+  } finally { release(); }
+});
