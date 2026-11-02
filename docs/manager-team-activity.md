@@ -36,4 +36,4 @@ The dedicated `audit.manager_activity(date,date)` helper exposes only the approv
 
 Migration `0048_manager_activity.sql` is additive. Apply it through the existing verified migration runner before enabling the API; the runtime release check requires the protected helper and its restricted grants. Previously applied migrations remain unchanged.
 
-Verification and remaining hosted acceptance are recorded in [the November 2 verification record](verification/manager-team-activity-2026-11-02.md). Only the runner-owned loopback test/review databases are authorized for this work. Source changes are prepared for a local commit. No hosted migration, push or deployment is included.
+The implementation is recorded in commit `4f3e1f3`. Its original local verification used only runner-owned loopback test/review databases; results and limits are recorded in [the November 2 verification record](verification/manager-team-activity-2026-11-02.md). Current migration, source promotion, deployment and hosted acceptance status is tracked separately in [the November 2 end-to-end release record](verification/e2e-release-2026-11-02.md).

@@ -18,6 +18,8 @@ Patient list hover spacing: [desktop and phone review](docs/verification/patient
 
 Shared loading indicators: [coverage, verification and local checklist](docs/verification/shared-loading-2026-11-02.md).
 
+November 2 end-to-end release: [local verification and promotion status](docs/verification/e2e-release-2026-11-02.md).
+
 ## Status
 
 🚧 **Active development**

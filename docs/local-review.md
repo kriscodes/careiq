@@ -4,7 +4,7 @@ Run the implemented CareIQ API, web app and marketing site from this checkout. T
 
 ## Start and inspect
 
-Select the repository-pinned **Node.js 22.23.2** before installing dependencies or starting services. The runner requires Node.js 22.13 or newer and checks the executable on your current shell's path before setup, start or restart. With nvm, run from the repository root:
+Select the repository-pinned **Node.js 22.23.4** before installing dependencies or starting services. The runner requires Node.js 22.13 or newer and checks the executable on your current shell's path before setup, start or restart. With nvm, run from the repository root:
 
 ```sh
 nvm use
