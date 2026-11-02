@@ -10,6 +10,8 @@ The platform is focused on reducing administrative workload around patient intak
 
 Manager dashboard and manual insurance verification: [implementation and audit coverage](docs/manager-insurance-implementation.md).
 
+Manager team activity by person and action day: [scope, permissions and verification](docs/manager-team-activity.md).
+
 ## Status
 
 🚧 **Active development**

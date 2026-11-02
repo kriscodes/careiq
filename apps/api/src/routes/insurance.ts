@@ -7,6 +7,7 @@ import { workflowCapabilities } from './workflow.js';
 import { body, id, revision, WorkflowError } from '../workflow/policy.js';
 import { insuranceRange } from '../workflow/insurance-policy.js';
 import { logFailure } from '../logging.js';
+import { managerActivityFilters } from '../workflow/manager-activity-policy.js';
 export type InsuranceDependencies = typeof service;
 export function registerInsuranceRoutes(app: Express, deps: InsuranceDependencies, practiceAccess: PracticeAccess, getAuth: (req: Request) => RequestAuthentication) {
     const base = '/api/v1/locations/:locationId/insurance';
@@ -47,6 +48,7 @@ export function registerInsuranceRoutes(app: Express, deps: InsuranceDependencie
     const meta = (res: Response) => ({ capabilities: res.locals.insuranceCapabilities, payerConnection: 'unavailable' });
     app.get(base + '/cases', authorize, wrap(async (req, res) => { const result = await deps.listCases(res.locals.insuranceTenant, insuranceRange(req.query), requestId(res)); const { items, pagination, ...context } = result; res.json({ data: items, pagination, meta: { ...context, ...meta(res) } }); }));
     app.get(base + '/manager', authorize, requireCap('manage'), wrap(async (req, res) => { res.json({ data: await deps.managerSummary(res.locals.insuranceTenant, insuranceRange(req.query), requestId(res)), meta: meta(res) }); }));
+    app.get(base + '/manager/activity', authorize, requireCap('manage'), requireCap('activity'), wrap(async (req, res) => { res.json({ data: await deps.managerActivity(res.locals.insuranceTenant, managerActivityFilters(req.query), requestId(res)), meta: meta(res) }); }));
     app.post(base + '/manager/export', authorize, requireCap('manage'), wrap(async (req, res) => {
         if (Object.keys(req.query).some(key => !['from', 'to'].includes(key))) throw new WorkflowError('INVALID_QUERY');
         body(req.body ?? {}, []);

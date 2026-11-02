@@ -31,8 +31,8 @@ export async function verifyInsuranceDatabaseRelease(client: Pick<PoolClient, "q
     pg_has_role(current_user,p.proowner,'MEMBER') AS owns,
     has_function_privilege(current_user,p.oid,'EXECUTE') AS can_execute,
     EXISTS(SELECT 1 FROM aclexplode(COALESCE(p.proacl,acldefault('f',p.proowner))) a WHERE a.grantee=0 AND a.privilege_type='EXECUTE') AS public_execute
-    FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='audit' AND p.proname='insurance_activity'`)).rows;
-  if (helpers.length !== 1 || helpers.some(row => !row.prosecdef || row.owns || !row.can_execute || row.public_execute || !row.proconfig?.includes("search_path=pg_catalog, public, pg_temp"))) {
-    throw new ReleaseCheckError("Insurance activity must use a protected executable projection without public or owning access.");
+    FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='audit' AND p.proname IN ('insurance_activity','manager_activity')`)).rows;
+  if (helpers.length !== 2 || helpers.some(row => !row.prosecdef || row.owns || !row.can_execute || row.public_execute || !row.proconfig?.includes("search_path=pg_catalog, public, pg_temp"))) {
+    throw new ReleaseCheckError("Insurance and manager activity must use protected executable projections without public or owning access.");
   }
 }

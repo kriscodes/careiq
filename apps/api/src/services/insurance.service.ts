@@ -6,6 +6,7 @@ import { caseInput, coverageInput, evidenceInput, followUpInput, cursorToken, in
 import { command, row, scoped, type CommandContext } from '../workflow/transaction.js';
 import { recordWorkflowAudit, recordWorkflowFailure, type WorkflowAuditResource } from './workflow-audit.js';
 export { recordWorkflowFailure };
+export { managerActivity } from './manager-activity.service.js';
 const scope = (tenant: TenantContext) => [tenant.practiceId, tenant.locationId];
 const resources = (record: Record<string, any>, evidenceId?: string): WorkflowAuditResource[] => [
     { resourceType: 'insurance_case', resourceId: record.id, patientId: record.patient_id, relationship: 'primary' },
