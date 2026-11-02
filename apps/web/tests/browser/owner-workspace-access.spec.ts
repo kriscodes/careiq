@@ -130,7 +130,7 @@ test("a pending save locks navigation, account controls and fields and ignores d
   await open(page, harnessUrl, async route => { if (route.request().method() === "POST") { writes++; await gate; return json(route, { data: {} }); } return json(route, { data: admin }); });
   await save(page).evaluate(button => { (button as HTMLButtonElement).click(); (button as HTMLButtonElement).click(); }); await expect.poll(() => writes).toBe(1);
   for (const checkbox of await page.getByRole("checkbox").all()) await expect(checkbox).toBeDisabled();
-  await expect(page.locator(".cq-a-back")).toBeDisabled(); await expect(page.locator(".wf-sidebar-foot[inert]")).toHaveCount(1); await expect(page.locator(".cq-a-loading")).toContainText("Saving");
+  await expect(page.locator(".cq-a-back")).toBeDisabled(); await expect(page.locator(".wf-sidebar-foot[inert]")).toHaveCount(1); await expect(page.locator(".cq-a-loading:not(.cq-a-loading-inline)")).toContainText("Saving");
   release(); await expect(home(page)).toBeVisible(); expect(writes).toBe(1);
 });
 

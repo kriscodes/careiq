@@ -1,4 +1,6 @@
-"use client"
+"use client";
+
+import { AccessLoading } from "@/components/access/AccessLoading";
 
 import { useI18n } from "@/i18n/provider";
 import { accessStatusLabel } from "@/components/access/display";
@@ -129,7 +131,7 @@ export function Appointments({ patients, appointments, onCreated }: { patients: 
                 className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
                 >
                     {loading
-                    ? t("access.copy.scheduling")
+                    ? <AccessLoading label={t("access.copy.scheduling")} inline />
                     : t("access.copy.schedule_appointment")
                     }
                 </button>

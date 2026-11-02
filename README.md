@@ -16,6 +16,8 @@ UI capitalization: [November 2 review, exact change inventory and local checklis
 
 Patient list hover spacing: [desktop and phone review](docs/verification/patient-row-spacing-2026-11-02.md).
 
+Shared loading indicators: [coverage, verification and local checklist](docs/verification/shared-loading-2026-11-02.md).
+
 ## Status
 
 🚧 **Active development**

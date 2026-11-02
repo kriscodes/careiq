@@ -1,5 +1,7 @@
 "use client";
 
+import { AccessLoading } from "@/components/access/AccessLoading";
+
 import { useI18n } from "@/i18n/provider";
 import Link from "next/link";
 import { ClerkFailed, ClerkLoaded, ClerkLoading, SignIn, SignUp, useAuth, useSignIn, useSignUp } from "@clerk/nextjs";
@@ -29,8 +31,7 @@ function AuthLoading({ failed = false }: { failed?: boolean }) {
   }, [failed]);
   const retryable = failed || slow;
   return <AccessShell centered>
-    <AccessHeading title={t(retryable ? "access.auth.unavailableTitle" : "access.copy.opening_careiq")} />
-    <p role={retryable ? "alert" : "status"}>{t(retryable ? "access.auth.unavailableHelp" : "access.copy.one_moment_while_we_check_your_account")}</p>
+    {retryable ? <><AccessHeading title={t("access.auth.unavailableTitle")} /><p role="alert">{t("access.auth.unavailableHelp")}</p></> : <AccessLoading label={t("access.copy.opening_careiq")} panel />}
     {retryable && <button className="cq-a-primary" type="button" onClick={() => window.location.reload()}>{t("access.copy.try_again")}</button>}
   </AccessShell>;
 }
@@ -239,7 +240,7 @@ function LoadedAuthScreen({ initialMode = "signin", returnTo, invitation = false
   const loading = busy;
   if (isLoaded && isSignedIn && invitation && !invitationComplete) return <AccessShell centered><AccessHeading title={t("access.copy.join_your_team")} mark="users">{t("access.copy.continue_with_the_email_address_that_received_this_invitation")}</AccessHeading><div className="cq-a-note">{t("access.copy.you_re_already_signed_in_sign_out_to_continue_with_your_invited_account")}</div><div className="cq-a-actions"><SignOutButton className="cq-a-primary" redirectUrl={() => invitationContinuationUrl(window.location.href)}>{t("access.copy.use_the_invited_account")}</SignOutButton><Link className="cq-a-link" href="/">{t("access.copy.back_to_my_practices")}</Link></div></AccessShell>;
   if (isLoaded && isSignedIn && expired) return <AccessShell centered><AccessHeading title={t("access.copy.sign_in_again")}>{t("access.copy.your_session_needs_to_be_refreshed_before_you_can_reopen_careiq")}</AccessHeading><SignOutButton className="cq-a-primary" redirectUrl="/sign-in?reason=expired">{t("access.copy.sign_in_again")}</SignOutButton></AccessShell>;
-  if (!isLoaded || isSignedIn) return <AccessShell centered><AccessHeading title={t("access.copy.opening_careiq")} /><p role="status">{t("access.copy.one_moment_while_we_check_your_account")}</p></AccessShell>;
+  if (!isLoaded || isSignedIn) return <AccessShell centered><AccessLoading label={t("access.copy.opening_careiq")} panel /></AccessShell>;
   return <AccessShell centered>
     {!['signin', 'signup', 'provider'].includes(mode) && <button className="cq-a-link cq-a-back" type="button" disabled={loading} onClick={goBack}>← {mode === "recovery" && recoveryAlternative ? t("access.copy.back_to_verification") : t("access.copy.back")}</button>}
     <AccessHeading title={titles[mode][0]} mark={mode === "verify" || mode === "resetcode" ? "mail" : mode === "resetdone" ? "check" : undefined}>{titles[mode][1]}</AccessHeading>
@@ -247,7 +248,7 @@ function LoadedAuthScreen({ initialMode = "signin", returnTo, invitation = false
       {providers.map(provider => <button key={provider} className="cq-a-social" type="button" disabled={loading} onClick={() => void chooseProvider(provider)}><span className={`cq-a-social-icon cq-a-social-${provider}`} aria-hidden="true" />{t(AUTH_PROVIDERS[provider].label)}</button>)}
       <div className="cq-a-divider"><span>{t("access.auth.orWithEmail")}</span></div>
     </div>}
-    {mode === "provider" ? <><div className="cq-a-provider">{!invitation && signupFlow ? <SignUp routing="hash" forceRedirectUrl={destination} signInUrl={`/sign-in?returnTo=${encodeURIComponent(destination)}`} /> : <SignIn routing="hash" forceRedirectUrl={destination} signUpUrl={`/sign-up?returnTo=${encodeURIComponent(destination)}`} />}</div>{!invitation && <p className="cq-a-under"><Link href={`${signupFlow ? "/sign-in" : "/sign-up"}?returnTo=${encodeURIComponent(destination)}`} className="cq-a-link">{signupFlow ? t("access.copy.already_have_an_account_sign_in") : t("access.copy.create_an_account")}</Link></p>}</> : mode === "resetdone" ? <button className="cq-a-primary" type="button" disabled={loading} onClick={() => void run(() => finish("signin"))}>{t("access.copy.continue_to_careiq")}</button> : needsCode ? <><AccessError>{error}</AccessError><button className="cq-a-primary" type="button" disabled={loading} onClick={() => void chooseMFA(mfa)}>{loading ? t("access.copy.one_moment") : t("access.copy.send_verification_code")} <span aria-hidden="true">→</span></button></> : <form className="cq-a-form" onSubmit={submit} aria-busy={loading} aria-describedby={error ? "cq-access-error" : undefined}>
+    {mode === "provider" ? <><div className="cq-a-provider">{!invitation && signupFlow ? <SignUp routing="hash" forceRedirectUrl={destination} signInUrl={`/sign-in?returnTo=${encodeURIComponent(destination)}`} /> : <SignIn routing="hash" forceRedirectUrl={destination} signUpUrl={`/sign-up?returnTo=${encodeURIComponent(destination)}`} />}</div>{!invitation && <p className="cq-a-under"><Link href={`${signupFlow ? "/sign-in" : "/sign-up"}?returnTo=${encodeURIComponent(destination)}`} className="cq-a-link">{signupFlow ? t("access.copy.already_have_an_account_sign_in") : t("access.copy.create_an_account")}</Link></p>}</> : mode === "resetdone" ? <button className="cq-a-primary" type="button" disabled={loading} onClick={() => void run(() => finish("signin"))}>{t("access.copy.continue_to_careiq")}</button> : needsCode ? <><AccessError>{error}</AccessError><button className="cq-a-primary" type="button" disabled={loading} onClick={() => void chooseMFA(mfa)}>{loading ? <AccessLoading label={t("access.copy.one_moment")} inline /> : t("access.copy.send_verification_code")} <span aria-hidden="true">→</span></button></> : <form className="cq-a-form" onSubmit={submit} aria-busy={loading} aria-describedby={error ? "cq-access-error" : undefined}>
       <fieldset disabled={loading}>
         {mode === "signup" && <AccessField name="name" label={t("access.copy.full_name_optional")} autoComplete="name" defaultValue={name} maxLength={120} placeholder={t("access.copy.alex_morgan")} />}
         {["signin", "signup", "forgot"].includes(mode) && <AccessField label={mode === "signup" ? t("access.copy.work_email") : t("access.copy.email_address")} name="email" type="email" required autoComplete={mode === "signin" ? "username" : "email"} defaultValue={email} placeholder={t("access.copy.you_practice_com")} />}
@@ -255,7 +256,7 @@ function LoadedAuthScreen({ initialMode = "signin", returnTo, invitation = false
         {mode === "reset" && <><AccessPassword creating name="newpassword" label={t("access.copy.new_password")} /><AccessPassword creating name="confirm" label={t("access.copy.confirm_password")} /></>}
         {["verify", "resetcode", "firstcode", "mfa", "recovery"].includes(mode) && <AccessField name="code" label={mode === "recovery" ? t("access.copy.recovery_code") : t("access.copy.verification_code")} required autoComplete={mode === "recovery" ? "off" : "one-time-code"} inputMode={mode === "recovery" ? "text" : "numeric"} pattern={mode === "recovery" ? undefined : "[0-9]{6}"} maxLength={mode === "recovery" ? 100 : 6} placeholder={mode === "recovery" ? t("access.copy.enter_your_saved_code") : "000000"} hint={mode === "recovery" ? t("access.copy.each_recovery_code_can_only_be_used_once") : t("access.copy.enter_the_6_digit_code_you_can_paste_it_here")} />}
         <AccessError>{error}</AccessError>
-        <button className="cq-a-primary" type="submit">{loading ? t("access.copy.one_moment") : mode === "signin" ? t("access.copy.sign_in") : mode === "signup" ? t("access.copy.create_account") : mode === "forgot" ? t("access.copy.send_reset_code") : mode === "reset" ? t("access.copy.update_password") : t("access.copy.verify_continue")} <span aria-hidden="true">→</span></button>
+        <button className="cq-a-primary" type="submit">{loading ? <AccessLoading label={t("access.copy.one_moment")} inline /> : mode === "signin" ? t("access.copy.sign_in") : mode === "signup" ? t("access.copy.create_account") : mode === "forgot" ? t("access.copy.send_reset_code") : mode === "reset" ? t("access.copy.update_password") : t("access.copy.verify_continue")} <span aria-hidden="true">→</span></button>
       </fieldset>
     </form>}
     {mode === "signup" && <div id="clerk-captcha" />}

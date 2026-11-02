@@ -1,4 +1,6 @@
 "use client";
+
+import { AccessLoading } from "@/components/access/AccessLoading";
 import { useI18n } from "@/i18n/provider";
 import { TaskChooseOrganization, TaskResetPassword, TaskSetupMFA, useSession } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
@@ -17,5 +19,5 @@ export function SessionTasks({ returnTo }: { returnTo?: string }) {
     else if (!session.currentTask) { clearAuthDestination(); window.location.replace(destination); }
   }, [isLoaded, session, destination]);
   const task = session?.currentTask?.key;
-  return <AccessShell centered><AccessHeading title={t("access.copy.one_more_step")}>{t("access.copy.complete_the_required_step_for_your_account")}</AccessHeading>{destination && task === "reset-password" ? <TaskResetPassword redirectUrlComplete={destination} /> : destination && task === "setup-mfa" ? <TaskSetupMFA redirectUrlComplete={destination} /> : destination && task === "choose-organization" ? <TaskChooseOrganization redirectUrlComplete={destination} /> : <p role="status">{t("access.copy.checking_your_account")}</p>}<SignOutButton redirectUrl={`/sign-in?returnTo=${encodeURIComponent(destination || "/")}`}>{t("access.copy.use_another_account")}</SignOutButton></AccessShell>;
+  return <AccessShell centered><AccessHeading title={t("access.copy.one_more_step")}>{t("access.copy.complete_the_required_step_for_your_account")}</AccessHeading>{destination && task === "reset-password" ? <TaskResetPassword redirectUrlComplete={destination} /> : destination && task === "setup-mfa" ? <TaskSetupMFA redirectUrlComplete={destination} /> : destination && task === "choose-organization" ? <TaskChooseOrganization redirectUrlComplete={destination} /> : <AccessLoading label={t("access.copy.checking_your_account")} panel />}<SignOutButton redirectUrl={`/sign-in?returnTo=${encodeURIComponent(destination || "/")}`}>{t("access.copy.use_another_account")}</SignOutButton></AccessShell>;
 }

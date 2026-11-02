@@ -1,5 +1,7 @@
 "use client";
 
+import { AccessLoading } from "@/components/access/AccessLoading";
+
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { useI18n } from "@/i18n/provider";
 import { type InsuranceAdapter, type ManagerActivityCategory, type ManagerActivityEvent, type ManagerActivityPage } from "@/lib/api/insurance";
@@ -88,11 +90,11 @@ export function ManagerActivity({ adapter, enabled, timeZone, initialInstant, re
       <label className="wf-field">{tr("type")}<select aria-label={tr("type")} value={category} onChange={event => setCategory(event.target.value as ManagerActivityCategory | "all")}>{["all", "appointments", "insurance", "followups"].map(value => <option value={value} key={value}>{tr(`category.${value}`)}</option>)}</select></label>
     </div>
     <p className="ci-caption">{tr("timeZone", { zone })}</p>
-    {!current || current.loading ? <p className="ci-empty" role="status">{tr("loading")}</p> : current.error ? <div className="wf-notice wf-error" role="alert">{current.error}<button type="button" className="wf-link" onClick={() => setRefresh(value => value + 1)}>{tr("retry")}</button></div> : data && <>
+    {!current || current.loading ? <AccessLoading label={tr("loading")} panel /> : current.error ? <div className="wf-notice wf-error" role="alert">{current.error}<button type="button" className="wf-link" onClick={() => setRefresh(value => value + 1)}>{tr("retry")}</button></div> : data && <>
       <div className="ci-activity-count" role="status">{tr("count", { count: formatNumber(data.summary.total), loaded: formatNumber(data.items.length) })}<span>{tr("asOf", { time: formatDate(data.asOf, { timeZone: zone, dateStyle: "medium", timeStyle: "short" }) })}</span></div>
       {data.items.length ? <ol className="ci-team-activity-list">{data.items.map(event => <li key={event.id}><div className="ci-team-activity-main"><strong>{action(event)}</strong><span title={event.actorId}>{t("workflow.insurance.staffId", { id: event.actorLabel })} <span className="ci-sr">{event.actorId}</span></span>{event.entityId && <span title={event.entityId}>{tr(`record.${event.action.startsWith("appointments.") ? "appointment" : event.action.startsWith("insurance.") ? "insurance" : "followup"}`)} · #{event.entityId.slice(-8)}<span className="ci-sr"> {event.entityId}</span></span>}<time dateTime={event.occurredAt}>{formatDate(event.occurredAt, { timeZone: zone, dateStyle: "medium", timeStyle: "short" })}</time></div><div className="ci-team-activity-result"><span className="ci-status" data-state={event.result ?? undefined}>{result(event)}</span>{event.source && <small>{t(`workflow.insurance.source.${event.source}`)}</small>}</div></li>)}</ol> : <div className="ci-empty"><h3>{tr("empty")}</h3><p>{tr("emptyHint")}</p></div>}
       {current.moreError && <p className="wf-notice wf-error" role="alert">{current.moreError}</p>}
-      {data.pagination.hasMore && <button type="button" className="wf-button" disabled={current.moreBusy || !data.pagination.nextCursor} onClick={() => void loadMore()}>{tr(current.moreBusy ? "loading" : "loadMore")}</button>}
+      {data.pagination.hasMore && <button type="button" className="wf-button" disabled={current.moreBusy || !data.pagination.nextCursor} onClick={() => void loadMore()}>{current.moreBusy ? <AccessLoading label={tr("loading")} inline /> : tr("loadMore")}</button>}
     </>}
     <p className="ci-caption ci-activity-scope-note">{tr("scope")}</p>
   </section>;

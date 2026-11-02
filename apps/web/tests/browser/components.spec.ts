@@ -420,7 +420,7 @@ test("real Clerk preloaded auth state cannot make an unloaded sign-in proxy acti
     page.on("request", request => { if (request.isNavigationRequest() && request.frame() === page.mainFrame()) navigations++; });
     await page.goto(isolated.url);
     await expect(page.getByTestId("server-auth-state")).toHaveText("loaded");
-    await expect(page.getByRole("heading", { name: "Opening CareIQ…" })).toBeVisible();
+    await expect(page.getByRole("status").filter({ hasText: "Opening CareIQ…" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Sign In", exact: true })).toHaveCount(0);
     await expect(page.locator("input")).toHaveCount(0);
     await expect(page.getByRole("alert")).toContainText("sign-in service", { timeout: 15_000 });
@@ -444,7 +444,7 @@ test("real Clerk preloaded auth state cannot make an unloaded sign-in proxy acti
     await expect(page.locator("input")).toHaveCount(0);
     await retry.click();
     await expect.poll(() => navigations).toBe(2);
-    await expect(page.getByRole("heading", { name: "Opening CareIQ…" })).toBeVisible();
+    await expect(page.getByRole("status").filter({ hasText: "Opening CareIQ…" })).toBeVisible();
     await expect(page.locator("input")).toHaveCount(0);
   } finally { await isolated.close(); }
 });

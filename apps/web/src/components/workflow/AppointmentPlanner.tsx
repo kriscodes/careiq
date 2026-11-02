@@ -1,5 +1,7 @@
 "use client";
 
+import { AccessLoading } from "@/components/access/AccessLoading";
+
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useI18n } from "@/i18n/provider";
 import { InterviewIcon } from "@/components/InterviewIcon";
@@ -126,14 +128,14 @@ export function AppointmentPlanner({ date, timeZone, appointments, patients, pro
         <label className="wf-field"><span>{text.provider}</span><select required value={availableProvider} disabled={busy} onChange={event => { cancelAvailability(); setAvailableProvider(event.target.value); }}><option value="">{text.chooseProvider}</option>{providers.filter(provider => provider.status !== "inactive").map(provider => <option key={provider.id} value={provider.id}>{provider.name}</option>)}</select></label>
         <label className="wf-field"><span>{text.date}</span><input type="date" required value={availableDate} disabled={busy} onChange={event => { cancelAvailability(); setAvailableDate(event.target.value); }} /></label>
         <label className="wf-field"><span>{text.duration}</span><input type="number" min="5" max="480" step="1" required value={duration} disabled={busy} onChange={event => { cancelAvailability(); setDuration(event.target.value); }} /></label>
-        <button type="submit" className="wf-button" disabled={!canSearch || busy || loading || !!currentAvailability?.loading}>{currentAvailability?.loading ? text.checking : text.check}</button>
+        <button type="submit" className="wf-button" disabled={!canSearch || busy || loading || !!currentAvailability?.loading}>{currentAvailability?.loading ? <AccessLoading label={text.checking} inline /> : text.check}</button>
       </form>
       <div aria-live="polite">{currentAvailability?.error && <p className="wf-notice wf-error" role="alert">{currentAvailability.error}</p>}{currentAvailability?.slots && (currentAvailability.slots.length ? <div className="wf-planner-slots" aria-label={text.available}>{currentAvailability.slots.map(slot => <button type="button" className="wf-button" key={slot.startsAt} disabled={busy || loading} aria-label={`${text.bookTime}: ${time(slot.startsAt, true)}`} onClick={() => onBook({ scheduledAt: slot.startsAt, providerId: availableProvider, durationMinutes: Number(duration) })}>{time(slot.startsAt)}</button>)}</div> : <p className="wf-planner-no-slots">{text.noSlots}</p>)}</div>
       <p className="wf-planner-availability-note">{text.availabilityHint}</p>
     </section>}
     {error && <p className="wf-notice wf-error" role="alert">{error}</p>}
-    {loading ? <div className="wf-planner-loading" role="status">{text.loading}</div> : !error && <>
-      {hasMore && <div className="wf-planner-incomplete" role="status"><p>{text.incomplete}</p>{onLoadMore && <button type="button" className="wf-button" disabled={loadingMore || busy} onClick={onLoadMore}>{loadingMore ? text.loading : text.loadMore}</button>}</div>}
+    {loading ? <AccessLoading label={text.loading} panel /> : !error && <>
+      {hasMore && <div className="wf-planner-incomplete"><p role="status">{text.incomplete}</p>{onLoadMore && <button type="button" className="wf-button" disabled={loadingMore || busy} onClick={onLoadMore}>{loadingMore ? <AccessLoading label={text.loading} inline /> : text.loadMore}</button>}</div>}
       <div className="wf-planner-calendar">
         <div className="wf-planner-desktop"><div className="wf-planner-scroll">
           <div className="wf-planner-week-header"><div className="wf-planner-time-corner"><InterviewIcon name="clock" /></div>{dates.map(day => <div key={day} data-today={day === today}><span>{calendarDate(day, { weekday: "short" })}</span><strong>{calendarDate(day, { day: "numeric" })}</strong></div>)}</div>

@@ -193,6 +193,10 @@ html:has(.cq-access),body:has(.cq-access){background:#fff;color-scheme:only ligh
 .cq-a-loading .cq-a-companion{width:44px;height:44px}
 .cq-a-loading-label{font-size:13px;line-height:1.5}
 .cq-a-loading-panel{min-height:210px}
+.cq-a-loading-inline{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0;color:inherit;text-align:inherit;vertical-align:middle}
+.cq-a-loading-inline .cq-a-loading-character{flex:0 0 22px;width:22px;height:22px}
+.cq-a-loading-inline .cq-a-companion{width:22px;height:22px;border-radius:50%}
+.cq-a-loading-inline .cq-a-loading-label{font-size:inherit;line-height:inherit}
 .cq-a-loading-skeleton{display:grid;gap:12px;width:min(100%,360px);margin-top:8px}
 .cq-a-loading-skeleton span{display:block;height:12px;border-radius:6px;background:#edf3fa}
 .cq-a-loading-skeleton span:nth-child(2){width:80%}
