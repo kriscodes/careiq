@@ -1,20 +1,20 @@
 import { test, expect } from "./harness";
 
-test("manager activity is part of the existing dashboard and separates action day from appointment day", async ({ page, harnessUrl }) => {
+test("manager activity is part of the existing dashboard and separates action day from appointment day", async ({ page, harnessUrl }, testInfo) => {
   await page.goto(`${harnessUrl}/?component=workflow`);
   await page.getByRole("button", { name: "Manager", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Team Activity", exact: true })).toBeVisible();
   await expect(page.getByLabel("Activity Day", { exact: true })).toHaveValue("2026-10-16");
   await expect(page.locator(".ci-team-activity-list")).toContainText("Appointment Created");
-  await page.screenshot({ path: "/private/tmp/careiq-manager-activity-desktop.png", fullPage: true });
+  await page.screenshot({ path: testInfo.outputPath("careiq-manager-activity-desktop.png"), fullPage: true });
   await page.getByLabel("Appointment Day", { exact: true }).fill("2026-10-17");
   await expect(page.getByLabel("Activity Day", { exact: true })).toHaveValue("2026-10-16");
   await expect(page.locator(".ci-team-activity-list")).toContainText("Appointment Created");
   await page.setViewportSize({ width: 320, height: 900 });
-  await page.screenshot({ path: "/private/tmp/careiq-manager-activity-320-en.png", fullPage: true });
+  await page.screenshot({ path: testInfo.outputPath("careiq-manager-activity-320-en.png"), fullPage: true });
   await page.evaluate(() => { localStorage.setItem("careiq-staff-locale", "es"); window.dispatchEvent(new StorageEvent("storage", { key: "careiq-staff-locale", newValue: "es" })); });
   await expect(page.getByRole("heading", { name: "Actividad Del Equipo", exact: true })).toBeVisible();
-  await page.screenshot({ path: "/private/tmp/careiq-manager-activity-320-es.png", fullPage: true });
+  await page.screenshot({ path: testInfo.outputPath("careiq-manager-activity-320-es.png"), fullPage: true });
 });
 
 test("team activity person/type filters and counts apply before pagination, including historical actors", async ({ page, harnessUrl }) => {
