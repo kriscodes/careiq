@@ -14,6 +14,8 @@ Manager team activity by person and action day: [scope, permissions and verifica
 
 UI capitalization: [November 2 review, exact change inventory and local checklist](docs/verification/ui-capitalization-2026-11-02.md).
 
+Patient list hover spacing: [desktop and phone review](docs/verification/patient-row-spacing-2026-11-02.md).
+
 ## Status
 
 🚧 **Active development**
