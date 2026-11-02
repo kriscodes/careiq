@@ -38,13 +38,13 @@ test("Little hello remains white under dark system settings on desktop and 320px
     await page.evaluate(() => document.fonts.ready);
     await expectWhite(page);
     await capture(page, `signin-dark-system-${width}`);
-    await page.getByRole("button", { name: "Forgot password?", exact: true }).click();
+    await page.getByRole("button", { name: "Forgot Password?", exact: true }).click();
     await expect(page.getByRole("heading", { name: "Let’s get you back in.", exact: true })).toBeVisible();
     await expectWhite(page);
     await capture(page, `forgot-dark-system-${width}`);
-    await page.getByLabel("Email address", { exact: true }).fill("synthetic@example.invalid");
-    await page.getByRole("button", { name: /Send reset code/ }).click();
-    await expect(page.getByLabel("Verification code", { exact: true })).toBeVisible();
+    await page.getByLabel("Email Address", { exact: true }).fill("synthetic@example.invalid");
+    await page.getByRole("button", { name: /Send Reset Code/ }).click();
+    await expect(page.getByLabel("Verification Code", { exact: true })).toBeVisible();
     await expectWhite(page);
     await capture(page, `reset-code-dark-system-${width}`);
     await page.goto(`${harnessUrl}/?component=auth&mode=signup&providers=google`);
@@ -59,7 +59,7 @@ test("local fonts and character assets are actual files and missing brand reques
   page.on("request", event => { if (!event.url().startsWith(harnessUrl)) external.push(event.url()); });
   page.on("pageerror", error => failures.push(error.message));
   await page.goto(`${harnessUrl}/?component=auth&providers=google,microsoft,apple`);
-  await expect(page.getByRole("button", { name: "Continue with Google", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Continue With Google", exact: true })).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
   expect(await page.evaluate(() => [...document.fonts].filter(font => ["Caprasimo", "Nunito Sans"].includes(font.family.replaceAll('"', ""))).map(font => ({ family: font.family.replaceAll('"', ""), status: font.status })))).toEqual(expect.arrayContaining([{ family: "Caprasimo", status: "loaded" }, { family: "Nunito Sans", status: "loaded" }]));
   const font = await request.get(`${harnessUrl}/brand/fonts/caprasimo.woff2`);
@@ -77,36 +77,36 @@ test("keyboard recovery moves focus to each step and keeps the help dialog rever
   await page.goto(`${harnessUrl}/?component=auth`);
   await expect(page.getByRole("heading", { name: "Good to see you.", exact: true })).toBeFocused();
   await page.keyboard.press("Tab");
-  await expect(page.getByLabel("Email address", { exact: true })).toBeFocused();
+  await expect(page.getByLabel("Email Address", { exact: true })).toBeFocused();
   await page.keyboard.type("synthetic@example.invalid");
   await page.keyboard.press("Tab");
-  await expect(page.getByRole("button", { name: "Forgot password?", exact: true })).toBeFocused();
+  await expect(page.getByRole("button", { name: "Forgot Password?", exact: true })).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page.getByRole("heading", { name: "Let’s get you back in.", exact: true })).toBeFocused();
   await page.keyboard.press("Tab");
-  await expect(page.getByLabel("Email address", { exact: true })).toBeFocused();
+  await expect(page.getByLabel("Email Address", { exact: true })).toBeFocused();
   await page.keyboard.type("synthetic@example.invalid");
   await page.keyboard.press("Tab");
-  await expect(page.getByRole("button", { name: /Send reset code/ })).toBeFocused();
+  await expect(page.getByRole("button", { name: /Send Reset Code/ })).toBeFocused();
   await page.keyboard.press("Enter");
-  await expect(page.getByRole("heading", { name: "Check your email", exact: true })).toBeFocused();
-  await page.getByRole("button", { name: "Need a hand?", exact: true }).focus();
+  await expect(page.getByRole("heading", { name: "Check Your Email", exact: true })).toBeFocused();
+  await page.getByRole("button", { name: "Need A Hand?", exact: true }).focus();
   await page.keyboard.press("Enter");
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).not.toBeVisible();
-  await expect(page.getByRole("button", { name: "Need a hand?", exact: true })).toBeFocused();
+  await expect(page.getByRole("button", { name: "Need A Hand?", exact: true })).toBeFocused();
 });
 
 test("provider choices use only the configured allowlist and preserve a safe callback", async ({ page, harnessUrl }) => {
   await page.goto(`${harnessUrl}/?component=auth&providers=unknown,passkey,sso`);
   await expect(page.locator(".cq-a-social")).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Other ways to sign in", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Other Ways To Sign In", exact: true })).toBeVisible();
   for (const mode of ["signin", "signup"] as const) {
     await page.goto(`${harnessUrl}/?component=auth&mode=${mode}&providers=google,microsoft,apple,google,unknown&returnTo=%2Fpatient-paperwork`);
     await expect(page.locator(".cq-a-social")).toHaveCount(3);
     for (const provider of ["Google", "Microsoft", "Apple"]) {
-      await page.getByRole("button", { name: `Continue with ${provider}`, exact: true }).click();
+      await page.getByRole("button", { name: `Continue With ${provider}`, exact: true }).click();
       await expect.poll(async () => (await calls(page)).filter(call => call.name === "providerSSO").length).toBeGreaterThan(0);
       expect((await calls(page)).filter(call => call.name === "providerSSO").at(-1)?.input).toEqual({ source: mode, strategy: `oauth_${provider.toLowerCase()}`, redirectUrl: "/session-tasks?returnTo=%2Fpatient-paperwork", redirectCallbackUrl: `/sign-${mode === "signup" ? "up" : "in"}?returnTo=%2Fpatient-paperwork#/sso-callback` });
     }
@@ -114,30 +114,30 @@ test("provider choices use only the configured allowlist and preserve a safe cal
     expect(await page.evaluate(() => sessionStorage.getItem("careiq.account-return"))).toBe("/patient-paperwork");
   }
   await page.goto(`${harnessUrl}/?component=auth&providers=google&returnTo=https%3A%2F%2Foutside.invalid`);
-  await page.getByRole("button", { name: "Continue with Google", exact: true }).click();
+  await page.getByRole("button", { name: "Continue With Google", exact: true }).click();
   expect((await calls(page)).find(call => call.name === "providerSSO")?.input).toMatchObject({ redirectUrl: "/session-tasks?returnTo=%2F", redirectCallbackUrl: "/sign-in?returnTo=%2F#/sso-callback" });
 });
 
 test("provider errors stay private and pending redirects cannot submit credentials twice", async ({ page, harnessUrl }) => {
   await page.goto(`${harnessUrl}/?component=auth&scenario=auth-provider-error&providers=google`);
-  await page.getByRole("button", { name: "Continue with Google", exact: true }).click();
+  await page.getByRole("button", { name: "Continue With Google", exact: true }).click();
   await expect(page.getByRole("alert")).toContainText("Please try again");
   await expect(page.getByRole("alert")).not.toContainText("private provider secret");
-  await expect(page.getByRole("button", { name: "Continue with Google", exact: true })).toBeEnabled();
+  await expect(page.getByRole("button", { name: "Continue With Google", exact: true })).toBeEnabled();
   await page.goto(`${harnessUrl}/?component=auth&scenario=auth-provider-pending&providers=google`);
-  await page.getByRole("button", { name: "Continue with Google", exact: true }).evaluate(button => { (button as HTMLButtonElement).click(); (button as HTMLButtonElement).click(); });
-  await expect(page.getByRole("button", { name: "Continue with Google", exact: true })).toBeDisabled();
-  await expect(page.getByLabel("Email address", { exact: true })).toBeDisabled();
+  await page.getByRole("button", { name: "Continue With Google", exact: true }).evaluate(button => { (button as HTMLButtonElement).click(); (button as HTMLButtonElement).click(); });
+  await expect(page.getByRole("button", { name: "Continue With Google", exact: true })).toBeDisabled();
+  await expect(page.getByLabel("Email Address", { exact: true })).toBeDisabled();
   expect((await calls(page)).filter(call => call.name === "providerSSO")).toHaveLength(1);
   expect((await calls(page)).filter(call => call.name === "password")).toHaveLength(0);
   await page.evaluate(() => window.__careiqAuthFetch!.resolveProvider());
-  await expect(page.getByRole("button", { name: "Continue with Google", exact: true })).toBeEnabled();
+  await expect(page.getByRole("button", { name: "Continue With Google", exact: true })).toBeEnabled();
 });
 
 test("invitation continuation stays provider owned even with configured social shortcuts", async ({ page, harnessUrl }) => {
   await page.goto(`${harnessUrl}/?component=auth&scenario=signed-invite&providers=google,microsoft,apple&__clerk_ticket=synthetic-invitation-ticket`);
   await expect(page.locator(".cq-a-social")).toHaveCount(0);
-  await page.getByRole("button", { name: "Use the invited account", exact: true }).click();
+  await page.getByRole("button", { name: "Use The Invited Account", exact: true }).click();
   expect((await calls(page)).find(call => call.name === "signOut")?.input).toEqual({ redirectUrl: `${harnessUrl}/?__clerk_ticket=synthetic-invitation-ticket` });
 });
 
@@ -149,11 +149,11 @@ for (const role of ["owner", "administrator", "member", "configured-clinician"] 
       await json(route, { data: { userId: "user_test", orgId: "org_test", practice: { id: "practice_test", name: "Synthetic practice", authorizationMode: "location", status: "active" }, onboarding: "pending", enrollmentStatus: "pending_assignment", capabilities: { patients: { read: false, create: false }, appointments: { read: false, create: false } }, management: { locations: false, members: false }, locations: [] } });
     });
     await page.goto(`${harnessUrl}/?component=workspace&identityRole=${role}`);
-    await expect(page.getByRole("heading", { name: "Practice home", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Practice Home", exact: true })).toBeVisible();
     await expect(page.locator(".cq-home").getByRole("status")).toContainText("Your practice owner will confirm your role and locations before you can open patient records.");
-    await expect(page.getByRole("button", { name: "Check access again", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Check Access Again", exact: true })).toBeVisible();
     expect(paths).toEqual(["/api/v1/me"]);
-    await expect(page.getByRole("button", { name: "Open workspace", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Open Workspace", exact: true })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Patients", exact: true })).toHaveCount(0);
   });
 }
@@ -174,29 +174,29 @@ test("a signed-in patient without a portal grant sees no paperwork or staff work
 
 async function submitTrustPassword(page: Page, harnessUrl: string, scenario: string) {
   await page.goto(`${harnessUrl}/?component=auth&scenario=${scenario}`);
-  await page.getByLabel("Email address", { exact: true }).fill("synthetic@example.invalid");
+  await page.getByLabel("Email Address", { exact: true }).fill("synthetic@example.invalid");
   await page.getByLabel("Password", { exact: true }).fill("synthetic-password");
-  await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await page.getByRole("button", { name: "Sign In", exact: true }).click();
 }
 
 test("new-device trust requires an explicit send and a valid code before finalization", async ({ page, harnessUrl }) => {
   await submitTrustPassword(page, harnessUrl, "auth-trust");
-  await expect(page.getByRole("heading", { name: "Verify this sign-in", exact: true })).toBeFocused();
+  await expect(page.getByRole("heading", { name: "Verify This Sign-In", exact: true })).toBeFocused();
   await expect(page.locator(".cq-a-lead")).toContainText("Send a code to your verified email");
   await expect(page.getByLabel("Password", { exact: true })).toHaveCount(0);
-  await expect(page.getByLabel("Verification code", { exact: true })).toHaveCount(0);
+  await expect(page.getByLabel("Verification Code", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Provider completion fixture", { exact: true })).toHaveCount(0);
   expect((await calls(page)).filter(call => ["sendMFAEmailCode", "signInFinalize"].includes(call.name))).toHaveLength(0);
-  await page.getByRole("button", { name: "Send verification code", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "One more step", exact: true })).toBeFocused();
-  await expect(page.getByLabel("Verification code", { exact: true })).toHaveAttribute("autocomplete", "one-time-code");
+  await page.getByRole("button", { name: "Send Verification Code", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "One More Step", exact: true })).toBeFocused();
+  await expect(page.getByLabel("Verification Code", { exact: true })).toHaveAttribute("autocomplete", "one-time-code");
   expect((await calls(page)).filter(call => call.name === "sendMFAEmailCode")).toHaveLength(1);
-  await page.getByLabel("Verification code", { exact: true }).fill("000000");
-  await page.getByRole("button", { name: /Verify & continue/ }).click();
+  await page.getByLabel("Verification Code", { exact: true }).fill("000000");
+  await page.getByRole("button", { name: /Verify & Continue/ }).click();
   await expect(page.getByRole("alert")).toContainText("incorrect");
   expect((await calls(page)).filter(call => call.name === "signInFinalize")).toHaveLength(0);
-  await page.getByLabel("Verification code", { exact: true }).fill("111111");
-  await page.getByRole("button", { name: /Verify & continue/ }).click();
+  await page.getByLabel("Verification Code", { exact: true }).fill("111111");
+  await page.getByRole("button", { name: /Verify & Continue/ }).click();
   await expect.poll(async () => (await calls(page)).filter(call => call.name === "signInFinalize").length).toBe(1);
   expect((await calls(page)).filter(call => call.name === "password")).toHaveLength(1);
 });
@@ -207,15 +207,15 @@ for (const prepared of [false, true]) {
     await page.goto(`${harnessUrl}/?component=auth&scenario=${scenario}`);
     for (let attempt = 0; attempt < 2; attempt++) {
       if (attempt) await page.reload();
-      await expect(page.getByRole("heading", { name: prepared ? "One more step" : "Verify this sign-in", exact: true })).toBeVisible();
+      await expect(page.getByRole("heading", { name: prepared ? "One More Step" : "Verify This Sign-In", exact: true })).toBeVisible();
       await expect(page.getByLabel("Password", { exact: true })).toHaveCount(0);
       await expect(page.getByText("Provider completion fixture", { exact: true })).toHaveCount(0);
       if (prepared) {
-        await expect(page.getByLabel("Verification code", { exact: true })).toBeVisible();
+        await expect(page.getByLabel("Verification Code", { exact: true })).toBeVisible();
         await expect(page.locator(".cq-a-lead")).toContainText("code sent to your email");
       } else {
-        await expect(page.getByLabel("Verification code", { exact: true })).toHaveCount(0);
-        await expect(page.getByRole("button", { name: "Send verification code", exact: true })).toBeEnabled();
+        await expect(page.getByLabel("Verification Code", { exact: true })).toHaveCount(0);
+        await expect(page.getByRole("button", { name: "Send Verification Code", exact: true })).toBeEnabled();
       }
       expect((await calls(page)).filter(call => ["sendMFAEmailCode", "sendMFAPhoneCode", "password", "signInFinalize"].includes(call.name))).toHaveLength(0);
     }
@@ -230,14 +230,14 @@ for (const prepared of [false, true]) {
 
 test("a failed device-trust send stays unsent and retries without repeating the password", async ({ page, harnessUrl }) => {
   await submitTrustPassword(page, harnessUrl, "auth-trust-send-error");
-  const send = page.getByRole("button", { name: "Send verification code", exact: true });
+  const send = page.getByRole("button", { name: "Send Verification Code", exact: true });
   await send.click();
   await expect(page.getByRole("alert")).toContainText("Please try again");
   await expect(page.getByRole("alert")).not.toContainText("private provider secret");
-  await expect(page.getByLabel("Verification code", { exact: true })).toHaveCount(0);
+  await expect(page.getByLabel("Verification Code", { exact: true })).toHaveCount(0);
   await expect(send).toBeEnabled();
   await send.click();
-  await expect(page.getByLabel("Verification code", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Verification Code", { exact: true })).toBeVisible();
   expect((await calls(page)).filter(call => call.name === "sendMFAEmailCode")).toHaveLength(2);
   expect((await calls(page)).filter(call => call.name === "password")).toHaveLength(1);
   expect((await calls(page)).filter(call => call.name === "signInFinalize")).toHaveLength(0);
@@ -245,13 +245,13 @@ test("a failed device-trust send stays unsent and retries without repeating the 
 
 test("the observed trust-code rate limit shows localized wait copy and never claims a code was sent", async ({ page, harnessUrl }) => {
   await submitTrustPassword(page, harnessUrl, "auth-trust-rate-limit");
-  await page.getByRole("button", { name: "Send verification code", exact: true }).click();
+  await page.getByRole("button", { name: "Send Verification Code", exact: true }).click();
   await expect(page.getByRole("alert")).toHaveText("Too many attempts. Wait a little before trying again.");
-  await expect(page.getByLabel("Verification code", { exact: true })).toHaveCount(0);
+  await expect(page.getByLabel("Verification Code", { exact: true })).toHaveCount(0);
   await expect(page.locator(".cq-a-lead")).toContainText("Send a code");
-  await page.getByLabel("Interface language", { exact: true }).selectOption("es");
+  await page.getByLabel("Interface Language", { exact: true }).selectOption("es");
   await expect(page.getByRole("alert")).toHaveText("Demasiados intentos. Espera un poco antes de volver a intentarlo.");
-  await expect(page.getByRole("button", { name: "Enviar código de verificación", exact: true })).toBeEnabled();
+  await expect(page.getByRole("button", { name: "Enviar Código De Verificación", exact: true })).toBeEnabled();
   await expect(page.getByRole("alert")).not.toContainText(/private|429|seconds|\d/);
   expect((await calls(page)).filter(call => call.name === "sendMFAEmailCode")).toHaveLength(1);
   expect((await calls(page)).filter(call => call.name === "signInFinalize")).toHaveLength(0);
@@ -260,20 +260,20 @@ test("the observed trust-code rate limit shows localized wait copy and never cla
 test("unsupported device-trust factors remain provider owned and OAuth callbacks retain precedence", async ({ page, harnessUrl }) => {
   await submitTrustPassword(page, harnessUrl, "auth-trust-unsupported");
   await expect(page.getByText("Provider completion fixture", { exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Send verification code", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Send Verification Code", exact: true })).toHaveCount(0);
   expect((await calls(page)).filter(call => ["sendMFAEmailCode", "signInFinalize"].includes(call.name))).toHaveLength(0);
   await page.goto(`${harnessUrl}/?component=auth&scenario=auth-trust-restored-prepared#/sso-callback`);
   await expect(page.getByText("Provider completion fixture", { exact: true })).toBeVisible();
-  await expect(page.getByLabel("Verification code", { exact: true })).toHaveCount(0);
+  await expect(page.getByLabel("Verification Code", { exact: true })).toHaveCount(0);
   expect((await calls(page)).filter(call => ["sendMFAEmailCode", "signInFinalize"].includes(call.name))).toHaveLength(0);
 });
 
 test("supported phone device trust verifies the actual phone factor before finalizing", async ({ page, harnessUrl }) => {
   await submitTrustPassword(page, harnessUrl, "auth-trust-phone");
   await expect(page.locator(".cq-a-lead")).toContainText("verified phone");
-  await page.getByRole("button", { name: "Send verification code", exact: true }).click();
-  await page.getByLabel("Verification code", { exact: true }).fill("111111");
-  await page.getByRole("button", { name: /Verify & continue/ }).click();
+  await page.getByRole("button", { name: "Send Verification Code", exact: true }).click();
+  await page.getByLabel("Verification Code", { exact: true }).fill("111111");
+  await page.getByRole("button", { name: /Verify & Continue/ }).click();
   expect((await calls(page)).filter(call => call.name === "sendMFAPhoneCode")).toHaveLength(1);
   expect((await calls(page)).filter(call => call.name === "verifyMFAPhoneCode")).toHaveLength(1);
   expect((await calls(page)).filter(call => call.name === "sendMFAEmailCode")).toHaveLength(0);
@@ -282,11 +282,11 @@ test("supported phone device trust verifies the actual phone factor before final
 
 test("a backup-only supported challenge uses the recovery-code path", async ({ page, harnessUrl }) => {
   await submitTrustPassword(page, harnessUrl, "auth-trust-backup");
-  await expect(page.getByLabel("Recovery code", { exact: true })).toBeVisible();
-  await expect(page.getByLabel("Recovery code", { exact: true })).toHaveAttribute("autocomplete", "off");
-  await expect(page.getByLabel("Verification code", { exact: true })).toHaveCount(0);
-  await page.getByLabel("Recovery code", { exact: true }).fill("synthetic-recovery-code");
-  await page.getByRole("button", { name: /Verify & continue/ }).click();
+  await expect(page.getByLabel("Recovery Code", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Recovery Code", { exact: true })).toHaveAttribute("autocomplete", "off");
+  await expect(page.getByLabel("Verification Code", { exact: true })).toHaveCount(0);
+  await page.getByLabel("Recovery Code", { exact: true }).fill("synthetic-recovery-code");
+  await page.getByRole("button", { name: /Verify & Continue/ }).click();
   expect((await calls(page)).filter(call => call.name === "verifyBackupCode")).toHaveLength(1);
   expect((await calls(page)).filter(call => call.name === "verifyMFAEmailCode")).toHaveLength(0);
   await expect.poll(async () => (await calls(page)).filter(call => call.name === "signInFinalize").length).toBe(1);
@@ -296,12 +296,12 @@ test("back from a recovery code restores a supported factor without sending a co
   await submitTrustPassword(page, harnessUrl, "auth-trust-backup");
   await page.getByRole("button", { name: "← Back", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Good to see you.", exact: true })).toBeVisible();
-  await expect(page.getByLabel("Verification code", { exact: true })).toHaveCount(0);
+  await expect(page.getByLabel("Verification Code", { exact: true })).toHaveCount(0);
   expect((await calls(page)).filter(call => ["sendMFAEmailCode", "verifyMFAEmailCode", "signInFinalize"].includes(call.name))).toHaveLength(0);
   await submitTrustPassword(page, harnessUrl, "mfa");
-  await page.getByRole("button", { name: "Use a recovery code", exact: true }).click();
-  await page.getByRole("button", { name: "← Back to verification", exact: true }).click();
-  await expect(page.getByLabel("Verification code", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Use A Recovery Code", exact: true }).click();
+  await page.getByRole("button", { name: "← Back To Verification", exact: true }).click();
+  await expect(page.getByLabel("Verification Code", { exact: true })).toBeVisible();
   await expect(page.locator(".cq-a-lead")).toContainText("authenticator app");
   expect((await calls(page)).filter(call => ["sendMFAEmailCode", "sendMFAPhoneCode", "signInFinalize"].includes(call.name))).toHaveLength(0);
 });

@@ -12,8 +12,8 @@ const admin = { locations: [location], members: [owner, teammate], invitations: 
 const snapshot = { location, timeZone: "UTC", patients: [], appointments: [], documents: [], templates: [], requests: [], workItems: [], providers: [], visitTypes: [], documentTypes: [], capabilities, asOf: "2026-10-31T12:00:00Z" };
 const account = { account: { status: "active", archiveRequestedAt: null, archivedAt: null, restoredAt: null }, ownedPractices: [], closureRequest: null };
 const labels = {
-  en: { navigation: "Practice navigation", primary: ["Home", "Today", "Appointments", "Patients", "Documents", "Templates", "Manager", "Insurance", "Patient delivery", "Notifications", "Practice"], footer: ["View invitations", "Personal account", "Audit review"], expand: "Expand navigation", collapse: "Collapse navigation", workspace: "Workspace", language: "Interface language", account: "Your account", home: "Hello again.", practice: "Practice", tabs: ["Locations", "Team & access", "Invitations", "Ownership"] },
-  es: { navigation: "Navegación de la clínica", primary: ["Inicio", "Hoy", "Citas", "Pacientes", "Documentos", "Plantillas", "Gerencia", "Seguros", "Envíos a pacientes", "Notificaciones", "Clínica"], footer: ["Ver invitaciones", "Cuenta personal", "Revisión de auditoría"], expand: "Expandir navegación", collapse: "Contraer navegación", workspace: "Espacio de trabajo", language: "Idioma de la interfaz", account: "Tu cuenta", home: "Hola de nuevo.", practice: "Clínica", tabs: ["Sedes", "Equipo y acceso", "Invitaciones", "Propiedad"] },
+  en: { navigation: "Practice Navigation", primary: ["Home", "Today", "Appointments", "Patients", "Documents", "Templates", "Manager", "Insurance", "Patient Delivery", "Notifications", "Practice"], footer: ["View Invitations", "Personal Account", "Audit Review"], expand: "Expand Navigation", collapse: "Collapse Navigation", workspace: "Workspace", language: "Interface Language", account: "Your Account", home: "Hello again.", practice: "Practice", tabs: ["Locations", "Team & Access", "Invitations", "Ownership"] },
+  es: { navigation: "Navegación De La Clínica", primary: ["Inicio", "Hoy", "Citas", "Pacientes", "Documentos", "Plantillas", "Gerencia", "Seguros", "Envíos A Pacientes", "Notificaciones", "Clínica"], footer: ["Ver Invitaciones", "Cuenta Personal", "Revisión De Auditoría"], expand: "Expandir Navegación", collapse: "Contraer Navegación", workspace: "Espacio De Trabajo", language: "Idioma De La Interfaz", account: "Tu Cuenta", home: "Hola de nuevo.", practice: "Clínica", tabs: ["Sedes", "Equipo Y Acceso", "Invitaciones", "Propiedad"] },
 };
 type Locale = keyof typeof labels;
 const json = (route: Route, data: unknown, status = 200) => route.fulfill({ status, json: data });
@@ -63,6 +63,7 @@ async function api(page: Page, options: { current?: () => unknown; account?: unk
     if (path.endsWith("/communications/deliveries")) return json(route, { data: { items: [], asOf: snapshot.asOf } });
     if (path.endsWith("/communications/readiness")) return json(route, { data: { enabled: false, channels: { email: { ready: false }, sms: { ready: false } }, reasonCode: "DELIVERY_DISABLED" } });
     if (path.endsWith("/insurance/manager")) return json(route, { data: { from: "2026-10-31", to: "2026-11-06", summary: { appointments: 0, tracked: 0, untracked: 0, active: 0, inactive: 0, unverified: 0, needsFollowUp: 0, overdue: 0, unassigned: 0 }, team: [] } });
+    if (path.endsWith("/insurance/manager/activity")) return json(route, { data: { from: new URL(route.request().url()).searchParams.get("from") ?? "2026-10-31", to: new URL(route.request().url()).searchParams.get("to") ?? "2026-10-31", timeZone: snapshot.timeZone, asOf: snapshot.asOf, summary: { total: 0, appointments: 0, insurance: 0, followups: 0 }, actors: [], items: [], pagination: { hasMore: false, nextCursor: null } } });
     if (path.endsWith("/insurance/assignees")) return json(route, { data: [] });
     if (path.endsWith("/insurance/cases")) return json(route, { data: [], pagination: { hasMore: false, nextCursor: null }, meta: { capabilities: { read: true, manage: true, evidence: true, activity: true } } });
     throw new Error(`Unexpected synthetic navigation request: ${route.request().method()} ${path}`);
@@ -84,8 +85,8 @@ test("an owner keeps one ordered menu, picker, account and current marker across
   await expect.poll(() => nav(page).locator('[aria-current="page"]').evaluate(element => { const menu = element.closest("nav")!.getBoundingClientRect(), item = element.getBoundingClientRect(); return Math.min(item.bottom, menu.bottom) > Math.max(item.top, menu.top) && Math.min(item.right, menu.right) > Math.max(item.left, menu.left); })).toBe(true);
   await capture(page, "practice-desktop");
   for (const tab of labels.en.tabs) { await page.getByRole("tab", { name: tab, exact: true }).click(); await expectShell(page, "Practice"); }
-  await page.getByRole("tab", { name: "Team & access", exact: true }).click(); await page.getByRole("button", { name: "My workspace access", exact: true }).click(); await expectShell(page, "Practice");
-  await go(page, "Home"); await page.getByRole("button", { name: "Invite your team", exact: true }).click(); await expect(page.getByRole("heading", { name: "Invite a teammate", exact: true })).toBeVisible(); await expectShell(page, "Practice");
+  await page.getByRole("tab", { name: "Team & Access", exact: true }).click(); await page.getByRole("button", { name: "My Workspace Access", exact: true }).click(); await expectShell(page, "Practice");
+  await go(page, "Home"); await page.getByRole("button", { name: "Invite Your Team", exact: true }).click(); await expect(page.getByRole("heading", { name: "Invite A Teammate", exact: true })).toBeVisible(); await expectShell(page, "Practice");
   for (const name of labels.en.footer) { await go(page, name); await expectShell(page, name); }
   await go(page, "Home"); await expect(page.getByRole("heading", { name: labels.en.home, exact: true })).toBeVisible();
   expect(requests.every(request => request.method === "GET" && !request.path.includes("/workflow") && !request.path.includes("/audit/"))).toBe(true);
@@ -130,33 +131,33 @@ test("legacy staff retain the core menu without location-only operational destin
 
 for (const status of ["pending_assignment", "suspended", "revoked"]) test(`${status} membership cannot gain the staff frame through an account or inbox visit`, async ({ page, harnessUrl }) => {
   const requests = await api(page, { current: () => ({ ...context, onboarding: "pending", enrollmentStatus: status, management: { locations: false, members: false }, locations: [] }) });
-  await page.goto(`${harnessUrl}/?component=workspace`); await expect(page.getByRole("button", { name: "Personal account", exact: true })).toBeVisible(); await expect(frame(page)).toHaveCount(0);
-  await page.getByRole("button", { name: "Personal account", exact: true }).click(); await expect(page.getByRole("heading", { name: "Personal account", exact: true })).toBeVisible(); await expect(frame(page)).toHaveCount(0); await expect(nav(page)).toHaveCount(0);
+  await page.goto(`${harnessUrl}/?component=workspace`); await expect(page.getByRole("button", { name: "Personal Account", exact: true })).toBeVisible(); await expect(frame(page)).toHaveCount(0);
+  await page.getByRole("button", { name: "Personal Account", exact: true }).click(); await expect(page.getByRole("heading", { name: "Personal Account", exact: true })).toBeVisible(); await expect(frame(page)).toHaveCount(0); await expect(nav(page)).toHaveCount(0);
   expect(requests.every(request => ["/api/v1/me", "/api/v1/account"].includes(request.path))).toBe(true);
 });
 
 test("a personal patient library and account never acquire staff navigation or dispatch practice reads", async ({ page, harnessUrl }) => {
   const paths: string[] = [];
   await page.route("**/api/v1/**", route => { const path = new URL(route.request().url()).pathname; paths.push(path); if (path === "/api/v1/account") return json(route, { data: account }); if (path.endsWith("communication-preferences")) return json(route, { data: { profiles: [] } }); return json(route, { data: { items: [], hasMore: false, nextCursor: null } }); });
-  await page.goto(`${harnessUrl}/?component=patient-paperwork&scenario=no-active-organization`); await page.getByRole("button", { name: "Personal account", exact: true }).click(); await expect(page.getByRole("heading", { name: "Personal account", exact: true })).toBeVisible(); await expect(frame(page)).toHaveCount(1); await expect(nav(page)).toHaveCount(0);
-  const care = page.getByRole("navigation", { name: "My care", exact: true }); await expect(care.getByRole("button")).toHaveText(["Your paperwork", "Personal account"]); await expect(care.locator('[aria-current="page"]')).toHaveAccessibleName("Personal account"); await expect(page.getByRole("main")).toHaveCount(1);
-  await care.getByRole("button", { name: "Your paperwork", exact: true }).click(); await expect(care.getByRole("button")).toHaveText(["Your paperwork", "Personal account"]); await expect(care.locator('[aria-current="page"]')).toHaveAccessibleName("Your paperwork");
+  await page.goto(`${harnessUrl}/?component=patient-paperwork&scenario=no-active-organization`); await page.getByRole("button", { name: "Personal Account", exact: true }).click(); await expect(page.getByRole("heading", { name: "Personal Account", exact: true })).toBeVisible(); await expect(frame(page)).toHaveCount(1); await expect(nav(page)).toHaveCount(0);
+  const care = page.getByRole("navigation", { name: "My Care", exact: true }); await expect(care.getByRole("button")).toHaveText(["Your Paperwork", "Personal Account"]); await expect(care.locator('[aria-current="page"]')).toHaveAccessibleName("Personal Account"); await expect(page.getByRole("main")).toHaveCount(1);
+  await care.getByRole("button", { name: "Your Paperwork", exact: true }).click(); await expect(care.getByRole("button")).toHaveText(["Your Paperwork", "Personal Account"]); await expect(care.locator('[aria-current="page"]')).toHaveAccessibleName("Your Paperwork");
   expect(paths.every(path => path === "/api/v1/account" || path.startsWith("/api/v1/patient-paperwork"))).toBe(true);
 });
 
 for (const target of ["settings", "owner", "invite", "account"] as const) test(`the ${target} page queues navigation and preserves the draft until explicit discard`, async ({ page, harnessUrl }) => {
   await api(page, { current: target === "account" ? () => ({ ...context, management: { locations: false, members: false }, ownerAccess: undefined }) : undefined }); await page.goto(`${harnessUrl}/?component=workspace`);
   if (target === "settings") { await go(page, "Practice"); await page.getByRole("tabpanel", { name: "Locations", exact: true }).getByRole("textbox", { name: "Name", exact: true }).fill("Synthetic unsaved location"); }
-  if (target === "owner") { await page.getByRole("button", { name: "My workspace access", exact: true }).click(); await page.getByRole("checkbox", { name: "Patients", exact: true }).uncheck(); }
-  if (target === "invite") { await page.getByRole("button", { name: "Invite your team", exact: true }).click(); await page.getByRole("textbox", { name: "Work email", exact: true }).fill("unsaved@example.invalid"); }
-  if (target === "account") { await go(page, "Personal account"); await page.getByRole("textbox", { name: "Type ARCHIVE to confirm", exact: true }).fill("ARC"); }
-  await go(page, "Home"); const modal = page.getByRole("dialog", { name: "Leave without saving?", exact: true }); await expect(modal).toBeVisible(); await expect(modal.getByRole("button", { name: "Keep editing", exact: true })).toBeFocused();
-  await modal.getByRole("button", { name: "Keep editing", exact: true }).click();
+  if (target === "owner") { await page.getByRole("button", { name: "My Workspace Access", exact: true }).click(); await page.getByRole("checkbox", { name: "Patients", exact: true }).uncheck(); }
+  if (target === "invite") { await page.getByRole("button", { name: "Invite Your Team", exact: true }).click(); await page.getByRole("textbox", { name: "Work Email", exact: true }).fill("unsaved@example.invalid"); }
+  if (target === "account") { await go(page, "Personal Account"); await page.getByRole("textbox", { name: "Type ARCHIVE To Confirm", exact: true }).fill("ARC"); }
+  await go(page, "Home"); const modal = page.getByRole("dialog", { name: "Leave without saving?", exact: true }); await expect(modal).toBeVisible(); await expect(modal.getByRole("button", { name: "Keep Editing", exact: true })).toBeFocused();
+  await modal.getByRole("button", { name: "Keep Editing", exact: true }).click();
   if (target === "settings") await expect(page.getByRole("textbox", { name: "Name", exact: true })).toHaveValue("Synthetic unsaved location");
   if (target === "owner") await expect(page.getByRole("checkbox", { name: "Patients", exact: true })).not.toBeChecked();
-  if (target === "invite") await expect(page.getByRole("textbox", { name: "Work email", exact: true })).toHaveValue("unsaved@example.invalid");
-  if (target === "account") await expect(page.getByRole("textbox", { name: "Type ARCHIVE to confirm", exact: true })).toHaveValue("ARC");
-  await go(page, "Home"); await modal.getByRole("button", { name: "Discard changes", exact: true }).click(); await expect(page.getByRole("heading", { name: labels.en.home, exact: true })).toBeVisible(); await expectShell(page, "Home", "en", target !== "account");
+  if (target === "invite") await expect(page.getByRole("textbox", { name: "Work Email", exact: true })).toHaveValue("unsaved@example.invalid");
+  if (target === "account") await expect(page.getByRole("textbox", { name: "Type ARCHIVE To Confirm", exact: true })).toHaveValue("ARC");
+  await go(page, "Home"); await modal.getByRole("button", { name: "Discard Changes", exact: true }).click(); await expect(page.getByRole("heading", { name: labels.en.home, exact: true })).toBeVisible(); await expectShell(page, "Home", "en", target !== "account");
 });
 
 for (const target of ["settings", "owner", "invite", "account"] as const) test(`the ${target} pending save locks the shared menu and blocks duplicate actions`, async ({ page, harnessUrl }) => {
@@ -164,25 +165,25 @@ for (const target of ["settings", "owner", "invite", "account"] as const) test(`
   await api(page, { current: target === "account" ? () => ({ ...context, management: { locations: false, members: false }, ownerAccess: undefined }) : undefined, handle: route => { if (route.request().method() !== "POST") return undefined; writes++; return gate.then(() => json(route, { data: paths(route) === "/api/v1/account/archive" ? { ...account.account, status: "archived" } : {} })); } });
   await page.goto(`${harnessUrl}/?component=workspace&scenario=navigation-two-practices`);
   let submit;
-  if (target === "settings") { await go(page, "Practice"); await page.getByRole("textbox", { name: "Name", exact: true }).fill("Synthetic pending location"); submit = page.getByRole("button", { name: "Add location", exact: true }); }
-  else if (target === "owner") { await page.getByRole("button", { name: "My workspace access", exact: true }).click(); submit = page.getByRole("button", { name: "Save my access", exact: true }); }
-  else if (target === "invite") { await page.getByRole("button", { name: "Invite your team", exact: true }).click(); await page.getByRole("textbox", { name: "Work email", exact: true }).fill("pending@example.invalid"); submit = page.getByRole("button", { name: "Send invitation", exact: true }); }
-  else { await go(page, "Personal account"); await page.getByRole("textbox", { name: "Type ARCHIVE to confirm", exact: true }).fill("ARCHIVE"); submit = page.getByRole("button", { name: "Archive my account", exact: true }); }
+  if (target === "settings") { await go(page, "Practice"); await page.getByRole("textbox", { name: "Name", exact: true }).fill("Synthetic pending location"); submit = page.getByRole("button", { name: "Add Location", exact: true }); }
+  else if (target === "owner") { await page.getByRole("button", { name: "My Workspace Access", exact: true }).click(); submit = page.getByRole("button", { name: "Save My Access", exact: true }); }
+  else if (target === "invite") { await page.getByRole("button", { name: "Invite Your Team", exact: true }).click(); await page.getByRole("textbox", { name: "Work Email", exact: true }).fill("pending@example.invalid"); submit = page.getByRole("button", { name: "Send Invitation", exact: true }); }
+  else { await go(page, "Personal Account"); await page.getByRole("textbox", { name: "Type ARCHIVE To Confirm", exact: true }).fill("ARCHIVE"); submit = page.getByRole("button", { name: "Archive My Account", exact: true }); }
   await submit.evaluate(button => { (button as HTMLButtonElement).click(); (button as HTMLButtonElement).click(); }); await expect.poll(() => writes).toBe(1);
   for (const button of await nav(page).getByRole("button").all()) await expect(button).toBeDisabled();
   for (const name of labels.en.footer) await expect(frame(page).locator(".wf-sidebar").getByRole("button", { name, exact: true, includeHidden: true })).toBeDisabled();
   expect(await frame(page).locator(".cl-userButtonTrigger").evaluate(element => Boolean(element.closest("[inert]")) || element.hasAttribute("disabled") || element.getAttribute("aria-disabled") === "true")).toBe(true);
   expect(await frame(page).locator(".cq-practice-picker select").evaluate(element => Boolean(element.closest("[inert]")) || element.hasAttribute("disabled"))).toBe(true); await expect(frame(page).locator(".wf-nav-toggle")).toBeDisabled(); expect((await mockCalls(page)).filter(call => call.name === "setActive")).toEqual([]);
   release();
-  if (target === "settings") await expect(page.getByRole("button", { name: "Add location", exact: true })).toBeEnabled();
+  if (target === "settings") await expect(page.getByRole("button", { name: "Add Location", exact: true })).toBeEnabled();
   else if (target === "owner") await expect(page.getByRole("heading", { name: labels.en.home, exact: true })).toBeVisible();
-  else if (target === "invite") await expect(page.getByRole("heading", { name: "Invitation sent", exact: true })).toBeVisible();
-  else await expect(page.getByRole("heading", { name: "Account archived", exact: true })).toBeVisible();
+  else if (target === "invite") await expect(page.getByRole("heading", { name: "Invitation Sent", exact: true })).toBeVisible();
+  else await expect(page.getByRole("heading", { name: "Account Archived", exact: true })).toBeVisible();
   expect(writes).toBe(1);
 });
 
 test("a provider-owned invitation acceptance locks the same navigation before the API continuation", async ({ page, harnessUrl }) => {
-  const requests = await api(page); await page.goto(`${harnessUrl}/?component=workspace&scenario=navigation-invitation-pending`); await go(page, "View invitations"); await page.getByRole("button", { name: "Accept invitation", exact: true }).click();
+  const requests = await api(page); await page.goto(`${harnessUrl}/?component=workspace&scenario=navigation-invitation-pending`); await go(page, "View Invitations"); await page.getByRole("button", { name: "Accept Invitation", exact: true }).click();
   for (const button of await nav(page).getByRole("button").all()) await expect(button).toBeDisabled();
   for (const name of labels.en.footer) await expect(frame(page).locator(".wf-sidebar").getByRole("button", { name, exact: true, includeHidden: true })).toBeDisabled();
   expect(await frame(page).locator(".cl-userButtonTrigger").evaluate(element => Boolean(element.closest("[inert]")) || element.hasAttribute("disabled") || element.getAttribute("aria-disabled") === "true")).toBe(true);
@@ -190,9 +191,9 @@ test("a provider-owned invitation acceptance locks the same navigation before th
 });
 
 test("switching workspace from a dirty owner editor requires confirmation and never carries its draft into the next practice", async ({ page, harnessUrl }) => {
-  await api(page); await page.goto(`${harnessUrl}/?component=workspace&scenario=navigation-two-practices`); await page.getByRole("button", { name: "My workspace access", exact: true }).click(); await page.getByRole("checkbox", { name: "Patients", exact: true }).uncheck();
-  const picker = frame(page).locator(".cq-practice-picker select"); await picker.selectOption("org_other"); const modal = page.getByRole("dialog", { name: "Leave without saving?", exact: true }); await modal.getByRole("button", { name: "Keep editing", exact: true }).click(); await expect(picker).toHaveValue("org_test"); await expect(page.getByRole("checkbox", { name: "Patients", exact: true })).not.toBeChecked(); expect((await mockCalls(page)).filter(call => call.name === "setActive")).toEqual([]);
-  await picker.selectOption("org_other"); await modal.getByRole("button", { name: "Discard changes", exact: true }).click(); await expect(page.getByRole("heading", { name: labels.en.home, exact: true })).toBeVisible(); await expect(frame(page).locator(".cq-practice-picker select")).toHaveValue("org_other"); await expect(page.getByRole("heading", { name: "My workspace access", exact: true })).toHaveCount(0);
+  await api(page); await page.goto(`${harnessUrl}/?component=workspace&scenario=navigation-two-practices`); await page.getByRole("button", { name: "My Workspace Access", exact: true }).click(); await page.getByRole("checkbox", { name: "Patients", exact: true }).uncheck();
+  const picker = frame(page).locator(".cq-practice-picker select"); await picker.selectOption("org_other"); const modal = page.getByRole("dialog", { name: "Leave without saving?", exact: true }); await modal.getByRole("button", { name: "Keep Editing", exact: true }).click(); await expect(picker).toHaveValue("org_test"); await expect(page.getByRole("checkbox", { name: "Patients", exact: true })).not.toBeChecked(); expect((await mockCalls(page)).filter(call => call.name === "setActive")).toEqual([]);
+  await picker.selectOption("org_other"); await modal.getByRole("button", { name: "Discard Changes", exact: true }).click(); await expect(page.getByRole("heading", { name: labels.en.home, exact: true })).toBeVisible(); await expect(frame(page).locator(".cq-practice-picker select")).toHaveValue("org_other"); await expect(page.getByRole("heading", { name: "My Workspace Access", exact: true })).toHaveCount(0);
   expect((await mockCalls(page)).filter(call => call.name === "setActive")).toEqual([{ name: "setActive", input: { organization: "org_other", hasNavigate: false } }]);
 });
 
@@ -208,24 +209,24 @@ test("patient communication drafts stay private and require discard before perso
   });
   await page.goto(`${harnessUrl}/?component=patient-paperwork&scenario=no-active-organization`);
   await page.getByRole("checkbox", { name: "Reminders", exact: true }).uncheck();
-  const care = page.getByRole("navigation", { name: "My care", exact: true });
-  await care.getByRole("button", { name: "Personal account", exact: true }).click();
+  const care = page.getByRole("navigation", { name: "My Care", exact: true });
+  await care.getByRole("button", { name: "Personal Account", exact: true }).click();
   const modal = page.getByRole("dialog", { name: "Leave without saving?", exact: true }); await expect(modal).toBeVisible();
-  await expect(modal.getByRole("button", { name: "Keep editing", exact: true })).toBeFocused();
-  await modal.getByRole("button", { name: "Keep editing", exact: true }).click(); await expect(page.getByRole("checkbox", { name: "Reminders", exact: true })).not.toBeChecked();
-  await care.getByRole("button", { name: "Personal account", exact: true }).click(); await modal.getByRole("button", { name: "Discard changes", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Personal account", exact: true })).toBeVisible(); await expect(care.locator('[aria-current="page"]')).toHaveAccessibleName("Personal account");
-  await care.getByRole("button", { name: "Your paperwork", exact: true }).click(); await expect(page.getByRole("checkbox", { name: "Reminders", exact: true })).toBeChecked();
+  await expect(modal.getByRole("button", { name: "Keep Editing", exact: true })).toBeFocused();
+  await modal.getByRole("button", { name: "Keep Editing", exact: true }).click(); await expect(page.getByRole("checkbox", { name: "Reminders", exact: true })).not.toBeChecked();
+  await care.getByRole("button", { name: "Personal Account", exact: true }).click(); await modal.getByRole("button", { name: "Discard Changes", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Personal Account", exact: true })).toBeVisible(); await expect(care.locator('[aria-current="page"]')).toHaveAccessibleName("Personal Account");
+  await care.getByRole("button", { name: "Your Paperwork", exact: true }).click(); await expect(page.getByRole("checkbox", { name: "Reminders", exact: true })).toBeChecked();
   expect(requests.every(request => request.startsWith("GET ") && !request.includes("/practice") && !request.includes("/workflow"))).toBe(true);
 });
 
 
 test("the real forms studio guards a shared Practice navigation change exactly once", async ({ page, harnessUrl }) => {
   const requests = await api(page); await page.goto(`${harnessUrl}/?component=workspace`); await go(page, "Templates"); await page.getByRole("button", { name: /^Continue/ }).click();
-  await page.getByRole("button", { name: "＋ New form", exact: true }).click(); const studio = page.getByRole("region", { name: "Forms studio", exact: true });
-  const title = studio.getByLabel("Form title", { exact: true }); await title.fill("Synthetic unsaved navigation form"); let prompts = 0;
+  await page.getByRole("button", { name: "＋ New Form", exact: true }).click(); const studio = page.getByRole("region", { name: "Forms Studio", exact: true });
+  const title = studio.getByLabel("Form Title", { exact: true }); await title.fill("Synthetic unsaved navigation form"); let prompts = 0;
   page.once("dialog", dialog => { prompts++; return dialog.dismiss(); }); await go(page, "Practice"); await expect(title).toHaveValue("Synthetic unsaved navigation form"); await expect(nav(page).locator('[aria-current="page"]')).toHaveAccessibleName("Templates"); expect(prompts).toBe(1);
-  page.once("dialog", dialog => { prompts++; return dialog.accept(); }); await go(page, "Practice"); await expect(page.getByRole("heading", { name: "Practice settings", exact: true })).toBeVisible(); await expectShell(page, "Practice"); expect(prompts).toBe(2); expect(requests.every(request => request.method === "GET")).toBe(true);
+  page.once("dialog", dialog => { prompts++; return dialog.accept(); }); await go(page, "Practice"); await expect(page.getByRole("heading", { name: "Practice Settings", exact: true })).toBeVisible(); await expectShell(page, "Practice"); expect(prompts).toBe(2); expect(requests.every(request => request.method === "GET")).toBe(true);
 });
 
 test("an internal notification-bell change resumes the same current section after a fresh authorization check", async ({ page, harnessUrl }) => {
@@ -242,8 +243,8 @@ test("a cancelled mobile navigation restores focus to its visible menu opener an
   await page.setViewportSize({ width: 320, height: 850 }); await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" }); const requests = await api(page);
   await page.goto(`${harnessUrl}/?component=workspace`); await go(page, "Practice"); const draft = page.getByRole("textbox", { name: "Name", exact: true }); await draft.fill("Synthetic mobile draft");
   await menu(page); const patients = nav(page).getByRole("button", { name: "Patients", exact: true }); await patients.click();
-  const modal = page.getByRole("dialog", { name: "Leave without saving?", exact: true }); await expect(modal.getByRole("button", { name: "Keep editing", exact: true })).toBeFocused(); await modal.getByRole("button", { name: "Keep editing", exact: true }).click();
+  const modal = page.getByRole("dialog", { name: "Leave without saving?", exact: true }); await expect(modal.getByRole("button", { name: "Keep Editing", exact: true })).toBeFocused(); await modal.getByRole("button", { name: "Keep Editing", exact: true }).click();
   await expect(patients).toBeVisible(); await expect(patients).toBeFocused(); await expect(draft).toHaveValue("Synthetic mobile draft"); await expect(nav(page).getByRole("button", { name: "Practice", exact: true })).toHaveAttribute("aria-current", "page");
-  await patients.click(); await modal.getByRole("button", { name: "Discard changes", exact: true }).click(); await expect(page.getByRole("heading", { name: "Where are you working?", exact: true })).toBeVisible(); await expect(nav(page)).not.toBeVisible(); await expectShell(page, "Patients");
+  await patients.click(); await modal.getByRole("button", { name: "Discard Changes", exact: true }).click(); await expect(page.getByRole("heading", { name: "Where are you working?", exact: true })).toBeVisible(); await expect(nav(page)).not.toBeVisible(); await expectShell(page, "Patients");
   expect(requests.every(request => request.method === "GET")).toBe(true);
 });

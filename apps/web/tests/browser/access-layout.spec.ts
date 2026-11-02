@@ -12,8 +12,8 @@ const admin = {
   invitations: [], allowedRoles: ["org:member", "org:admin"], ownerAccess: { disabledPermissions: [], allLocations: true, revision: 0 },
 };
 const copy = {
-  en: { home: "Hello again.", ownerAction: "My workspace access", language: "Interface language", account: "Your account", help: "Need a hand?", where: "Where are you working?", owner: "My workspace access", back: "← Back to your practice", invite: "Invite your team", inviteTitle: "Invite a teammate", later: "I’ll do this later", role: "Your owner role stays the same. You can return here to restore any area or location, even when all are turned off." },
-  es: { home: "Hola de nuevo.", ownerAction: "Mi acceso al espacio de trabajo", language: "Idioma de la interfaz", account: "Tu cuenta", help: "¿Te echamos una mano?", where: "¿Dónde vas a trabajar?", owner: "Mi acceso al espacio de trabajo", back: "← Volver a tu clínica", invite: "Invita a tu equipo", inviteTitle: "Invitar a un compañero", later: "Lo haré más tarde", role: "Tu rol de propietario sigue siendo el mismo. Puedes volver aquí para restaurar cualquier área o sede, aunque todas estén desactivadas." },
+  en: { home: "Hello again.", ownerAction: "My Workspace Access", language: "Interface Language", account: "Your Account", help: "Need A Hand?", where: "Where are you working?", owner: "My Workspace Access", back: "← Back To Your Practice", invite: "Invite Your Team", inviteTitle: "Invite A Teammate", later: "I’ll Do This Later", role: "Your owner role stays the same. You can return here to restore any area or location, even when all are turned off." },
+  es: { home: "Hola de nuevo.", ownerAction: "Mi Acceso Al Espacio De Trabajo", language: "Idioma De La Interfaz", account: "Tu Cuenta", help: "¿Te Echamos Una Mano?", where: "¿Dónde vas a trabajar?", owner: "Mi Acceso Al Espacio De Trabajo", back: "← Volver A Tu Clínica", invite: "Invita A Tu Equipo", inviteTitle: "Invitar A Un Compañero", later: "Lo Haré Más Tarde", role: "Tu rol de propietario sigue siendo el mismo. Puedes volver aquí para restaurar cualquier área o sede, aunque todas estén desactivadas." },
 };
 const json = (route: Route, data: unknown) => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(data) });
 const calls = (page: Page) => page.evaluate(() => window.__careiqMockCalls || []);
@@ -56,8 +56,8 @@ async function expectApplicationHome(page: Page, width: number, locale: "en" | "
   const language = frame.locator(".wf-topbar").getByRole("combobox", { name: copy[locale].language, exact: true });
   const account = frame.locator(".wf-sidebar").getByRole("group", { name: copy[locale].account, exact: true });
   const trigger = account.getByRole("button", { name: "Test account", exact: true });
-  const navigation = frame.getByRole("navigation", { name: locale === "es" ? "Navegación de la clínica" : "Practice navigation", exact: true });
-  if (!await navigation.isVisible()) await page.getByRole("button", { name: locale === "es" ? "Expandir navegación" : "Expand navigation", exact: true }).click();
+  const navigation = frame.getByRole("navigation", { name: locale === "es" ? "Navegación De La Clínica" : "Practice Navigation", exact: true });
+  if (!await navigation.isVisible()) await page.getByRole("button", { name: locale === "es" ? "Expandir Navegación" : "Expand Navigation", exact: true }).click();
   await expect(language).toBeVisible(); await expect(trigger).toBeVisible(); await expect(navigation).toBeVisible();
   await expect(page.getByRole("navigation")).toHaveCount(1); await expect(page.getByRole("main")).toHaveCount(1);
   for (const control of [language, trigger, frame.locator(".wf-nav-toggle")]) {
@@ -139,12 +139,12 @@ test("invite still submits the chosen email, role and location and shows confirm
     return json(route, { data: admin });
   });
   await page.goto(`${harnessUrl}/?component=invite`);
-  await page.getByLabel("Work email", { exact: true }).fill("synthetic@example.invalid");
+  await page.getByLabel("Work Email", { exact: true }).fill("synthetic@example.invalid");
   await page.getByLabel("Role", { exact: true }).selectOption("org:admin");
   await page.getByRole("checkbox", { name: /Main location/ }).check();
-  await page.getByRole("button", { name: "Send invitation", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Invitation sent", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Send Invitation", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Invitation Sent", exact: true })).toBeVisible();
   expect(invitations).toEqual([{ email: "synthetic@example.invalid", role: "org:admin", locationIds: [location.id] }]);
-  await expect(page.getByRole("button", { name: "Back to your practice", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Back To Your Practice", exact: true })).toBeVisible();
   await expectHeader(page, 320, "en"); await expectWhite(page);
 });

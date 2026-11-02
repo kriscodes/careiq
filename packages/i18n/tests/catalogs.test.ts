@@ -33,8 +33,8 @@ test("interpolation, plural and select messages preserve supplied content as pla
   assert.equal(formatMessage(copy,"en",{count:1,name:"Alex"}),"1 visit for Alex");
   assert.equal(formatMessage(copy,"en",{count:3,name:"Alex"}),"3 visits for Alex");
   assert.equal(formatMessage("{state, select, ready {Ready} other {Waiting}}","en",{state:"ready"}),"Ready");
-  assert.equal(translate("es","missing.untrusted.key"),"No disponible");
-  assert.equal(translate("es","__proto__"),"No disponible");
+  assert.equal(translate("es","missing.untrusted.key"),"No Disponible");
+  assert.equal(translate("es","__proto__"),"No Disponible");
 });
 
 test("network/save errors retain uncertainty instructions without exposing server messages",()=>{

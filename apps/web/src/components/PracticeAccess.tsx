@@ -155,7 +155,7 @@ export function PracticeAccess({ orgId, initialView = "entry", intendedOrganizat
     if (context) navigateApplication(requestedView ?? preferredWorkspaceView(context) ?? "Today");
   }
   function closeSettings(result?: PracticeSettingsCloseResult) {
-    if (result?.kind === "ownershipTransferred") setReceipt({ practice: context?.practice?.name || t("access.copy.your_practice"), recipient: result.recipientName });
+    if (result?.kind === "ownershipTransferred") setReceipt({ practice: context?.practice?.name || t("access.copy.your_practice_sentence"), recipient: result.recipientName });
     refresh();
   }
   const personalAccount = () => setView("account");

@@ -12,6 +12,8 @@ Manager dashboard and manual insurance verification: [implementation and audit c
 
 Manager team activity by person and action day: [scope, permissions and verification](docs/manager-team-activity.md).
 
+UI capitalization: [November 2 review, exact change inventory and local checklist](docs/verification/ui-capitalization-2026-11-02.md).
+
 ## Status
 
 🚧 **Active development**
