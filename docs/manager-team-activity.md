@@ -1,6 +1,6 @@
 # Manager team activity
 
-Local implementation, November 2, 2026. This extends the existing Manager dashboard with activity across the current authorized location. It does not establish a hosted release or a connected payer integration.
+Deployed November 2, 2026, with migration `0048` and API/web commit `7d2cabe`; see the [release evidence and remaining acceptance work](verification/e2e-release-2026-11-02.md). This extends the existing Manager dashboard with activity across the current authorized location. Protected production browser acceptance remains pending; this feature does not establish a connected payer integration.
 
 ## Manager workflow
 
@@ -32,7 +32,7 @@ Every request requires current patient and appointment read access, work managem
 
 The dedicated `audit.manager_activity(date,date)` helper exposes only the approved event fields, checks the active location scope, and uses local midnight boundaries that account for daylight-saving changes. The application runtime retains no direct SELECT access to raw audit tables. Pagination uses the complete timestamp precision and event ID, with signed cursors bound to the requesting member, practice, location, dates, person, category and page size.
 
-## Local activation and verification
+## Activation and verification
 
 Migration `0048_manager_activity.sql` is additive. Apply it through the existing verified migration runner before enabling the API; the runtime release check requires the protected helper and its restricted grants. Previously applied migrations remain unchanged.
 
