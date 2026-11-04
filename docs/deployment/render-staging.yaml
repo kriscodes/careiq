@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://render.com/schema/render.yaml.json
-# Read staging-rollback.md before applying. The staging DB is created, not migrated.
+# Read staging-rollback.md for initialization and deployment evidence before applying.
 # Adopt only database dpg-dbl9tgegekts73fos8qg-a after its initialization is verified.
 # autoDeployTrigger: off does not prevent Render's initial deployment on creation.
 # Use only the confirmed Care IQ Labs workspace; these names must not match production.
