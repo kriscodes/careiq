@@ -1,0 +1,4390 @@
+{
+  "label": "after",
+  "runId": "af2065c8-12c1-415e-81c1-494d35ccf4cc",
+  "startedAt": "2026-10-18T05:14:34.974Z",
+  "hardware": {
+    "host": {
+      "cpu": "Apple M2",
+      "logicalCpus": 8,
+      "nodeVersion": "v22.23.2",
+      "memoryBytes": 8589934592,
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "docker": {
+      "cpus": 8,
+      "memoryBytes": 4106604544,
+      "serverVersion": "29.8.0",
+      "containerMemoryLimitBytes": null,
+      "containerNanoCpus": null,
+      "image": "postgres:18.6"
+    },
+    "backgroundLoad": [
+      7.94384765625,
+      5.71435546875,
+      5.251953125
+    ]
+  },
+  "workload": {
+    "model": "Closed-loop service-and-database metadata workload; browser/HTTP/Clerk/file bytes excluded",
+    "practices": 100,
+    "mix": {
+      "frontDesk": 0.5,
+      "patientSearch": 0.2,
+      "documents": 0.15,
+      "patientDetail": 0.1,
+      "patientUpdate": 0.05
+    },
+    "stageSeconds": 15,
+    "poolSafetyOverrides": "Benchmark-only role statement_timeout=30s,lock_timeout=5s,idle_in_transaction_session_timeout=30s; stop before next practice/stage if host available memory<12%"
+  },
+  "stages": [
+    {
+      "concurrency": 1,
+      "durationMs": 15030,
+      "operations": 94,
+      "practicesExercised": 94,
+      "operationsPerSecond": 6.25,
+      "latencyMs": {
+        "min": 9.67,
+        "p50": 172.9,
+        "p95": 239.95,
+        "p99": 279.34,
+        "max": 279.34
+      },
+      "queries": {
+        "min": 13,
+        "p50": 56,
+        "p95": 56,
+        "p99": 56,
+        "max": 56
+      },
+      "errors": {},
+      "pool": {
+        "maxObservedConnections": 1,
+        "maxWaiting": 0,
+        "queueSampleIntervalMs": 100
+      },
+      "byOperation": {
+        "front_desk": {
+          "count": 50,
+          "latencyMs": {
+            "min": 152.65,
+            "p50": 197.6,
+            "p95": 242.28,
+            "p99": 279.34,
+            "max": 279.34
+          },
+          "queries": {
+            "min": 56,
+            "p50": 56,
+            "p95": 56,
+            "p99": 56,
+            "max": 56
+          },
+          "databaseTimeMs": {
+            "min": 136.7,
+            "p50": 172.43,
+            "p95": 216.6,
+            "p99": 221.67,
+            "max": 221.67
+          },
+          "errors": 0
+        },
+        "patients": {
+          "count": 20,
+          "latencyMs": {
+            "min": 103.89,
+            "p50": 137.05,
+            "p95": 168.08,
+            "p99": 168.86,
+            "max": 168.86
+          },
+          "queries": {
+            "min": 13,
+            "p50": 13,
+            "p95": 13,
+            "p99": 13,
+            "max": 13
+          },
+          "databaseTimeMs": {
+            "min": 101.97,
+            "p50": 134.52,
+            "p95": 166.27,
+            "p99": 167.05,
+            "max": 167.05
+          },
+          "errors": 0
+        },
+        "documents": {
+          "count": 12,
+          "latencyMs": {
+            "min": 125.03,
+            "p50": 150.4,
+            "p95": 183.28,
+            "p99": 183.28,
+            "max": 183.28
+          },
+          "queries": {
+            "min": 23,
+            "p50": 23,
+            "p95": 23,
+            "p99": 23,
+            "max": 23
+          },
+          "databaseTimeMs": {
+            "min": 112.02,
+            "p50": 139.98,
+            "p95": 170.74,
+            "p99": 170.74,
+            "max": 170.74
+          },
+          "errors": 0
+        },
+        "patient_detail": {
+          "count": 8,
+          "latencyMs": {
+            "min": 21.68,
+            "p50": 28.77,
+            "p95": 42.17,
+            "p99": 42.17,
+            "max": 42.17
+          },
+          "queries": {
+            "min": 48,
+            "p50": 48,
+            "p95": 48,
+            "p99": 48,
+            "max": 48
+          },
+          "databaseTimeMs": {
+            "min": 21.01,
+            "p50": 26.71,
+            "p95": 40.8,
+            "p99": 40.8,
+            "max": 40.8
+          },
+          "errors": 0
+        },
+        "patient_update": {
+          "count": 4,
+          "latencyMs": {
+            "min": 9.67,
+            "p50": 10.43,
+            "p95": 17.36,
+            "p99": 17.36,
+            "max": 17.36
+          },
+          "queries": {
+            "min": 24,
+            "p50": 24,
+            "p95": 24,
+            "p99": 24,
+            "max": 24
+          },
+          "databaseTimeMs": {
+            "min": 9.4,
+            "p50": 9.96,
+            "p95": 14.77,
+            "p99": 14.77,
+            "max": 14.77
+          },
+          "errors": 0
+        }
+      },
+      "queue": [
+        {
+          "atMs": 100,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 200,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 301,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 401,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 501,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 603,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 704,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 804,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 905,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1006,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1122,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1222,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1323,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1424,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1525,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1625,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1725,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1826,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1926,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2028,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2129,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2230,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2331,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2431,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2538,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2639,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2739,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2839,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2940,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3040,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3141,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3263,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3363,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3464,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3564,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3665,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3765,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3865,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3965,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4066,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4188,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4288,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4388,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4488,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4588,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4689,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4790,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4891,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4992,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5092,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5196,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5297,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5397,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5497,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5597,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5697,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5798,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5899,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5999,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6099,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6199,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6299,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6399,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6500,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6601,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6720,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6821,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6921,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7021,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7128,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7228,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7328,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7428,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7543,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7643,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7744,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7844,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7945,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8046,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8147,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8249,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8349,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8450,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8551,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8652,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8752,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8852,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8952,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9053,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9153,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9253,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9353,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9453,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9554,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9654,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9755,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9855,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9955,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10055,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10156,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10257,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10357,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10465,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10575,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10676,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10776,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10877,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10978,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11079,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11180,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11280,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11381,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11481,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11581,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11681,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11782,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11883,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11983,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12084,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12186,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12286,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12386,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12487,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12587,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12693,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12794,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12894,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12995,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13096,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13196,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13296,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13411,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13511,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13611,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13712,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13812,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13913,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14013,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14113,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14213,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14333,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14434,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14534,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14634,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14734,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14835,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14936,
+          "total": 1,
+          "idle": 0,
+          "waiting": 0
+        }
+      ]
+    },
+    {
+      "concurrency": 10,
+      "durationMs": 15236,
+      "operations": 334,
+      "practicesExercised": 100,
+      "operationsPerSecond": 21.92,
+      "latencyMs": {
+        "min": 44.88,
+        "p50": 472.7,
+        "p95": 736.21,
+        "p99": 1072.62,
+        "max": 1335.94
+      },
+      "queries": {
+        "min": 13,
+        "p50": 48,
+        "p95": 56,
+        "p99": 56,
+        "max": 56
+      },
+      "errors": {},
+      "pool": {
+        "maxObservedConnections": 10,
+        "maxWaiting": 0,
+        "queueSampleIntervalMs": 100
+      },
+      "byOperation": {
+        "front_desk": {
+          "count": 167,
+          "latencyMs": {
+            "min": 377.05,
+            "p50": 558.97,
+            "p95": 818.73,
+            "p99": 1307.27,
+            "max": 1335.94
+          },
+          "queries": {
+            "min": 56,
+            "p50": 56,
+            "p95": 56,
+            "p99": 56,
+            "max": 56
+          },
+          "databaseTimeMs": {
+            "min": 361.69,
+            "p50": 539.07,
+            "p95": 799.33,
+            "p99": 1278.77,
+            "max": 1312.78
+          },
+          "errors": 0
+        },
+        "patients": {
+          "count": 68,
+          "latencyMs": {
+            "min": 228.87,
+            "p50": 324,
+            "p95": 559.09,
+            "p99": 721.89,
+            "max": 721.89
+          },
+          "queries": {
+            "min": 13,
+            "p50": 13,
+            "p95": 13,
+            "p99": 13,
+            "max": 13
+          },
+          "databaseTimeMs": {
+            "min": 227.33,
+            "p50": 322.87,
+            "p95": 558.06,
+            "p99": 720.68,
+            "max": 720.68
+          },
+          "errors": 0
+        },
+        "documents": {
+          "count": 51,
+          "latencyMs": {
+            "min": 280.5,
+            "p50": 390.32,
+            "p95": 950.74,
+            "p99": 1122.41,
+            "max": 1122.41
+          },
+          "queries": {
+            "min": 23,
+            "p50": 23,
+            "p95": 23,
+            "p99": 23,
+            "max": 23
+          },
+          "databaseTimeMs": {
+            "min": 273.82,
+            "p50": 385.48,
+            "p95": 931.78,
+            "p99": 1112.36,
+            "max": 1112.36
+          },
+          "errors": 0
+        },
+        "patient_detail": {
+          "count": 32,
+          "latencyMs": {
+            "min": 87.58,
+            "p50": 153.04,
+            "p95": 254.32,
+            "p99": 457.43,
+            "max": 457.43
+          },
+          "queries": {
+            "min": 48,
+            "p50": 48,
+            "p95": 48,
+            "p99": 48,
+            "max": 48
+          },
+          "databaseTimeMs": {
+            "min": 85.98,
+            "p50": 151.33,
+            "p95": 252.39,
+            "p99": 452.39,
+            "max": 452.39
+          },
+          "errors": 0
+        },
+        "patient_update": {
+          "count": 16,
+          "latencyMs": {
+            "min": 44.88,
+            "p50": 78.98,
+            "p95": 231.35,
+            "p99": 231.35,
+            "max": 231.35
+          },
+          "queries": {
+            "min": 24,
+            "p50": 24,
+            "p95": 24,
+            "p99": 24,
+            "max": 24
+          },
+          "databaseTimeMs": {
+            "min": 44.03,
+            "p50": 77.45,
+            "p95": 229,
+            "p99": 229,
+            "max": 229
+          },
+          "errors": 0
+        }
+      },
+      "queue": [
+        {
+          "atMs": 101,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 204,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 304,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 418,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 522,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 621,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 721,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 821,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 921,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1022,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1133,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1233,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1344,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1444,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1545,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1645,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1745,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1846,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 1948,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2056,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2156,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2256,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2357,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2458,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2559,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2658,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2758,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2866,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 2966,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3066,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3167,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3267,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3367,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3467,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3568,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3670,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3772,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3876,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 3977,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4078,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4177,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4277,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4379,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4478,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4588,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4691,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4800,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 4900,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5000,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5100,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5200,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5300,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5400,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5502,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5602,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5702,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5802,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 5902,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6010,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6110,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6210,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6314,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6415,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6515,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6615,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6715,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6815,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 6918,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7028,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7128,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7229,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7329,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7429,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7529,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7629,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7730,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7830,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 7930,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8030,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8130,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8230,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8330,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8430,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8530,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8631,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8731,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8841,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 8941,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9041,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9141,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9241,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9341,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9450,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9550,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9650,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9750,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9850,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 9951,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10050,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10150,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10250,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10357,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10457,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10557,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10657,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10757,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10857,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 10958,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11058,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11170,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11270,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11370,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11471,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11572,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11673,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11773,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11873,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 11973,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12073,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12189,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12288,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12391,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12492,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12592,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12692,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12792,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12894,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 12996,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13096,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13196,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13296,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13402,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13502,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13602,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13704,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13804,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 13914,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14014,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14115,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14215,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14331,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14431,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14531,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14631,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14737,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14837,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 14950,
+          "total": 10,
+          "idle": 0,
+          "waiting": 0
+        },
+        {
+          "atMs": 15050,
+          "total": 10,
+          "idle": 4,
+          "waiting": 0
+        },
+        {
+          "atMs": 15150,
+          "total": 10,
+          "idle": 7,
+          "waiting": 0
+        }
+      ]
+    },
+    {
+      "concurrency": 25,
+      "durationMs": 15920,
+      "operations": 368,
+      "practicesExercised": 100,
+      "operationsPerSecond": 23.12,
+      "latencyMs": {
+        "min": 483.82,
+        "p50": 1062.23,
+        "p95": 1444.7,
+        "p99": 1682.42,
+        "max": 1887.66
+      },
+      "queries": {
+        "min": 13,
+        "p50": 56,
+        "p95": 56,
+        "p99": 56,
+        "max": 56
+      },
+      "errors": {},
+      "pool": {
+        "maxObservedConnections": 10,
+        "maxWaiting": 15,
+        "queueSampleIntervalMs": 100
+      },
+      "byOperation": {
+        "front_desk": {
+          "count": 187,
+          "latencyMs": {
+            "min": 483.82,
+            "p50": 1083.79,
+            "p95": 1436.92,
+            "p99": 1467.84,
+            "max": 1488.47
+          },
+          "queries": {
+            "min": 56,
+            "p50": 56,
+            "p95": 56,
+            "p99": 56,
+            "max": 56
+          },
+          "databaseTimeMs": {
+            "min": 352.9,
+            "p50": 539.89,
+            "p95": 769.03,
+            "p99": 854.46,
+            "max": 903.97
+          },
+          "errors": 0
+        },
+        "patients": {
+          "count": 73,
+          "latencyMs": {
+            "min": 695.4,
+            "p50": 999.74,
+            "p95": 1161.22,
+            "p99": 1225.5,
+            "max": 1225.5
+          },
+          "queries": {
+            "min": 13,
+            "p50": 13,
+            "p95": 13,
+            "p99": 13,
+            "max": 13
+          },
+          "databaseTimeMs": {
+            "min": 206.19,
+            "p50": 338.48,
+            "p95": 459.53,
+            "p99": 517.57,
+            "max": 517.57
+          },
+          "errors": 0
+        },
+        "documents": {
+          "count": 54,
+          "latencyMs": {
+            "min": 774.93,
+            "p50": 1086.98,
+            "p95": 1305.27,
+            "p99": 1453.12,
+            "max": 1453.12
+          },
+          "queries": {
+            "min": 23,
+            "p50": 23,
+            "p95": 23,
+            "p99": 23,
+            "max": 23
+          },
+          "databaseTimeMs": {
+            "min": 253.33,
+            "p50": 376.87,
+            "p95": 513.66,
+            "p99": 578.49,
+            "max": 578.49
+          },
+          "errors": 0
+        },
+        "patient_detail": {
+          "count": 36,
+          "latencyMs": {
+            "min": 653.52,
+            "p50": 852.78,
+            "p95": 1181.92,
+            "p99": 1206.44,
+            "max": 1206.44
+          },
+          "queries": {
+            "min": 48,
+            "p50": 48,
+            "p95": 48,
+            "p99": 48,
+            "max": 48
+          },
+          "databaseTimeMs": {
+            "min": 99.89,
+            "p50": 138.82,
+            "p95": 235.1,
+            "p99": 238.66,
+            "max": 238.66
+          },
+          "errors": 0
+        },
+        "patient_update": {
+          "count": 18,
+          "latencyMs": {
+            "min": 1211.63,
+            "p50": 1522.31,
+            "p95": 1887.66,
+            "p99": 1887.66,
+            "max": 1887.66
+          },
+          "queries": {
+            "min": 24,
+            "p50": 24,
+            "p95": 24,
+            "p99": 24,
+            "max": 24
+          },
+          "databaseTimeMs": {
+            "min": 52.8,
+            "p50": 74.38,
+            "p95": 135.48,
+            "p99": 135.48,
+            "max": 135.48
+          },
+          "errors": 0
+        }
+      },
+      "queue": [
+        {
+          "atMs": 100,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 201,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 300,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 402,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 510,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 610,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 710,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 809,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 910,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 1009,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 1110,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 1209,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 1309,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 1410,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 1510,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 1610,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 1711,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 1817,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 1916,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 2016,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 2117,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 2217,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 2319,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 2418,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 2539,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 2639,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 2754,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 2855,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 2954,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 3055,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 3155,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 3256,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 3357,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 3458,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 3558,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 3659,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 3758,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 3859,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 3959,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 4058,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 4159,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 4259,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 4358,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 4459,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 4558,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 4658,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 4758,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 4859,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 4959,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 5059,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 5175,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 5276,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 5375,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 5476,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 5575,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 5676,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 5777,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 5876,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 5976,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 6076,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 6177,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 6277,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 6378,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 6479,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 6590,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 6691,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 6790,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 6890,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 6997,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 7107,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 7214,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 7314,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 7413,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 7514,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 7614,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 7715,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 7814,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 7915,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 8015,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 8115,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 8216,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 8316,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 8418,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 8518,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 8618,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 8718,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 8819,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 8927,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 9038,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 9139,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 9238,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 9338,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 9446,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 9546,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 9652,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 9752,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 9852,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 9953,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 10052,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 10153,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 10252,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 10353,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 10456,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 10557,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 10657,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 10757,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 10857,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 10957,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 11057,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 11158,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 11264,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 11368,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 11468,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 11579,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 11678,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 11779,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 11880,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 11982,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 12081,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 12182,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 12282,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 12382,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 12482,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 12581,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 12690,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 12792,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 12891,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 12992,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 13092,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 13192,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 13293,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 13393,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 13494,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 13593,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 13694,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 13799,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 13899,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 13999,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 14100,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 14201,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 14300,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 14403,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 14502,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 14603,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 14702,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 14802,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 14903,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 15003,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 15104,
+          "total": 10,
+          "idle": 0,
+          "waiting": 10
+        },
+        {
+          "atMs": 15203,
+          "total": 10,
+          "idle": 0,
+          "waiting": 6
+        },
+        {
+          "atMs": 15306,
+          "total": 10,
+          "idle": 0,
+          "waiting": 5
+        },
+        {
+          "atMs": 15407,
+          "total": 10,
+          "idle": 0,
+          "waiting": 4
+        },
+        {
+          "atMs": 15507,
+          "total": 10,
+          "idle": 0,
+          "waiting": 2
+        },
+        {
+          "atMs": 15608,
+          "total": 10,
+          "idle": 0,
+          "waiting": 2
+        },
+        {
+          "atMs": 15731,
+          "total": 10,
+          "idle": 0,
+          "waiting": 1
+        },
+        {
+          "atMs": 15835,
+          "total": 10,
+          "idle": 6,
+          "waiting": 0
+        }
+      ]
+    },
+    {
+      "concurrency": 50,
+      "durationMs": 16837,
+      "operations": 365,
+      "practicesExercised": 100,
+      "operationsPerSecond": 21.68,
+      "latencyMs": {
+        "min": 542.36,
+        "p50": 2177.53,
+        "p95": 2977.47,
+        "p99": 4062.33,
+        "max": 4315.18
+      },
+      "queries": {
+        "min": 13,
+        "p50": 56,
+        "p95": 56,
+        "p99": 56,
+        "max": 56
+      },
+      "errors": {},
+      "pool": {
+        "maxObservedConnections": 10,
+        "maxWaiting": 40,
+        "queueSampleIntervalMs": 100
+      },
+      "byOperation": {
+        "front_desk": {
+          "count": 185,
+          "latencyMs": {
+            "min": 542.36,
+            "p50": 2322.98,
+            "p95": 2880.2,
+            "p99": 3010.18,
+            "max": 3033.95
+          },
+          "queries": {
+            "min": 56,
+            "p50": 56,
+            "p95": 56,
+            "p99": 56,
+            "max": 56
+          },
+          "databaseTimeMs": {
+            "min": 366.37,
+            "p50": 554.38,
+            "p95": 903.2,
+            "p99": 985.56,
+            "max": 991.12
+          },
+          "errors": 0
+        },
+        "patients": {
+          "count": 72,
+          "latencyMs": {
+            "min": 811.88,
+            "p50": 2075.05,
+            "p95": 2714.28,
+            "p99": 2803.71,
+            "max": 2803.71
+          },
+          "queries": {
+            "min": 13,
+            "p50": 13,
+            "p95": 13,
+            "p99": 13,
+            "max": 13
+          },
+          "databaseTimeMs": {
+            "min": 152.49,
+            "p50": 335.98,
+            "p95": 533.32,
+            "p99": 561.78,
+            "max": 561.78
+          },
+          "errors": 0
+        },
+        "documents": {
+          "count": 54,
+          "latencyMs": {
+            "min": 926.02,
+            "p50": 2168.17,
+            "p95": 2685.79,
+            "p99": 2739.76,
+            "max": 2739.76
+          },
+          "queries": {
+            "min": 23,
+            "p50": 23,
+            "p95": 23,
+            "p99": 23,
+            "max": 23
+          },
+          "databaseTimeMs": {
+            "min": 270.92,
+            "p50": 387.13,
+            "p95": 563.39,
+            "p99": 620.67,
+            "max": 620.67
+          },
+          "errors": 0
+        },
+        "patient_detail": {
+          "count": 36,
+          "latencyMs": {
+            "min": 811.71,
+            "p50": 1862.17,
+            "p95": 2410.08,
+            "p99": 2430.18,
+            "max": 2430.18
+          },
+          "queries": {
+            "min": 48,
+            "p50": 48,
+            "p95": 48,
+            "p99": 48,
+            "max": 48
+          },
+          "databaseTimeMs": {
+            "min": 87.4,
+            "p50": 139.62,
+            "p95": 234.02,
+            "p99": 300.39,
+            "max": 300.39
+          },
+          "errors": 0
+        },
+        "patient_update": {
+          "count": 18,
+          "latencyMs": {
+            "min": 1808.32,
+            "p50": 3605.62,
+            "p95": 4315.18,
+            "p99": 4315.18,
+            "max": 4315.18
+          },
+          "queries": {
+            "min": 24,
+            "p50": 24,
+            "p95": 24,
+            "p99": 24,
+            "max": 24
+          },
+          "databaseTimeMs": {
+            "min": 35.35,
+            "p50": 70.02,
+            "p95": 110.68,
+            "p99": 110.68,
+            "max": 110.68
+          },
+          "errors": 0
+        }
+      },
+      "queue": [
+        {
+          "atMs": 100,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 201,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 300,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 401,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 512,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 612,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 711,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 811,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 919,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 1019,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 1119,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 1219,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 1319,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 1418,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 1519,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 1619,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 1719,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 1819,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 1928,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 2028,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 2127,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 2229,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 2329,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 2430,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 2529,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 2639,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 2739,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 2839,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 2940,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 3040,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 3140,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 3244,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 3343,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 3444,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 3544,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 3644,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 3744,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 3843,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 3944,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 4045,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 4144,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 4252,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 4352,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 4454,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 4577,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 4692,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 4792,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 4892,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 4992,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 5093,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 5203,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 5303,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 5403,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 5505,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 5605,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 5705,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 5804,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 5905,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 6005,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 6105,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 6205,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 6305,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 6406,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 6507,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 6607,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 6724,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 6824,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 6924,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 7025,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 7125,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 7225,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 7325,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 7425,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 7525,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 7625,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 7725,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 7825,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 7926,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 8025,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 8136,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 8235,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 8351,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 8452,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 8552,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 8653,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 8753,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 8853,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 8953,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 9071,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 9171,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 9271,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 9371,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 9472,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 9571,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 9672,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 9772,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 9872,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 9972,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 10073,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 10175,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 10275,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 10387,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 10488,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 10588,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 10689,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 10788,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 10889,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 10988,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 11089,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 11199,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 11317,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 11430,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 11530,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 11630,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 11730,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 11830,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 11930,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 12029,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 12137,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 12237,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 12337,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 12437,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 12537,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 12638,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 12738,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 12837,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 12938,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 13038,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 13138,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 13238,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 13341,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 13448,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 13562,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 13663,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 13773,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 13873,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 13974,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 14074,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 14175,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 14275,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 14375,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 14484,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 14584,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 14685,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 14785,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 14887,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 14988,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 15088,
+          "total": 10,
+          "idle": 0,
+          "waiting": 40
+        },
+        {
+          "atMs": 15188,
+          "total": 10,
+          "idle": 0,
+          "waiting": 38
+        },
+        {
+          "atMs": 15288,
+          "total": 10,
+          "idle": 0,
+          "waiting": 36
+        },
+        {
+          "atMs": 15388,
+          "total": 10,
+          "idle": 0,
+          "waiting": 33
+        },
+        {
+          "atMs": 15488,
+          "total": 10,
+          "idle": 0,
+          "waiting": 30
+        },
+        {
+          "atMs": 15588,
+          "total": 10,
+          "idle": 0,
+          "waiting": 25
+        },
+        {
+          "atMs": 15688,
+          "total": 10,
+          "idle": 0,
+          "waiting": 22
+        },
+        {
+          "atMs": 15789,
+          "total": 10,
+          "idle": 0,
+          "waiting": 20
+        },
+        {
+          "atMs": 15898,
+          "total": 10,
+          "idle": 0,
+          "waiting": 20
+        },
+        {
+          "atMs": 16007,
+          "total": 10,
+          "idle": 0,
+          "waiting": 17
+        },
+        {
+          "atMs": 16107,
+          "total": 10,
+          "idle": 0,
+          "waiting": 15
+        },
+        {
+          "atMs": 16213,
+          "total": 10,
+          "idle": 0,
+          "waiting": 13
+        },
+        {
+          "atMs": 16313,
+          "total": 10,
+          "idle": 0,
+          "waiting": 7
+        },
+        {
+          "atMs": 16412,
+          "total": 10,
+          "idle": 0,
+          "waiting": 3
+        },
+        {
+          "atMs": 16512,
+          "total": 10,
+          "idle": 1,
+          "waiting": 0
+        },
+        {
+          "atMs": 16613,
+          "total": 10,
+          "idle": 2,
+          "waiting": 0
+        },
+        {
+          "atMs": 16713,
+          "total": 10,
+          "idle": 3,
+          "waiting": 0
+        },
+        {
+          "atMs": 16816,
+          "total": 10,
+          "idle": 7,
+          "waiting": 0
+        }
+      ]
+    }
+  ],
+  "counts": {
+    "tables": {
+      "practices": 100,
+      "locations": 200,
+      "patients": 100000,
+      "appointments": 300000,
+      "providers": 1000,
+      "documents": 100000,
+      "document_versions": 200000,
+      "file_objects": 200000,
+      "document_reviews": 50058,
+      "visit_requirements": 20000,
+      "requirement_evidence": 4932,
+      "document_requests": 10000,
+      "document_request_items": 10000,
+      "work_items": 15068,
+      "audit.events": 3734,
+      "audit.database_records": 1113678
+    },
+    "databaseBytes": 2260711103
+  }
+}

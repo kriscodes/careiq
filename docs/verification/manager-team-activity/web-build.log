@@ -1,0 +1,41 @@
+▲ Next.js 16.4.1 (webpack)
+- Environments: .env.local
+✓ Running next.config.ts took 221ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 9.0s
+  Running TypeScript ...
+
+  We detected TypeScript in your project and reconfigured your tsconfig.json file for you.
+  The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:
+
+    - include was updated to add '.next-manager-activity/types/**/*.ts'
+    - include was updated to add '.next-manager-activity/dev/types/**/*.ts'
+
+  Finished TypeScript in 11.3s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/13) ...
+  Generating static pages using 7 workers (3/13)
+  Generating static pages using 7 workers (6/13)
+  Generating static pages using 7 workers (9/13)
+✓ Generating static pages using 7 workers (13/13) in 210ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /audit
+├ ƒ /design-preview
+├ ƒ /join
+├ ƒ /patient-paperwork
+├ ƒ /patient-workflow
+├ ƒ /session-tasks
+├ ƒ /sign-in
+├ ƒ /sign-up
+└ ƒ /workflow-preview
+
+
+ƒ Proxy (Middleware)
+
+ƒ  (Dynamic)  server-rendered on demand

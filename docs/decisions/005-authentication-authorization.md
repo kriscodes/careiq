@@ -163,3 +163,7 @@ Clerk-specific Organization, role, and permission concepts become an architectur
 Custom roles and permissions may require specific Clerk product capabilities and pricing plans in production. These requirements must be evaluated before production deployment.
 
 The authorization model must continue to be tested as a security-critical component of the platform.
+
+## October 2026 implementation note
+
+The security release implements the initial administrator-create/member-read baseline selected by the owner. Custom roles require explicit per-resource read/create permissions. Backend authorization is authoritative; `/me` reports capabilities for the frontend. Production instance setup and organization mapping remain operational prerequisites. See [security hardening](../security-hardening.md).

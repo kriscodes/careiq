@@ -1,0 +1,46 @@
+{
+  "verifiedAt": "2026-10-18T16:39:32.679407+00:00",
+  "head": "11df3349d87d9f36235ec5c4047398d290cb9306",
+  "group": "mobile-bundles",
+  "checks": [
+    {
+      "name": "expo-compatibility",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@careiq/mobile",
+        "exec",
+        "expo",
+        "install",
+        "--check"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 2.534,
+      "counts": {},
+      "pass": true
+    },
+    {
+      "name": "mobile-preview-export",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@careiq/mobile",
+        "exec",
+        "expo",
+        "export",
+        "--platform",
+        "all",
+        "--output-dir",
+        "/Users/kristian/Documents/Server/CareIQ/.local-review/release-hardening/mobile-export"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 20.821,
+      "counts": {},
+      "pass": true
+    }
+  ],
+  "pass": true,
+  "boundary": "Local synthetic test configuration; no hosted deployment, database mutation or provider acceptance."
+}

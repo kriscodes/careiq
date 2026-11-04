@@ -1,0 +1,81 @@
+{
+  "checkedAt": "2026-10-18",
+  "checks": [
+    {
+      "case": "missing",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "pass": true
+    },
+    {
+      "case": "malformed",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "pass": true
+    },
+    {
+      "case": "remote",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "pass": true
+    },
+    {
+      "case": "lookalike-host",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "pass": true
+    },
+    {
+      "case": "review-database",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "pass": true
+    },
+    {
+      "case": "query",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "pass": true
+    },
+    {
+      "case": "fragment",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "pass": true
+    },
+    {
+      "case": "wrong-protocol",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "pass": true
+    },
+    {
+      "case": "ipv4-loopback",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "pass": true
+    },
+    {
+      "case": "localhost",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "pass": true
+    },
+    {
+      "case": "ipv6-loopback",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "pass": true
+    },
+    {
+      "case": "postgres-alias",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "pass": true
+    }
+  ],
+  "scope": "Runs only the first Node guard, never downstream release commands or a database connection. Missing/unsafe targets fail before any suite can silently skip. No fixture URL/credential is retained.",
+  "realApiCommandRequired": true,
+  "rawProductionAuditPreserved": true,
+  "activeMobileScripts": false
+}

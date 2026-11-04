@@ -1,0 +1,157 @@
+{
+  "verifiedAt": "2026-10-18T17:20:54.204278+00:00",
+  "phase": "before",
+  "nodeVersion": "v22.23.2",
+  "pnpmVersion": "11.22.0",
+  "mobileDirectoryPresent": false,
+  "artifactHashes": {
+    "pnpm-lock.yaml": "7604e21be6b79912c61f86958ef93516e57f5ab25e9e1eafc34de9b8a2cb8fa6",
+    "pnpm-workspace.yaml": "aab4681d4faafcf6378047c173a40787022f3c6cd00372d21b38b5bd98fd4972",
+    "patches/security-manifest.json": "724d48150d3ce228fcbec95ad52c5472266d1b5071577aaa221fe7fb2f5ff324",
+    "scripts/tests/security-dependencies.test.mjs": "f8ee4465087a03e57b529b348f3f17c4e01818cf9fb9c79a2da316a475a17bd2"
+  },
+  "audits": [
+    {
+      "scope": "production",
+      "command": "pnpm audit --prod --json",
+      "exitCode": 1,
+      "durationSeconds": 0.83,
+      "metadata": {
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 2,
+          "critical": 0
+        },
+        "dependencies": 709,
+        "devDependencies": 0,
+        "optionalDependencies": 73,
+        "totalDependencies": 782
+      },
+      "advisories": [
+        {
+          "module_name": "node-forge",
+          "severity": "high",
+          "title": "node-forge RSA PKCS#1 v1.5 signature verification accepts extra nested DigestAlgorithm elements",
+          "url": "https://github.com/advisories/GHSA-86w9-cpqp-85rv",
+          "vulnerable_versions": "<=1.4.0",
+          "patched_versions": ">=1.4.1"
+        },
+        {
+          "module_name": "braces",
+          "severity": "high",
+          "title": "braces vulnerable to stack-exhaustion denial of service through deeply nested patterns",
+          "url": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+          "vulnerable_versions": "<=3.0.3",
+          "patched_versions": ">=3.0.4"
+        }
+      ]
+    },
+    {
+      "scope": "complete",
+      "command": "pnpm audit --json",
+      "exitCode": 1,
+      "durationSeconds": 0.533,
+      "metadata": {
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 2,
+          "critical": 0
+        },
+        "dependencies": 718,
+        "devDependencies": 363,
+        "optionalDependencies": 176,
+        "totalDependencies": 1145
+      },
+      "advisories": [
+        {
+          "module_name": "node-forge",
+          "severity": "high",
+          "title": "node-forge RSA PKCS#1 v1.5 signature verification accepts extra nested DigestAlgorithm elements",
+          "url": "https://github.com/advisories/GHSA-86w9-cpqp-85rv",
+          "vulnerable_versions": "<=1.4.0",
+          "patched_versions": ">=1.4.1"
+        },
+        {
+          "module_name": "braces",
+          "severity": "high",
+          "title": "braces vulnerable to stack-exhaustion denial of service through deeply nested patterns",
+          "url": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+          "vulnerable_versions": "<=3.0.3",
+          "patched_versions": ">=3.0.4"
+        }
+      ]
+    }
+  ],
+  "retainedWorkspaceReachability": {
+    "retainedImporters": [
+      ".",
+      "apps/api",
+      "apps/web",
+      "apps/marketing",
+      "packages/i18n",
+      "packages/interview-contract"
+    ],
+    "reachableSnapshots": 623,
+    "missing": [],
+    "findings": {
+      "braces": [
+        {
+          "key": "braces@3.0.3(patch_hash=f46149b456f0f0e3e42cc4adf1027ad72afd23673bb4f58173ae56915ed7bad9)",
+          "from": "micromatch@4.0.8"
+        }
+      ],
+      "node-forge": [],
+      "query-string": [],
+      "decode-uri-component": [],
+      "xcode": [],
+      "uuid": [],
+      "brace-expansion": [
+        {
+          "key": "brace-expansion@1.1.21",
+          "from": "minimatch@3.1.5"
+        },
+        {
+          "key": "brace-expansion@5.0.12",
+          "from": "minimatch@10.2.6"
+        }
+      ],
+      "micromatch": [
+        {
+          "key": "micromatch@4.0.8",
+          "from": "fast-glob@3.3.1"
+        }
+      ],
+      "qs": [
+        {
+          "key": "qs@6.16.0",
+          "from": "express@5.2.1(supports-color@8.1.1)"
+        }
+      ],
+      "sharp": [
+        {
+          "key": "sharp@0.35.5(@types/node@20.19.43)",
+          "from": "next@16.4.1(@babel/core@7.29.7(supports-color@8.1.1))(@playwright/test@1.63.0)(@types/node@20.19.43)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)"
+        }
+      ],
+      "esbuild": [
+        {
+          "key": "esbuild@0.28.2",
+          "from": "tsx@4.23.12"
+        },
+        {
+          "key": "esbuild@0.25.12",
+          "from": "drizzle-kit@0.31.10"
+        }
+      ]
+    }
+  },
+  "limits": [
+    "Both audit scopes are raw and unsuppressed.",
+    "Graph reachability is not an SBOM proof for an actual deployed image or vendored source.",
+    "No hosted database, commit, push or deployment was performed by these checks."
+  ]
+}

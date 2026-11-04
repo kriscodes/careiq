@@ -1,0 +1,200 @@
+/** Restrict restored destinations to the app. Never accept an arbitrary redirect. */
+export function safeDestination(value: string | null | undefined): string {
+  if (
+    value === '/' ||
+    value === '/?invitations=1' ||
+    value === '/?onboarding=1' ||
+    value === '/join' ||
+    value === '/join?accepted=1'
+  ) {
+    return value;
+  }
+  if (value === '/patient-paperwork') {
+    return value;
+  }
+  const paperwork = value?.match(
+    /^\/patient-paperwork\?item=([0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/i,
+  );
+  if (paperwork) {
+    return `/patient-paperwork?item=${paperwork[1].toLowerCase()}`;
+  }
+  const match = value?.match(/^\/join\?confirm=(org_[A-Za-z0-9]{1,100})$/);
+  if (match) {
+    return `/join?confirm=${match[1]}`;
+  }
+  return '/';
+}
+
+/** A resume hint only; it never proves an organization membership. */
+export function invitationOrganizationHint(value: string | undefined) {
+  return value && /^org_[A-Za-z0-9]{1,100}$/.test(value) ? value : undefined;
+}
+
+export type AuthStep =
+  | 'signin'
+  | 'signup'
+  | 'verify'
+  | 'forgot'
+  | 'resetcode'
+  | 'reset'
+  | 'mfa'
+  | 'recovery'
+  | 'firstcode'
+  | 'provider';
+export type VerificationMethod = 'totp' | 'phone_code' | 'email_code' | 'backup_code';
+const verificationMethods: readonly VerificationMethod[] = [
+  'totp',
+  'phone_code',
+  'email_code',
+  'backup_code',
+];
+/** Continue only factors offered by this sign-in, preserving an already prepared challenge. */
+export function signInVerificationMethod(
+  factors: readonly { strategy: string }[],
+  preferred?: string | null,
+): VerificationMethod | null {
+  const available = verificationMethods.filter((method) =>
+    factors.some((factor) => factor.strategy === method),
+  );
+  return available.find((method) => method === preferred) ?? available[0] ?? null;
+}
+export function verificationCodePrepared(
+  method: VerificationMethod,
+  verification: { strategy: string | null; status: string | null },
+): boolean {
+  return (
+    !['email_code', 'phone_code'].includes(method) ||
+    (verification.strategy === method && verification.status === 'unverified')
+  );
+}
+export function signInStep(
+  status: string,
+  factors: readonly { strategy: string }[] = [],
+): AuthStep | 'complete' {
+  if (status === 'complete') {
+    return 'complete';
+  }
+  if (status === 'needs_new_password') {
+    return 'reset';
+  }
+  if (
+    ['needs_second_factor', 'needs_client_trust'].includes(status) &&
+    signInVerificationMethod(factors)
+  ) {
+    return 'mfa';
+  }
+  // Mid-flow bot challenges and unsupported factors stay provider-owned.
+  return 'provider';
+}
+export function invitationEmailMatches(emails: readonly string[], invitationEmail: string) {
+  return emails.some(
+    (email) => email.trim().toLowerCase() === invitationEmail.trim().toLowerCase(),
+  );
+}
+
+export type PracticeDraft = {
+  practiceName: string;
+  locationName: string;
+  timeZone: string;
+  address: string;
+  step: 1 | 2 | 3;
+};
+export type OnboardingState = {
+  eligible: boolean;
+  emailVerified: boolean;
+  draft: PracticeDraft | null;
+  operation: {
+    state: 'pending' | 'complete';
+    practiceId: string | null;
+    organizationId: string | null;
+  } | null;
+};
+export function onboardingView(
+  state: OnboardingState,
+): 'verify' | 'restricted' | 'pending' | 'complete' | 'draft' {
+  if (state.operation) {
+    return state.operation.state;
+  }
+  if (!state.emailVerified) {
+    return 'verify';
+  }
+  return state.eligible ? 'draft' : 'restricted';
+}
+export function onboardingInput(draft: PracticeDraft) {
+  return {
+    name: draft.practiceName.trim(),
+    location: {
+      name: draft.locationName.trim(),
+      timeZone: draft.timeZone,
+      ...(draft.address.trim() ? { address: draft.address.trim() } : {}),
+    },
+  };
+}
+export function validateDraft(draft: PracticeDraft, final = false): string | null {
+  if ((final || draft.step > 1) && !draft.practiceName.trim()) {
+    return 'Enter your practice name.';
+  }
+  if ((final || draft.step > 2) && !draft.locationName.trim()) {
+    return 'Enter a location name.';
+  }
+  if (
+    draft.practiceName.trim().length > 120 ||
+    draft.locationName.trim().length > 120 ||
+    draft.address.length > 500
+  ) {
+    return 'Keep the name under 120 characters and address under 500.';
+  }
+  try {
+    new Intl.DateTimeFormat('en-US', { timeZone: draft.timeZone });
+  } catch {
+    return 'Choose a valid time zone.';
+  }
+  return null;
+}
+export function timeZoneLabel(zone: string) {
+  const common: Record<string, string> = {
+    'America/Los_Angeles': 'Pacific Time (US & Canada)',
+    'America/Denver': 'Mountain Time (US & Canada)',
+    'America/Chicago': 'Central Time (US & Canada)',
+    'America/New_York': 'Eastern Time (US & Canada)',
+  };
+  return common[zone] || zone.replaceAll('_', ' ').replace('/', ' · ');
+}
+
+// Each U.S. state/territory has a choice without requiring an IANA identifier.
+// Arizona and the Aleutians stay distinct because their daylight-saving rules differ.
+const timeZoneOptionKeys: Readonly<Record<string, string>> = {
+  'America/New_York': 'access.timeZone.eastern',
+  'America/Chicago': 'access.timeZone.central',
+  'America/Denver': 'access.timeZone.mountain',
+  'America/Phoenix': 'access.timeZone.arizona',
+  'America/Los_Angeles': 'access.timeZone.pacific',
+  'America/Anchorage': 'access.timeZone.alaska',
+  'America/Adak': 'access.timeZone.aleutian',
+  'Pacific/Honolulu': 'access.timeZone.hawaii',
+  'America/Puerto_Rico': 'access.timeZone.puertoRico',
+  'America/St_Thomas': 'access.timeZone.virginIslands',
+  'Pacific/Guam': 'access.timeZone.guam',
+  'Pacific/Pago_Pago': 'access.timeZone.samoa',
+  UTC: 'access.timeZone.utc',
+};
+
+export function timeZoneOptionLabelKey(zone: string): string | undefined {
+  return Object.prototype.hasOwnProperty.call(timeZoneOptionKeys, zone)
+    ? timeZoneOptionKeys[zone]
+    : undefined;
+}
+
+/** Preserve a valid saved/device zone without exposing an exhaustive, hard-to-scan list. */
+export function availableTimeZones(current: string): string[] {
+  const zones = Object.keys(timeZoneOptionKeys);
+  if (!current || zones.includes(current)) {
+    return zones;
+  }
+  try {
+    new Intl.DateTimeFormat('en-US', { timeZone: current });
+    return [current, ...zones];
+  } catch {
+    return zones;
+  }
+}

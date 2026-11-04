@@ -1,0 +1,85 @@
+# Practice Home, settings and personal account lifecycle — October 30, 2026
+
+Implemented in the canonical `/Users/kristian/Documents/Server/CareIQ` checkout on `fix/front-desk-session-refresh`. These changes remain local for review; the committed baseline is `82d3ee91903937aa968547efe08abd082e3dd0cd`. Existing unrelated edits are preserved.
+
+## Result
+
+The user selected Practice Home and immediate reversible personal archival, with deletion handled as a tracked request. Practice ownership belongs to the current recorded practice owner; personal identities cannot be transferred.
+
+- Sign-in and completed management actions land at Practice Home. Ownership transfer returns Home with the named practice/recipient receipt, refreshes current authority and removes former-owner controls.
+- Home is part of the application frame, with navigation to Home, Today, Schedule, Patients, Documents and Templates. Management-only owners and nonowners enter the application without requiring clinical grants; restricted sections explain current access without requesting records or inventing zero-count dashboards. Owner settings remain available. Home separates practice management from workspace permissions. Pending/suspended access has an explanation and an explicit access check. No role or clinical grant is invented to make navigation succeed.
+- `/me.workspaceCapabilities` reflects the full workflow admission rule: patient read, appointment read, document read or workflow configuration. Documents-only and configuration-only users remain valid entrants. The API still authorizes each operation.
+- Explicit Open workspace leads to a valid assigned location. A real 401/403 clears protected content and returns to a stable Home explanation; it does not silently reopen the rejected workspace. Backgrounding unmounts records while retaining only location intent. Returning rechecks current authority before reopening; changed or unavailable access stays concealed.
+- Settings retain the white shared header and use four keyboard-accessible tabs: Locations, Team & access, Invitations and Ownership. Done remains below content. Saves retain the active panel and unrelated draft values; pending mutations lock navigation. Leaving unsaved changes requires an accessible discard decision. Genuine authority loss removes privileged content.
+- Shared Little hello animation, short localized status and skeletons replace plain loading text in these flows, with reduced-motion support. Existing timezone choices, neutral hints, blue hover and typed ownership confirmation remain intact. The ownership select now updates before unsaved-change tracking runs; the named warning and exact practice-name input appear when the recipient is selected.
+
+## Ownership selection and main application follow-up
+
+The subsequent owner review exposed two frontend regressions. Native select input/change handling could be interrupted by parent capture-phase dirty tracking, restoring the old recipient before the selection committed. Moving dirty tracking to the bubbling change event preserves the chosen administrator and exposes the existing named warning, exact practice-name input and final action. Changing the recipient clears the earlier typed confirmation. The isolated regression splits native input and change across a browser frame; the old source reproduces the failure and the new source preserves the selection. No actual QA ownership transfer was submitted for this check.
+
+Application admission is now separate from clinical record admission. An active, onboarded staff member enters the real shared application frame even without a clinical grant or location assignment. Home has workspace shortcuts, practice management, assigned locations and personal account access. Every core navigation destination remains discoverable from Home; restricted sections explain current authority without making a clinical request or showing fabricated zero-count dashboards. Pending, suspended and revoked enrollment remain outside that frame. The personal patient retains its separate authorized library.
+
+Selecting a permitted area opens location selection inside the application frame, then the requested real workspace view. Single patient, appointment, document and configuration grants select their corresponding permitted first view. Clinical scope still requires current practice/enrollment/location authority. A newer successful workflow response must also permit the current view; losing that permission clears protected content and returns to explained Home, even if a different workflow area remains allowed. Explicit access recheck only reloads context and never automatically replays a denied workflow.
+
+Home, header Settings/invitations/location actions and the actual practice selector share the existing unfinished Forms Studio confirmation. Cancel preserves the exact draft and practice; accept runs the requested action. Home uses white surfaces under dark system preference, wraps navigation at 320px, retains personal account access on small screens and keeps 44px header controls. The shared compact navigation preserves its brand mark. Existing owner-only transfer/API policies and QA assignments/grants were not changed.
+
+## Personal account behavior
+
+Personal account is available from Practice Home, practice/invitation entry screens and the authenticated patient library. Leaving the patient library for account management unmounts protected copies and revokes object URLs; Back loads current library authorization again.
+
+Archive and deletion requests bind only the verified signed-in actor, never a submitted identity. Both require the exact action phrase and a signed first-factor age under five minutes; the existing provider reverification flow handles an older factor. Ownership of **any** active, pending or suspended practice blocks closure until handoff.
+
+Archive first commits `archiving` as an immediate denial state, then confirms Clerk `banUser` before recording `archived`. Clerk ban revokes provider sessions and blocks new sign-ins. The global API guard reads durable account status before authenticated staff and patient routes, including when an old token remains cryptographically valid. Only own account status and the exact archive retry remain available as recovery paths. Unavailable status checks fail closed. Public request-token workflows retain their independent authorization policy.
+
+Provider failures, uncertain responses and database failure after a provider success retain denial and honest in-progress copy. Archive retry is idempotent. A pending deletion request never overrides an actual archival/restoration state or redirects an archive retry to deletion. Deletion remains a durable, actor-isolated pending request; it does not claim that identity or retained records have already been erased.
+
+Restoration is a reviewed support operation, with no public or practice-administrator endpoint. It records `restoring`, confirms provider unban, then returns to `active`. Failure retains denial. See [the restoration procedure](../personal-account-restoration.md). Restored accounts sign in again; current membership, location and patient access are checked normally. Patient records, assignments, memberships and audit history are retained.
+
+Founder provisioning and ownership transfer coordinate with archive using the same account lock inside their existing database transactions. An archived identity cannot become a new practice owner or finish first-practice provisioning. These checks use the existing connection rather than nested pool transactions.
+
+## Development provider and database setup
+
+The matched Clerk Development instance now disables the unguarded provider self-delete shortcut for new users and all seven existing Development users. Private before/after records were retained; readback confirmed the flag is false. Password, lock/ban and organization-creation settings were unchanged. Production provider settings were not changed. A production release must apply the same reviewed self-delete policy and audit existing user overrides before treating the custom closure guard as exclusive. Official behavior: [Clerk updateUser](https://clerk.com/docs/reference/backend/user/update-user), [Clerk banUser](https://clerk.com/docs/reference/backend/user/ban-user).
+
+Migrations 43 and 44 add actor-scoped closure requests, archive state and retained lifecycle events. Both isolated loopback databases passed the normal checked 45-entry ledger. The actual review runtime passed catalog-only release verification, including forced row security, narrow column grants and pending-request uniqueness. No hosted database migration was performed.
+
+The local API runner was restarted to load the new endpoints. The web service was refreshed after preserving an obsolete generated cache. Final review services are checked separately from the production build.
+
+## Verification
+
+### Navigation and ownership follow-up
+
+- Complete component browser suite: **180 passed**, no skips, retries or failures. This includes the separated native select-event regression, real PracticeSettings integration, main application entry, view-specific grants, denied-read recovery, background authorization and guarded draft navigation. An earlier diagnostic run exposed retired landing/notice selectors and undersized new Home header controls; the assertions were migrated without removing safety checks and the click targets were corrected before the complete passing run.
+- After the final screenshot-driven CSS polish, all **22 focused layout and application-entry cases passed** again: 320/1280px, English/Spanish, light/dark system preferences, 44px controls, keyboard/account access, protected view entry and the legacy Home round trip.
+- Web unit and translation suites: **119 passed** (112 web, 7 catalogs), including the 20-case scope/application capability matrix. Web typecheck, edited-source ESLint, whitespace checks and the final isolated synthetic-configuration production build passed. Original TypeScript configuration was restored byte-for-byte.
+- Actual Development read-only UI checks passed for all five existing QA personas. The original owner retains practice management and both locations; its selected QA administrator survives native input/change separation, the warning/input appear, and only the exact practice name enables the final action. Administrator/member get the real app frame and honest restricted sections. The clinician chooses its assigned location, opens Patients, reauthorizes on foreground and returns Home. The personal patient retains library/account access. No CareIQ mutation, transfer, archive, password reset or mail was submitted.
+- Final owner desktop/mobile screenshots were checked after the heading-outline and narrow shortcut improvements. White backgrounds and no overflow were verified under dark system preference. All six temporary setup sessions used across the five-persona check and final owner recheck were individually revoked; manual sessions were preserved. These sessions establish current UI/role behavior, not completed normal password/challenge acceptance.
+- API, schema, account-lifecycle, dependency and runner changes that predated this follow-up compare unchanged against the private baseline. Current work remains local, uncommitted and unpushed. API/web/marketing and the isolated database are left ready. Follow-up artifacts and exact temporary-session cleanup records are in ignored owner-only `.local-review/main-entry-fix-2026-10-30/`; no credentials are in this document.
+
+### Earlier account lifecycle checks
+
+- Initial complete API suite: **343 passed**, zero skips, using only isolated `careiq_test`.
+- Final focused account request/archive/restore database tests: **22 passed**, zero skips, using restricted runtime and a controlled provider dependency. These cover recent signed-factor rejection, exact phrases, all owned practice statuses, patient/no-organization and nonowner roles, same-actor concurrent retries, actor isolation, immediate old-token denial before a delayed ban, provider/commit failures, honest status/retry and reviewed restoration. Existing synthetic clinical, assignment, membership and audit rows compare unchanged across archive/restore.
+- Final focused ownership/founder races, route enforcement and release checks: **28 passed**, zero skips. App-level cases prove the archive guard runs before authenticated patient PDF and staff readers.
+- Web unit suite: **106 passed**. English/Spanish catalog checks: **7 passed**.
+- The broad component browser run discovered 151 cases: 147 passed; four pending-role assertions still expected the retired landing heading. Those assertions were updated to require Practice Home, the pending explanation, explicit retry and no clinical dispatch. The four corrected pending-role checks passed, along with all 19 final personal-account cases (23 focused follow-up passes). Two final picker regressions passed for delayed membership loading and a current organization missing from the loaded page. Eight additional synthetic desktop/mobile white-theme screenshots were inspected, including long ownership copy and branded loading.
+- API/web typechecks, targeted ESLint, diff whitespace checks and a synthetic-configuration production build passed. The build used a separate output directory and temporarily isolated generated type includes; original source configuration was restored. An initial output-directory resolution error and a stale generated-types collision were corrected before the successful build.
+- Read-only actual local UI checks passed for all five approved Development personas using temporary administrative setup sessions. Owner management and settings tabs work; administrator/member have stable nonclinical Home; clinician opens its authorized workspace and resumes the same location after a fresh foreground check; the personal patient can enter account settings from the library. Owner closure is blocked by its owned practice. White rendering and narrow Home layout were checked under dark system preference. No forms were submitted and each temporary setup session was revoked.
+
+The final reviewed-source production build passed, original TypeScript configuration was restored, and API/web/marketing plus the isolated database were left ready. The checksum comparison found no unexpected change to unrelated existing edits.
+
+Private logs, screenshots, provider backups and checksum baselines are under ignored owner-only `.local-review/practice-home-2026-10-30/`. They contain no public acceptance credentials. Synthetic fixtures and administrative setup sessions do not prove a completed real password, challenge or reset.
+
+## Remaining acceptance
+
+The [five-role manual guide](../qa-auth-manual-checks.md) retains all pending password/reset, invalid-code, old-password/session revocation, invitation email-link redemption, mail-client rendering, second-practice and production acceptance. The user's earlier owner password/email-code positive result remains user-reported evidence. Existing five QA identities were not archived, deleted or reset during these changes. No live QA archive/restore or actual recent-factor completion is claimed from controlled tests.
+
+## Home copy refinement — October 31, 2026
+
+The owner screenshot repeated “practice” eleven times. Ready Home now uses “Hello again.” / “What’s next?”, “Team & locations”, “Manage team & locations” and “Settings”, with matching Spanish copy. The redundant clinic summary/name and active-access status were removed. The actual clinic name is preserved once in the Workspace selector; when navigation is collapsed it remains visible in the header instead. Existing loading, pending and denied-access wording, settings headings and ownership confirmation remain unchanged.
+
+Validation: 70 focused Home/application/layout/settings/personal browser cases and four impacted refresh/revocation cases passed (74 total), plus seven catalog checks, web typecheck, edited-source lint and whitespace checks. Read-only actual Development owner checks confirmed one visible occurrence of “practice” at desktop, 320px mobile and collapsed mobile widths, with white backgrounds under dark system preference and no horizontal overflow. Desktop/mobile screenshots were inspected. No CareIQ writes were attempted; the one temporary setup session was revoked. This copy review does not establish password/challenge acceptance. Private evidence is under ignored `.local-review/home-copy-2026-10-31/`. Changes remain local and unpushed.
+
+The additional bottom-right “Manage locations” action was removed from the Home locations strip at the owner’s request. Assigned-location information remains visible. Location management stays in Settings and the Team & locations card. This is a presentation-only removal; no access rules or management handlers changed.
+
+At the owner’s request, the Home navigation label is now “Practice” (“Clínica” in Spanish). It continues to open the existing practice settings screen.

@@ -765,3 +765,7 @@ This complexity is accepted because CareIQ requires a robust and trustworthy fou
 
 All future CareIQ domains and workflows involving meaningful security, administrative, sensitive-data, or domain actions should be designed to integrate with the Audit architecture defined in this decision.
 ````
+
+## October 2026 implementation scope
+
+The first implemented clinical audit is metadata-only in `public.clinical_audit_events`, with forced tenant RLS and insert-only runtime privileges. It records successful clinical creates, retry reads and per-resource/list reads atomically with their operations. This is an incremental step toward this ADR, not the full proposed `audit` schema, mutation triggers, archival or audited review UI. A separate checked operator role can read selected-tenant audit metadata. See [security hardening](../security-hardening.md) for the security boundary, limits and rollout requirements. No historical activity is backfilled or invented.

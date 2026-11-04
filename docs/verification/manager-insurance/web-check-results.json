@@ -1,0 +1,10 @@
+[
+  {
+    "check": "typecheck",
+    "exitCode": 0
+  },
+  {
+    "check": "web-unit",
+    "exitCode": 0
+  }
+]

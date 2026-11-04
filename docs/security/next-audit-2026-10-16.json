@@ -1,0 +1,33 @@
+{
+  "verifiedOn": "2026-10-16",
+  "next": "16.4.1",
+  "eslintConfigNext": "16.4.1",
+  "rawAuditExitCode": 1,
+  "vulnerabilities": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 2,
+    "critical": 0
+  },
+  "advisories": [
+    {
+      "id": "GHSA-86w9-cpqp-85rv",
+      "package": "node-forge",
+      "severity": "high",
+      "patchedVersions": ">=1.4.1"
+    },
+    {
+      "id": "GHSA-vfj7-8cjw-p6xm",
+      "package": "braces",
+      "severity": "high",
+      "patchedVersions": ">=3.0.4"
+    }
+  ],
+  "minimumReleaseAgePolicyChanged": false,
+  "backportIntegrityTestsPassed": 16,
+  "verifiedAfterExpoPatchAlignment": true,
+  "expoVersion": "57.0.30",
+  "expoDoctorChecksPassed": 21,
+  "nativeUnitTestsPassed": 43
+}

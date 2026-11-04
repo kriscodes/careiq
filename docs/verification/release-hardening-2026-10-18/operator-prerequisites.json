@@ -1,0 +1,44 @@
+{
+  "verifiedAt": "2026-10-18T16:31:34.654976+00:00",
+  "scope": "Read-only local prerequisite inventory; no credential values or provider IDs included.",
+  "productionConfigurationAvailableLocally": {
+    "apiLivePublishableKey": false,
+    "apiLiveSecretKey": false,
+    "signedWebhookSecret": false,
+    "fixedHttpsInvitationRedirect": false,
+    "explicitPrivateStorageDirectory": false,
+    "stableCursorSecret": false,
+    "scannerExecutable": false,
+    "separateAuditReader": false,
+    "webLivePublishableKey": false,
+    "mobileReleaseMetadataComplete": false
+  },
+  "hostedPreflight": {
+    "executed": false,
+    "reason": "Current checkout contains development/local-review configuration; hosted production credentials, approved mappings and current deployment identity are not available to this verification."
+  },
+  "nativeToolchain": {
+    "xcodebuild": true,
+    "pod": false,
+    "adb": false,
+    "emulator": false,
+    "sdkmanager": false,
+    "defaultAndroidSdkDirectory": false,
+    "fullXcodeSelected": false
+  },
+  "externalAcceptanceNotEstablished": [
+    "Production owner/staff password/MFA/recovery and approved practice mappings",
+    "Hosted signed webhook delivery/replay and revoked membership",
+    "Hosted two-practice patient/document denial and same-key retries",
+    "Current hosted backup restore, complete migration ledger and restricted runtime verification",
+    "Private durable production volume/scanner/email-worker delivery and failure alerts",
+    "Installed signed iOS/Android authentication, links and foreground/revocation checks",
+    "Owner/practice release, signing/retention and real-data hosting decisions"
+  ],
+  "filesExamined": [
+    "apps/api/.env",
+    "apps/web/.env.local",
+    "apps/mobile/.env"
+  ],
+  "inventoryLimit": "Only the listed local files were inventoried; hosting secret stores were not inspected. Missing local values do not prove absence in the hosted environment."
+}

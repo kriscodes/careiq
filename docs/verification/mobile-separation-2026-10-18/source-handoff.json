@@ -1,0 +1,20 @@
+{
+  "verifiedAt": "2026-10-18T17:20:50.870702+00:00",
+  "archivePath": "/Users/kristian/Documents/Server/CareIQ-mobile-handoff-2026-10-18",
+  "sourceHead": "11df3349d87d9f36235ec5c4047398d290cb9306",
+  "trackedMobileFilesPreserved": 62,
+  "sharedFilesPreserved": 16,
+  "referenceFilesPreserved": 15,
+  "sha256CopyVerification": true,
+  "originalDirectoryMovedOnlyAfterVerification": true,
+  "sourceMobileDirectoryAbsent": true,
+  "ownerOnlyHandoffRoot": true,
+  "privateRecoveryKeptSeparate": true,
+  "secretEnvironmentFilesExcludedFromSource": true,
+  "ownedMobileSupervisorStopped": true,
+  "otherServicesStopped": false,
+  "newRepositoryCreated": false,
+  "committed": false,
+  "pushed": false,
+  "futureRepositorySetupPending": true
+}

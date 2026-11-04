@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-18",
+  "check": {
+    "name": "production-http-guards",
+    "exitCode": 0,
+    "seconds": 0.69,
+    "stats": {
+      "startTime": "2026-10-18T17:24:46.158Z",
+      "duration": 377.22600000000006,
+      "expected": 3,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "scope": "Real local production Next HTTP guard checks: preview404includingencodedaliases, fresh nonce/CSP/no-store, absentassociation404. No real provider credentials or signed-in identity.",
+  "server": {
+    "port": 3191,
+    "taskOwned": true,
+    "existingServicesStopped": false,
+    "started": true,
+    "ready": true,
+    "stopped": true,
+    "exitCode": 143
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "verifiedAtUtc": "2026-10-18T08:06:26.361Z",
+  "scope": "Merged PR10 working tree; no staging, commit, push or deployment",
+  "runtime": {
+    "node": "v22.23.2",
+    "next": "16.4.1",
+    "buildEngine": "webpack"
+  },
+  "fixtures": {
+    "classification": "Reserved .invalid synthetic live-shaped CI configuration; no real account/session",
+    "apiOrigin": "https://api.release.invalid"
+  },
+  "web": {
+    "build": {
+      "exitCode": 0,
+      "durationMs": 23021,
+      "distDir": ".next-pr-10-build",
+      "generatedPages": 13
+    },
+    "productionHttp": {
+      "exitCode": 0,
+      "durationMs": 813,
+      "passed": 3,
+      "failed": 0,
+      "scope": "Three existing HTTP-only production tests; no real session or browser profile",
+      "runnerReportedDuration": "491ms"
+    },
+    "productionServerStopped": true,
+    "productionPort3191Released": true
+  },
+  "marketing": {
+    "build": {
+      "exitCode": 0,
+      "durationMs": 12305,
+      "distDir": ".next-pr-10-build",
+      "output": "Static export",
+      "generatedPages": 7
+    },
+    "postBuildLint": {
+      "exitCode": 0,
+      "integrationFix": "Ignore .next-*/** generated output consistently with web; no application feature change"
+    }
+  },
+  "limitations": [
+    "Build and HTTP evidence do not establish successful real Clerk sign-in or delivery-provider acceptance.",
+    "No personal browser, hosted database or external account changes."
+  ],
+  "tsconfigCleanup": [
+    {
+      "app": "web",
+      "removedOnlyNewBuildIncludes": [
+        ".next-pr-10-build/types/**/*.ts",
+        ".next-pr-10-build/dev/types/**/*.ts"
+      ]
+    },
+    {
+      "app": "marketing",
+      "removedOnlyNewBuildIncludes": []
+    }
+  ],
+  "workingTreeWhitespaceCheck": {
+    "exitCode": 0
+  }
+}

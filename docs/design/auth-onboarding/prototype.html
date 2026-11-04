@@ -1,0 +1,2640 @@
+<!doctype html>
+<html lang="en" data-visualize-standalone>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Careiq Access Design</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+</head>
+<body>
+<iframe id="codex-visualization" sandbox="allow-scripts" referrerpolicy="no-referrer" title="Careiq Access Design" data-srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot; data-visualize-standalone&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;Careiq Access Design&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(
+    --background,
+    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
+  ) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --color-background-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --card: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --card-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --popover: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255), rgb(45 45 45))
+  );
+  --popover-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --primary: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --primary-foreground: var(
+    --color-text-inverse,
+    light-dark(rgb(255 255 255), rgb(13 13 13))
+  );
+  --secondary: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
+  );
+  --secondary-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: var(
+    --color-text-secondary,
+    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
+  );
+  --accent: var(
+    --color-background-info,
+    light-dark(rgb(229 242 255), rgb(13 39 63))
+  );
+  --accent-foreground: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --destructive: var(
+    --color-text-warning,
+    light-dark(rgb(226 85 7), rgb(255 133 73))
+  );
+  --border: var(
+    --color-border-secondary,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+  --input: var(
+    --color-border-primary,
+    light-dark(
+      rgb(26 28 31 / 11.8%),
+      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+    )
+  );
+  --ring: var(
+    --color-ring-primary,
+    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
+  );
+  --font-size-base: var(--font-text-md-size, 14px);
+  --blue: light-dark(rgb(51 156 255), rgb(51 156 255));
+  --orange: light-dark(rgb(226 85 7), rgb(251 106 34));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+  --red: light-dark(rgb(224 46 42), rgb(255 103 100));
+  --purple: light-dark(rgb(146 79 247), rgb(173 123 249));
+  --yellow: light-dark(rgb(255 195 0), rgb(255 210 64));
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --icon-size: 16px;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --corner-shape: round;
+  --radius: var(--border-radius-lg, 10px);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
+  --color-background-primary: var(
+    --background,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --color-text-primary: var(
+    --foreground,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --color-border-secondary: var(
+    --border,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+
+  margin: 0;
+  padding: var(--visualize-paint-gutter, 0px);
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans) !important;
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+.cursor-interaction {
+  cursor: var(--cursor-interaction, pointer);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: var(--cursor-interaction, pointer);
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: var(--corner-shape);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive &gt; .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align=&quot;right&quot;]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align=&quot;center&quot;]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: var(--corner-shape);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+.widget {
+  min-width: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  box-shadow: 0 0 0 0.5px var(--border-strong, var(--border));
+  color: var(--foreground);
+  background: var(--background);
+}
+
+#widget &gt; :not(.card, .widget, .progress) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+hr {
+  width: 100%;
+  height: 1px;
+  margin-block: 6px;
+  border: 0;
+  background: var(--border);
+}
+
+.nav {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.progress {
+  display: flex;
+  height: 8px;
+  margin-block: calc((var(--line-height-normal, 1.5em) - 8px) / 2);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+}
+
+.progress-bar:only-child {
+  border-radius: var(--radius-full);
+}
+
+.progress-bar {
+  height: 100%;
+  flex-shrink: 0;
+  border: 0;
+  background: var(--viz-series-1);
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.nav-link,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn,
+.nav-link {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: var(--cursor-interaction, pointer);
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover,
+.nav-link:not(:disabled):not([aria-disabled=&quot;true&quot;]):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.nav-pills .nav-link {
+  min-width: 0;
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.nav-justified .nav-link {
+  flex: 1 1 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.nav-pills .nav-link.active {
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+/* Shared preview chrome; product styles stay inside each variant. */
+.viz-dotted-background {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--foreground) 14%, transparent) 0.8px,
+    transparent 0.8px
+  );
+  background-position: center;
+  background-size: 16px 16px;
+}
+
+.viz-carousel {
+  position: relative;
+  min-width: 0;
+}
+
+.viz-carousel:has(&gt; .viz-carousel-controls) {
+  min-height: calc(60px + var(--viz-carousel-picker-height, 0px));
+  padding-bottom: 60px;
+}
+
+.viz-carousel &gt; [data-variant][hidden] {
+  display: none !important;
+}
+
+.viz-carousel &gt; [data-variant] {
+  isolation: isolate;
+}
+
+.viz-carousel-controls {
+  --viz-carousel-hover: light-dark(
+    color-mix(in srgb, var(--foreground) 5.4%, transparent),
+    color-mix(in srgb, var(--foreground) 7.8%, transparent)
+  );
+  position: absolute;
+  z-index: 2;
+  bottom: 8px;
+  left: 50%;
+  display: flex;
+  width: max-content;
+  /* Leave room for the host&#x27;s design-controls launcher at the trailing edge. */
+  max-width: calc(100% - 96px);
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans);
+  /* Match the settings dropdown chrome independently of the content font size. */
+  font-size: 13px;
+  font-weight: var(--font-weight-normal);
+  line-height: 18px;
+  transform: translateX(-50%);
+  user-select: none;
+}
+
+/* Keep authored mockup button styles out of the shared carousel chrome. */
+.viz-carousel-controls button,
+.viz-carousel-picker &gt; summary {
+  display: flex !important;
+  height: auto !important;
+  min-height: 30px;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px;
+  padding: 0 6px !important;
+  -webkit-app-region: no-drag;
+  border: 0 !important;
+  border-radius: 14px !important;
+  color: inherit !important;
+  background: transparent !important;
+  font: inherit !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.viz-carousel-controls &gt; button,
+.viz-carousel-picker &gt; summary {
+  position: relative;
+  isolation: isolate;
+}
+
+.viz-carousel-controls &gt; button {
+  --icon-size: 16px;
+  width: 30px !important;
+  padding: 0 !important;
+}
+
+.viz-carousel-picker &gt; summary {
+  padding-inline: 12px !important;
+}
+
+.viz-carousel-controls .viz-carousel-caret {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  margin: 0;
+  color: inherit;
+  transform: rotate(180deg);
+}
+
+.viz-carousel-controls &gt; button &gt; svg,
+.viz-carousel-controls .viz-carousel-caret,
+.viz-carousel-count {
+  opacity: 0.5;
+}
+
+.viz-carousel-controls &gt; button::before,
+.viz-carousel-picker &gt; summary::before {
+  position: absolute;
+  z-index: -1;
+  inset: 3px;
+  border-radius: 12px;
+  content: &quot;&quot;;
+  pointer-events: none;
+}
+
+.viz-carousel-controls &gt; button:hover::before,
+.viz-carousel-picker &gt; summary:hover::before {
+  background: var(--viz-carousel-hover);
+}
+
+.viz-carousel-controls &gt; button,
+.viz-carousel-controls [data-lucide],
+.viz-carousel-controls .lucide {
+  flex-shrink: 0;
+}
+
+.viz-carousel-picker {
+  min-width: 0;
+}
+
+.viz-carousel-picker &gt; summary {
+  min-width: 0;
+  list-style: none;
+}
+
+.viz-carousel-picker &gt; summary::-webkit-details-marker {
+  display: none;
+}
+
+.viz-carousel-count {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.viz-carousel-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viz-carousel-options {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 4px);
+  left: 0;
+  display: flex;
+  max-height: 240px;
+  flex-direction: column;
+  gap: 2px;
+  overflow: auto;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--background);
+  box-shadow: 0 4px 12px light-dark(rgb(0 0 0 / 6%), rgb(0 0 0 / 25%));
+}
+
+.viz-carousel-options &gt; button {
+  border-radius: max(0px, calc(var(--radius-lg) - 5px)) !important;
+  width: 100% !important;
+  min-height: 28px;
+  justify-content: flex-start !important;
+  padding: 4px 8px !important;
+  font-size: var(--font-size-small) !important;
+  text-align: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.viz-carousel-options &gt; [aria-current=&quot;true&quot;],
+.viz-carousel-options &gt; button:hover {
+  background: var(--viz-carousel-hover) !important;
+}
+
+.btn:disabled,
+.nav-link:disabled,
+.nav-link[aria-disabled=&quot;true&quot;] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: var(--corner-shape);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: var(--corner-shape);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+  [aria-pressed=&quot;true&quot;],
+  [aria-selected=&quot;true&quot;],
+  .is-selected
+) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible,
+.nav-link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.viz-carousel-controls :is(button, summary):focus-visible {
+  outline: 2px solid var(--ring) !important;
+  outline-offset: 2px !important;
+}
+
+@media (pointer: coarse) {
+  .viz-carousel:has(&gt; .viz-carousel-controls) {
+    min-height: calc(76px + var(--viz-carousel-picker-height, 0px));
+    padding-bottom: 76px;
+  }
+
+  .btn,
+  .nav-link,
+  .viz-carousel-controls button,
+  .viz-carousel-picker &gt; summary,
+  .form-control,
+  .form-select {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Keep small-screen WebKit from zooming when a text field receives focus. */
+  .form-control,
+  .form-select {
+    font-size: max(16px, var(--font-size-normal));
+  }
+
+  .form-control[type=&quot;file&quot;]::file-selector-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .form-control-color[type=&quot;color&quot;] {
+    width: 44px;
+    height: 44px;
+  }
+
+  .form-control:is(
+    [type=&quot;date&quot;],
+    [type=&quot;datetime-local&quot;],
+    [type=&quot;month&quot;],
+    [type=&quot;time&quot;],
+    [type=&quot;week&quot;]
+  ) {
+    min-width: 0;
+    max-width: 100%;
+    padding-block: 8px;
+  }
+
+  .form-check {
+    min-height: 44px;
+    padding-inline: 15px;
+  }
+
+  .form-check-input {
+    position: relative;
+  }
+
+  .form-check-input::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    content: &quot;&quot;;
+    transform: translate(-50%, -50%);
+  }
+
+  .form-check-label {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .form-range {
+    height: 44px;
+    touch-action: pan-y;
+  }
+
+  .form-range::-webkit-slider-runnable-track {
+    height: 44px;
+  }
+
+  .form-range::-moz-range-track {
+    height: 44px;
+  }
+
+  .form-range::-webkit-slider-thumb {
+    margin-top: 12px;
+  }
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+/* Model-authored chart rules can otherwise stretch icons after these styles load. */
+svg.lucide {
+  display: block;
+  width: var(--icon-size) !important;
+  height: var(--icon-size) !important;
+  flex: none;
+  margin: 0 !important;
+  stroke-width: 1.6;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script type=&quot;application/json&quot; id=&quot;codex-visualization-widget-state&quot;&gt;__CODEX_VISUALIZATION_WIDGET_STATE__&lt;/script&gt;
+&lt;script&gt;(() =&gt; {
+  const root = document.documentElement;
+  const mediaQuery = globalThis.matchMedia(&quot;(prefers-color-scheme: dark)&quot;);
+  const apply = Reflect.apply;
+  const isArray = Array.isArray;
+  const hasOwn = Object.hasOwn;
+  const parentWindow = globalThis.parent;
+  const stringify = JSON.stringify;
+  const parse = JSON.parse;
+  const encode = TextEncoder.prototype.encode.bind(new TextEncoder());
+  const initialStateElement = document.getElementById(
+    &quot;codex-visualization-widget-state&quot;,
+  );
+  const initialGlobals = parse(initialStateElement?.textContent ?? &quot;{}&quot;);
+  initialStateElement?.remove();
+  /** @type {Record&lt;string, unknown&gt; | null} */
+  let state = initialGlobals.widgetState ?? null;
+  const statePersistence = initialGlobals.statePersistence ?? &quot;none&quot;;
+  let nextStateRequestId = 0;
+  /** @type {Map&lt;number, { resolve: () =&gt; void; reject: (error: Error) =&gt; void; timeout: ReturnType&lt;typeof globalThis.setTimeout&gt;; serializedState: string }&gt;} */
+  const pendingStateWrites = new Map();
+  const persistenceError = () =&gt;
+    Object.assign(
+      new Error(&quot;The host could not persist the widget state update&quot;),
+      {
+        code: -32000,
+        data: { code: &quot;widget_state_persistence_failed&quot;, retryable: false },
+      },
+    );
+  /**
+   * @param {object} prototype
+   * @param {string} property
+   */
+  const getPrototypeGetter = (prototype, property) =&gt; {
+    // oxlint-disable-next-line typescript/unbound-method -- invoked through captured Reflect.apply
+    const getter = Object.getOwnPropertyDescriptor(prototype, property)?.get;
+    if (getter == null) {
+      throw new Error(`Missing ${property} getter`);
+    }
+    return getter;
+  };
+  const getMessageData = getPrototypeGetter(MessageEvent.prototype, &quot;data&quot;);
+  const getMessagePorts = getPrototypeGetter(MessageEvent.prototype, &quot;ports&quot;);
+  const getMessageSource = getPrototypeGetter(MessageEvent.prototype, &quot;source&quot;);
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const addHostMessageListener = MessagePort.prototype.addEventListener;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const postHostMessage = MessagePort.prototype.postMessage;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const startHostPort = MessagePort.prototype.start;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const stopMessagePropagation = Event.prototype.stopImmediatePropagation;
+  /** @type {MessagePort | null} */
+  let hostPort = null;
+  const postToHost = (type, payload) =&gt; {
+    if (hostPort != null) {
+      apply(postHostMessage, hostPort, [{ type, ...payload }]);
+    }
+  };
+  const openExternal = ({ href }) =&gt; {
+    if (globalThis.navigator.userActivation?.isActive === true) {
+      postToHost(&quot;open-external&quot;, { href });
+    }
+  };
+  const sendFollowUpMessage = ({ context, prompt, title }) =&gt; {
+    if (globalThis.navigator.userActivation?.isActive === true) {
+      postToHost(&quot;follow-up&quot;, { context, prompt, title });
+    }
+    return Promise.resolve();
+  };
+  /**
+   * @param {Record&lt;string, unknown&gt; | ((previous: Record&lt;string, unknown&gt; | null) =&gt; Record&lt;string, unknown&gt;)} next
+   * @returns {Promise&lt;void&gt;}
+   */
+  const setWidgetState = async (next) =&gt; {
+    const nextState = typeof next === &quot;function&quot; ? next(state) : next;
+    if (
+      nextState == null ||
+      typeof nextState !== &quot;object&quot; ||
+      isArray(nextState)
+    ) {
+      throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+    }
+    const inputState = stringify(
+      nextState,
+      (_key, /** @type {unknown} */ value) =&gt; {
+        if (
+          typeof value === &quot;undefined&quot; ||
+          typeof value === &quot;function&quot; ||
+          typeof value === &quot;symbol&quot; ||
+          (typeof value === &quot;number&quot; &amp;&amp; !Number.isFinite(value))
+        ) {
+          throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+        }
+        return value;
+      },
+    );
+    const parsedState = parse(inputState);
+    if (
+      parsedState == null ||
+      typeof parsedState !== &quot;object&quot; ||
+      isArray(parsedState)
+    ) {
+      throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+    }
+    const storedState = {
+      modelContent: null,
+      privateContent: null,
+      ...parsedState,
+    };
+    const serializedState = stringify(storedState);
+    if (encode(serializedState).length &gt; 16 * 1024) {
+      throw new TypeError(
+        &quot;Widget state must be a JSON object of at most 16 KiB&quot;,
+      );
+    }
+    if (
+      hasOwn(storedState, &quot;imageIds&quot;) &amp;&amp;
+      (!isArray(storedState.imageIds) ||
+        storedState.imageIds.some(
+          (/** @type {unknown} */ id) =&gt; typeof id !== &quot;string&quot;,
+        ))
+    ) {
+      throw new TypeError(&quot;Widget state imageIds must be an array of strings&quot;);
+    }
+    if (storedState.imageIds?.length &gt; 0) {
+      throw Object.assign(
+        new TypeError(&quot;Visualization state does not support image attachments&quot;),
+        { code: -32602, data: { code: &quot;images_unsupported&quot; } },
+      );
+    }
+    state = storedState;
+    globalThis.openai.widgetState = state;
+    globalThis.dispatchEvent(
+      new CustomEvent(&quot;openai:set_globals&quot;, {
+        detail: { globals: { widgetState: state } },
+      }),
+    );
+    if (statePersistence === &quot;none&quot;) {
+      throw persistenceError();
+    }
+    const id = ++nextStateRequestId;
+    return new Promise((resolve, reject) =&gt; {
+      const timeout = globalThis.setTimeout(() =&gt; {
+        pendingStateWrites.delete(id);
+        reject(persistenceError());
+      }, 30_000);
+      pendingStateWrites.set(id, { resolve, reject, timeout, serializedState });
+      postToHost(&quot;widget-state-write&quot;, { id, state: serializedState });
+    });
+  };
+  const syncTheme = () =&gt; {
+    const theme = mediaQuery.matches ? &quot;dark&quot; : &quot;light&quot;;
+    root.dataset.theme = theme;
+    globalThis.openai = {
+      ...globalThis.openai,
+      openExternal,
+      sendFollowUpMessage,
+      setWidgetState,
+      theme,
+      visualizationStyleVariables: {},
+      visualizationTheme: theme,
+      widgetState: state,
+      statePersistence,
+      stateModelContext: &quot;none&quot;,
+    };
+    globalThis.dispatchEvent(
+      new CustomEvent(&quot;openai:set_globals&quot;, {
+        detail: { globals: globalThis.openai },
+      }),
+    );
+  };
+  const sendHeight = () =&gt; {
+    postToHost(&quot;height&quot;, {
+      height: Math.ceil(
+        Math.max(
+          document.body.scrollHeight,
+          document.body.getBoundingClientRect().height,
+        ),
+      ),
+    });
+  };
+
+  globalThis.addEventListener(
+    &quot;message&quot;,
+    (event) =&gt; {
+      const data = apply(getMessageData, event, []);
+      const ports = apply(getMessagePorts, event, []);
+      const source = apply(getMessageSource, event, []);
+      if (
+        hostPort != null ||
+        source !== parentWindow ||
+        typeof data !== &quot;object&quot; ||
+        data?.type !== &quot;codex-visualization-initialize&quot; ||
+        !isArray(ports) ||
+        ports.length !== 1
+      ) {
+        return;
+      }
+      apply(stopMessagePropagation, event, []);
+      const nextHostPort = ports[0];
+      try {
+        apply(addHostMessageListener, nextHostPort, [
+          &quot;message&quot;,
+          (event) =&gt; {
+            const data = apply(getMessageData, event, []);
+            if (typeof data === &quot;object&quot; &amp;&amp; data?.type === &quot;measure&quot;) {
+              sendHeight();
+            } else if (
+              typeof data === &quot;object&quot; &amp;&amp;
+              data?.type === &quot;widget-state-result&quot;
+            ) {
+              /** @type {unknown} */
+              const id = data.id;
+              if (typeof id !== &quot;number&quot;) {
+                return;
+              }
+              const pending = pendingStateWrites.get(id);
+              if (pending != null) {
+                pendingStateWrites.delete(id);
+                globalThis.clearTimeout(pending.timeout);
+                if (data.ok === true) {
+                  pending.resolve();
+                } else {
+                  pending.reject(persistenceError());
+                }
+              }
+            }
+          },
+        ]);
+        apply(startHostPort, nextHostPort, []);
+      } catch {
+        return;
+      }
+      hostPort = nextHostPort;
+      for (const [id, { serializedState }] of pendingStateWrites) {
+        postToHost(&quot;widget-state-write&quot;, { id, state: serializedState });
+      }
+      sendHeight();
+    },
+    { capture: true },
+  );
+  document.currentScript?.remove();
+  mediaQuery.addEventListener(&quot;change&quot;, syncTheme);
+  globalThis.addEventListener(&quot;click&quot;, (event) =&gt; {
+    if (event.defaultPrevented) {
+      return;
+    }
+    let element = null;
+    if (event.target instanceof globalThis.Element) {
+      element = event.target;
+    } else if (event.target instanceof globalThis.Node) {
+      element = event.target.parentElement;
+    }
+    const link = element?.closest(&quot;a[href]&quot;);
+    const href = link?.getAttribute(&quot;href&quot;);
+    if (href == null) {
+      return;
+    }
+    if (href.startsWith(&quot;#&quot;)) {
+      let id;
+      try {
+        id = decodeURIComponent(href.slice(1));
+      } catch {
+        return;
+      }
+      const target = id.length === 0 ? root : document.getElementById(id);
+      if (
+        target == null ||
+        globalThis.navigator.userActivation?.isActive !== true
+      ) {
+        return;
+      }
+      event.preventDefault();
+      postToHost(&quot;scroll-to&quot;, {
+        top: target.getBoundingClientRect().top + globalThis.scrollY,
+      });
+      return;
+    }
+    event.preventDefault();
+    openExternal({ href });
+  });
+  new ResizeObserver(sendHeight).observe(document.body);
+  syncTheme();
+})();
+&lt;/script&gt;
+&lt;div id=&quot;careiq-access-design&quot; aria-label=&quot;CareIQ authentication and onboarding designs&quot;&gt;
+  &lt;div class=&quot;cq-preview-tools&quot;&gt;
+    &lt;div class=&quot;cq-preview-title&quot;&gt;&lt;strong&gt;CareIQ &lt;span&gt;Access &amp; onboarding&lt;/span&gt;&lt;/strong&gt;&lt;small&gt;Design preview · Sample data · Actions simulated&lt;/small&gt;&lt;/div&gt;
+    &lt;div class=&quot;cq-preview-platform&quot; aria-label=&quot;Preview platform&quot;&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-platform=&quot;web&quot; aria-pressed=&quot;true&quot;&gt;Web&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-platform=&quot;ios&quot; aria-pressed=&quot;false&quot;&gt;iOS&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-platform=&quot;android&quot; aria-pressed=&quot;false&quot;&gt;Android&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;cq-preview-screens&quot;&gt;
+    &lt;div class=&quot;cq-preview-field&quot;&gt;&lt;label class=&quot;form-label&quot; for=&quot;cq-screen-picker&quot;&gt;Screen&lt;/label&gt;&lt;select id=&quot;cq-screen-picker&quot; class=&quot;form-select&quot;&gt;&lt;/select&gt;&lt;/div&gt;
+    &lt;div class=&quot;cq-preview-field&quot;&gt;&lt;label class=&quot;form-label&quot; for=&quot;cq-path-picker&quot;&gt;Preview path&lt;/label&gt;&lt;select id=&quot;cq-path-picker&quot; class=&quot;form-select&quot;&gt;&lt;option value=&quot;owner&quot;&gt;Approved owner&lt;/option&gt;&lt;option value=&quot;invitee&quot;&gt;Invited teammate&lt;/option&gt;&lt;option value=&quot;restricted&quot;&gt;Setup needs approval&lt;/option&gt;&lt;option value=&quot;member&quot;&gt;Existing member&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
+    &lt;div class=&quot;cq-preview-arrows&quot;&gt;&lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; data-preview=&quot;previous&quot; aria-label=&quot;Previous design screen&quot;&gt;←&lt;/button&gt;&lt;span id=&quot;cq-screen-count&quot; class=&quot;text-small tabular-nums&quot;&gt;&lt;/span&gt;&lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; data-preview=&quot;next&quot; aria-label=&quot;Next design screen&quot;&gt;→&lt;/button&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div id=&quot;cq-preview-stage&quot;&gt;
+    &lt;div id=&quot;cq-product&quot; class=&quot;cq-product&quot; aria-label=&quot;CareIQ product design&quot;&gt;
+      &lt;div id=&quot;cq-native-status&quot; class=&quot;cq-native-status&quot; aria-hidden=&quot;true&quot;&gt;&lt;/div&gt;
+      &lt;header class=&quot;cq-product-header&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;cq-brand cursor-interaction&quot; data-go=&quot;signin&quot; aria-label=&quot;CareIQ home&quot;&gt;&lt;span class=&quot;cq-brand-symbol&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;span&gt;careiq&lt;/span&gt;&lt;/button&gt;&lt;button type=&quot;button&quot; class=&quot;cq-text-button cursor-interaction&quot; data-action=&quot;help&quot;&gt;Need help?&lt;/button&gt;&lt;/header&gt;
+      &lt;div id=&quot;cq-product-layout&quot; class=&quot;cq-product-layout&quot;&gt;
+        &lt;aside id=&quot;cq-setup-sidebar&quot; class=&quot;cq-setup-sidebar&quot; aria-label=&quot;Practice setup progress&quot;&gt;&lt;/aside&gt;
+        &lt;main id=&quot;cq-page&quot; class=&quot;cq-page&quot;&gt;&lt;/main&gt;
+      &lt;/div&gt;
+      &lt;footer class=&quot;cq-product-footer&quot;&gt;&lt;span id=&quot;cq-footer-context&quot;&gt;A little more room to care.&lt;/span&gt;&lt;span class=&quot;cq-footer-mark&quot;&gt;CareIQ&lt;/span&gt;&lt;/footer&gt;
+      &lt;div id=&quot;cq-native-home&quot; class=&quot;cq-native-home&quot; aria-hidden=&quot;true&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div id=&quot;cq-design-caption&quot; class=&quot;cq-design-caption text-small&quot;&gt;&lt;/div&gt;
+  &lt;div id=&quot;cq-preview-announcement&quot; class=&quot;sr-only&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;style&gt;
+#careiq-access-design .cq-preview-tools{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding:8px 0 14px;}
+#careiq-access-design .cq-preview-title{display:grid;gap:4px;}
+#careiq-access-design .cq-preview-title strong{font-weight:500;}
+#careiq-access-design .cq-preview-title strong span{margin-left:10px;opacity:.65;}
+#careiq-access-design .cq-preview-title small{opacity:.65;}
+#careiq-access-design .cq-preview-platform{display:flex;gap:6px;flex-wrap:wrap;padding-right:90px;}
+#careiq-access-design .cq-preview-screens{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;flex-wrap:wrap;margin-bottom:16px;}
+#careiq-access-design .cq-preview-field{flex:1 1 240px;max-width:340px;min-width:0;}
+#careiq-access-design .cq-preview-arrows{display:flex;align-items:center;gap:6px;}
+#careiq-access-design .cq-design-caption{padding:12px 0 4px;opacity:.7;}
+#careiq-access-design .cq-product{--cq-white:#fff;--cq-ink:#2b3832;--cq-muted:#626f68;--cq-line:#e4e9e6;--cq-sage:#496f5a;--cq-soft:#f0f5f2;--cq-hover:#f5f8f6;--cq-danger:#963f36;--cq-error-bg:#fff5f3;--cq-radius:10px;color-scheme:light;background:var(--cq-white);color:var(--cq-ink);font-family:&quot;Segoe UI&quot;,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,sans-serif;font-size:15px;line-height:1.5;border:1px solid var(--cq-line);border-radius:16px;overflow:clip;position:relative;min-width:0;}
+#careiq-access-design .cq-product *{box-sizing:border-box;}
+#careiq-access-design .cq-product h1,#careiq-access-design .cq-product h2,#careiq-access-design .cq-product h3,#careiq-access-design .cq-product p{margin:0;}
+#careiq-access-design .cq-product button,#careiq-access-design .cq-product input,#careiq-access-design .cq-product select{font:inherit;}
+#careiq-access-design .cq-product button{touch-action:manipulation;}
+#careiq-access-design .cq-product button:disabled{opacity:.55;cursor:not-allowed;}
+#careiq-access-design .cq-product a{color:var(--cq-sage);text-underline-offset:3px;}
+#careiq-access-design .cq-product button:focus-visible,#careiq-access-design .cq-product input:focus-visible,#careiq-access-design .cq-product select:focus-visible,#careiq-access-design .cq-product a:focus-visible{outline:2px solid var(--cq-sage);outline-offset:3px;}
+#careiq-access-design .cq-product-header{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:28px 36px;border-bottom:1px solid transparent;min-height:88px;}
+#careiq-access-design .cq-brand{display:flex;align-items:center;gap:8px;padding:0;background:transparent;border:0;color:var(--cq-ink);font-size:27px!important;font-weight:700!important;letter-spacing:-1.3px;min-height:44px;}
+#careiq-access-design .cq-brand-symbol{width:30px;height:30px;position:relative;transform:rotate(-10deg);flex:0 0 30px;}
+#careiq-access-design .cq-brand-symbol:before,#careiq-access-design .cq-brand-symbol:after{content:&quot;&quot;;position:absolute;left:11px;top:1px;width:9px;height:28px;background:var(--cq-sage);border-radius:5px;}
+#careiq-access-design .cq-brand-symbol:after{transform:rotate(90deg);}
+#careiq-access-design .cq-text-button{background:transparent;border:0;padding:8px 0;min-height:44px;color:var(--cq-sage);font-weight:500!important;font-size:13px!important;text-align:left;}
+#careiq-access-design .cq-text-button:hover{text-decoration:underline;text-underline-offset:4px;}
+#careiq-access-design .cq-product-layout{display:flex;min-height:575px;}
+#careiq-access-design .cq-page{width:100%;min-width:0;display:flex;justify-content:center;padding:38px 32px 56px;}
+#careiq-access-design .cq-content{width:100%;max-width:408px;}
+#careiq-access-design .cq-content.cq-wide{max-width:480px;}
+#careiq-access-design .cq-eyebrow{display:flex;gap:8px;align-items:center;color:var(--cq-muted);font-size:12px;letter-spacing:.05em;text-transform:uppercase;font-weight:500;margin-bottom:18px;}
+#careiq-access-design .cq-product h1{font-size:30px;font-weight:650;letter-spacing:-.9px;line-height:1.2;margin-bottom:12px;}
+#careiq-access-design .cq-lead{color:var(--cq-muted);font-size:14px;line-height:1.65;max-width:445px;margin-bottom:28px!important;overflow-wrap:anywhere;}
+#careiq-access-design .cq-form{display:grid;gap:20px;}
+#careiq-access-design .cq-field{display:grid;gap:8px;font-size:13px;font-weight:500;min-width:0;}
+#careiq-access-design .cq-field small{font-weight:400;font-size:12px;color:var(--cq-muted);line-height:1.5;}
+#careiq-access-design .cq-input{width:100%;min-width:0;background:var(--cq-white);color:var(--cq-ink);border:1px solid var(--cq-line);border-radius:var(--cq-radius);padding:12px 14px;font-size:15px!important;font-weight:400;min-height:48px;box-shadow:none;}
+#careiq-access-design .cq-input::placeholder{color:#7b867f;opacity:1;}
+#careiq-access-design .cq-input[aria-invalid=&quot;true&quot;]{border-color:var(--cq-danger);}
+#careiq-access-design .cq-password-wrap{position:relative;}
+#careiq-access-design .cq-password-wrap input{padding-right:58px;}
+#careiq-access-design .cq-reveal{position:absolute;right:5px;top:2px;min-width:44px;min-height:44px;padding:8px;border:0;background:transparent;color:var(--cq-muted);display:grid;place-items:center;}
+#careiq-access-design .cq-field-top{display:flex;justify-content:space-between;align-items:center;gap:12px;}
+#careiq-access-design .cq-field-top button{min-height:30px;padding:0;}
+#careiq-access-design .cq-primary,#careiq-access-design .cq-secondary{display:flex;justify-content:center;align-items:center;gap:10px;min-height:48px;width:100%;padding:12px 18px;border-radius:var(--cq-radius);font-weight:550!important;font-size:14px!important;}
+#careiq-access-design .cq-primary{background:var(--cq-sage);color:var(--cq-white);border:1px solid var(--cq-sage);}
+#careiq-access-design .cq-primary:hover{filter:brightness(.93);}
+#careiq-access-design .cq-secondary{background:var(--cq-white);border:1px solid var(--cq-line);color:var(--cq-ink);}
+#careiq-access-design .cq-secondary:hover{background:var(--cq-hover);}
+#careiq-access-design .cq-form-actions{display:grid;gap:10px;margin-top:8px;}
+#careiq-access-design .cq-helper-row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--cq-muted);}
+#careiq-access-design .cq-under-form{text-align:center;color:var(--cq-muted);font-size:13px;margin-top:24px!important;}
+#careiq-access-design .cq-under-form button{margin-left:4px;}
+#careiq-access-design .cq-policy{color:var(--cq-muted);font-size:12px;line-height:1.65;text-align:center;margin-top:18px!important;}
+#careiq-access-design .cq-policy button{font-size:12px!important;min-height:24px;}
+#careiq-access-design .cq-divider{display:flex;align-items:center;gap:15px;margin:20px 0;color:var(--cq-muted);font-size:12px;}
+#careiq-access-design .cq-divider:before,#careiq-access-design .cq-divider:after{content:&quot;&quot;;height:1px;background:var(--cq-line);flex:1;}
+#careiq-access-design .cq-code{font-size:24px!important;letter-spacing:.36em;font-variant-numeric:tabular-nums;text-align:center;padding-left:22px;}
+#careiq-access-design .cq-note{display:flex;gap:10px;align-items:flex-start;padding:14px 16px;border-radius:var(--cq-radius);background:var(--cq-soft);font-size:13px;line-height:1.6;color:var(--cq-ink);}
+#careiq-access-design .cq-note svg{flex-shrink:0;margin-top:3px;color:var(--cq-sage);}
+#careiq-access-design .cq-error{background:var(--cq-error-bg);color:var(--cq-danger);border-radius:var(--cq-radius);padding:12px 14px;font-size:13px;line-height:1.6;}
+#careiq-access-design .cq-error:empty{display:none;}
+#careiq-access-design .cq-feedback{font-size:12px;color:var(--cq-sage);}
+#careiq-access-design .cq-feedback:empty{display:none;}
+#careiq-access-design .cq-success-mark{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:var(--cq-soft);color:var(--cq-sage);margin-bottom:24px;}
+#careiq-access-design .cq-success-mark svg{width:24px;height:24px;}
+#careiq-access-design .cq-product-footer{padding:18px 36px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--cq-muted);font-size:12px;}
+#careiq-access-design .cq-footer-mark{font-size:11px;letter-spacing:.03em;}
+#careiq-access-design .cq-setup-sidebar{display:none;}
+#careiq-access-design .cq-product.cq-setup-mode .cq-product-header{border-color:var(--cq-line);}
+#careiq-access-design .cq-product.cq-setup-mode .cq-setup-sidebar{display:flex;flex-direction:column;width:246px;flex:0 0 246px;padding:38px 28px 24px;border-right:1px solid var(--cq-line);}
+#careiq-access-design .cq-sidebar-title{font-size:17px;font-weight:550;letter-spacing:-.3px;margin-bottom:6px!important;}
+#careiq-access-design .cq-sidebar-sub{font-size:12px;color:var(--cq-muted);margin-bottom:30px!important;}
+#careiq-access-design .cq-step-list{margin:0;padding:0;list-style:none;display:grid;gap:28px;}
+#careiq-access-design .cq-step{display:flex;gap:12px;align-items:flex-start;color:var(--cq-muted);}
+#careiq-access-design .cq-step-number{display:grid;place-items:center;width:27px;height:27px;flex:0 0 27px;border:1px solid var(--cq-line);border-radius:50%;font-size:12px;}
+#careiq-access-design .cq-step strong{display:block;font-size:13px;font-weight:500;}
+#careiq-access-design .cq-step small{display:block;font-size:11px;margin-top:3px;}
+#careiq-access-design .cq-step[aria-current=&quot;step&quot;]{color:var(--cq-ink);}
+#careiq-access-design .cq-step[aria-current=&quot;step&quot;] .cq-step-number{background:var(--cq-sage);color:var(--cq-white);border-color:var(--cq-sage);}
+#careiq-access-design .cq-step.cq-completed .cq-step-number{background:var(--cq-soft);border-color:transparent;color:var(--cq-sage);}
+#careiq-access-design .cq-sidebar-bottom{margin-top:auto;padding-top:70px;font-size:12px;color:var(--cq-muted);line-height:1.65;}
+#careiq-access-design .cq-sidebar-bottom strong{display:block;font-weight:500;color:var(--cq-ink);}
+#careiq-access-design .cq-back{display:flex;align-items:center;gap:8px;color:var(--cq-muted);margin:0 0 24px;}
+#careiq-access-design .cq-onboard-progress{display:none;}
+#careiq-access-design .cq-summary{margin:0 0 24px;border:1px solid var(--cq-line);border-radius:12px;padding:0 20px;}
+#careiq-access-design .cq-summary-group{padding:18px 0;}
+#careiq-access-design .cq-summary-group+.cq-summary-group{border-top:1px solid var(--cq-line);}
+#careiq-access-design .cq-summary-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px;}
+#careiq-access-design .cq-summary-top h2{font-size:12px!important;font-weight:500!important;color:var(--cq-muted);}
+#careiq-access-design .cq-summary-top button{min-height:24px;padding:0;font-size:12px!important;}
+#careiq-access-design .cq-summary-value{font-size:15px;font-weight:500;overflow-wrap:anywhere;}
+#careiq-access-design .cq-summary-meta{color:var(--cq-muted);font-size:12px;margin-top:5px!important;overflow-wrap:anywhere;}
+#careiq-access-design .cq-check{display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.6;min-height:44px;}
+#careiq-access-design .cq-check input{width:18px;height:18px;flex:0 0 18px;margin-top:3px;accent-color:var(--cq-sage);}
+#careiq-access-design .cq-details{border:0;}
+#careiq-access-design .cq-details summary{display:flex;align-items:center;gap:8px;min-height:44px;color:var(--cq-sage);font-size:13px;}
+#careiq-access-design .cq-details .cq-field{margin-top:8px;}
+#careiq-access-design .cq-row-options{display:grid;gap:12px;margin-bottom:24px;}
+#careiq-access-design .cq-choice{display:flex;align-items:center;gap:14px;text-align:left;width:100%;background:var(--cq-white);border:1px solid var(--cq-line);border-radius:var(--cq-radius);padding:16px;color:var(--cq-ink);min-height:76px;}
+#careiq-access-design .cq-choice:hover{background:var(--cq-hover);}
+#careiq-access-design .cq-choice .cq-choice-copy{flex:1;min-width:0;}
+#careiq-access-design .cq-choice strong{display:block;font-size:14px;font-weight:500;}
+#careiq-access-design .cq-choice small{display:block;font-size:12px;color:var(--cq-muted);margin-top:3px;}
+#careiq-access-design .cq-choice input{width:18px;height:18px;accent-color:var(--cq-sage);flex-shrink:0;}
+#careiq-access-design .cq-choice svg{color:var(--cq-muted);flex-shrink:0;}
+#careiq-access-design .cq-list{display:grid;margin:18px 0 24px;}
+#careiq-access-design .cq-list-row{display:flex;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid var(--cq-line);}
+#careiq-access-design .cq-list-row svg{color:var(--cq-sage);flex-shrink:0;}
+#careiq-access-design .cq-list-row&gt;div{flex:1;min-width:0;}
+#careiq-access-design .cq-list-row strong{display:block;font-size:14px;font-weight:500;}
+#careiq-access-design .cq-list-row small{display:block;font-size:12px;color:var(--cq-muted);margin-top:3px;}
+#careiq-access-design .cq-list-row button{font-size:12px!important;}
+#careiq-access-design .cq-account-chip{display:flex;align-items:center;gap:9px;color:var(--cq-muted);font-size:12px;margin:0 0 24px;overflow-wrap:anywhere;}
+#careiq-access-design .cq-account-dot{display:grid;place-items:center;flex-shrink:0;width:28px;height:28px;border-radius:9px;background:var(--cq-soft);color:var(--cq-sage);font-size:11px;}
+#careiq-access-design .cq-native-status,#careiq-access-design .cq-native-home{display:none;}
+#careiq-access-design .cq-support{position:absolute;inset:88px 24px 24px;z-index:2;background:var(--cq-white);border:1px solid var(--cq-line);border-radius:16px;box-shadow:0 12px 40px #2b383210;padding:28px;display:flex;flex-direction:column;gap:22px;}
+#careiq-access-design .cq-support-head{display:flex;justify-content:space-between;gap:16px;align-items:center;}
+#careiq-access-design .cq-support h2{font-size:22px;font-weight:600;letter-spacing:-.5px;}
+#careiq-access-design .cq-support p{font-size:14px;color:var(--cq-muted);max-width:500px;}
+#careiq-access-design .cq-support .cq-secondary{margin-top:auto;}
+#careiq-access-design #cq-preview-stage.cq-mobile-stage{padding:28px 12px;}
+#careiq-access-design .cq-product.cq-native{max-width:390px;margin:0 auto;border-radius:28px;font-size:16px;min-height:810px;display:flex;flex-direction:column;}
+#careiq-access-design .cq-native .cq-native-status{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 24px 8px;height:47px;font-size:13px;font-weight:600;}
+#careiq-access-design .cq-native-status .cq-status-right{display:flex;align-items:center;gap:5px;}
+#careiq-access-design .cq-ios .cq-native-status:after{content:&quot;&quot;;background:#222b25;width:92px;height:24px;border-radius:16px;position:absolute;left:calc(50% - 46px);top:11px;}
+#careiq-access-design .cq-android .cq-native-status:after{content:&quot;&quot;;background:#222b25;width:9px;height:9px;border-radius:50%;position:absolute;left:calc(50% - 4px);top:19px;}
+#careiq-access-design .cq-native .cq-product-header{padding:16px 24px;min-height:78px;}
+#careiq-access-design .cq-native .cq-brand{font-size:24px!important;}
+#careiq-access-design .cq-native .cq-product-layout{min-height:0;flex:1;}
+#careiq-access-design .cq-native .cq-page{padding:26px 24px 30px;}
+#careiq-access-design .cq-native h1{font-size:28px;letter-spacing:-.8px;}
+#careiq-access-design .cq-native .cq-lead{font-size:15px;margin-bottom:26px!important;line-height:1.6;}
+#careiq-access-design .cq-native .cq-field{font-size:14px;}
+#careiq-access-design .cq-ios{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,sans-serif;}
+#careiq-access-design .cq-android{font-family:Roboto,&quot;Segoe UI&quot;,system-ui,sans-serif;}
+#careiq-access-design .cq-native .cq-field-top button,#careiq-access-design .cq-native .cq-policy button,#careiq-access-design .cq-native .cq-summary-top button{min-height:44px;}
+#careiq-access-design .cq-android .cq-text-button{min-height:48px;}
+#careiq-access-design .cq-native .cq-input{min-height:52px;font-size:16px!important;}
+#careiq-access-design .cq-native .cq-primary,#careiq-access-design .cq-native .cq-secondary{min-height:52px;font-size:15px!important;}
+#careiq-access-design .cq-native .cq-code{font-size:23px!important;}
+#careiq-access-design .cq-native .cq-reveal{min-height:48px;}
+#careiq-access-design .cq-native .cq-product-footer{padding:14px 24px 12px;justify-content:center;text-align:center;font-size:11px;}
+#careiq-access-design .cq-native .cq-footer-mark{display:none;}
+#careiq-access-design .cq-native .cq-native-home{display:flex;justify-content:center;height:22px;align-items:center;}
+#careiq-access-design .cq-native .cq-native-home:after{content:&quot;&quot;;background:var(--cq-ink);height:4px;width:112px;border-radius:4px;}
+#careiq-access-design .cq-android .cq-native-home:after{width:88px;height:3px;}
+#careiq-access-design .cq-native.cq-setup-mode .cq-setup-sidebar{display:none;}
+#careiq-access-design .cq-native.cq-setup-mode .cq-product-header{border-color:transparent;}
+#careiq-access-design .cq-native .cq-onboard-progress{display:block;margin-bottom:26px;}
+#careiq-access-design .cq-progress-label{display:flex;justify-content:space-between;gap:12px;color:var(--cq-muted);font-size:12px;margin-bottom:9px;}
+#careiq-access-design .cq-progress-track{height:3px;background:var(--cq-soft);border-radius:4px;}
+#careiq-access-design .cq-progress-track span{display:block;height:3px;background:var(--cq-sage);border-radius:4px;}
+#careiq-access-design .cq-native .cq-back{margin-bottom:18px;min-height:44px;}
+#careiq-access-design .cq-native .cq-summary{padding:0 16px;}
+#careiq-access-design .cq-native .cq-support{inset:100px 12px 30px;padding:24px;}
+@media(max-width:800px){#careiq-access-design .cq-product.cq-setup-mode .cq-setup-sidebar{width:200px;flex-basis:200px;padding:36px 22px;}#careiq-access-design .cq-page{padding:32px 24px 42px;}#careiq-access-design .cq-preview-platform{padding-right:0;}}
+@media(max-width:600px){#careiq-access-design .cq-preview-title strong span{display:block;margin:0;}#careiq-access-design .cq-preview-screens{gap:8px;}#careiq-access-design .cq-preview-field{flex-basis:100%;max-width:100%;}#careiq-access-design .cq-product-header{padding:20px 22px;}#careiq-access-design .cq-product.cq-setup-mode .cq-setup-sidebar{display:none;}#careiq-access-design .cq-onboard-progress{display:block;margin-bottom:26px;}#careiq-access-design .cq-page{padding:24px 22px 36px;}#careiq-access-design .cq-product h1{font-size:27px;}#careiq-access-design .cq-product-footer{padding:16px 22px;justify-content:center;}#careiq-access-design .cq-footer-mark{display:none;}#careiq-access-design .cq-product-layout{min-height:550px;}#careiq-access-design .cq-input{font-size:16px!important;}#careiq-access-design #cq-preview-stage.cq-mobile-stage{padding:20px 0;}#careiq-access-design .cq-native .cq-page{padding:24px 20px 28px;}#careiq-access-design .cq-native .cq-product-header{padding:16px 20px;}#careiq-access-design .cq-support{inset:85px 10px 12px;padding:20px;}}
+@media(prefers-reduced-motion:reduce){#careiq-access-design *{scroll-behavior:auto!important;}}
+&lt;/style&gt;
+&lt;script&gt;
+(() =&gt; {
+ const root=document.getElementById(&#x27;careiq-access-design&#x27;);
+ const product=root.querySelector(&#x27;#cq-product&#x27;), page=root.querySelector(&#x27;#cq-page&#x27;), picker=root.querySelector(&#x27;#cq-screen-picker&#x27;);
+ const screens=[
+  [&#x27;signin&#x27;,&#x27;Sign in&#x27;,&#x27;Authentication&#x27;],[&#x27;signup&#x27;,&#x27;Create account&#x27;,&#x27;Authentication&#x27;],[&#x27;verify&#x27;,&#x27;Verify email&#x27;,&#x27;Authentication&#x27;],[&#x27;forgot&#x27;,&#x27;Forgot password&#x27;,&#x27;Authentication&#x27;],[&#x27;resetemail&#x27;,&#x27;Reset email sent&#x27;,&#x27;Authentication&#x27;],[&#x27;reset&#x27;,&#x27;New password&#x27;,&#x27;Authentication&#x27;],[&#x27;resetdone&#x27;,&#x27;Password updated&#x27;,&#x27;Authentication&#x27;],[&#x27;mfa&#x27;,&#x27;Two-step verification&#x27;,&#x27;Authentication&#x27;],[&#x27;recovery&#x27;,&#x27;Recovery code&#x27;,&#x27;Authentication&#x27;],[&#x27;expired&#x27;,&#x27;Session expired&#x27;,&#x27;Authentication&#x27;],
+  [&#x27;eligible&#x27;,&#x27;Start practice setup&#x27;,&#x27;New practice&#x27;],[&#x27;practice&#x27;,&#x27;Practice details&#x27;,&#x27;New practice&#x27;],[&#x27;location&#x27;,&#x27;First location&#x27;,&#x27;New practice&#x27;],[&#x27;review&#x27;,&#x27;Review &amp; create&#x27;,&#x27;New practice&#x27;],[&#x27;creating&#x27;,&#x27;Setup in progress&#x27;,&#x27;New practice&#x27;],[&#x27;created&#x27;,&#x27;Practice created&#x27;,&#x27;New practice&#x27;],[&#x27;invite&#x27;,&#x27;Invite a teammate · optional&#x27;,&#x27;New practice&#x27;],[&#x27;invitesent&#x27;,&#x27;Invitation sent&#x27;,&#x27;New practice&#x27;],[&#x27;approvemember&#x27;,&#x27;Confirm teammate access&#x27;,&#x27;New practice&#x27;],[&#x27;memberactive&#x27;,&#x27;Teammate access confirmed&#x27;,&#x27;New practice&#x27;],[&#x27;owneraccess&#x27;,&#x27;Owner location access · optional&#x27;,&#x27;New practice&#x27;],[&#x27;resumesetup&#x27;,&#x27;Resume practice setup&#x27;,&#x27;New practice&#x27;],[&#x27;restricted&#x27;,&#x27;Setup approval needed&#x27;,&#x27;New practice&#x27;],
+  [&#x27;join&#x27;,&#x27;Accept invitation&#x27;,&#x27;Team &amp; access&#x27;],[&#x27;pending&#x27;,&#x27;Awaiting owner approval&#x27;,&#x27;Team &amp; access&#x27;],[&#x27;invitationexpired&#x27;,&#x27;Invitation expired&#x27;,&#x27;Team &amp; access&#x27;],[&#x27;wrongemail&#x27;,&#x27;Different invited email&#x27;,&#x27;Team &amp; access&#x27;],[&#x27;choosepractice&#x27;,&#x27;Choose practice&#x27;,&#x27;Team &amp; access&#x27;],[&#x27;chooselocation&#x27;,&#x27;Choose working location&#x27;,&#x27;Team &amp; access&#x27;],[&#x27;noaccess&#x27;,&#x27;Owner location access needed&#x27;,&#x27;Team &amp; access&#x27;],[&#x27;membernoaccess&#x27;,&#x27;Staff location access needed&#x27;,&#x27;Team &amp; access&#x27;],[&#x27;removed&#x27;,&#x27;Access removed&#x27;,&#x27;Team &amp; access&#x27;],[&#x27;accesserror&#x27;,&#x27;Access check unavailable&#x27;,&#x27;Team &amp; access&#x27;],[&#x27;workspace&#x27;,&#x27;Workspace entry&#x27;,&#x27;Team &amp; access&#x27;]
+ ];
+ const setupSteps={practice:0,location:1,review:2,creating:2};
+ const deviceZone=Intl.DateTimeFormat().resolvedOptions().timeZone||&#x27;America/Los_Angeles&#x27;;
+ const allZones=Array.from(new Set([deviceZone,&#x27;America/Los_Angeles&#x27;,&#x27;America/Denver&#x27;,&#x27;America/Chicago&#x27;,&#x27;America/New_York&#x27;,&#x27;Europe/London&#x27;,&#x27;Australia/Sydney&#x27;,...(Intl.supportedValuesOf?Intl.supportedValuesOf(&#x27;timeZone&#x27;):[]) ]));
+ const state={platform:&#x27;web&#x27;,screen:&#x27;signin&#x27;,scenario:&#x27;owner&#x27;,email:&#x27;alex@marlow.example&#x27;,name:&#x27;Alex Morgan&#x27;,practice:&#x27;Marlow Family Practice&#x27;,location:&#x27;Main location&#x27;,timezone:deviceZone,address:&#x27;&#x27;,ownerClinical:false,memberEmail:&#x27;sam@marlow.example&#x27;,role:&#x27;org:member&#x27;,assigned:false,inviteContext:false,created:false,submitted:false,assignedLocations:[],workingLocation:&#x27;&#x27;};
+ const design={radius:10,spacing:&#x27;Comfortable&#x27;};
+ function esc(v){return String(v).replace(/[&amp;&lt;&gt;&quot;&#x27;]/g,c=&gt;({&#x27;&amp;&#x27;:&#x27;&amp;amp;&#x27;,&#x27;&lt;&#x27;:&#x27;&amp;lt;&#x27;,&#x27;&gt;&#x27;:&#x27;&amp;gt;&#x27;,&#x27;&quot;&#x27;:&#x27;&amp;quot;&#x27;,&quot;&#x27;&quot;:&#x27;&amp;#39;&#x27;}[c]));}
+ function icon(name){return `&lt;i data-lucide=&quot;${name}&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;`;}
+ function link(text,go){return `&lt;button class=&quot;cq-text-button cursor-interaction&quot; type=&quot;button&quot; data-go=&quot;${go}&quot;&gt;${text}&lt;/button&gt;`;}
+ function action(text,a){return `&lt;button class=&quot;cq-text-button cursor-interaction&quot; type=&quot;button&quot; data-action=&quot;${a}&quot;&gt;${text}&lt;/button&gt;`;}
+ function primary(text,go){return `&lt;button type=&quot;button&quot; class=&quot;cq-primary cursor-interaction&quot; data-go=&quot;${go}&quot;&gt;${text}${icon(&#x27;arrow-right&#x27;)}&lt;/button&gt;`;}
+ function secondary(text,go){return `&lt;button type=&quot;button&quot; class=&quot;cq-secondary cursor-interaction&quot; data-go=&quot;${go}&quot;&gt;${text}&lt;/button&gt;`;}
+ function submit(text){return `&lt;button type=&quot;submit&quot; class=&quot;cq-primary cursor-interaction&quot;&gt;${text}${icon(&#x27;arrow-right&#x27;)}&lt;/button&gt;`;}
+ function field(label,name,value=&#x27;&#x27;,opts={}){let type=opts.type||&#x27;text&#x27;;return `&lt;label class=&quot;cq-field&quot; for=&quot;cq-${name}&quot;&gt;&lt;span&gt;${label}&lt;/span&gt;&lt;input class=&quot;cq-input&quot; id=&quot;cq-${name}&quot; name=&quot;${name}&quot; type=&quot;${type}&quot; value=&quot;${esc(value)}&quot; ${opts.required===false?&#x27;&#x27;:&#x27;required&#x27;} ${opts.placeholder?`placeholder=&quot;${esc(opts.placeholder)}&quot;`:&#x27;&#x27;} ${opts.autocomplete?`autocomplete=&quot;${opts.autocomplete}&quot;`:&#x27;&#x27;} ${opts.maxlength?`maxlength=&quot;${opts.maxlength}&quot;`:&#x27;&#x27;}&gt;${opts.hint?`&lt;small&gt;${opts.hint}&lt;/small&gt;`:&#x27;&#x27;}&lt;/label&gt;`;}
+ function password(label,name,forgot=false){return `&lt;div class=&quot;cq-field&quot;&gt;&lt;div class=&quot;cq-field-top&quot;&gt;&lt;label for=&quot;cq-${name}&quot;&gt;${label}&lt;/label&gt;${forgot?link(&#x27;Forgot password?&#x27;,&#x27;forgot&#x27;):&#x27;&#x27;}&lt;/div&gt;&lt;div class=&quot;cq-password-wrap&quot;&gt;&lt;input class=&quot;cq-input&quot; id=&quot;cq-${name}&quot; name=&quot;${name}&quot; type=&quot;password&quot; required ${name===&#x27;password&#x27;&amp;&amp;state.screen===&#x27;signin&#x27;?&#x27;&#x27;:&#x27;minlength=&quot;8&quot;&#x27;} autocomplete=&quot;${state.screen===&#x27;signin&#x27;?&#x27;current-password&#x27;:&#x27;new-password&#x27;}&quot; placeholder=&quot;${state.screen===&#x27;signin&#x27;?&#x27;Enter your password&#x27;:&#x27;Create a password&#x27;}&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;cq-reveal cursor-interaction&quot; data-action=&quot;reveal&quot; aria-label=&quot;Show ${label.toLowerCase()}&quot; aria-pressed=&quot;false&quot;&gt;${icon(&#x27;eye&#x27;)}&lt;/button&gt;&lt;/div&gt;${state.screen===&#x27;signup&#x27;||state.screen===&#x27;reset&#x27;?&#x27;&lt;small&gt;Use at least 8 characters.&lt;/small&gt;&#x27;:&#x27;&#x27;}&lt;/div&gt;`;}
+ function error(){return &#x27;&lt;p class=&quot;cq-error&quot; id=&quot;cq-form-error&quot; role=&quot;alert&quot;&gt;&lt;/p&gt;&#x27;;}
+ function feedback(){return &#x27;&lt;p class=&quot;cq-feedback&quot; id=&quot;cq-form-feedback&quot; role=&quot;status&quot;&gt;&lt;/p&gt;&#x27;;}
+ function codeForm(target,button=&#x27;Verify &amp; continue&#x27;){return `&lt;form class=&quot;cq-form&quot; data-form=&quot;${target}&quot;&gt;&lt;label class=&quot;cq-field&quot; for=&quot;cq-code&quot;&gt;&lt;span&gt;Verification code&lt;/span&gt;&lt;input id=&quot;cq-code&quot; name=&quot;code&quot; class=&quot;cq-input cq-code&quot; required inputmode=&quot;numeric&quot; autocomplete=&quot;one-time-code&quot; pattern=&quot;[0-9]{6}&quot; maxlength=&quot;6&quot; placeholder=&quot;000000&quot; aria-describedby=&quot;cq-code-hint&quot;&gt;&lt;small id=&quot;cq-code-hint&quot;&gt;Enter the 6-digit code. You can paste it here.&lt;/small&gt;&lt;/label&gt;${error()}${submit(button)}${feedback()}&lt;/form&gt;`;}
+ function note(text,i=&#x27;info&#x27;){return `&lt;div class=&quot;cq-note&quot;&gt;${icon(i)}&lt;span&gt;${text}&lt;/span&gt;&lt;/div&gt;`;}
+ function back(text,go){return `&lt;button type=&quot;button&quot; class=&quot;cq-text-button cq-back cursor-interaction&quot; data-go=&quot;${go}&quot;&gt;${icon(&#x27;arrow-left&#x27;)}${text}&lt;/button&gt;`;}
+ function progress(){const n=setupSteps[state.screen];if(n===undefined)return &#x27;&#x27;;return `&lt;div class=&quot;cq-onboard-progress&quot;&gt;&lt;div class=&quot;cq-progress-label&quot;&gt;&lt;span&gt;Practice setup&lt;/span&gt;&lt;span&gt;Step ${n+1} of 3&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;cq-progress-track&quot; role=&quot;progressbar&quot; aria-label=&quot;Practice setup progress&quot; aria-valuemin=&quot;0&quot; aria-valuemax=&quot;3&quot; aria-valuenow=&quot;${n+1}&quot;&gt;&lt;span style=&quot;width:${(n+1)/3*100}%&quot;&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;`;}
+ function heading(title,lead,opts={}){return `${opts.back?back(opts.back[0],opts.back[1]):&#x27;&#x27;}${progress()}${opts.mark?`&lt;div class=&quot;cq-success-mark&quot;&gt;${icon(opts.mark)}&lt;/div&gt;`:&#x27;&#x27;}${opts.eyebrow?`&lt;div class=&quot;cq-eyebrow&quot;&gt;${opts.eyebrow}&lt;/div&gt;`:&#x27;&#x27;}&lt;h1 id=&quot;cq-page-title&quot;&gt;${title}&lt;/h1&gt;&lt;p class=&quot;cq-lead&quot;&gt;${lead}&lt;/p&gt;`;}
+ function timezoneLabel(zone=state.timezone){return ({&#x27;America/Los_Angeles&#x27;:&#x27;Pacific Time (US &amp; Canada)&#x27;,&#x27;America/Denver&#x27;:&#x27;Mountain Time (US &amp; Canada)&#x27;,&#x27;America/Chicago&#x27;:&#x27;Central Time (US &amp; Canada)&#x27;,&#x27;America/New_York&#x27;:&#x27;Eastern Time (US &amp; Canada)&#x27;,&#x27;Europe/London&#x27;:&#x27;London&#x27;,&#x27;Australia/Sydney&#x27;:&#x27;Sydney&#x27;})[zone]||zone.replace(/_/g,&#x27; &#x27;).split(&#x27;/&#x27;).reverse().join(&#x27; · &#x27;);}
+ function account(){const initials=state.name.split(&#x27; &#x27;).filter(Boolean).map(s=&gt;s[0]).slice(0,2).join(&#x27;&#x27;);return `&lt;div class=&quot;cq-account-chip&quot;&gt;&lt;span class=&quot;cq-account-dot&quot;&gt;${esc(initials)}&lt;/span&gt;&lt;span&gt;${esc(state.email)}&lt;/span&gt;&lt;/div&gt;`;}
+ function reviewSummary(edit=true){return `&lt;div class=&quot;cq-summary&quot;&gt;&lt;section class=&quot;cq-summary-group&quot;&gt;&lt;div class=&quot;cq-summary-top&quot;&gt;&lt;h2&gt;Practice&lt;/h2&gt;${edit?link(&#x27;Edit&#x27;,&#x27;practice&#x27;):&#x27;&#x27;}&lt;/div&gt;&lt;p class=&quot;cq-summary-value&quot;&gt;${esc(state.practice)}&lt;/p&gt;&lt;p class=&quot;cq-summary-meta&quot;&gt;Owner · ${esc(state.name)}&lt;/p&gt;&lt;/section&gt;&lt;section class=&quot;cq-summary-group&quot;&gt;&lt;div class=&quot;cq-summary-top&quot;&gt;&lt;h2&gt;First location&lt;/h2&gt;${edit?link(&#x27;Edit&#x27;,&#x27;location&#x27;):&#x27;&#x27;}&lt;/div&gt;&lt;p class=&quot;cq-summary-value&quot;&gt;${esc(state.location)}&lt;/p&gt;&lt;p class=&quot;cq-summary-meta&quot;&gt;${esc(timezoneLabel())}${state.address?`&lt;br&gt;${esc(state.address)}`:&#x27;&#x27;}&lt;/p&gt;&lt;/section&gt;&lt;/div&gt;`;}
+ const views={
+ signin:()=&gt;heading(&#x27;Welcome back&#x27;,state.inviteContext?`Sign in with ${esc(state.memberEmail)} to join your practice.`:&#x27;Sign in to your CareIQ account.&#x27;)+`&lt;form class=&quot;cq-form&quot; data-form=&quot;signin&quot;&gt;${field(&#x27;Email address&#x27;,&#x27;email&#x27;,state.inviteContext?state.memberEmail:&#x27;&#x27;,{type:&#x27;email&#x27;,placeholder:&#x27;you@practice.com&#x27;,autocomplete:&#x27;username&#x27;})}${password(&#x27;Password&#x27;,&#x27;password&#x27;,true)}${error()}${submit(&#x27;Sign in&#x27;)}&lt;/form&gt;&lt;p class=&quot;cq-under-form&quot;&gt;New to CareIQ? ${link(&#x27;Create an account&#x27;,&#x27;signup&#x27;)}&lt;/p&gt;`,
+ signup:()=&gt;heading(&#x27;Create your account&#x27;,state.inviteContext?`Create an account with your invited email to join ${esc(state.practice)}.`:&#x27;A little more room to care. Start with your account.&#x27;)+`&lt;form class=&quot;cq-form&quot; data-form=&quot;signup&quot;&gt;${field(&#x27;Full name&#x27;,&#x27;name&#x27;,&#x27;&#x27;,{placeholder:&#x27;Alex Morgan&#x27;,autocomplete:&#x27;name&#x27;,maxlength:120})}${field(&#x27;Work email&#x27;,&#x27;email&#x27;,state.inviteContext?state.memberEmail:&#x27;&#x27;,{type:&#x27;email&#x27;,placeholder:&#x27;you@practice.com&#x27;,autocomplete:&#x27;email&#x27;})}${password(&#x27;Password&#x27;,&#x27;password&#x27;)}${error()}${submit(&#x27;Create account&#x27;)}&lt;/form&gt;&lt;p class=&quot;cq-policy&quot;&gt;By creating an account, you agree to our&lt;br&gt;${action(&#x27;Terms of Service&#x27;,&#x27;terms&#x27;)} and ${action(&#x27;Privacy Policy&#x27;,&#x27;privacy&#x27;)}.&lt;/p&gt;&lt;p class=&quot;cq-under-form&quot;&gt;Already have an account? ${link(&#x27;Sign in&#x27;,&#x27;signin&#x27;)}&lt;/p&gt;`,
+ verify:()=&gt;heading(&#x27;Check your email&#x27;,`We sent a verification code to &lt;strong&gt;${esc(state.email)}&lt;/strong&gt;.`,{back:[&#x27;Back&#x27;,&#x27;signup&#x27;],mark:&#x27;mail&#x27;})+codeForm(&#x27;verify&#x27;)+`&lt;div class=&quot;cq-helper-row&quot; style=&quot;margin-top:18px&quot;&gt;&lt;span&gt;Didn&#x27;t receive it?&lt;/span&gt;${action(&#x27;Resend code&#x27;,&#x27;resend&#x27;)}&lt;/div&gt;&lt;p class=&quot;cq-under-form&quot;&gt;${action(&#x27;Use a different email&#x27;,&#x27;changeemail&#x27;)}&lt;/p&gt;`,
+ forgot:()=&gt;heading(&#x27;Reset your password&#x27;,&#x27;Enter your email and we’ll send a password reset link.&#x27;,{back:[&#x27;Back to sign in&#x27;,&#x27;signin&#x27;]})+`&lt;form class=&quot;cq-form&quot; data-form=&quot;forgot&quot;&gt;${field(&#x27;Email address&#x27;,&#x27;email&#x27;,&#x27;&#x27;,{type:&#x27;email&#x27;,placeholder:&#x27;you@practice.com&#x27;,autocomplete:&#x27;email&#x27;})}${error()}${submit(&#x27;Send reset link&#x27;)}&lt;/form&gt;`,
+ resetemail:()=&gt;heading(&#x27;Check your email&#x27;,`If an account exists for &lt;strong&gt;${esc(state.email)}&lt;/strong&gt;, you’ll receive a password reset link.`,{mark:&#x27;mail&#x27;})+note(&#x27;The link expires. If it no longer works, request a new one.&#x27;)+`&lt;div class=&quot;cq-form-actions&quot; style=&quot;margin-top:24px&quot;&gt;${secondary(&#x27;Back to sign in&#x27;,&#x27;signin&#x27;)}${action(&#x27;Send another link&#x27;,&#x27;resend&#x27;)}${feedback()}&lt;/div&gt;`,
+ reset:()=&gt;heading(&#x27;Choose a new password&#x27;,&#x27;Use a password you haven’t used for this account.&#x27;,{back:[&#x27;Back to sign in&#x27;,&#x27;signin&#x27;]})+`&lt;form class=&quot;cq-form&quot; data-form=&quot;reset&quot;&gt;${password(&#x27;New password&#x27;,&#x27;newpassword&#x27;)}${password(&#x27;Confirm password&#x27;,&#x27;confirm&#x27;)}${error()}${submit(&#x27;Update password&#x27;)}&lt;/form&gt;`,
+ resetdone:()=&gt;heading(&#x27;Password updated&#x27;,&#x27;You’re ready to sign in with your new password.&#x27;,{mark:&#x27;check&#x27;})+primary(&#x27;Back to sign in&#x27;,&#x27;signin&#x27;),
+ mfa:()=&gt;heading(&#x27;One more step&#x27;,&#x27;Enter the code from your authenticator app.&#x27;,{back:[&#x27;Back to sign in&#x27;,&#x27;signin&#x27;],mark:&#x27;shield-check&#x27;})+codeForm(&#x27;mfa&#x27;,&#x27;Verify &amp; sign in&#x27;)+`&lt;p class=&quot;cq-under-form&quot;&gt;${link(&#x27;Use a recovery code&#x27;,&#x27;recovery&#x27;)}&lt;/p&gt;`,
+ recovery:()=&gt;heading(&#x27;Use a recovery code&#x27;,&#x27;Enter one of the recovery codes you saved when setting up two-step verification.&#x27;,{back:[&#x27;Back to verification&#x27;,&#x27;mfa&#x27;]})+`&lt;form class=&quot;cq-form&quot; data-form=&quot;recovery&quot;&gt;${field(&#x27;Recovery code&#x27;,&#x27;recoverycode&#x27;,&#x27;&#x27;,{placeholder:&#x27;Enter your saved code&#x27;,autocomplete:&#x27;off&#x27;,hint:&#x27;Each recovery code can only be used once.&#x27;})}${error()}${submit(&#x27;Verify &amp; sign in&#x27;)}&lt;/form&gt;&lt;p class=&quot;cq-under-form&quot;&gt;${action(&#x27;Can’t access your account?&#x27;,&#x27;help&#x27;)}&lt;/p&gt;`,
+ expired:()=&gt;heading(&#x27;Sign in again&#x27;,&#x27;Your session has expired. Sign in to continue where you left off.&#x27;,{mark:&#x27;lock-keyhole&#x27;})+primary(&#x27;Sign in&#x27;,&#x27;signin&#x27;),
+ eligible:()=&gt;heading(&#x27;Let’s set up your practice&#x27;,&#x27;Just the essentials to get started. You can add your team and more locations later.&#x27;,{eyebrow:&#x27;Welcome to CareIQ&#x27;})+account()+`&lt;div class=&quot;cq-list&quot;&gt;&lt;div class=&quot;cq-list-row&quot;&gt;${icon(&#x27;building-2&#x27;)}&lt;div&gt;&lt;strong&gt;Your practice&lt;/strong&gt;&lt;small&gt;The name your team will see.&lt;/small&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;cq-list-row&quot;&gt;${icon(&#x27;map-pin&#x27;)}&lt;div&gt;&lt;strong&gt;Your first location&lt;/strong&gt;&lt;small&gt;A name and time zone.&lt;/small&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;cq-list-row&quot;&gt;${icon(&#x27;clipboard-check&#x27;)}&lt;div&gt;&lt;strong&gt;Review &amp; create&lt;/strong&gt;&lt;small&gt;Confirm your details.&lt;/small&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;${primary(&#x27;Set up my practice&#x27;,&#x27;practice&#x27;)}`,
+ practice:()=&gt;heading(&#x27;What’s your practice called?&#x27;,&#x27;Use the name your team will recognize.&#x27;)+`&lt;form class=&quot;cq-form&quot; data-form=&quot;practice&quot;&gt;${field(&#x27;Practice name&#x27;,&#x27;practice&#x27;,state.practice,{autocomplete:&#x27;organization&#x27;,maxlength:120,hint:&#x27;This will appear in your practice workspace.&#x27;})}${error()}&lt;div class=&quot;cq-form-actions&quot;&gt;${submit(&#x27;Continue&#x27;)}${action(&#x27;Save &amp; finish later&#x27;,&#x27;save&#x27;)}&lt;/div&gt;&lt;/form&gt;`,
+ location:()=&gt;heading(&#x27;Add your first location&#x27;,&#x27;Start with one location. You can add more later.&#x27;,{back:[&#x27;Back&#x27;,&#x27;practice&#x27;]})+`&lt;form class=&quot;cq-form&quot; data-form=&quot;location&quot;&gt;${field(&#x27;Location name&#x27;,&#x27;location&#x27;,state.location,{maxlength:120,placeholder:&#x27;Main location&#x27;})}&lt;label class=&quot;cq-field&quot; for=&quot;cq-timezone&quot;&gt;&lt;span&gt;Time zone&lt;/span&gt;&lt;select class=&quot;cq-input&quot; name=&quot;timezone&quot; id=&quot;cq-timezone&quot;&gt;${allZones.map(v=&gt;`&lt;option value=&quot;${v}&quot; ${v===state.timezone?&#x27;selected&#x27;:&#x27;&#x27;}&gt;${esc(timezoneLabel(v))}&lt;/option&gt;`).join(&#x27;&#x27;)}&lt;/select&gt;&lt;small&gt;Suggested from your device. Check that it matches this location.&lt;/small&gt;&lt;/label&gt;&lt;details class=&quot;cq-details&quot; ${state.address?&#x27;open&#x27;:&#x27;&#x27;}&gt;&lt;summary class=&quot;cursor-interaction&quot;&gt;${icon(&#x27;plus&#x27;)}Add address &lt;span style=&quot;color:var(--cq-muted)&quot;&gt;(optional)&lt;/span&gt;&lt;/summary&gt;${field(&#x27;Street address&#x27;,&#x27;address&#x27;,state.address,{required:false,autocomplete:&#x27;street-address&#x27;,maxlength:500,placeholder:&#x27;Street, city, state and postal code&#x27;})}&lt;/details&gt;${error()}&lt;div class=&quot;cq-form-actions&quot;&gt;${submit(&#x27;Review practice&#x27;)}${action(&#x27;Save &amp; finish later&#x27;,&#x27;save&#x27;)}&lt;/div&gt;&lt;/form&gt;`,
+ review:()=&gt;heading(&#x27;Everything look right?&#x27;,&#x27;Review your details before creating your practice.&#x27;,{back:[&#x27;Back&#x27;,&#x27;location&#x27;]})+reviewSummary()+`&lt;form class=&quot;cq-form&quot; data-form=&quot;review&quot;&gt;&lt;label class=&quot;cq-check&quot;&gt;&lt;input type=&quot;checkbox&quot; name=&quot;authority&quot; required&gt;&lt;span&gt;I’m authorized to set up and manage this practice.&lt;/span&gt;&lt;/label&gt;${error()}${submit(&#x27;Create practice&#x27;)}&lt;p class=&quot;cq-policy&quot; style=&quot;text-align:left;margin-top:0!important&quot;&gt;Team invitations and location access come next.&lt;/p&gt;&lt;/form&gt;`,
+ creating:()=&gt;heading(&#x27;Finishing your setup&#x27;,&#x27;Your practice setup is in progress. Your submitted details are kept together.&#x27;,{mark:&#x27;loader-circle&#x27;})+reviewSummary(false)+note(&#x27;If this takes longer than expected, check the same setup again. You won’t need to start a second practice.&#x27;)+`&lt;div class=&quot;cq-form-actions&quot; style=&quot;margin-top:24px&quot;&gt;${primary(&#x27;Check setup status&#x27;,&#x27;created&#x27;)}${action(&#x27;I’ll come back later&#x27;,&#x27;save&#x27;)}&lt;/div&gt;`,
+ created:()=&gt;heading(&#x27;Your practice is ready&#x27;,`${esc(state.practice)} and its first location have been created.`,{mark:&#x27;check&#x27;,eyebrow:&#x27;Practice created&#x27;})+`&lt;div class=&quot;cq-list&quot;&gt;&lt;div class=&quot;cq-list-row&quot;&gt;${icon(&#x27;building-2&#x27;)}&lt;div&gt;&lt;strong&gt;${esc(state.practice)}&lt;/strong&gt;&lt;small&gt;You’re the practice owner.&lt;/small&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;cq-list-row&quot;&gt;${icon(&#x27;map-pin&#x27;)}&lt;div&gt;&lt;strong&gt;${esc(state.location)}&lt;/strong&gt;&lt;small&gt;${esc(timezoneLabel())}&lt;/small&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;${primary(&#x27;Continue to practice&#x27;,state.ownerClinical?&#x27;chooselocation&#x27;:&#x27;noaccess&#x27;)}&lt;div class=&quot;cq-form-actions&quot;&gt;${secondary(&#x27;Invite a teammate&#x27;,&#x27;invite&#x27;)}${link(&#x27;Set my location access&#x27;,&#x27;owneraccess&#x27;)}&lt;/div&gt;`,
+ invite:()=&gt;heading(&#x27;Invite a teammate&#x27;,&#x27;They’ll receive an email invitation. You’ll confirm their access after they join.&#x27;,{back:[&#x27;Back to your practice&#x27;,&#x27;created&#x27;],eyebrow:&#x27;Optional&#x27;})+`&lt;form class=&quot;cq-form&quot; data-form=&quot;invite&quot;&gt;${field(&#x27;Work email&#x27;,&#x27;memberEmail&#x27;,state.memberEmail,{type:&#x27;email&#x27;,autocomplete:&#x27;email&#x27;})}&lt;label class=&quot;cq-field&quot; for=&quot;cq-role&quot;&gt;&lt;span&gt;Role&lt;/span&gt;&lt;select name=&quot;role&quot; class=&quot;cq-input&quot; id=&quot;cq-role&quot;&gt;&lt;option value=&quot;org:member&quot;&gt;Member&lt;/option&gt;&lt;option value=&quot;org:admin&quot;&gt;Administrator&lt;/option&gt;&lt;/select&gt;&lt;small&gt;Roles do not give access to patient records on their own.&lt;/small&gt;&lt;/label&gt;&lt;fieldset style=&quot;border:0;padding:0;margin:0&quot;&gt;&lt;legend style=&quot;font-size:13px;margin-bottom:10px&quot;&gt;Proposed location access&lt;/legend&gt;&lt;label class=&quot;cq-choice cursor-interaction&quot;&gt;&lt;input type=&quot;checkbox&quot; name=&quot;inviteLocation&quot;&gt;&lt;span class=&quot;cq-choice-copy&quot;&gt;&lt;strong&gt;${esc(state.location)}&lt;/strong&gt;&lt;small&gt;Only this location.&lt;/small&gt;&lt;/span&gt;&lt;/label&gt;&lt;/fieldset&gt;${error()}${submit(&#x27;Send invitation&#x27;)}${link(&#x27;I’ll do this later&#x27;,&#x27;created&#x27;)}&lt;/form&gt;`,
+ invitesent:()=&gt;heading(&#x27;Invitation sent&#x27;,`We sent an invitation to &lt;strong&gt;${esc(state.memberEmail)}&lt;/strong&gt;.`,{mark:&#x27;mail-check&#x27;})+note(&#x27;Their access will stay pending until you confirm their role and locations after they join.&#x27;)+`&lt;div class=&quot;cq-form-actions&quot; style=&quot;margin-top:24px&quot;&gt;${primary(&#x27;Back to your practice&#x27;,&#x27;created&#x27;)}${secondary(&#x27;Invite another teammate&#x27;,&#x27;invite&#x27;)}&lt;/div&gt;`,
+ approvemember:()=&gt;heading(&#x27;Confirm teammate access&#x27;,&#x27;Sam has joined your practice. Review their role and locations before activating access.&#x27;,{back:[&#x27;Back to your practice&#x27;,&#x27;created&#x27;],eyebrow:&#x27;Owner review&#x27;})+`&lt;div class=&quot;cq-account-chip&quot;&gt;&lt;span class=&quot;cq-account-dot&quot;&gt;SP&lt;/span&gt;&lt;span&gt;${esc(state.memberEmail)}&lt;/span&gt;&lt;/div&gt;&lt;form class=&quot;cq-form&quot; data-form=&quot;approvemember&quot;&gt;&lt;label class=&quot;cq-field&quot; for=&quot;cq-approved-role&quot;&gt;&lt;span&gt;Role&lt;/span&gt;&lt;select name=&quot;approvedRole&quot; id=&quot;cq-approved-role&quot; class=&quot;cq-input&quot;&gt;&lt;option value=&quot;org:member&quot;&gt;Member&lt;/option&gt;&lt;option value=&quot;org:admin&quot;&gt;Administrator&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;&lt;fieldset style=&quot;border:0;padding:0;margin:0&quot;&gt;&lt;legend style=&quot;font-size:13px;margin-bottom:12px&quot;&gt;Confirm clinical location access&lt;/legend&gt;&lt;label class=&quot;cq-choice cursor-interaction&quot;&gt;&lt;input type=&quot;checkbox&quot; name=&quot;approvedLocation&quot;&gt;&lt;span class=&quot;cq-choice-copy&quot;&gt;&lt;strong&gt;${esc(state.location)}&lt;/strong&gt;&lt;small&gt;Access to records at this location only.&lt;/small&gt;&lt;/span&gt;&lt;/label&gt;&lt;/fieldset&gt;${note(&#x27;Without a location assignment, this teammate won’t be able to open patient records.&#x27;)}${error()}${submit(&#x27;Confirm access&#x27;)}&lt;/form&gt;`,
+ memberactive:()=&gt;heading(&#x27;Team access confirmed&#x27;,state.assigned?`Sam can work at ${esc(state.location)} with the role you approved.`:&#x27;Sam’s role is confirmed. Assign an active location when they need access to patient records.&#x27;,{mark:&#x27;user-check&#x27;})+primary(&#x27;Back to your practice&#x27;,&#x27;created&#x27;)+`&lt;p class=&quot;cq-under-form&quot;&gt;${link(&#x27;Review teammate access&#x27;,&#x27;approvemember&#x27;)}&lt;/p&gt;`,
+ owneraccess:()=&gt;heading(&#x27;Set your location access&#x27;,&#x27;Owner access lets you manage the practice. Choose where you also need access to patient records.&#x27;,{back:[&#x27;Back to your practice&#x27;,&#x27;created&#x27;],eyebrow:&#x27;Your access&#x27;})+`&lt;form class=&quot;cq-form&quot; data-form=&quot;owneraccess&quot;&gt;&lt;fieldset style=&quot;border:0;padding:0;margin:0&quot;&gt;&lt;legend style=&quot;font-size:13px;margin-bottom:12px&quot;&gt;Assign yourself to a location&lt;/legend&gt;&lt;label class=&quot;cq-choice cursor-interaction&quot;&gt;&lt;input type=&quot;checkbox&quot; name=&quot;ownerClinical&quot; ${state.ownerClinical?&#x27;checked&#x27;:&#x27;&#x27;}&gt;&lt;span class=&quot;cq-choice-copy&quot;&gt;&lt;strong&gt;${esc(state.location)}&lt;/strong&gt;&lt;small&gt;${esc(state.practice)}&lt;/small&gt;&lt;/span&gt;&lt;/label&gt;&lt;/fieldset&gt;${error()}${submit(&#x27;Save my location access&#x27;)}${link(&#x27;Keep management access only&#x27;,&#x27;noaccess&#x27;)}&lt;/form&gt;`,
+ resumesetup:()=&gt;heading(`Welcome back, ${esc(state.name.split(&#x27; &#x27;)[0])}`,state.submitted?&#x27;Your submitted setup is still being checked. Continue with the same details.&#x27;:&#x27;Your practice setup is waiting. Continue from your last completed step.&#x27;,{mark:&#x27;bookmark-check&#x27;})+`&lt;div class=&quot;cq-summary&quot;&gt;&lt;section class=&quot;cq-summary-group&quot;&gt;&lt;div class=&quot;cq-summary-top&quot;&gt;&lt;h2&gt;Practice setup&lt;/h2&gt;&lt;/div&gt;&lt;p class=&quot;cq-summary-value&quot;&gt;${esc(state.practice)}&lt;/p&gt;&lt;p class=&quot;cq-summary-meta&quot;&gt;${state.submitted?&#x27;Submitted · Checking setup status&#x27;:&#x27;Next · Add your first location&#x27;}&lt;/p&gt;&lt;/section&gt;&lt;/div&gt;${primary(state.submitted?&#x27;Check setup status&#x27;:&#x27;Continue setup&#x27;,state.submitted?&#x27;creating&#x27;:&#x27;location&#x27;)}${state.submitted?&#x27;&#x27;:`&lt;p class=&quot;cq-under-form&quot;&gt;${link(&#x27;Start at practice details&#x27;,&#x27;practice&#x27;)}&lt;/p&gt;`}`,
+ restricted:()=&gt;heading(&#x27;Practice setup needs approval&#x27;,&#x27;Your account is ready. New practice setup is currently available to approved practice owners.&#x27;,{mark:&#x27;building-2&#x27;})+account()+note(&#x27;If you were invited to an existing practice, use the invitation sent to your email.&#x27;)+`&lt;div class=&quot;cq-form-actions&quot; style=&quot;margin-top:24px&quot;&gt;&lt;button class=&quot;cq-primary cursor-interaction&quot; type=&quot;button&quot; data-action=&quot;help&quot;&gt;Get setup help${icon(&#x27;arrow-right&#x27;)}&lt;/button&gt;${secondary(&#x27;View my invitations&#x27;,&#x27;join&#x27;)}${link(&#x27;Use another account&#x27;,&#x27;signin&#x27;)}&lt;/div&gt;`,
+ join:()=&gt;heading(&#x27;You’re invited to join&#x27;,`${esc(state.practice)} has invited you to their team.`,{mark:&#x27;users&#x27;})+account()+`&lt;div class=&quot;cq-summary&quot;&gt;&lt;section class=&quot;cq-summary-group&quot;&gt;&lt;div class=&quot;cq-summary-top&quot;&gt;&lt;h2&gt;Invitation for&lt;/h2&gt;&lt;/div&gt;&lt;p class=&quot;cq-summary-value&quot;&gt;${esc(state.memberEmail)}&lt;/p&gt;&lt;p class=&quot;cq-summary-meta&quot;&gt;Practice · ${esc(state.practice)}&lt;/p&gt;&lt;/section&gt;&lt;/div&gt;${note(&#x27;After you join, the practice owner will confirm your role and location access.&#x27;)}&lt;div class=&quot;cq-form-actions&quot; style=&quot;margin-top:24px&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;cq-primary cursor-interaction&quot; data-action=&quot;acceptinvite&quot;&gt;Accept invitation${icon(&#x27;arrow-right&#x27;)}&lt;/button&gt;${link(&#x27;Sign in with another account&#x27;,&#x27;wrongemail&#x27;)}&lt;/div&gt;`,
+ pending:()=&gt;heading(&#x27;You’ve joined the team&#x27;,&#x27;Your practice owner will confirm your role and locations before you can open patient records.&#x27;,{mark:&#x27;clock-3&#x27;})+`&lt;div class=&quot;cq-summary&quot;&gt;&lt;section class=&quot;cq-summary-group&quot;&gt;&lt;div class=&quot;cq-summary-top&quot;&gt;&lt;h2&gt;Practice&lt;/h2&gt;&lt;/div&gt;&lt;p class=&quot;cq-summary-value&quot;&gt;${esc(state.practice)}&lt;/p&gt;&lt;p class=&quot;cq-summary-meta&quot;&gt;Awaiting owner approval&lt;/p&gt;&lt;/section&gt;&lt;/div&gt;&lt;button class=&quot;cq-primary cursor-interaction&quot; type=&quot;button&quot; data-action=&quot;pendingcheck&quot;&gt;Check again${icon(&#x27;refresh-cw&#x27;)}&lt;/button&gt;${feedback()}&lt;p class=&quot;cq-under-form&quot;&gt;${link(&#x27;Switch practice&#x27;,&#x27;choosepractice&#x27;)} · ${link(&#x27;Sign out&#x27;,&#x27;signin&#x27;)}&lt;/p&gt;`,
+ invitationexpired:()=&gt;heading(&#x27;This invitation has expired&#x27;,&#x27;Ask your practice owner to send you a new invitation.&#x27;,{mark:&#x27;mail-x&#x27;})+note(`Your account is still available. You can use an active invitation to join ${esc(state.practice)}.`)+`&lt;div class=&quot;cq-form-actions&quot; style=&quot;margin-top:24px&quot;&gt;${primary(&#x27;Back to sign in&#x27;,&#x27;signin&#x27;)}${action(&#x27;Need help?&#x27;,&#x27;help&#x27;)}&lt;/div&gt;`,
+ wrongemail:()=&gt;heading(&#x27;Use your invited email&#x27;,`This invitation was sent to &lt;strong&gt;${esc(state.memberEmail)}&lt;/strong&gt;. Sign in with that email to join.`,{mark:&#x27;mail&#x27;})+account()+primary(&#x27;Use another account&#x27;,&#x27;signin&#x27;)+`&lt;p class=&quot;cq-under-form&quot;&gt;${action(&#x27;Need help?&#x27;,&#x27;help&#x27;)}&lt;/p&gt;`,
+ choosepractice:()=&gt;heading(&#x27;Choose your practice&#x27;,&#x27;Continue with one of the practices you belong to.&#x27;)+`&lt;div class=&quot;cq-row-options&quot;&gt;&lt;button class=&quot;cq-choice cursor-interaction&quot; type=&quot;button&quot; data-go=&quot;${state.assignedLocations.length?&#x27;chooselocation&#x27;:state.scenario===&#x27;member&#x27;?&#x27;membernoaccess&#x27;:&#x27;noaccess&#x27;}&quot;&gt;${icon(&#x27;building-2&#x27;)}&lt;span class=&quot;cq-choice-copy&quot;&gt;&lt;strong&gt;${esc(state.practice)}&lt;/strong&gt;&lt;small&gt;${state.scenario===&#x27;member&#x27;?&#x27;Member&#x27;:&#x27;Owner&#x27;}&lt;/small&gt;&lt;/span&gt;${icon(&#x27;chevron-right&#x27;)}&lt;/button&gt;&lt;button class=&quot;cq-choice cursor-interaction&quot; type=&quot;button&quot; data-go=&quot;pending&quot;&gt;${icon(&#x27;building-2&#x27;)}&lt;span class=&quot;cq-choice-copy&quot;&gt;&lt;strong&gt;Northside Care&lt;/strong&gt;&lt;small&gt;Awaiting owner approval&lt;/small&gt;&lt;/span&gt;${icon(&#x27;chevron-right&#x27;)}&lt;/button&gt;&lt;/div&gt;&lt;p class=&quot;cq-under-form&quot;&gt;${link(&#x27;View invitations&#x27;,&#x27;join&#x27;)} · ${link(&#x27;Sign out&#x27;,&#x27;signin&#x27;)}&lt;/p&gt;`,
+ chooselocation:()=&gt;heading(&#x27;Where are you working?&#x27;,`Choose an assigned location in ${esc(state.practice)}.`,{back:[&#x27;Switch practice&#x27;,&#x27;choosepractice&#x27;]})+`&lt;form class=&quot;cq-form&quot; data-form=&quot;chooselocation&quot;&gt;&lt;div class=&quot;cq-row-options&quot; style=&quot;margin:0&quot;&gt;${state.assignedLocations.map((loc,i)=&gt;`&lt;label class=&quot;cq-choice cursor-interaction&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;working&quot; value=&quot;${i}&quot; required ${state.assignedLocations.length===1?&#x27;checked&#x27;:&#x27;&#x27;}&gt;&lt;span class=&quot;cq-choice-copy&quot;&gt;&lt;strong&gt;${esc(loc)}&lt;/strong&gt;&lt;small&gt;${esc(timezoneLabel())}&lt;/small&gt;&lt;/span&gt;&lt;/label&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;${error()}${submit(&#x27;Continue&#x27;)}&lt;/form&gt;&lt;p class=&quot;cq-under-form&quot;&gt;Missing a location? ${action(&#x27;Get help&#x27;,&#x27;help&#x27;)}&lt;/p&gt;`,
+ noaccess:()=&gt;heading(&#x27;Choose your next step&#x27;,&#x27;You can manage your practice. Patient records will be available after you assign yourself a location.&#x27;,{mark:&#x27;map-pin&#x27;})+`&lt;div class=&quot;cq-form-actions&quot;&gt;${primary(&#x27;Set my location access&#x27;,&#x27;owneraccess&#x27;)}${secondary(&#x27;Invite your team&#x27;,&#x27;invite&#x27;)}${link(&#x27;Back to practice overview&#x27;,&#x27;created&#x27;)}&lt;/div&gt;`,
+ membernoaccess:()=&gt;heading(&#x27;Your location access is being set up&#x27;,&#x27;Ask your practice owner to assign you an active location before opening patient records.&#x27;,{mark:&#x27;map-pin&#x27;})+`&lt;button type=&quot;button&quot; class=&quot;cq-primary cursor-interaction&quot; data-action=&quot;pendingcheck&quot;&gt;Check again${icon(&#x27;refresh-cw&#x27;)}&lt;/button&gt;${feedback()}&lt;p class=&quot;cq-under-form&quot;&gt;${link(&#x27;Switch practice&#x27;,&#x27;choosepractice&#x27;)} · ${link(&#x27;Sign out&#x27;,&#x27;signin&#x27;)}&lt;/p&gt;`,
+ removed:()=&gt;heading(&#x27;Your access has changed&#x27;,&#x27;You can’t open this practice right now. Ask the practice owner to review your access.&#x27;,{mark:&#x27;shield-alert&#x27;})+`&lt;div class=&quot;cq-form-actions&quot;&gt;${primary(&#x27;Choose another practice&#x27;,&#x27;choosepractice&#x27;)}${secondary(&#x27;Sign out&#x27;,&#x27;signin&#x27;)}&lt;/div&gt;`,
+ accesserror:()=&gt;heading(&#x27;We couldn’t check access&#x27;,&#x27;Your connection may have changed. Try again to continue.&#x27;,{mark:&#x27;wifi-off&#x27;})+`&lt;button class=&quot;cq-primary cursor-interaction&quot; type=&quot;button&quot; data-action=&quot;accessretry&quot;&gt;Try again${icon(&#x27;refresh-cw&#x27;)}&lt;/button&gt;${feedback()}&lt;p class=&quot;cq-under-form&quot;&gt;${link(&#x27;Back to sign in&#x27;,&#x27;signin&#x27;)}&lt;/p&gt;`,
+ workspace:()=&gt;heading(&#x27;You’re in the right place&#x27;,`You’re working at &lt;strong&gt;${esc(state.workingLocation||state.location)}&lt;/strong&gt; in ${esc(state.practice)}.`,{mark:&#x27;check&#x27;})+note(&#x27;Your practice and working location will stay visible as you use CareIQ.&#x27;)+`&lt;div class=&quot;cq-form-actions&quot; style=&quot;margin-top:24px&quot;&gt;${secondary(&#x27;Change working location&#x27;,&#x27;chooselocation&#x27;)}${link(&#x27;Back to practice overview&#x27;,&#x27;created&#x27;)}&lt;/div&gt;`
+ };
+ const captions={signin:&#x27;Authentication · Email + password, password manager support, clear recovery.&#x27;,signup:&#x27;Account creation stays separate from practice creation.&#x27;,verify:&#x27;Codes support paste and autofill. Resend and change-email actions remain visible.&#x27;,mfa:&#x27;Shown when required by the configured identity provider. Recovery has a dedicated screen.&#x27;,practice:&#x27;Owner onboarding · Three short steps. Only existing required practice details.&#x27;,location:&#x27;Friendly time-zone labels map to IANA values. The optional address stays tucked away.&#x27;,review:&#x27;Explicit ownership confirmation. Nothing creates until the final action.&#x27;,creating:&#x27;A timeout stays with the original setup operation. Retry checks the same practice.&#x27;,created:&#x27;Owner management access and clinical location access remain separate.&#x27;,invite:&#x27;Optional after creation. Proposed locations are unchecked; owner approval follows acceptance.&#x27;,owneraccess:&#x27;Explicit self assignment. A separate authorized save is required before patient access.&#x27;,resumesetup:&#x27;Proposed draft-resume experience; cross-device saving requires implementation.&#x27;,restricted:&#x27;Matches the current approved-founder rollout. Identity creation does not unlock provisioning.&#x27;,join:&#x27;Accepting an invitation does not activate clinical access.&#x27;,pending:&#x27;Owner review is a distinct state; no patient data is previewed.&#x27;,chooselocation:&#x27;Only assigned, active locations appear. This example shows a multi-location member.&#x27;,workspace:&#x27;Design endpoint. Clinical workspace screens are outside this design set.&#x27;};
+ function buildPicker(){let group=&#x27;&#x27;;screens.forEach(([id,label,g])=&gt;{if(g!==group){const optgroup=document.createElement(&#x27;optgroup&#x27;);optgroup.label=g;picker.append(optgroup);group=g;}const option=document.createElement(&#x27;option&#x27;);option.value=id;option.textContent=label;picker.lastElementChild.append(option);});}
+ function persist(){if(window.openai&amp;&amp;window.openai.setWidgetState)window.openai.setWidgetState({modelContent:{platform:state.platform,screen:state.screen},privateContent:{platform:state.platform,screen:state.screen,scenario:state.scenario,ownerClinical:state.ownerClinical,created:state.created,submitted:state.submitted}}).catch(()=&gt;{});}
+ function authDestination(){if(state.inviteContext||state.scenario===&#x27;invitee&#x27;)return state.email.toLowerCase()===state.memberEmail.toLowerCase()?&#x27;join&#x27;:&#x27;wrongemail&#x27;;if(state.scenario===&#x27;restricted&#x27;)return &#x27;restricted&#x27;;if(state.scenario===&#x27;member&#x27;)return &#x27;choosepractice&#x27;;return state.created?&#x27;choosepractice&#x27;:&#x27;eligible&#x27;;}
+ function go(id,save=true){if(!views[id])return;if(id===&#x27;join&#x27;){state.inviteContext=true;if(state.email.toLowerCase()!==state.memberEmail.toLowerCase())id=&#x27;wrongemail&#x27;;}if(id===&#x27;chooselocation&#x27;&amp;&amp;!state.assignedLocations.length)id=state.scenario===&#x27;member&#x27;?&#x27;membernoaccess&#x27;:&#x27;noaccess&#x27;;state.screen=id;render();if(save)persist();root.querySelector(&#x27;#cq-preview-announcement&#x27;).textContent=`${screens.find(s=&gt;s[0]===id)[1]} · ${state.platform===&#x27;web&#x27;?&#x27;Web&#x27;:state.platform===&#x27;ios&#x27;?&#x27;iOS&#x27;:&#x27;Android&#x27;}`;const first=page.querySelector(&#x27;input,select,button&#x27;);if(first)first.focus({preventScroll:true});}
+ function drawSidebar(){let n=setupSteps[state.screen];root.querySelector(&#x27;#cq-setup-sidebar&#x27;).innerHTML=`&lt;h2 class=&quot;cq-sidebar-title&quot;&gt;Your practice&lt;/h2&gt;&lt;p class=&quot;cq-sidebar-sub&quot;&gt;A few details to get started.&lt;/p&gt;&lt;ol class=&quot;cq-step-list&quot;&gt;${[[&#x27;Practice&#x27;,&#x27;Your practice name&#x27;],[&#x27;Location&#x27;,&#x27;Your first location&#x27;],[&#x27;Review&#x27;,&#x27;Confirm &amp; create&#x27;]].map(([t,sub],i)=&gt;`&lt;li class=&quot;cq-step ${i&lt;n?&#x27;cq-completed&#x27;:&#x27;&#x27;}&quot; ${i===n?&#x27;aria-current=&quot;step&quot;&#x27;:&#x27;&#x27;}&gt;&lt;span class=&quot;cq-step-number&quot;&gt;${i&lt;n?icon(&#x27;check&#x27;):i+1}&lt;/span&gt;&lt;div&gt;&lt;strong&gt;${t}&lt;/strong&gt;&lt;small&gt;${sub}&lt;/small&gt;&lt;/div&gt;&lt;/li&gt;`).join(&#x27;&#x27;)}&lt;/ol&gt;&lt;div class=&quot;cq-sidebar-bottom&quot;&gt;&lt;strong&gt;Keep it simple.&lt;/strong&gt;Add your team and more locations when you’re ready.&lt;/div&gt;`;}
+ function render(){const native=state.platform!==&#x27;web&#x27;;product.className=`cq-product ${native?&#x27;cq-native cq-&#x27;+state.platform:&#x27;&#x27;} ${setupSteps[state.screen]!==undefined?&#x27;cq-setup-mode&#x27;:&#x27;&#x27;}`;product.style.setProperty(&#x27;--cq-radius&#x27;,design.radius+&#x27;px&#x27;);root.querySelector(&#x27;#cq-preview-stage&#x27;).className=native?&#x27;cq-mobile-stage viz-dotted-background&#x27;:&#x27;&#x27;;root.querySelector(&#x27;#cq-native-status&#x27;).innerHTML=`&lt;span&gt;9:41&lt;/span&gt;&lt;span class=&quot;cq-status-right&quot;&gt;${icon(&#x27;signal&#x27;)}${icon(&#x27;wifi&#x27;)}${icon(&#x27;battery-full&#x27;)}&lt;/span&gt;`;drawSidebar();page.innerHTML=`&lt;div class=&quot;cq-content ${[&#x27;eligible&#x27;,&#x27;practice&#x27;,&#x27;location&#x27;,&#x27;review&#x27;,&#x27;creating&#x27;,&#x27;created&#x27;,&#x27;invite&#x27;,&#x27;owneraccess&#x27;,&#x27;noaccess&#x27;].includes(state.screen)?&#x27;cq-wide&#x27;:&#x27;&#x27;}&quot;&gt;${views[state.screen]()}&lt;/div&gt;`;picker.value=state.screen;root.querySelector(&#x27;#cq-path-picker&#x27;).value=state.scenario;root.querySelectorAll(&#x27;[data-platform]&#x27;).forEach(b=&gt;b.setAttribute(&#x27;aria-pressed&#x27;,b.dataset.platform===state.platform?&#x27;true&#x27;:&#x27;false&#x27;));root.querySelector(&#x27;#cq-screen-count&#x27;).textContent=`${screens.findIndex(s=&gt;s[0]===state.screen)+1} / ${screens.length}`;root.querySelector(&#x27;#cq-design-caption&#x27;).textContent=captions[state.screen]||&#x27;Authentication &amp; access · White backgrounds, restrained sage, one clear next action.&#x27;;root.querySelector(&#x27;#cq-footer-context&#x27;).textContent=setupSteps[state.screen]!==undefined?&#x27;Your practice. One step at a time.&#x27;:&#x27;A little more room to care.&#x27;;if(globalThis.lucide)lucide.createIcons({attrs:{width:18,height:18}});}
+ function tell(msg,errorMsg=false){const el=page.querySelector(errorMsg?&#x27;#cq-form-error&#x27;:&#x27;#cq-form-feedback&#x27;);if(el)el.textContent=msg;}
+ function support(type){const opener=document.activeElement;const overlay=document.createElement(&#x27;section&#x27;);overlay.className=&#x27;cq-support&#x27;;overlay.setAttribute(&#x27;role&#x27;,&#x27;dialog&#x27;);overlay.setAttribute(&#x27;aria-modal&#x27;,&#x27;true&#x27;);overlay.setAttribute(&#x27;aria-label&#x27;,type===&#x27;help&#x27;?&#x27;CareIQ help&#x27;:type===&#x27;terms&#x27;?&#x27;Terms of Service&#x27;:&#x27;Privacy Policy&#x27;);const copy=type===&#x27;help&#x27;?[&#x27;A little help getting started&#x27;,&#x27;For practice access, contact your practice owner. For account or new practice setup, reach CareIQ support.&#x27;]:type===&#x27;terms&#x27;?[&#x27;Terms of Service&#x27;,&#x27;This link will open the current CareIQ terms. Your unfinished account setup will remain available.&#x27;]:[&#x27;Privacy Policy&#x27;,&#x27;This link will open the current CareIQ privacy policy. Your unfinished account setup will remain available.&#x27;];overlay.innerHTML=`&lt;div class=&quot;cq-support-head&quot;&gt;&lt;h2&gt;${copy[0]}&lt;/h2&gt;&lt;button type=&quot;button&quot; class=&quot;cq-text-button cursor-interaction&quot; data-action=&quot;close&quot;&gt;Close&lt;/button&gt;&lt;/div&gt;&lt;p&gt;${copy[1]}&lt;/p&gt;${type===&#x27;help&#x27;?note(&#x27;An invitation may use a different email. Sign in with the address it was sent to.&#x27;):&#x27;&#x27;}&lt;button type=&quot;button&quot; class=&quot;cq-secondary cursor-interaction&quot; data-action=&quot;close&quot;&gt;Back to ${state.screen===&#x27;signup&#x27;?&#x27;account setup&#x27;:&#x27;CareIQ&#x27;}&lt;/button&gt;`;product.append(overlay);const siblings=[...product.children].filter(c=&gt;c!==overlay).concat([...root.children].filter(c=&gt;c.id!==&#x27;cq-preview-stage&#x27;));siblings.forEach(c=&gt;c.inert=true);overlay._siblings=siblings;overlay._opener=opener;overlay.querySelector(&#x27;button&#x27;).focus();if(globalThis.lucide)lucide.createIcons({attrs:{width:18,height:18}});}
+ function closeSupport(o){o._siblings.forEach(c=&gt;c.inert=false);const opener=o._opener;o.remove();if(opener&amp;&amp;opener.isConnected)opener.focus();}
+ root.addEventListener(&#x27;click&#x27;,e=&gt;{const b=e.target.closest(&#x27;button&#x27;);if(!b)return;
+  if(b.type===&#x27;submit&#x27;){e.preventDefault();const form=b.closest(&#x27;form&#x27;);if(form&amp;&amp;form.reportValidity())form.dispatchEvent(new Event(&#x27;submit&#x27;,{bubbles:true,cancelable:true}));return;}
+  if(b.dataset.platform){state.platform=b.dataset.platform;render();persist();return;}
+  if(b.dataset.preview){let i=screens.findIndex(s=&gt;s[0]===state.screen);i=(i+(b.dataset.preview===&#x27;next&#x27;?1:-1)+screens.length)%screens.length;picker.value=screens[i][0];picker.dispatchEvent(new Event(&#x27;change&#x27;,{bubbles:true}));return;}
+  if(b.dataset.go){if(state.screen===&#x27;wrongemail&#x27;&amp;&amp;b.dataset.go===&#x27;signin&#x27;)state.inviteContext=true;if(state.screen===&#x27;creating&#x27;&amp;&amp;b.dataset.go===&#x27;created&#x27;)state.created=true;go(b.dataset.go);return;}
+  const a=b.dataset.action;
+  if(a===&#x27;reveal&#x27;){const input=b.parentElement.querySelector(&#x27;input&#x27;);input.type=input.type===&#x27;password&#x27;?&#x27;text&#x27;:&#x27;password&#x27;;b.setAttribute(&#x27;aria-pressed&#x27;,input.type===&#x27;text&#x27;?&#x27;true&#x27;:&#x27;false&#x27;);b.setAttribute(&#x27;aria-label&#x27;,input.type===&#x27;text&#x27;?&#x27;Hide password&#x27;:&#x27;Show password&#x27;);b.innerHTML=icon(input.type===&#x27;text&#x27;?&#x27;eye-off&#x27;:&#x27;eye&#x27;);if(globalThis.lucide)lucide.createIcons({attrs:{width:18,height:18}});}
+  if(a===&#x27;resend&#x27;){tell(state.screen===&#x27;resetemail&#x27;?&#x27;If an account exists, a new link will arrive shortly.&#x27;:&#x27;A new code was sent. Check your email.&#x27;);b.disabled=true;setTimeout(()=&gt;{if(b.isConnected)b.disabled=false;},1000);}
+  if(a===&#x27;changeemail&#x27;)go(&#x27;signup&#x27;);
+  if(a===&#x27;save&#x27;){const form=page.querySelector(&#x27;form&#x27;);if(form){const f=new FormData(form);[&#x27;practice&#x27;,&#x27;location&#x27;,&#x27;timezone&#x27;,&#x27;address&#x27;].forEach(k=&gt;{if(f.has(k))state[k]=String(f.get(k)).trim();});}go(&#x27;resumesetup&#x27;);}
+  if(a===&#x27;pendingcheck&#x27;)tell(state.screen===&#x27;membernoaccess&#x27;?&#x27;No active location has been assigned yet. Check with your practice owner.&#x27;:&#x27;Still awaiting owner approval. You can check again later.&#x27;);
+  if(a===&#x27;acceptinvite&#x27;){state.inviteContext=true;go(state.email.toLowerCase()===state.memberEmail.toLowerCase()?&#x27;pending&#x27;:&#x27;wrongemail&#x27;);}
+  if(a===&#x27;accessretry&#x27;)tell(&#x27;Access check is still unavailable. Please try again.&#x27;);
+  if([&#x27;help&#x27;,&#x27;terms&#x27;,&#x27;privacy&#x27;].includes(a))support(a);
+  if(a===&#x27;close&#x27;)closeSupport(b.closest(&#x27;.cq-support&#x27;));
+ });
+ root.addEventListener(&#x27;keydown&#x27;,e=&gt;{const o=product.querySelector(&#x27;.cq-support&#x27;);if(!o)return;if(e.key===&#x27;Escape&#x27;){e.preventDefault();closeSupport(o);}if(e.key===&#x27;Tab&#x27;){const buttons=[...o.querySelectorAll(&#x27;button&#x27;)];if(e.shiftKey&amp;&amp;document.activeElement===buttons[0]){e.preventDefault();buttons.at(-1).focus();}else if(!e.shiftKey&amp;&amp;document.activeElement===buttons.at(-1)){e.preventDefault();buttons[0].focus();}}});
+ picker.addEventListener(&#x27;change&#x27;,()=&gt;{const id=picker.value;if([&#x27;join&#x27;,&#x27;pending&#x27;].includes(id)){state.email=state.memberEmail;state.name=&#x27;Sam Patel&#x27;;state.scenario=&#x27;invitee&#x27;;state.inviteContext=true;}if(id===&#x27;wrongemail&#x27;){state.email=&#x27;alex@marlow.example&#x27;;state.inviteContext=true;}if([&#x27;choosepractice&#x27;,&#x27;chooselocation&#x27;,&#x27;workspace&#x27;].includes(id)){state.scenario=&#x27;member&#x27;;state.assignedLocations=[state.location,&#x27;North office&#x27;];state.workingLocation=state.location;}if([&#x27;created&#x27;,&#x27;noaccess&#x27;,&#x27;owneraccess&#x27;].includes(id)){state.scenario=&#x27;owner&#x27;;state.name=&#x27;Alex Morgan&#x27;;state.inviteContext=false;state.created=true;state.assignedLocations=[];state.ownerClinical=false;}if(id===&#x27;restricted&#x27;)state.scenario=&#x27;restricted&#x27;;if([&#x27;eligible&#x27;,&#x27;practice&#x27;,&#x27;location&#x27;,&#x27;review&#x27;].includes(id)){state.scenario=&#x27;owner&#x27;;state.inviteContext=false;state.submitted=false;state.created=false;state.assignedLocations=[];}go(id);});
+ root.querySelector(&#x27;#cq-path-picker&#x27;).addEventListener(&#x27;change&#x27;,e=&gt;{state.scenario=e.target.value;state.inviteContext=state.scenario===&#x27;invitee&#x27;;state.email=state.inviteContext?state.memberEmail:&#x27;alex@marlow.example&#x27;;state.name=state.inviteContext?&#x27;Sam Patel&#x27;:&#x27;Alex Morgan&#x27;;state.created=state.scenario===&#x27;member&#x27;;state.submitted=false;state.ownerClinical=false;state.assignedLocations=state.scenario===&#x27;member&#x27;?[state.location,&#x27;North office&#x27;]:[];go(&#x27;signin&#x27;);});
+ page.addEventListener(&#x27;submit&#x27;,e=&gt;{e.preventDefault();const form=e.target;if(!form.checkValidity()){form.reportValidity();return;}const f=new FormData(form),kind=form.dataset.form;
+  if(kind===&#x27;signin&#x27;){state.email=String(f.get(&#x27;email&#x27;));go(authDestination());}
+  if(kind===&#x27;signup&#x27;){state.email=String(f.get(&#x27;email&#x27;));state.name=String(f.get(&#x27;name&#x27;)).trim();go(&#x27;verify&#x27;);}
+  if(kind===&#x27;verify&#x27;){if(String(f.get(&#x27;code&#x27;))===&#x27;000000&#x27;){tell(&#x27;That code isn’t valid. Check your email and try again.&#x27;,true);form.querySelector(&#x27;input&#x27;).setAttribute(&#x27;aria-invalid&#x27;,&#x27;true&#x27;);return;}go(authDestination());}
+  if(kind===&#x27;forgot&#x27;){state.email=String(f.get(&#x27;email&#x27;));go(&#x27;resetemail&#x27;);}
+  if(kind===&#x27;reset&#x27;){if(f.get(&#x27;newpassword&#x27;)!==f.get(&#x27;confirm&#x27;)){tell(&#x27;The passwords don’t match. Try again.&#x27;,true);form.querySelector(&#x27;#cq-confirm&#x27;).setAttribute(&#x27;aria-invalid&#x27;,&#x27;true&#x27;);return;}go(&#x27;resetdone&#x27;);}
+  if(kind===&#x27;mfa&#x27;){if(f.get(&#x27;code&#x27;)===&#x27;000000&#x27;){tell(&#x27;That code isn’t valid. Enter the latest code from your app.&#x27;,true);return;}go(authDestination());}
+  if(kind===&#x27;recovery&#x27;)go(authDestination());
+  if(kind===&#x27;practice&#x27;){state.practice=String(f.get(&#x27;practice&#x27;)).trim();if(!state.practice){tell(&#x27;Enter your practice name.&#x27;,true);return;}go(&#x27;location&#x27;);}
+  if(kind===&#x27;location&#x27;){state.location=String(f.get(&#x27;location&#x27;)).trim();state.timezone=String(f.get(&#x27;timezone&#x27;));state.address=String(f.get(&#x27;address&#x27;)||&#x27;&#x27;).trim();if(!state.location){tell(&#x27;Enter a location name.&#x27;,true);return;}go(&#x27;review&#x27;);}
+  if(kind===&#x27;review&#x27;){state.submitted=true;go(&#x27;creating&#x27;);}
+  if(kind===&#x27;invite&#x27;){state.memberEmail=String(f.get(&#x27;memberEmail&#x27;)).trim();state.role=String(f.get(&#x27;role&#x27;));state.assigned=f.has(&#x27;inviteLocation&#x27;);go(&#x27;invitesent&#x27;);}
+  if(kind===&#x27;approvemember&#x27;){state.role=String(f.get(&#x27;approvedRole&#x27;));state.assigned=f.has(&#x27;approvedLocation&#x27;);go(&#x27;memberactive&#x27;);}
+  if(kind===&#x27;owneraccess&#x27;){state.ownerClinical=f.has(&#x27;ownerClinical&#x27;);state.assignedLocations=state.ownerClinical?[state.location]:[];go(state.ownerClinical?&#x27;chooselocation&#x27;:&#x27;noaccess&#x27;);}
+  if(kind===&#x27;chooselocation&#x27;){const loc=state.assignedLocations[Number(f.get(&#x27;working&#x27;))];if(!loc){tell(&#x27;Choose one of your assigned locations.&#x27;,true);return;}state.workingLocation=loc;go(&#x27;workspace&#x27;);}
+ });
+ buildPicker();
+ function restorePreview(v){if([&#x27;web&#x27;,&#x27;ios&#x27;,&#x27;android&#x27;].includes(v.platform))state.platform=v.platform;if([&#x27;owner&#x27;,&#x27;invitee&#x27;,&#x27;restricted&#x27;,&#x27;member&#x27;].includes(v.scenario))state.scenario=v.scenario;state.ownerClinical=!!v.ownerClinical;state.created=!!v.created;state.submitted=!!v.submitted;state.inviteContext=state.scenario===&#x27;invitee&#x27;;if(state.inviteContext){state.email=state.memberEmail;state.name=&#x27;Sam Patel&#x27;;}state.assignedLocations=state.ownerClinical?[state.location]:state.scenario===&#x27;member&#x27;?[state.location,&#x27;North office&#x27;]:[];if(views[v.screen])state.screen=v.screen;if(state.screen===&#x27;chooselocation&#x27;&amp;&amp;!state.assignedLocations.length)state.screen=state.scenario===&#x27;member&#x27;?&#x27;membernoaccess&#x27;:&#x27;noaccess&#x27;;}
+ const restore=window.openai&amp;&amp;window.openai.widgetState;const saved=restore&amp;&amp;(restore.privateContent||restore.modelContent||restore);if(saved)restorePreview(saved);
+ render();
+ window.addEventListener(&#x27;openai:set_globals&#x27;,e=&gt;{const s=e.detail&amp;&amp;e.detail.globals&amp;&amp;e.detail.globals.widgetState;if(!s)return;const v=s.privateContent||s.modelContent||s;if(v.screen===state.screen&amp;&amp;v.platform===state.platform&amp;&amp;v.scenario===state.scenario&amp;&amp;!!v.ownerClinical===state.ownerClinical&amp;&amp;!!v.created===state.created&amp;&amp;!!v.submitted===state.submitted)return;restorePreview(v);if(state.screen===&#x27;wrongemail&#x27;){state.email=&#x27;alex@marlow.example&#x27;;state.name=&#x27;Alex Morgan&#x27;;}render();});
+ if(globalThis.Tweak){const tweak=new Tweak({container:product,onChange:()=&gt;product.style.setProperty(&#x27;--cq-radius&#x27;,design.radius+&#x27;px&#x27;)});tweak.addSlider(design,&#x27;radius&#x27;,{label:&#x27;Control corners&#x27;,min:6,max:14,step:1,unit:&#x27;px&#x27;,reference:&#x27;--cq-radius&#x27;});}
+})();
+&lt;/script&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+  let lastPointerWasTouch = false;
+  let pinnedByTouch = false;
+
+  const getTrigger = (event) =&gt; {
+    for (const target of event.composedPath()) {
+      if (target?.nodeType === Node.ELEMENT_NODE) {
+        const trigger = target.closest(&quot;[data-tooltip]&quot;);
+        if (trigger) return trigger;
+      }
+    }
+    return null;
+  };
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    pinnedByTouch = false;
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handlePointer = (event) =&gt; {
+    lastPointerWasTouch =
+      event.type === &quot;pointerdown&quot; &amp;&amp; event.pointerType === &quot;touch&quot;;
+  };
+  const handleTouchClick = (event) =&gt; {
+    const isTouch = event.pointerType === &quot;touch&quot; || lastPointerWasTouch;
+    lastPointerWasTouch = false;
+    if (!isTouch || event.detail === 0) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (
+      trigger == null ||
+      !trigger.isConnected ||
+      getContent(trigger).length === 0 ||
+      (pinnedByTouch &amp;&amp; activeTrigger === trigger)
+    ) {
+      if (pinnedByTouch) {
+        closeTooltip();
+      }
+      return;
+    }
+    openTooltip(trigger);
+    pinnedByTouch = activeTrigger === trigger;
+    window.setTimeout(() =&gt; {
+      if (activeTrigger === trigger &amp;&amp; !trigger.isConnected) {
+        closeTooltip(false);
+      }
+    }, 0);
+  };
+  const handleLeave = (event) =&gt; {
+    if (pinnedByTouch) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    lastPointerWasTouch = false;
+    const trigger = getTrigger(event);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handlers = {
+    pointerover: handlePointerOpen,
+    pointerdown: handlePointer,
+    pointercancel: handlePointer,
+    click: handleTouchClick,
+    pointerout: handleLeave,
+    focusin: handleFocusIn,
+    focusout: handleLeave,
+    keydown: handleKeyDown,
+    contextmenu: handleContextMenu,
+  };
+  const roots = new Map();
+  const handledEvents = new WeakSet();
+  const handleEvent = (event) =&gt; {
+    if (handledEvents.has(event)) return;
+    handledEvents.add(event);
+    handlers[event.type](event);
+  };
+  const discoverRoots = (node) =&gt; {
+    if (node.shadowRoot) listen(node.shadowRoot);
+    for (const element of node.querySelectorAll(&quot;*&quot;)) {
+      if (element.shadowRoot) listen(element.shadowRoot);
+    }
+  };
+  const listen = (root) =&gt; {
+    if (roots.has(root)) return;
+    for (const type of Object.keys(handlers)) root.addEventListener(type, handleEvent);
+    const observer = new window.MutationObserver((records) =&gt; {
+      for (const { addedNodes } of records) {
+        for (const node of addedNodes) {
+          if (node.nodeType === Node.ELEMENT_NODE) discoverRoots(node);
+        }
+      }
+      for (const [root, cleanup] of roots) {
+        if (root.host &amp;&amp; !root.host.isConnected) {
+          cleanup();
+          roots.delete(root);
+        }
+      }
+      if (activeTrigger &amp;&amp; !activeTrigger.isConnected) closeTooltip(false);
+    });
+    observer.observe(root, { childList: true, subtree: true });
+    roots.set(root, () =&gt; {
+      observer.disconnect();
+      for (const type of Object.keys(handlers)) root.removeEventListener(type, handleEvent);
+    });
+    discoverRoots(root);
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    lastPointerWasTouch = false;
+    for (const cleanup of roots.values()) cleanup();
+    roots.clear();
+    tooltip = null;
+  };
+
+  // Events between children of one shadow root never reach the document.
+  listen(document);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-tabs&quot;&gt;
+(() =&gt; {
+  const selector = &#x27;.nav[role=&quot;tablist&quot;] [role=&quot;tab&quot;]&#x27;;
+  const disabled = &#x27;:disabled,[aria-disabled=&quot;true&quot;]&#x27;;
+  const selectTab = (selected) =&gt; {
+    const panelId = selected.getAttribute(&quot;aria-controls&quot;);
+    for (const tab of selected.closest(&#x27;[role=&quot;tablist&quot;]&#x27;).querySelectorAll(&#x27;[role=&quot;tab&quot;]&#x27;)) {
+      const active = tab === selected;
+      tab.classList.toggle(&quot;active&quot;, active);
+      tab.setAttribute(&quot;aria-selected&quot;, String(active));
+      const id = tab.getAttribute(&quot;aria-controls&quot;);
+      const panel = id &amp;&amp; document.getElementById(id);
+      if (panel != null) {
+        panel.hidden = id !== panelId;
+        if (!panel.hidden &amp;&amp; selected.id) {
+          panel.setAttribute(&quot;aria-labelledby&quot;, selected.id);
+        }
+      }
+    }
+  };
+  const interact = (event) =&gt; {
+    const tab = event.target?.closest?.(selector);
+    if (event.defaultPrevented || tab == null || tab.matches(disabled)) {
+      return;
+    }
+    if (event.type === &quot;click&quot;) {
+      selectTab(tab);
+      return;
+    }
+    const tabs = Array.from(
+      tab.closest(&#x27;[role=&quot;tablist&quot;]&#x27;).querySelectorAll(&#x27;[role=&quot;tab&quot;]&#x27;),
+    ).filter((candidate) =&gt; !candidate.matches(disabled));
+    const current = tabs.indexOf(tab);
+    let next;
+    if (event.key === &quot;ArrowRight&quot; || event.key === &quot;ArrowDown&quot;) {
+      next = (current + 1) % tabs.length;
+    } else if (event.key === &quot;ArrowLeft&quot; || event.key === &quot;ArrowUp&quot;) {
+      next = (current + tabs.length - 1) % tabs.length;
+    } else if (event.key === &quot;Home&quot;) {
+      next = 0;
+    } else if (event.key === &quot;End&quot;) {
+      next = tabs.length - 1;
+    } else {
+      return;
+    }
+    event.preventDefault();
+    tabs[next].focus();
+    selectTab(tabs[next]);
+  };
+
+  for (const list of document.querySelectorAll(&#x27;.nav[role=&quot;tablist&quot;]&#x27;)) {
+    const selected =
+      list.querySelector(&#x27;[role=&quot;tab&quot;][aria-selected=&quot;true&quot;]&#x27;) ??
+      list.querySelector(&#x27;[role=&quot;tab&quot;].active&#x27;) ??
+      list.querySelector(&#x27;[role=&quot;tab&quot;]&#x27;);
+    if (selected != null) {
+      selectTab(selected);
+    }
+  }
+  document.addEventListener(&quot;click&quot;, interact);
+  document.addEventListener(&quot;keydown&quot;, interact);
+  window.addEventListener(&quot;pagehide&quot;, () =&gt; {
+    document.removeEventListener(&quot;click&quot;, interact);
+    document.removeEventListener(&quot;keydown&quot;, interact);
+  }, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-carousel&quot;&gt;
+  (() =&gt; {
+    for (const root of document.querySelectorAll(&quot;.viz-carousel&quot;)) {
+      const panels = Array.from(
+        root.querySelectorAll(&quot;:scope &gt; [data-variant]&quot;),
+      );
+      if (panels.length === 0) {
+        continue;
+      }
+      root.setAttribute(&quot;role&quot;, &quot;group&quot;);
+      panels.forEach((panel, index) =&gt; {
+        panel.hidden = index !== 0;
+        panel.setAttribute(&quot;role&quot;, &quot;group&quot;);
+        if (!panel.hasAttribute(&quot;aria-label&quot;)) {
+          panel.setAttribute(&quot;aria-label&quot;, panel.dataset.variant);
+        }
+      });
+      root.dataset.activeVariant = panels[0].dataset.variant;
+      if (panels.length === 1) {
+        continue;
+      }
+
+      const controls = document.createElement(&quot;div&quot;);
+      controls.className = &quot;viz-carousel-controls&quot;;
+      // Portable copy of the settings dropdown&#x27;s legacy glyph; no 14px icon-package preset matches it.
+      // https://github.com/openai/openai/blob/master/codex/codex-apps/webview/src/icons/chevron.svg
+      controls.innerHTML = `
+      &lt;button type=&quot;button&quot; class=&quot;viz-carousel-previous cursor-interaction&quot;&gt;&lt;i data-lucide=&quot;chevron-left&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+      &lt;details class=&quot;viz-carousel-picker&quot;&gt;
+        &lt;summary class=&quot;cursor-interaction&quot;&gt;
+          &lt;span class=&quot;viz-carousel-count tabular-nums&quot;&gt;&lt;/span&gt;
+          &lt;span class=&quot;viz-carousel-name&quot;&gt;&lt;/span&gt;
+          &lt;svg class=&quot;viz-carousel-caret&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 20 21&quot; fill=&quot;none&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;
+            &lt;path d=&quot;M15.2793 7.71101C15.539 7.45131 15.961 7.45131 16.2207 7.71101C16.4804 7.97071 16.4804 8.39272 16.2207 8.65242L10.4707 14.4024C10.211 14.6621 9.78902 14.6621 9.52932 14.4024L3.77932 8.65242L3.69436 8.54792C3.52385 8.28979 3.55205 7.93828 3.77932 7.71101C4.00659 7.48374 4.3581 7.45554 4.61623 7.62605L4.72073 7.71101L10 12.9903L15.2793 7.71101Z&quot; fill=&quot;currentColor&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;0.6&quot; /&gt;
+          &lt;/svg&gt;
+        &lt;/summary&gt;
+        &lt;div class=&quot;viz-carousel-options&quot;&gt;&lt;/div&gt;
+      &lt;/details&gt;
+      &lt;button type=&quot;button&quot; class=&quot;viz-carousel-next cursor-interaction&quot;&gt;&lt;i data-lucide=&quot;chevron-right&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;`;
+      const previous = controls.querySelector(&quot;.viz-carousel-previous&quot;);
+      const next = controls.querySelector(&quot;.viz-carousel-next&quot;);
+      const picker = controls.querySelector(&quot;.viz-carousel-picker&quot;);
+      const summary = picker.querySelector(&quot;summary&quot;);
+      const count = controls.querySelector(&quot;.viz-carousel-count&quot;);
+      const name = controls.querySelector(&quot;.viz-carousel-name&quot;);
+      const options = controls.querySelector(&quot;.viz-carousel-options&quot;);
+      const status = document.createElement(&quot;span&quot;);
+      status.className = &quot;sr-only&quot;;
+      status.setAttribute(&quot;role&quot;, &quot;status&quot;);
+      status.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+      status.setAttribute(&quot;aria-atomic&quot;, &quot;true&quot;);
+      previous.setAttribute(
+        &quot;aria-label&quot;,
+        root.dataset.previousLabel ?? &quot;Previous variant&quot;,
+      );
+      next.setAttribute(&quot;aria-label&quot;, root.dataset.nextLabel ?? &quot;Next variant&quot;);
+
+      let active = 0;
+      let mousePointerId = null;
+      let summaryPointerHandled = false;
+      summary.addEventListener(&quot;pointerdown&quot;, (event) =&gt; {
+        summaryPointerHandled =
+          event.pointerType === &quot;mouse&quot; &amp;&amp; event.button === 0 &amp;&amp; !event.ctrlKey;
+        if (!summaryPointerHandled) {
+          return;
+        }
+        event.preventDefault();
+        summary.focus({ preventScroll: true });
+        picker.open = !picker.open;
+        mousePointerId = picker.open ? event.pointerId : null;
+      });
+      summary.addEventListener(&quot;click&quot;, (event) =&gt; {
+        if (summaryPointerHandled &amp;&amp; event.detail &gt; 0) {
+          event.preventDefault();
+        }
+      });
+      const choices = panels.map((panel, index) =&gt; {
+        const choice = document.createElement(&quot;button&quot;);
+        choice.type = &quot;button&quot;;
+        choice.className = &quot;cursor-interaction&quot;;
+        choice.textContent = panel.dataset.variant;
+        choice.addEventListener(&quot;click&quot;, () =&gt; {
+          select(index);
+          summary.focus();
+        });
+        choice.addEventListener(&quot;pointerup&quot;, (event) =&gt; {
+          if (
+            picker.open &amp;&amp;
+            event.pointerType === &quot;mouse&quot; &amp;&amp;
+            event.button === 0 &amp;&amp;
+            event.pointerId === mousePointerId
+          ) {
+            choice.click();
+          }
+        });
+        options.appendChild(choice);
+        return choice;
+      });
+      const select = (index) =&gt; {
+        const changed = active !== index;
+        active = index;
+        panels.forEach((panel, position) =&gt; {
+          panel.hidden = position !== active;
+          choices[position].setAttribute(
+            &quot;aria-current&quot;,
+            String(position === active),
+          );
+        });
+        root.dataset.activeVariant = panels[active].dataset.variant;
+        count.textContent = `${active + 1} / ${panels.length}`;
+        name.textContent = panels[active].dataset.variant;
+        picker.open = false;
+        mousePointerId = null;
+        if (changed) {
+          status.textContent = `${count.textContent}: ${name.textContent}`;
+        }
+      };
+      previous.addEventListener(&quot;click&quot;, () =&gt;
+        select((active + panels.length - 1) % panels.length),
+      );
+      next.addEventListener(&quot;click&quot;, () =&gt;
+        select((active + 1) % panels.length),
+      );
+      picker.addEventListener(&quot;keydown&quot;, (event) =&gt; {
+        if (event.key === &quot;Escape&quot; &amp;&amp; picker.open) {
+          event.preventDefault();
+          picker.open = false;
+          mousePointerId = null;
+          summary.focus();
+          return;
+        }
+        if (event.altKey || event.ctrlKey || event.metaKey) {
+          return;
+        }
+        const index = choices.indexOf(document.activeElement);
+        let nextIndex;
+        if (event.key === &quot;ArrowDown&quot;) {
+          nextIndex = index &lt; 0 ? active : (index + 1) % choices.length;
+        } else if (event.key === &quot;ArrowUp&quot;) {
+          nextIndex = index &lt; 0 ? active : (index + choices.length - 1) % choices.length;
+        } else if (picker.open &amp;&amp; event.key === &quot;Home&quot;) {
+          nextIndex = 0;
+        } else if (picker.open &amp;&amp; event.key === &quot;End&quot;) {
+          nextIndex = choices.length - 1;
+        } else {
+          return;
+        }
+        event.preventDefault();
+        picker.open = true;
+        choices[nextIndex].focus();
+      });
+      picker.addEventListener(&quot;focusout&quot;, (event) =&gt; {
+        if (!picker.contains(event.relatedTarget)) {
+          picker.open = false;
+          mousePointerId = null;
+        }
+      });
+      const dismiss = (event) =&gt; {
+        if (!summary.contains(event.target)) {
+          mousePointerId = null;
+        }
+        if (!picker.contains(event.target)) {
+          picker.open = false;
+        }
+      };
+      const endPointerSelection = () =&gt; {
+        mousePointerId = null;
+      };
+      const sizePicker = () =&gt; {
+        root.style.setProperty(
+          &quot;--viz-carousel-picker-height&quot;,
+          `${picker.open ? options.offsetHeight : 0}px`,
+        );
+      };
+      picker.addEventListener(&quot;toggle&quot;, sizePicker);
+      window.addEventListener(&quot;resize&quot;, sizePicker);
+      document.addEventListener(&quot;pointerdown&quot;, dismiss);
+      document.addEventListener(&quot;pointerup&quot;, endPointerSelection);
+      document.addEventListener(&quot;pointercancel&quot;, endPointerSelection);
+      window.addEventListener(&quot;blur&quot;, endPointerSelection);
+      window.addEventListener(
+        &quot;pagehide&quot;,
+        () =&gt; {
+          document.removeEventListener(&quot;pointerdown&quot;, dismiss);
+          document.removeEventListener(&quot;pointerup&quot;, endPointerSelection);
+          document.removeEventListener(&quot;pointercancel&quot;, endPointerSelection);
+          window.removeEventListener(&quot;blur&quot;, endPointerSelection);
+          window.removeEventListener(&quot;resize&quot;, sizePicker);
+        },
+        { once: true },
+      );
+      root.append(controls, status);
+      select(0);
+    }
+  })();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+<script>(() => {
+  const frame = document.getElementById("codex-visualization");
+  if (!(frame instanceof HTMLIFrameElement)) {
+    return;
+  }
+  let viewportHeight = globalThis.innerHeight;
+  const storageKey = `codex:visualization-widget-state-v2:${JSON.stringify([
+    globalThis.location.pathname,
+    globalThis.location.search,
+  ])}`;
+  const parseState = (serializedState) => {
+    if (
+      typeof serializedState !== "string" ||
+      new TextEncoder().encode(serializedState).length > 16 * 1024
+    ) {
+      throw new TypeError(
+        "Widget state must be a JSON object of at most 16 KiB",
+      );
+    }
+    /** @type {unknown} */
+    const state = JSON.parse(serializedState);
+    if (
+      state == null ||
+      typeof state !== "object" ||
+      Array.isArray(state) ||
+      ("imageIds" in state &&
+        (!Array.isArray(state.imageIds) || state.imageIds.length > 0))
+    ) {
+      throw new TypeError("Widget state must be a JSON object");
+    }
+    const storedState = { modelContent: null, privateContent: null, ...state };
+    const canonicalState = JSON.stringify(
+      storedState,
+      (_key, /** @type {unknown} */ value) => {
+        if (typeof value === "number" && !Number.isFinite(value)) {
+          throw new TypeError("Widget state must contain finite numbers");
+        }
+        return value;
+      },
+    );
+    if (new TextEncoder().encode(canonicalState).length > 16 * 1024) {
+      throw new TypeError(
+        "Widget state must be a JSON object of at most 16 KiB",
+      );
+    }
+    return storedState;
+  };
+  let storage = null;
+  let state = null;
+  try {
+    const localStorage = globalThis.localStorage;
+    const probeKey = `${storageKey}:probe`;
+    localStorage.setItem(probeKey, "1");
+    localStorage.removeItem(probeKey);
+    storage = localStorage;
+    const savedState = storage.getItem(storageKey);
+    if (savedState != null) {
+      try {
+        state = parseState(savedState);
+      } catch {
+        // Invalid saved state does not disable future writes.
+      }
+    }
+  } catch {
+    storage = null;
+  }
+  const initialGlobals = {
+    widgetState: state,
+    statePersistence: storage == null ? "none" : "local",
+  };
+
+  const channel = new MessageChannel();
+  channel.port1.addEventListener("message", (event) => {
+    const data = event.data;
+    if (typeof data !== "object" || data == null) {
+      return;
+    }
+    if (data.type === "widget-state-write") {
+      if (!Number.isSafeInteger(data.id) || data.id <= 0) {
+        return;
+      }
+      let ok = false;
+      try {
+        if (storage != null) {
+          const state = parseState(data.state);
+          storage.setItem(storageKey, JSON.stringify(state));
+          ok = true;
+        }
+      } catch {
+        // Storage denial, quota limits, and invalid state return a failed receipt.
+      }
+      channel.port1.postMessage({
+        type: "widget-state-result",
+        id: data.id,
+        ok,
+      });
+      return;
+    }
+    if (data.type === "height") {
+      const height = data.height;
+      if (
+        typeof height === "number" &&
+        Number.isFinite(height) &&
+        height >= 0 &&
+        height <= 10_000
+      ) {
+        frame.style.height = Math.ceil(height) + "px";
+      }
+      return;
+    }
+    if (data.type === "scroll-to") {
+      const top = data.top;
+      if (
+        typeof top === "number" &&
+        Number.isFinite(top) &&
+        top >= 0 &&
+        globalThis.navigator.userActivation?.isActive === true
+      ) {
+        globalThis.scrollTo({
+          top: Math.ceil(
+            globalThis.scrollY + frame.getBoundingClientRect().top + top,
+          ),
+        });
+      }
+      return;
+    }
+    if (data.type === "open-external") {
+      const rawHref = data.href;
+      if (typeof rawHref !== "string") {
+        return;
+      }
+      let href;
+      try {
+        const url = new URL(rawHref, document.baseURI);
+        if (url.protocol !== "https:") {
+          return;
+        }
+        href = url.href;
+      } catch {
+        return;
+      }
+      if (globalThis.navigator.userActivation?.isActive === true) {
+        const anchor = document.createElement("a");
+        anchor.href = href;
+        anchor.rel = "noopener noreferrer";
+        anchor.target = "_blank";
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+      }
+      return;
+    }
+    if (data.type === "follow-up") {
+      const prompt = data.prompt;
+      if (
+        typeof prompt !== "string" ||
+        globalThis.navigator.userActivation?.isActive !== true
+      ) {
+        return;
+      }
+      const title = data.title;
+      globalThis.prompt(typeof title === "string" ? title : prompt, prompt);
+    }
+  });
+  channel.port1.start();
+  const srcdoc = frame.dataset.srcdoc;
+  if (srcdoc == null) {
+    return;
+  }
+  globalThis.addEventListener("resize", () => {
+    const height = Number.parseFloat(frame.style.height);
+    if (!Number.isFinite(height) || height <= viewportHeight) {
+      frame.style.removeProperty("height");
+    }
+    viewportHeight = globalThis.innerHeight;
+    channel.port1.postMessage({ type: "measure" });
+  });
+  frame.addEventListener(
+    "load",
+    () => {
+      frame.contentWindow?.postMessage(
+        { type: "codex-visualization-initialize" },
+        "*",
+        [channel.port2],
+      );
+    },
+    { once: true },
+  );
+  // Match the trusted bootstrap element, not the same text in an authored title.
+  frame.srcdoc = srcdoc.replace(
+    '<script type="application/json" id="codex-visualization-widget-state">__CODEX_VISUALIZATION_WIDGET_STATE__<\/script>',
+    () =>
+      '<script type="application/json" id="codex-visualization-widget-state">' +
+      JSON.stringify(initialGlobals).replaceAll("<", "\\u003c") +
+      "<\/script>",
+  );
+  delete frame.dataset.srcdoc;
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+{
+  "verifiedAt": "2026-10-18T08:04:25.739819+00:00",
+  "nodeVersion": "v22.23.2",
+  "mergeHead": "f86726d",
+  "checks": [
+    {
+      "check": "mobile-unit",
+      "cwd": "apps/mobile",
+      "exitCode": 0,
+      "passed": true,
+      "durationSeconds": 0.671,
+      "totals": {
+        "tests": 56,
+        "suites": 0,
+        "pass": 56,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "check": "mobile-typecheck",
+      "cwd": "apps/mobile",
+      "exitCode": 0,
+      "passed": true,
+      "durationSeconds": 3.724
+    },
+    {
+      "check": "mobile-lint",
+      "cwd": "apps/mobile",
+      "exitCode": 0,
+      "passed": true,
+      "durationSeconds": 4.574
+    },
+    {
+      "check": "interview-contract-source-lint-typecheck",
+      "cwd": "packages/interview-contract",
+      "exitCode": 0,
+      "passed": true,
+      "durationSeconds": 0.026
+    },
+    {
+      "check": "interview-contract-unit",
+      "cwd": "packages/interview-contract",
+      "exitCode": 0,
+      "passed": true,
+      "durationSeconds": 0.071,
+      "totals": {
+        "tests": 3,
+        "suites": 0,
+        "pass": 3,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "check": "i18n-typecheck",
+      "cwd": "packages/i18n",
+      "exitCode": 0,
+      "passed": true,
+      "durationSeconds": 0.364
+    },
+    {
+      "check": "i18n-unit",
+      "cwd": "packages/i18n",
+      "exitCode": 0,
+      "passed": true,
+      "durationSeconds": 0.561,
+      "totals": {
+        "tests": 5,
+        "suites": 0,
+        "pass": 5,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "check": "mobile-association-regressions",
+      "cwd": ".",
+      "exitCode": 0,
+      "passed": true,
+      "durationSeconds": 0.159,
+      "totals": {
+        "tests": 8,
+        "suites": 0,
+        "pass": 8,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    }
+  ],
+  "limits": [
+    "Checks use installed dependencies validated by frozen root lockfile; no dependency installation or relinking.",
+    "Unit fixtures and source/type/lint checks only; no build/export, physical device, hosted provider or real patient acceptance.",
+    "Mobile association tests write only temporary synthetic fixtures; no deployed association files were changed.",
+    "Raw diagnostic output is private/ignored and omitted from this report."
+  ]
+}

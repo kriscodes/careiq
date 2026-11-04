@@ -1,0 +1,51 @@
+{
+  "verifiedAt": "2026-10-18T08:20:02.723Z",
+  "kind": "independent static security review",
+  "result": "pass",
+  "files": [
+    {
+      "file": "apps/api/tests/browser-integration-server.ts",
+      "sha256": "a829bd9eb3529bb50e4830ec3f78964e16f9946c29c89cc52abe270717a4114e"
+    },
+    {
+      "file": "apps/api/tests/local-test-database.ts",
+      "sha256": "9b4b43ed2890dbc42a67c2cfcc74666c529fac4a4e21b4b1c953adaa10363d1d"
+    },
+    {
+      "file": "apps/web/tests/browser/real-api-harness.ts",
+      "sha256": "69e5cb5d67877db8547e1f133c41bc58293611a233ed1bfa91b64d2df8ffb7c9"
+    },
+    {
+      "file": "apps/web/tests/browser/real-api.spec.ts",
+      "sha256": "bb79b0b5d2dc2c0774e70ea56425ab70a067e11780a028a02467ba36ae7f733c"
+    },
+    {
+      "file": "apps/web/playwright.integration.config.ts",
+      "sha256": "8472c47dd4797247440c8f8fd5ff5651ab020c7b7d43365e5ab12b6befe14205"
+    },
+    {
+      "file": "apps/web/tests/browser/fixtures/real-api-entry.tsx",
+      "sha256": "d877b9bc2ae3d639ffce1f3c5520323904f734bc25ab510922f8fe5a985ce611"
+    },
+    {
+      "file": "apps/web/tests/browser/fixtures/real-api-clerk.tsx",
+      "sha256": "9bb5c494e4046f42b1227909eb587340359dfbbdb18620831bdb799b1dc016ab"
+    }
+  ],
+  "safeguards": [
+    "Explicit integration opt-in and private IPC child are required.",
+    "Exact loopback careiq_test URL without query overrides or fragments is validated before API imports; API binds 127.0.0.1.",
+    "Generated runtime role is NOSUPERUSER/NOBYPASSRLS and the full database release verifier checks inherited privileges and ownership.",
+    "Database URL is derived for the restricted runtime role; audit-reader and scanner environment settings are explicitly blanked.",
+    "Synthetic identity and request credentials remain in private IPC and temporary assets; tracing, screenshots and video are disabled.",
+    "Cleanup uses generated practice UUIDs, captured request IDs and generated actor/role; corrected audit child tables and all owned practice-scoped public rows are checked.",
+    "The parent requires a cleanup receipt even if the child disconnects, waits for exit or terminates its child, and always removes its temporary assets.",
+    "Actual HTTP PDF bytes, source hash and authenticated library metadata are compared with exact persisted versions; a foreign-practice copy is refused.",
+    "No real provider account authentication, email delivery, scanner activation, hosted database operation, or external service capacity claim is made."
+  ],
+  "limits": [
+    "Read-only source review. No browser or database tests were executed by this reviewer for this receipt.",
+    "Actual local integration test totals and post-run residue verification are recorded separately by the executing agent.",
+    "GitHub Actions itself was not run; this receipt verifies YAML syntax, job references and the configured step order."
+  ]
+}

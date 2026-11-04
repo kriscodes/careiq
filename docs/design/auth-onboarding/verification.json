@@ -1,0 +1,15 @@
+{
+  "screenCount": 34,
+  "platforms": 3,
+  "renderedScreens": 102,
+  "responsiveWidths": [
+    1024,
+    736,
+    390,
+    360,
+    320
+  ],
+  "flowChecks": "owner, invite, wrong email, restricted, retry, location assignment, recovery and dialog passed",
+  "errors": [],
+  "issues": []
+}

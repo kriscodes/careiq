@@ -1,0 +1,70 @@
+Shared loading indicator audit / implementation
+
+Scope: apps/web/src, no data fetching/state/API changes, no test edits/staging/commits by this agent.
+Read canonical AGENTS.md, web AGENTS.md, installed Next 16 loading convention guidance.
+
+Shared component:
+- AccessLoading retains existing companion image, localized label, polite atomic status announcement and panel skeleton.
+- New inline boolean renders an ordinary semantic span, with a 22px companion and inherited button/text color/font, preserving the parent button accessible name. Inline status announcements are opt-in with announce, used only for standalone membership checks, front-desk refresh, and patient form saving. Default/panel appearance and polite atomic announcements preserved.
+- Existing prefers-reduced-motion rule disables animation for all sizes.
+- Skeleton wrapper is span to remain valid inside either container mode.
+
+Reused in:
+- Auth provider startup/identity guard; slow/provider-failed branch stays original heading+alert/retry.
+- Practice setup initial checks and existing owner/settings/personal account loads; invitations/practice membership checks; session tasks.
+- Legacy patient/appointment forms, save/schedule/join/confirmation buttons; audit identity check/search button.
+- Workflow initial location/date-change privacy placeholder, front-desk refresh, latest-document checks, pagination and save/availability buttons.
+- Appointment planner initial grid load, availability check and load-more button.
+- Insurance and manager initial/detail/pagination/export/save states; manager activity initial and pagination.
+- Notifications inbox/detail/preferences/routing loads and save/pagination buttons.
+- Patient secure request, file/signature saving, paperwork library, exact-copy links, staff paperwork, portal access, patient communication choices, form save state, form studio save/publish and workflow setup.
+- Communications list/detail/composer and pending policy/contact/message buttons; separate bug-fix state effect untouched after root confirmed bug commit ec73516.
+
+Accessibility / special contexts:
+- Default/panel loaders own live-region announcements. Inline loaders within buttons inherit their parent accessible name and do not create nested live regions. Removed redundant outer status from legacy loading wrapper.
+- Planner incomplete-data notice keeps a status on its own paragraph, outside loading button status.
+- PatientForm preserves paragraph layout; its outer status is absent while nested inline loader is active.
+- Native select option fallback remains text because HTML options cannot contain loading components. Added an adjacent shared status while identity/memberships load.
+- InterviewModal description is a required plain string; while pending, use existing localized contextual prose (deliverySeparate / insurance queueHint) and the shared body loader handles the actual loading announcement. Loaded record descriptions unchanged.
+- Hidden patient account-code authorization guards remain null; no private code/data is rendered during identity checks.
+- Success/permission/empty/unavailable/processing-result notices remain ordinary text; they do not imply ongoing loading.
+- Auth pending screen no longer has an Opening CareIQ H1, it now has the shared status panel. Initial PracticeOnboarding no-snapshot checks likewise use status panel. Failure headings/alerts unchanged.
+- Existing legacy page heading Opening Your Front Desk remains above shared localized loading context; it is page framing, not a separate status announcement.
+- Existing client directives preserved; Appointments' semicolonless original was normalized to keep directive first.
+
+Verification:
+- 131 existing web unit tests passed under pinned Node 22.23.4 before final markup cleanup (no changes to fetch logic).
+- Final TypeScript check log: /private/tmp/careiq-loading-typecheck-final.log
+- Root owns browser checks, visual verification, docs and commits.
+
+Changed files and render-replacement counts:
+apps/web/src/components/access/AccessLoading.tsx (0)
+apps/web/src/app/access.css (1)
+apps/web/src/components/Appointments.tsx (2)
+apps/web/src/components/AuditConsole.tsx (2)
+apps/web/src/components/InterviewForms.tsx (2)
+apps/web/src/components/Patients.tsx (1)
+apps/web/src/components/PracticeAccess.tsx (4)
+apps/web/src/components/access/AuthScreen.tsx (4)
+apps/web/src/components/access/OwnerWorkspaceAccess.tsx (1)
+apps/web/src/components/access/PracticeHome.tsx (1)
+apps/web/src/components/access/PracticeManagement.tsx (2)
+apps/web/src/components/access/PracticeOnboarding.tsx (3)
+apps/web/src/components/access/SignOutButton.tsx (1)
+apps/web/src/components/workflow/AppointmentPlanner.tsx (4)
+apps/web/src/components/workflow/PatientWorkflow.tsx (3)
+apps/web/src/components/workflow/PatientPaperworkLibrary.tsx (3)
+apps/web/src/components/workflow/WorkflowSetup.tsx (1)
+apps/web/src/components/workflow/WorkflowWorkspace.tsx (9)
+apps/web/src/components/workflow/FormsStudio.tsx (2)
+apps/web/src/components/workflow/InsuranceWorkspace.tsx (6)
+apps/web/src/components/workflow/ManagerActivity.tsx (2)
+apps/web/src/components/workflow/NotificationInbox.tsx (7)
+apps/web/src/components/workflow/PortalAccessManager.tsx (2)
+apps/web/src/components/access/PersonalAccountSettings.tsx (1)
+apps/web/src/components/workflow/PatientCommunicationChoices.tsx (2)
+apps/web/src/components/access/SessionTasks.tsx (1)
+apps/web/src/components/workflow/StaffPaperwork.tsx (1)
+apps/web/src/components/workflow/PatientForm.tsx (2)
+apps/web/src/components/PracticeWorkspace.tsx (2)
+apps/web/src/components/workflow/CommunicationsWorkspace.tsx (8)

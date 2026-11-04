@@ -1,0 +1,68 @@
+[
+  {
+    "name": "desktop-visit-status-en",
+    "width": 1440,
+    "content": 1440,
+    "lang": "en"
+  },
+  {
+    "name": "desktop-today-es",
+    "width": 1440,
+    "content": 1440,
+    "lang": "es"
+  },
+  {
+    "name": "phone-today-es",
+    "width": 390,
+    "content": 390,
+    "lang": "es"
+  },
+  {
+    "name": "phone-visit-status-es",
+    "width": 390,
+    "content": 390,
+    "lang": "es"
+  },
+  {
+    "name": "narrow-today-es",
+    "width": 320,
+    "content": 320,
+    "lang": "es"
+  },
+  {
+    "name": "desktop-waiver-reason-en",
+    "width": 1440,
+    "content": 1440,
+    "lang": "en"
+  },
+  {
+    "name": "desktop-template-dropdown-en",
+    "width": 1440,
+    "content": 1440,
+    "lang": "en"
+  },
+  {
+    "name": "desktop-website-es",
+    "width": 1440,
+    "content": 1440,
+    "lang": "es"
+  },
+  {
+    "name": "tablet-website-es",
+    "width": 1024,
+    "content": 1024,
+    "lang": "es"
+  },
+  {
+    "name": "phone-website-es",
+    "width": 390,
+    "content": 390,
+    "lang": "es"
+  },
+  {
+    "name": "narrow-website-es",
+    "width": 320,
+    "content": 320,
+    "lang": "es"
+  }
+]

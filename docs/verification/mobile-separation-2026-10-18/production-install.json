@@ -1,0 +1,18 @@
+{
+  "verifiedAt": "2026-10-18T17:29:05.929691+00:00",
+  "command": "pnpm install --prod --offline --frozen-lockfile --ignore-scripts",
+  "scope": "Fresh disposable manifest/lock copy with production dependencies only on local Darwin; lifecycle scripts disabled. This is an installed package inventory, not a Linux deployed-image/vendor-code certification.",
+  "canonicalLockSha256": "914796c9b4469f561aedb213dd0a67d16a3946fdfca3407a2f49b9797b49e408",
+  "exitCode": 0,
+  "durationSeconds": 4.665,
+  "installedPackageDirectories": 178,
+  "excludedPackageDirectories": {
+    "expo": [],
+    "reactNative": [],
+    "nodeForge": [],
+    "braces": []
+  },
+  "manifestProjects": 6,
+  "pass": true,
+  "temporaryInstallRemovedOnExit": true
+}

@@ -1,0 +1,14 @@
+Harden dependency backports and production file security
+
+- Guard direct braces walkers and upgrade the vulnerable legacy esbuild edge
+- Require private production volumes, stable cursor keys and encrypted audit access
+- Protect document/audit files and reauthorize retained audit exports
+- Block contact POST redirects and referrer forwarding
+- Verify release safeguards and document remaining upstream/hosted blockers
+
+Validation: 224 API, 73 web, 56 mobile, 9 marketing, 8 shared tests;
+22 dependency and 8 association checks; browser/security flows,
+production builds, mobile exports and local restricted-database preflight pass.
+
+Release gates remain open: 2 HIGH upstream audit findings and hosted/provider,
+backup/storage/email-worker, installed-device and operating acceptance.

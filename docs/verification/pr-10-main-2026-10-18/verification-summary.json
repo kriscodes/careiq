@@ -1,0 +1,83 @@
+{
+  "reviewDate": "2026-10-18",
+  "pullRequest": 10,
+  "source": {
+    "headBeforeMerge": "f86726d6a95b9b347447f4895e0e8409058a7598",
+    "mainIntegrated": "7dcc5109f8f0068f4aac94c9b2afa5429708409c",
+    "conflictsResolved": 54,
+    "unresolvedPaths": 0,
+    "mergeCommitCreated": false,
+    "pushed": false,
+    "hostedDatabaseMigrated": false
+  },
+  "tests": {
+    "api": 218,
+    "webUnits": 73,
+    "mobileUnits": 56,
+    "marketingUnits": 8,
+    "sharedContract": 3,
+    "localization": 5,
+    "associationRegressions": 8,
+    "dependencySecurityRegressions": 16,
+    "componentBrowser": 53,
+    "actualBrowserApiDatabase": 2,
+    "productionHttp": 3
+  },
+  "functionalTestFailures": 0,
+  "functionalTestsSkipped": 0,
+  "builds": {
+    "api": true,
+    "webOptimized": true,
+    "marketingStatic": true,
+    "iosAndroidWebPreviewExports": true
+  },
+  "staticChecks": {
+    "apiTypes": true,
+    "apiFixtureTypes": true,
+    "webTypes": true,
+    "webLint": true,
+    "marketingTypes": true,
+    "marketingLint": true,
+    "mobileTypes": true,
+    "mobileLint": true,
+    "sharedChecks": true,
+    "bothWorkflowYamlAndFixtures": true
+  },
+  "database": {
+    "migrationCount": 36,
+    "freshReplay": true,
+    "repeatUnchanged": true,
+    "restrictedRuntimeRelease": true,
+    "commonMainSqlUnchanged": 16,
+    "allFeatureSqlUnchanged": 36
+  },
+  "dependencyAudit": {
+    "rawGateGreen": false,
+    "high": 2,
+    "critical": 0,
+    "moderate": 0,
+    "low": 0,
+    "suppressionsAdded": false
+  },
+  "sourceHashes": {
+    "apps/api/tests/browser-integration-server.ts": "a829bd9eb3529bb50e4830ec3f78964e16f9946c29c89cc52abe270717a4114e",
+    "apps/web/playwright.integration.config.ts": "8472c47dd4797247440c8f8fd5ff5651ab020c7b7d43365e5ab12b6befe14205",
+    "apps/web/tests/browser/real-api-harness.ts": "69e5cb5d67877db8547e1f133c41bc58293611a233ed1bfa91b64d2df8ffb7c9",
+    "apps/web/tests/browser/real-api.spec.ts": "bb79b0b5d2dc2c0774e70ea56425ab70a067e11780a028a02467ba36ae7f733c",
+    "apps/web/tests/browser/fixtures/real-api-entry.tsx": "d877b9bc2ae3d639ffce1f3c5520323904f734bc25ab510922f8fe5a985ce611",
+    "apps/web/tests/browser/fixtures/real-api-clerk.tsx": "9bb5c494e4046f42b1227909eb587340359dfbbdb18620831bdb799b1dc016ab",
+    ".github/workflows/ci.yml": "7496a2b898bd231ae69dd3d0f099d1de62507b28a522f177105b4cfd053698b1",
+    ".github/workflows/readiness.yml": "9328eb0d96cc62c6f252c1376c355fd699ba4dd6b7b760bff980ed908a6a226e"
+  },
+  "limits": [
+    "Local synthetic verification; no actual identity-provider account/password/MFA or provider email delivery acceptance.",
+    "No installed native binaries/devices, hosted deployment, new capacity benchmark or real-patient launch.",
+    "GitHub PR remains unchanged until the user commits and pushes the local merge."
+  ],
+  "localServiceSmokeChecks": {
+    "passed": true,
+    "checks": 6,
+    "actualOwnerLoginVerified": false
+  },
+  "notionReconciliationVerified": true
+}

@@ -1,299 +1,127 @@
-import express from "express";
-import { clerkMiddleware, getAuth } from '@clerk/express';
-import cors from "cors";
-import { pool } from "./db/client.js";
-import { provisionPractice } from "./services/practice.service.js";
-import { tenantContextMiddleware } from "./middleware/tenant-context.js";
-import { 
+import * as patientDelivery from './services/patient-delivery.service.js';
+import * as staffNotifications from './services/staff-notifications.service.js';
+import * as portalCommunications from './services/portal-communication.service.js';
+import {
+  startNotificationWorker,
+  notificationWorkerConfiguration,
+} from './notifications/worker.js';
+import { configuredDeliveryCallbacks } from './notifications/callback-configuration.js';
+import * as workflow from './services/workflow.service.js';
+import * as insurance from './services/insurance.service.js';
+import { verifyWebhook } from '@clerk/backend/webhooks';
+import { handleClerkEvent } from './services/practice-reconciliation.js';
+import { getAuth } from '@clerk/express';
+import { createAuthenticationMiddleware } from './middleware/authentication.js';
+import { createApiApp } from './app.js';
+import { pool } from './db/client.js';
+import { findPracticeByClerkOrgId } from './services/practice.service.js';
+import { practiceAccess } from './services/practice-access.service.js';
+import { accountLifecycle } from './services/account-lifecycle.service.js';
+import { createPatient, listPatients } from './services/patient.service.js';
+import { createAppointment, listAppointments } from './services/appointment.service.js';
+import { createInterviewRequest } from './services/interview-request.service.js';
+import {
+  interviewRequestsEnabled,
+  parseClerkAuthenticationPolicy,
+  parseTrustedProxies,
+} from './public-config.js';
+import { validateProductionConfiguration } from './production-config.js';
+import { verifyPrivateStorageDirectory } from './workflow/storage-config.js';
+import { verifyDatabaseRelease } from './db/release-check.js';
+import { ReleaseCheckError } from './db/migration-safety.js';
+import { logFailure } from './logging.js';
+import {
+  verifyConfiguredAuditReader,
+  closeProtectedAuditReader,
+} from './services/protected-audit.service.js';
+
+validateProductionConfiguration();
+const authenticationPolicy = parseClerkAuthenticationPolicy();
+const origins = authenticationPolicy.browserOrigins;
+const app = createApiApp(
+  {
+    authenticate: createAuthenticationMiddleware(authenticationPolicy),
+    workflow,
+    insurance,
+    patientDelivery,
+    staffNotifications,
+    portalCommunications,
+    deliveryCallbacks: configuredDeliveryCallbacks(),
+    getAuth,
+    health: () => pool.query('SELECT 1'),
+    practiceAccess,
+    accountLifecycle,
+    clerkWebhook: async (body, headers) => {
+      let event;
+      if (!process.env.CLERK_WEBHOOK_SIGNING_SECRET) {
+        throw new Error('WEBHOOK_NOT_CONFIGURED');
+      }
+      try {
+        event = await verifyWebhook(
+          new Request('https://api.careiq.invalid/api/v1/webhooks/clerk', {
+            method: 'POST',
+            headers,
+            body: new Uint8Array(body),
+          }),
+        );
+      } catch {
+        throw Object.assign(new Error('INVALID_WEBHOOK'), { status: 400 });
+      }
+      await handleClerkEvent(event, headers['svix-id']);
+    },
+    findPracticeByClerkOrgId,
     createPatient,
     listPatients,
-} from "./services/patient.service.js";
-import {
     createAppointment,
     listAppointments,
-} from "./services/appointment.service.js";
-
-import { logFailure } from "./logging.js";
-import { isUuid, parseScheduledAt } from "./validation.js";
-import { interviewRequestsEnabled, parseCorsOrigins, parseTrustedProxies } from "./public-config.js";
-import { registerPublicInterviewRoutes } from "./routes/public-interview-requests.js";
-import { createInterviewRequest } from "./services/interview-request.service.js";
-
-const app = express();
-app.disable("x-powered-by");
-app.set("trust proxy", parseTrustedProxies());
+  },
+  {
+    origins,
+    trustedProxies: parseTrustedProxies(),
+    interviews: { store: createInterviewRequest, enabled: interviewRequestsEnabled() },
+  },
+);
 
 const port = Number(process.env.PORT ?? 3000);
-const corsOrigins = parseCorsOrigins();
-
-registerPublicInterviewRoutes(app, {
-    store: createInterviewRequest,
-    origins: corsOrigins,
-    enabled: interviewRequestsEnabled(),
-});
-
-app.use(
-    cors({
-        origin: corsOrigins,
-        credentials: true,
-    }),
-)
-
-app.get("/health", async (_req, res) => {
+// Local development stays on loopback unless the owner explicitly opts into another bind address.
+const host =
+  process.env.HOST?.trim() || (process.env.NODE_ENV === 'production' ? '0.0.0.0' : '127.0.0.1');
+async function start() {
+  if (process.env.NODE_ENV === 'production') {
+    await verifyPrivateStorageDirectory();
+    const client = await pool.connect();
     try {
-        await pool.query("SELECT 1");
-
-        res.status(200).json({
-            status: "ok",
-            service: "careiq-api",
-            database: "connected",
-        });
-    } catch(error) {
-        logFailure("Database health check failed:", error);
-
-        res.status(503).json({
-            status: "error",
-            service: "careiq-api",
-            database: "disconnected"
-        })
+      await client.query('BEGIN READ ONLY');
+      await verifyDatabaseRelease(client, interviewRequestsEnabled());
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
     }
-});
-
-app.use(clerkMiddleware());
-app.use(express.json());
-
-app.get("/api/v1/me", async (req, res) => {
-    try {
-        const auth = getAuth(req);
-
-        if(!auth.isAuthenticated) {
-            res.status(401).json({
-                error: {
-                    code: "UNAUTHENTICATED",
-                    message: "Authentication is required.",
-                },
-            });
-            return;
-        };
-
-        if(!auth.orgId) {
-            res.status(403).json({
-                error: {
-                    code: "ORGANIZATION_REQUIRED",
-                    message: "An active organization is required.",
-                },
-            });
-            return;
-        }
-
-        const practice = await provisionPractice(auth.orgId);
-
-        res.status(200).json({
-            data: {
-                userId: auth.userId,
-                orgId: auth.orgId,
-                sessionId: auth.sessionId,
-                practice,
-            },
-        });
-    } catch(error) {
-        logFailure("Failed to resolve current user: ", error);
-
-        res.status(500).json({
-            error: {
-                code: "INTERNAL_SERVER_ERROR",
-                message: "Unable to resolve current user.",
-            },
-        });
-    }
-});
-
-app.get(
-    "/api/v1/patients",
-    tenantContextMiddleware,
-    async(_req, res) => {
-        try {
-            const patients = await listPatients(res.locals.tenant);
-
-            res.status(200).json({
-                data: patients,
-            });
-        } catch(error) {
-            logFailure("Failed to list patients: ", error);
-
-            res.status(500).json({
-                error: {
-                    code: "PATIENT_LIST_FAILED",
-                    message: "Unable to load patients.",
-                },
-            });
-        }
-    },
-);
-
-app.post(
-    "/api/v1/patients",
-    tenantContextMiddleware,
-    async (req, res) => {
-        try {
-            const firstName =
-            typeof req.body?.firstName === "string"
-            ? req.body?.firstName.trim()
-            : "";
-
-            const lastName =
-            typeof req.body?.lastName === "string"
-            ? req.body?.lastName.trim()
-            : "";
-
-            const email =
-            typeof req.body?.email === "string"
-            ? req.body?.email.trim()
-            : undefined;
-
-            const phone =
-            typeof req.body?.phone === "string"
-            ? req.body?.phone.trim()
-            : undefined;
-
-            if(!firstName || !lastName) {
-                res.status(400).json({
-                    error: {
-                        code: "INVALID_PATIENT",
-                        message: "First name and last name are required.",
-                    },
-                });
-                return;
-            }
-
-            const patient = await createPatient(res.locals.tenant, {
-                firstName,
-                lastName, 
-                email,
-                phone,
-            });
-
-            res.status(201).json({
-                data: patient,
-            });
-        } catch (error) {
-            logFailure("Failed to create patient: ", error);
-
-            res.status(500).json({
-                error: {
-                    code: "PATIENT_CREATE_FAILED",
-                    message: "Unable to create patient.",
-                },
-            });
-        }
-    },
-);
-
-app.get(
-    "/api/v1/appointments",
-    tenantContextMiddleware,
-    async(_req, res) => {
-        try{
-            const appointments = await listAppointments(
-                res.locals.tenant,
-            );
-
-            res.status(200).json({
-                data: appointments,
-            });
-        } catch (error) {
-            logFailure("Failed to list appointments: ", error);
-
-            res.status(500).json({
-                error: {
-                    code: "APPOINTMENT_LIST_FAILED",
-                    message: "Unable to load appointments."
-                },
-            });
-        }
-    },
-);
-
-app.post (
-    "/api/v1/appointments",
-    tenantContextMiddleware,
-    async (req, res) => {
-        try {
-            const patientId = 
-            typeof req.body?.patientId === "string"
-            ? req.body?.patientId.trim()
-            : "";
-
-            const scheduledAt = 
-            parseScheduledAt(req.body?.scheduledAt);
-
-            const reason = 
-            typeof req.body?.reason === "string"
-            ? req.body?.reason.trim()
-            : undefined;
-
-            if(
-                !isUuid(patientId) ||
-                !scheduledAt ||
-                Number.isNaN(scheduledAt.getTime())
-            ) {
-                res.status(400).json({
-                    error: {
-                        code: "INVALID_APPOINTMENT",
-                        message: "Patient and a valid scheduled time are required.",
-                    },
-                });
-                return;
-            }
-
-            const appointment = await createAppointment(
-                res.locals.tenant,
-                {
-                    patientId,
-                    scheduledAt,
-                    reason,
-                },
-            );
-
-            res.status(201).json({
-                data: appointment,
-            });
-        } catch(error) {
-            if(
-                error instanceof Error &&
-                error.message === "PATIENT_NOT_FOUND"
-            ) {
-                res.status(404).json({
-                    error: {
-                        code: "PATIENT_NOT_FOUND",
-                        message: "The selected patient could not be found for this practice.",
-                    },
-                });
-                return;
-            }
-
-            logFailure("Failed to create appointment: ", error);
-
-            res.status(500).json({
-                error: {
-                    code: "APPOINTMENT_CREATE_FAILED",
-                    message: "Unable to create appointment",
-                },
-            });
-        }
-    },
-);
-
-app.use((error: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-    const status = (error as { status?: number })?.status;
-    if (status === 400 || status === 413) {
-        res.status(status).json({ error: { code: "INVALID_REQUEST", message: status === 413 ? "Request body is too large." : "Request body must be valid JSON." } });
-        return;
-    }
-    console.error("Unhandled request error");
-    res.status(500).json({ error: { code: "INTERNAL_SERVER_ERROR", message: "Unable to complete request." } });
-});
-
-app.listen(port, "0.0.0.0", () => {
+    await verifyConfiguredAuditReader();
+  }
+  notificationWorkerConfiguration();
+  const server = app.listen(port, host, () => {
     console.log(`CareIQ API listening on port ${port}.`);
+  });
+  const stopNotifications = startNotificationWorker();
+  const shutdown = () => {
+    stopNotifications();
+    server.close(() => {
+      void Promise.allSettled([pool.end(), closeProtectedAuditReader()]);
+    });
+  };
+  process.once('SIGTERM', shutdown);
+  process.once('SIGINT', shutdown);
+}
+start().catch(async (error) => {
+  if (error instanceof ReleaseCheckError) {
+    console.error(error.message);
+  } else {
+    logFailure('API startup release verification failed', error);
+  }
+  process.exitCode = 1;
+  await Promise.allSettled([pool.end(), closeProtectedAuditReader()]);
 });

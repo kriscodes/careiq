@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-18",
+  "scope": "Final six-workspace graph, isolated serial builds. Synthetic reserved.invalid web keys and HTTPS API; marketing intake/indexing disabled. No deployment or provider authentication.",
+  "checks": [
+    {
+      "name": "web-production-build",
+      "exitCode": 0,
+      "seconds": 17.4,
+      "output": ".next-release-hardening-20261018"
+    },
+    {
+      "name": "marketing-production-build",
+      "exitCode": 0,
+      "seconds": 10.77,
+      "output": ".next-release-hardening-20261018"
+    }
+  ]
+}

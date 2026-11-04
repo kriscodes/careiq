@@ -1,0 +1,171 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import {
+  availableTimeZones,
+  timeZoneOptionLabelKey,
+  invitationEmailMatches,
+  onboardingInput,
+  onboardingView,
+  safeDestination,
+  signInStep,
+  signInVerificationMethod,
+  verificationCodePrepared,
+  validateDraft,
+  type OnboardingState,
+} from '../src/lib/access-flow';
+
+const base: OnboardingState = { eligible: true, emailVerified: true, draft: null, operation: null };
+test('restored destinations cannot redirect to external or privileged routes', () => {
+  for (const attack of [
+    '//evil.example',
+    'https://evil.example',
+    '\\\\evil.example',
+    '/session-tasks',
+    '/?token=secret',
+    '/%2f%2fevil.example',
+    '/?manage=owneraccess',
+  ]) {
+    assert.equal(safeDestination(attack), '/');
+  }
+  assert.equal(safeDestination('/?invitations=1'), '/?invitations=1');
+});
+test('sign-in never finalizes incomplete MFA, device-trust, or protect challenges', () => {
+  assert.equal(signInStep('complete'), 'complete');
+  assert.equal(signInStep('needs_second_factor', [{ strategy: 'totp' }]), 'mfa');
+  assert.equal(signInStep('needs_client_trust', [{ strategy: 'email_code' }]), 'mfa');
+  assert.equal(signInStep('needs_client_trust', [{ strategy: 'email_link' }]), 'provider');
+  assert.equal(signInStep('needs_client_trust', []), 'provider');
+  assert.equal(signInStep('needs_protect_check'), 'provider');
+  assert.equal(signInStep('needs_first_factor'), 'provider');
+  assert.equal(signInStep('needs_new_password'), 'reset');
+});
+test('a different invited email cannot pass the account gate', () => {
+  assert.equal(invitationEmailMatches(['alex@practice.example'], 'sam@practice.example'), false);
+  assert.equal(invitationEmailMatches(['SAM@practice.example'], ' sam@practice.example '), true);
+  assert.equal(invitationEmailMatches([], 'sam@practice.example'), false);
+});
+test('submitted setup resumes ahead of eligibility or editable draft screens', () => {
+  assert.equal(onboardingView(base), 'draft');
+  assert.equal(onboardingView({ ...base, eligible: false }), 'restricted');
+  assert.equal(onboardingView({ ...base, emailVerified: false }), 'verify');
+  assert.equal(
+    onboardingView({
+      ...base,
+      eligible: false,
+      operation: { state: 'pending', organizationId: null, practiceId: null },
+    }),
+    'pending',
+  );
+  assert.equal(
+    onboardingView({
+      ...base,
+      emailVerified: false,
+      operation: {
+        state: 'complete',
+        organizationId: 'org-existing',
+        practiceId: 'practice-existing',
+      },
+    }),
+    'complete',
+  );
+});
+test('practice creation has only required existing data and normalizes retry details', () => {
+  const draft = {
+    practiceName: '  Marlow  ',
+    locationName: ' Main office ',
+    timeZone: 'America/Los_Angeles',
+    address: '  ',
+    step: 3 as const,
+  };
+  assert.equal(validateDraft(draft, true), null);
+  assert.deepEqual(onboardingInput(draft), {
+    name: 'Marlow',
+    location: { name: 'Main office', timeZone: 'America/Los_Angeles' },
+  });
+  assert.match(validateDraft({ ...draft, locationName: ' ' }, true)!, /location name/);
+  assert.match(validateDraft({ ...draft, timeZone: 'Unknown/Zone' }, true)!, /valid time zone/);
+  assert.equal(validateDraft({ ...draft, practiceName: '', locationName: '', step: 1 }), null);
+});
+
+test('paperwork sign-in return keeps only a validated exact-copy hint', () => {
+  const item = '019a0000-0000-7000-8000-000000000001';
+  assert.equal(safeDestination('/patient-paperwork'), '/patient-paperwork');
+  assert.equal(
+    safeDestination('/patient-paperwork?item=' + item),
+    '/patient-paperwork?item=' + item,
+  );
+  for (const value of [
+    '/patient-paperwork?item=other',
+    '/patient-paperwork?item=' + item + '&redirect_url=//evil.invalid',
+    '/patient-paperwork?item=' + item + '#other',
+    '/patient-paperwork/../owner',
+  ]) {
+    assert.equal(safeDestination(value), '/');
+  }
+});
+
+test('new-device verification uses only supported factors and distinguishes unsent, prepared and expired codes', () => {
+  assert.equal(signInVerificationMethod([{ strategy: 'email_code' }]), 'email_code');
+  assert.equal(
+    signInVerificationMethod([{ strategy: 'totp' }, { strategy: 'email_code' }], 'email_code'),
+    'email_code',
+  );
+  assert.equal(signInVerificationMethod([{ strategy: 'email_code' }], 'phone_code'), 'email_code');
+  assert.equal(signInVerificationMethod([{ strategy: 'email_link' }]), null);
+  assert.equal(verificationCodePrepared('email_code', { strategy: null, status: null }), false);
+  assert.equal(
+    verificationCodePrepared('email_code', { strategy: 'email_code', status: 'unverified' }),
+    true,
+  );
+  assert.equal(
+    verificationCodePrepared('email_code', { strategy: 'phone_code', status: 'unverified' }),
+    false,
+  );
+  assert.equal(
+    verificationCodePrepared('email_code', { strategy: 'email_code', status: 'expired' }),
+    false,
+  );
+  assert.equal(verificationCodePrepared('totp', { strategy: null, status: null }), true);
+});
+
+test('timezone choices cover U.S. daylight-saving exceptions and territories without an exhaustive list', () => {
+  const zones = availableTimeZones('America/Los_Angeles');
+  for (const zone of [
+    'America/New_York',
+    'America/Chicago',
+    'America/Denver',
+    'America/Phoenix',
+    'America/Los_Angeles',
+    'America/Anchorage',
+    'America/Adak',
+    'Pacific/Honolulu',
+    'America/Puerto_Rico',
+    'America/St_Thomas',
+    'Pacific/Guam',
+    'Pacific/Pago_Pago',
+    'UTC',
+  ]) {
+    assert.ok(zones.includes(zone), zone);
+    assert.ok(timeZoneOptionLabelKey(zone), `Localized label for ${zone}`);
+    assert.doesNotThrow(() => new Intl.DateTimeFormat('en-US', { timeZone: zone }));
+  }
+  assert.equal(new Set(zones).size, zones.length);
+  assert.ok(zones.length < 20);
+  assert.notEqual(
+    timeZoneOptionLabelKey('America/Denver'),
+    timeZoneOptionLabelKey('America/Phoenix'),
+  );
+});
+
+test('timezone choices preserve a valid saved non-U.S. zone and never retain invalid input', () => {
+  assert.equal(availableTimeZones('Europe/London')[0], 'Europe/London');
+  assert.equal(
+    availableTimeZones('Asia/Kolkata').filter((zone) => zone === 'Asia/Kolkata').length,
+    1,
+  );
+  assert.equal(timeZoneOptionLabelKey('Europe/London'), undefined);
+  for (const value of ['', 'Unknown/Zone', '__proto__', 'constructor']) {
+    assert.ok(!availableTimeZones(value).includes(value));
+    assert.equal(timeZoneOptionLabelKey(value), undefined);
+  }
+});

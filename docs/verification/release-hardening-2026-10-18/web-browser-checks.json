@@ -1,0 +1,56 @@
+{
+  "checkedAt": "2026-10-18",
+  "checks": [
+    {
+      "name": "components-and-production",
+      "exitCode": 0,
+      "seconds": 45.51,
+      "stats": {
+        "startTime": "2026-10-18T16:32:36.384Z",
+        "duration": 45128.967,
+        "expected": 56,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "failures": [],
+      "launcher": "Pinned Node directly invokes installed Playwright CLI"
+    },
+    {
+      "name": "read-only-live",
+      "exitCode": 0,
+      "seconds": 24.59,
+      "stats": {
+        "startTime": "2026-10-18T16:31:20.503Z",
+        "duration": 23418.832000000002,
+        "expected": 3,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "failures": []
+    }
+  ],
+  "scope": "Component fixtures simulate identity/API. Production HTTP uses reserved.invalid live-shaped fixtures. Live project uses a fresh unauthenticated context, read-only GET/HEAD/OPTIONS only, never submits credentials/codes. No trace/video/screenshots.",
+  "productionServer": {
+    "port": 3191,
+    "taskOwned": true,
+    "existingServicesStopped": false,
+    "started": true,
+    "ready": true,
+    "stopped": true,
+    "exitCode": 143
+  },
+  "initialLauncherFailure": {
+    "name": "components-and-production",
+    "exitCode": 1,
+    "seconds": 2.22,
+    "stats": {},
+    "failures": [
+      {
+        "parseFailure": true
+      }
+    ],
+    "explanation": "Playwright bin spawn EACCES before any test ran while pnpm exec auto-installed workspace metadata. Repeated using direct installed CLI; not treated as an application-test failure or a passing check."
+  }
+}

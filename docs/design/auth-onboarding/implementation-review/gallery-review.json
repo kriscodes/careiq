@@ -1,0 +1,51 @@
+[
+  {
+    "name": "web-gallery",
+    "status": 200,
+    "errors": [],
+    "body": "CareIQ Access & onboarding\nDesign preview · Sample data · Actions simulated\nWeb\niOS\nAndroid\nScreen\nSign in\nCreate account\nVerify email\nForgot password\nReset email sent\nNew password\nPassword updated\nTwo-step verification\nRecovery code\nSession expired\nStart practice setup\nPractice details\nFirst location\nReview & create\nSetup in progress\nPractice created\nInvite a teammate · optional\nInvitation sent\nConfirm teammate access\nTeammate access confirmed\nOwner location access · optional\nResume practice setup\nSetup approval needed\nAccept invitation\nAwaiting owner approval\nInvitation expired\nDifferent invited email\nChoose practice\nChoose working location\nOwner location access needed\nStaff location access needed\nAccess removed\nAccess check unavailable\nWorkspace entry\nPreview path\nApproved owner\nInvited teammate\nSetup needs approval\nExisting member\n←\n1 / 34\n→\ncareiq\nNeed help?\nWelcome back\n\nSign in to your CareIQ account.\n\nEmail address\nPassword\nForgot password?\nSign in\n\nNew to CareIQ? Create an account\n\nA little more room to care.\nCareIQ\nAuthentication · Email + password, password manager support, clear recovery."
+  },
+  {
+    "name": "mobile-gallery",
+    "status": 200,
+    "errors": [],
+    "body": "Native layout preview · iOS / Android · 1 / 34\nChoose a screen\nPrevious\nNext\n+\ncareiq\nBack\nWelcome back\nSign in to your CareIQ account.\nEmail address\nPassword\nShow\nForgot password?\nSign in\nNew to CareIQ? Create an account\nA little more room to care."
+  },
+  {
+    "name": "mobile-review-390",
+    "overflow": false,
+    "body": "Native layout preview · iOS / Android · 14 / 34\nChoose a screen\nPrevious\nNext\n+\ncareiq\nBack\nEverything look right?\nYou’ll be the practice owner.\nStep 3 of 3 · Review\nPractice\nMarlow Family Practice\nFirst location\nMain location\nTime zone\nPacific Daylight Time · Los Angeles\nAddress\n1200 Market Street, San Francisco, CA\nEdit practice details\nEdit location\nI confirm I’m authorized to create and administer this practice.\nCreate practice\nCreating a location does not automatically give anyone access to it.\nA little more room to care."
+  },
+  {
+    "name": "mobile-review-360",
+    "overflow": false,
+    "body": "Native layout preview · iOS / Android · 14 / 34\nChoose a screen\nPrevious\nNext\n+\ncareiq\nBack\nEverything look right?\nYou’ll be the practice owner.\nStep 3 of 3 · Review\nPractice\nMarlow Family Practice\nFirst location\nMain location\nTime zone\nPacific Daylight Time · Los Angeles\nAddress\n1200 Market Street, San Francisco, CA\nEdit practice details\nEdit location\nI confirm I’m authorized to create and administer this practice.\nCreate practice\nCreating a location does not automatically give anyone access to it.\nA little more room to care."
+  },
+  {
+    "name": "mobile-review-320",
+    "overflow": false,
+    "body": "Native layout preview · iOS / Android · 14 / 34\nChoose a screen\nPrevious\nNext\n+\ncareiq\nBack\nEverything look right?\nYou’ll be the practice owner.\nStep 3 of 3 · Review\nPractice\nMarlow Family Practice\nFirst location\nMain location\nTime zone\nPacific Daylight Time · Los Angeles\nAddress\n1200 Market Street, San Francisco, CA\nEdit practice details\nEdit location\nI confirm I’m authorized to create and administer this practice.\nCreate practice\nCreating a location does not automatically give anyone access to it.\nA little more room to care."
+  },
+  {
+    "name": "authority-required",
+    "checked": "false",
+    "createDisabled": "true"
+  },
+  {
+    "name": "authority-confirmed",
+    "checked": "true",
+    "createDisabled": null
+  },
+  {
+    "name": "location-buttons",
+    "buttons": [
+      "Choose a screen",
+      "Previous",
+      "Next",
+      "Back",
+      "Pacific Daylight Time · Los Angeles ▾",
+      "Continue",
+      "Save and finish later"
+    ]
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-10-18",
+  "checks": [
+    {
+      "url": "http://127.0.0.1:3101/design-preview",
+      "method": "GET",
+      "responseBodyRetained": false,
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3101/sign-in",
+      "method": "GET",
+      "responseBodyRetained": false,
+      "status": 200
+    }
+  ],
+  "taskOwnedProduction3191Stopped": true,
+  "ordinaryServicesStoppedByThisAgent": false,
+  "generatedWebTsconfigIncludesRemoved": true,
+  "nextEnvUnchanged": true
+}

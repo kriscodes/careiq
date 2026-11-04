@@ -1,0 +1,32 @@
+[
+  {
+    "name": "desktop",
+    "inlineTag": "SPAN",
+    "inlineHasBlock": false,
+    "companionSize": "22px",
+    "animation": "cq-a-loading-float",
+    "statusCount": 1,
+    "panelHeight": 228,
+    "overflow": false
+  },
+  {
+    "name": "phone-es",
+    "inlineTag": "SPAN",
+    "inlineHasBlock": false,
+    "companionSize": "22px",
+    "animation": "cq-a-loading-float",
+    "statusCount": 1,
+    "panelHeight": 228,
+    "overflow": false
+  },
+  {
+    "name": "reduced-motion",
+    "inlineTag": "SPAN",
+    "inlineHasBlock": false,
+    "companionSize": "22px",
+    "animation": "none",
+    "statusCount": 1,
+    "panelHeight": 228,
+    "overflow": false
+  }
+]

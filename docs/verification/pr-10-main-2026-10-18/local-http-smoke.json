@@ -1,0 +1,55 @@
+{
+  "scope": "Owned loopback review surfaces only; proxy bypassed explicitly",
+  "checks": [
+    {
+      "name": "api-health",
+      "expected": 200,
+      "status": 200,
+      "passed": true,
+      "credentialsSent": false,
+      "errorClass": null
+    },
+    {
+      "name": "api-unauthenticated-patients",
+      "expected": 401,
+      "status": 401,
+      "passed": true,
+      "credentialsSent": false,
+      "errorClass": null
+    },
+    {
+      "name": "web-sign-in",
+      "expected": 200,
+      "status": 200,
+      "passed": true,
+      "credentialsSent": false,
+      "errorClass": null
+    },
+    {
+      "name": "web-workflow-preview",
+      "expected": 200,
+      "status": 200,
+      "passed": true,
+      "credentialsSent": false,
+      "errorClass": null
+    },
+    {
+      "name": "marketing",
+      "expected": 200,
+      "status": 200,
+      "passed": true,
+      "credentialsSent": false,
+      "errorClass": null
+    },
+    {
+      "name": "expo-preview",
+      "expected": 200,
+      "status": 200,
+      "passed": true,
+      "credentialsSent": false,
+      "errorClass": null
+    }
+  ],
+  "passed": true,
+  "probeCorrection": "Expo binds IPv6 ::1 on localhost; initial direct127.0.0.1 probe refused. The service was running; no application fix or extra restart was required."
+}

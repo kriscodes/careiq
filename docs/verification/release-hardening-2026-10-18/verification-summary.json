@@ -1,0 +1,68 @@
+{
+  "verifiedAt": "2026-10-18T16:47:25.908585+00:00",
+  "startingHead": "11df3349d87d9f36235ec5c4047398d290cb9306",
+  "overallReleaseReady": false,
+  "workspaceUnitTests": {
+    "api": 224,
+    "web": 73,
+    "mobile": 56,
+    "marketing": 9,
+    "shared": 8,
+    "total": 370,
+    "skipped": 0
+  },
+  "otherChecks": {
+    "dependencySecurity": 22,
+    "mobileAssociations": 8,
+    "componentBrowser": 53,
+    "productionHttp": 3,
+    "readOnlyLocalNextClerk": 3,
+    "realApiPaperworkBrowser": 2,
+    "marketingStaticBrowserAssertions": 11,
+    "compiledProductionRejectionCases": 6
+  },
+  "requiredLocalReports": [
+    "api-checks.json",
+    "database-production-preflight.json",
+    "real-api-checks.json",
+    "mobile-shared-checks.json",
+    "mobile-bundles-checks.json",
+    "final-local-smoke.json"
+  ],
+  "sourceSha256": {
+    "pnpm-workspace.yaml": "aab4681d4faafcf6378047c173a40787022f3c6cd00372d21b38b5bd98fd4972",
+    "pnpm-lock.yaml": "7604e21be6b79912c61f86958ef93516e57f5ab25e9e1eafc34de9b8a2cb8fa6",
+    "patches/braces@3.0.3.patch": "f46149b456f0f0e3e42cc4adf1027ad72afd23673bb4f58173ae56915ed7bad9",
+    "patches/security-manifest.json": "724d48150d3ce228fcbec95ad52c5472266d1b5071577aaa221fe7fb2f5ff324",
+    "scripts/tests/security-dependencies.test.mjs": "f8ee4465087a03e57b529b348f3f17c4e01818cf9fb9c79a2da316a475a17bd2",
+    "apps/api/src/workflow/storage-config.ts": "55c2df7b88068d27412ce402f6741d9b5de5c3bbdd0544a991a0110839f0f899",
+    "apps/api/src/workflow/storage.ts": "7c024f7f04a8c77195f6c5421ab1d2653cd84a28a4a1b7bbe21f71d46cd4f78d",
+    "apps/api/src/production-config.ts": "bc5af79ac5bf01fe6dcf2ad5b6ccb0e7f57e99e1c61034f5690731e48ac89b91",
+    "apps/api/src/services/protected-audit.service.ts": "60335e8f9944507ad007f4760444999958cffaca4d4b29c4142d5824c27fa079",
+    "apps/api/src/index.ts": "177a9eba48b9e426f3fec57eea4e07940c127217e7a8756cd0d5cd766a578544",
+    "apps/api/src/db/verify-release.ts": "63cf7a264e6330431f7851d96583331c41e0986c029acbf4e6002e61de8fec0c",
+    "apps/api/tests/private-storage.test.ts": "3922163fc3c34dcb42d0c30cfac60afd250658c8258a5905cfcfa1437a9c3769",
+    "apps/api/tests/production-config.test.ts": "5c392b4540379043088b14b507dd774432747ad92193b6b0d733e850d6c7ef10",
+    "apps/api/tests/protected-audit.test.ts": "3710d70c9a01f3eaec3d6a828e859f0ac8dd27c74c126e9a11c0f024617da453",
+    "apps/marketing/src/lib/submission.ts": "52ec9cb454ce0ca372d7225887f2f3fad41cf324b7e94dd931d2bdcd71c45444",
+    "apps/marketing/tests/marketing.test.ts": "961cbf2b907b46ee400a01c496364be099a6b180567eff1633450f7dc9ce7279"
+  },
+  "remainingGates": [
+    "2 HIGH raw upstream dependency findings",
+    "Hosted /sign-in404 and test-mode identity; deployed commit unknown",
+    "Real production owner/staff/provider/webhook/tenant acceptance",
+    "Hosted backup/ledger/restricted runtime/private storage/scanner/email worker/alert acceptance",
+    "Signed installed iOS/Android release/device acceptance",
+    "Actual hosted fleet/daily workload and practice signing/data-policy acceptance"
+  ],
+  "mutations": {
+    "committed": false,
+    "staged": false,
+    "pushed": false,
+    "deployed": false,
+    "hostedDatabaseChanged": false,
+    "schemaSqlChanged": false,
+    "providerOrSessionChanged": false
+  },
+  "limits": "Local synthetic identities and actual restricted test DB/handlers are distinct from live provider/hosted acceptance. Prior migration replay and capacity benchmark are dated carried evidence."
+}

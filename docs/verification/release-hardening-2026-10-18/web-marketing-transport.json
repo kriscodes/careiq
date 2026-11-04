@@ -1,0 +1,48 @@
+{
+  "checkedAt": "2026-10-18",
+  "change": "Public marketing submissions refuse redirects and suppress referrer transmission; no contact body is forwarded to a redirected endpoint. Existing transport regression extended.",
+  "checks": [
+    {
+      "name": "marketing-fixed-lint",
+      "exitCode": 0,
+      "seconds": 3.06
+    },
+    {
+      "name": "marketing-fixed-types",
+      "exitCode": 0,
+      "seconds": 1.44
+    },
+    {
+      "name": "marketing-fixed-unit",
+      "exitCode": 0,
+      "seconds": 0.6
+    },
+    {
+      "name": "marketing-fixed-production-build",
+      "exitCode": 0,
+      "seconds": 21.31
+    }
+  ],
+  "finalChecks": [
+    {
+      "name": "marketing-final-lint",
+      "exitCode": 0,
+      "seconds": 2.38
+    },
+    {
+      "name": "marketing-final-types",
+      "exitCode": 0,
+      "seconds": 0.95
+    },
+    {
+      "name": "marketing-final-unit",
+      "exitCode": 0,
+      "seconds": 0.33,
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "skipped": 0
+    }
+  ],
+  "regression": "A ninth marketing test uses native fetch and two task-owned loopback HTTP servers to prove a307 redirect cannot replay contact fields to a different origin; receiver sees zero requests. No external request occurs."
+}

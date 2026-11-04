@@ -1,0 +1,14 @@
+{
+  "openapi": "3.1.0",
+  "paths": 24,
+  "operations": 29,
+  "internalReferences": 558,
+  "brokenReferences": [
+
+  ],
+  "duplicateOperationIds": [
+
+  ],
+  "scope": "Design YAML structure and local references only; not server compatibility or full OpenAPI/schema certification",
+  "passed": true
+}

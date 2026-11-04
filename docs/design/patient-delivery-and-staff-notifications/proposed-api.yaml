@@ -1,0 +1,3786 @@
+---
+openapi: 3.1.0
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+info:
+  title: CareIQ notification API delta — PROPOSED, NOT INTEGRATED
+  version: 0.1.0-design
+  description: Design outline dated October 18, 2026. Exact route names align with
+    backend-design.md section 8. No application code, migration, provider activation
+    or live message delivery is implied. Existing routes retain compatible bodies/results
+    until explicit reviewed version gates. All staff queries/commands derive current
+    practice/location/patient authority server-side. Nonclinical provider ingress
+    has a separate trust boundary. These schemas are review targets, not generated
+    client compatibility promises. Proposed patient communication-preferences extension
+    uses the existing authenticated account prefix and separate PatientPortalBearer
+    authority.
+servers:
+- url: https://api.careiq.example
+  description: Reserved example origin only; not a deployed environment.
+security:
+- StaffBearer: []
+tags:
+- name: Patient delivery
+- name: Communication choices
+- name: Policy
+- name: Staff inbox
+- name: Staff preferences
+- name: Provider ingress
+- name: Patient communication preferences
+x-design-status: proposal-only; no routes integrated or verified against a provider
+x-source: backend-design.md section 8
+x-http-contract:
+  mutation_retry: Reuse original Idempotency-Key and command fingerprint after network
+    uncertainty; do not create a new external send. Conflicting reuse 409.
+  mutable_precondition: If-Match quoted current revision; current source uses 428
+    missing, 412 stale. Recipient receipt has its own revision.
+  read_all_precondition: Signed recipient/scope/filter/expiry/materialized-ID snapshot
+    token, no timestamp-only bulk boundary.
+  privacy: No-store protected responses; masked lists; no raw tokens, rendered bodies,
+    credentials or provider error dumps.
+  provider_acceptance: queued/202 is durable intent only; accepted is provider evidence
+    only; delivered is provider assertion only.
+  error_status_review: New named errors/status mappings remain proposed catalog additions;
+    current source stays authoritative until integration.
+x-explicitly-out-of-scope-routes:
+- No invented authentication, contact verification or portal identity binding route.
+- No provider admin setup/activation or template publication route.
+- No new source work assignment/completion route; reuse existing canonical commands.
+paths:
+  "/api/v1/locations/{locationId}/workflow/requests":
+    post:
+      operationId: createWorkflowRequest
+      tags:
+      - Patient delivery
+      summary: Create a patient collection/signature/replacement request
+      description: Existing route/body remains compatible. Proposed activated delivery
+        creates durable per-channel intents and returns queued/scheduled/suppressed
+        after commit; it never sends inside the transaction. Legacy 201 response may
+        remain during version transition.
+      parameters:
+      - "$ref": "#/components/parameters/LocationId"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      responses:
+        '202':
+          description: Create a patient collection/signature/replacement request;
+            durable server facts only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            Location:
+              "$ref": "#/components/headers/Location"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/DeliveryCommandResult"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+        '201':
+          description: Existing created-resource response shape retained during explicit
+            version transition.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+            Location:
+              "$ref": "#/components/headers/Location"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/DeliveryCommandResult"
+                required:
+                - data
+      x-design-status: proposed; not integrated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateWorkflowRequest"
+  "/api/v1/locations/{locationId}/workflow/paperwork/requests":
+    post:
+      operationId: createPaperworkRequest
+      tags:
+      - Patient delivery
+      summary: Create a patient form-completion request
+      description: Existing route. Pins exact template before source creation; actual
+        channel activation is proposed. Current SMS is unsupported and must remain
+        blocked until schema/service capability is reviewed.
+      parameters:
+      - "$ref": "#/components/parameters/LocationId"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      responses:
+        '202':
+          description: Create a patient form-completion request; durable server facts
+            only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            Location:
+              "$ref": "#/components/headers/Location"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/DeliveryCommandResult"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+        '201':
+          description: Existing created-resource response during version transition.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+            Location:
+              "$ref": "#/components/headers/Location"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/DeliveryCommandResult"
+                required:
+                - data
+      x-design-status: proposed; not integrated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreatePaperworkRequest"
+  "/api/v1/locations/{locationId}/workflow/requests/{id}/reminders":
+    post:
+      operationId: remindRequest
+      tags:
+      - Patient delivery
+      summary: Request one eligible manual reminder
+      description: One logical occurrence under current revision, lifecycle, per-request
+        lifetime budget, cross-channel cap and cooldown. Same key returns same intent.
+        No reminder for terminal or expired request.
+      parameters:
+      - "$ref": "#/components/parameters/LocationId"
+      - "$ref": "#/components/parameters/Id"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      - "$ref": "#/components/parameters/IfMatch"
+      responses:
+        '202':
+          description: Request one eligible manual reminder; durable server facts
+            only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+            Location:
+              "$ref": "#/components/headers/Location"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/DeliveryCommandResult"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+        '200':
+          description: Existing synchronous command result during version transition.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/DeliveryCommandResult"
+                required:
+                - data
+      x-design-status: proposed; not integrated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ReminderCommand"
+  "/api/v1/locations/{locationId}/workflow/requests/{id}/reissue":
+    post:
+      operationId: reissueRequest
+      tags:
+      - Patient delivery
+      summary: Reissue a request link, optionally with reviewed endpoint correction
+      description: Explicit revoke-and-replace generation. Suppress obsolete queued
+        messages and revoke old sessions/grants; cannot copy signatures or bind another
+        identity. Existing reason-only shape is preserved; corrected endpoint is a
+        versioned extension.
+      parameters:
+      - "$ref": "#/components/parameters/LocationId"
+      - "$ref": "#/components/parameters/Id"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      - "$ref": "#/components/parameters/IfMatch"
+      responses:
+        '202':
+          description: Reissue a request link, optionally with reviewed endpoint correction;
+            durable server facts only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+            Location:
+              "$ref": "#/components/headers/Location"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/DeliveryCommandResult"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+        '200':
+          description: Existing synchronous command result during version transition.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/DeliveryCommandResult"
+                required:
+                - data
+      x-design-status: proposed; not integrated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ReissueCommand"
+  "/api/v1/locations/{locationId}/workflow/requests/{id}/delivery":
+    get:
+      operationId: getRequestDelivery
+      tags:
+      - Patient delivery
+      summary: Read a bounded request delivery timeline
+      description: Current patient/location access required. Mask destinations; expose
+        trusted normalized evidence and allowed actions. Signed cursor cannot widen
+        request scope.
+      parameters:
+      - "$ref": "#/components/parameters/LocationId"
+      - "$ref": "#/components/parameters/Id"
+      - "$ref": "#/components/parameters/Cursor"
+      - "$ref": "#/components/parameters/Limit"
+      responses:
+        '200':
+          description: Read a bounded request delivery timeline; durable server facts
+            only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          "$ref": "#/components/schemas/DeliveryIntent"
+                        maxItems: 100
+                      asOf:
+                        type: string
+                        format: date-time
+                      nextCursor:
+                        anyOf:
+                        - type: string
+                        - type: 'null'
+                    required:
+                    - items
+                    - asOf
+                    - nextCursor
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+  "/api/v1/delivery-intents":
+    get:
+      operationId: listDeliveryIntents
+      tags:
+      - Patient delivery
+      summary: List authorized patient delivery intents
+      description: Page and exact filtered counts come from one repeatable-read snapshot.
+        Mask destinations and reauthorize current patient/locations; practice scope
+        derives from authenticated context. No browser-supplied practice ID confers
+        authority.
+      parameters:
+      - "$ref": "#/components/parameters/ScopeQuery"
+      - "$ref": "#/components/parameters/LocationQuery"
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum:
+          - all
+          - needs_attention
+          - in_progress
+          - scheduled
+          - queued
+          - submitting
+          - accepted
+          - delivered
+          - retry_wait
+          - failed
+          - unknown
+          - suppressed
+          - cancelled
+          default: all
+      - name: purpose
+        in: query
+        schema:
+          type: string
+          enum:
+          - initial
+          - reminder
+          - reissue
+          - paperwork_ready
+          - paperwork_resend
+      - name: channel
+        in: query
+        schema:
+          type: string
+          enum:
+          - email
+          - sms
+      - name: patientId
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - "$ref": "#/components/parameters/Limit"
+      - "$ref": "#/components/parameters/Cursor"
+      responses:
+        '200':
+          description: List authorized patient delivery intents; durable server facts
+            only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/DeliveryQueue"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+  "/api/v1/delivery-intents/{intentId}":
+    get:
+      operationId: getDeliveryIntent
+      tags:
+      - Patient delivery
+      summary: Read current authorized intent and delivery evidence
+      description: Canonical proposed detail URL. Resolve trusted stored patient/location
+        and return uniform unavailable for unknown/inaccessible IDs. Detail includes
+        bounded history, latest operation and template version/hash; no secrets or
+        rendered body.
+      parameters:
+      - "$ref": "#/components/parameters/IntentId"
+      - "$ref": "#/components/parameters/Cursor"
+      - "$ref": "#/components/parameters/Limit"
+      responses:
+        '200':
+          description: Read current authorized intent and delivery evidence; durable
+            server facts only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/DeliveryIntent"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+  "/api/v1/locations/{locationId}/workflow/deliveries/{intentId}/retry":
+    post:
+      operationId: retryDeliveryIntent
+      tags:
+      - Patient delivery
+      summary: Retry only a known-safe failed provider operation
+      description: Preserves message/destination generation and provider idempotency
+        identity. Unknown returns 409 DELIVERY_RECONCILIATION_REQUIRED; active suppression/expiry
+        cannot be bypassed.
+      parameters:
+      - "$ref": "#/components/parameters/LocationId"
+      - "$ref": "#/components/parameters/IntentId"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      - "$ref": "#/components/parameters/IfMatch"
+      responses:
+        '202':
+          description: Retry only a known-safe failed provider operation; durable
+            server facts only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+            Location:
+              "$ref": "#/components/headers/Location"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/DeliveryCommandResult"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RetryCommand"
+  "/api/v1/locations/{locationId}/workflow/deliveries/{intentId}/resend":
+    post:
+      operationId: resendDeliveryIntent
+      tags:
+      - Patient delivery
+      summary: Create an explicit manual resend intent
+      description: Requires known earlier outcome, current endpoint/version and reason.
+        New intent retains exact request/copy/version; it does not change completion
+        or create a new patient request.
+      parameters:
+      - "$ref": "#/components/parameters/LocationId"
+      - "$ref": "#/components/parameters/IntentId"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      - "$ref": "#/components/parameters/IfMatch"
+      responses:
+        '202':
+          description: Create an explicit manual resend intent; durable server facts
+            only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+            Location:
+              "$ref": "#/components/headers/Location"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/DeliveryCommandResult"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ResendCommand"
+  "/api/v1/locations/{locationId}/workflow/paperwork/notifications/{id}/retry":
+    post:
+      operationId: retryPaperworkNotification
+      tags:
+      - Patient delivery
+      summary: Resume completed-copy notification eligibility or safe retry
+      description: 'Current route presently records gated eligibility only. Proposed
+        v2 repaired grant selection is separate from request reissue: same verified
+        principal and exact immutable copy. Unknown earlier call reconciles before
+        a new message; delivered resend uses explicit deliveries/{intentId}/resend.'
+      parameters:
+      - "$ref": "#/components/parameters/LocationId"
+      - "$ref": "#/components/parameters/Id"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      - "$ref": "#/components/parameters/IfMatch"
+      responses:
+        '202':
+          description: Resume completed-copy notification eligibility or safe retry;
+            durable server facts only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+            Location:
+              "$ref": "#/components/headers/Location"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/DeliveryCommandResult"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+        '200':
+          description: Existing gated eligibility result; never interpreted as provider
+            dispatch.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/DeliveryCommandResult"
+                required:
+                - data
+      x-design-status: proposed; not integrated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/PaperworkRetryCommand"
+  "/api/v1/locations/{locationId}/workflow/patients/{id}/communication-endpoints":
+    get:
+      operationId: listCommunicationEndpoints
+      tags:
+      - Communication choices
+      summary: Read masked endpoints and effective purpose permissions
+      description: Current patient/location access plus contact permission. Confirmation
+        and communication consent do not establish portal identity. Return current
+        effective permission revisions for a separately authorized permission command.
+      parameters:
+      - "$ref": "#/components/parameters/LocationId"
+      - "$ref": "#/components/parameters/Id"
+      - "$ref": "#/components/parameters/Cursor"
+      - "$ref": "#/components/parameters/Limit"
+      responses:
+        '200':
+          description: Read masked endpoints and effective purpose permissions; durable
+            server facts only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          "$ref": "#/components/schemas/CommunicationEndpoint"
+                        maxItems: 100
+                      nextCursor:
+                        anyOf:
+                        - type: string
+                        - type: 'null'
+                    required:
+                    - items
+                    - nextCursor
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+    post:
+      operationId: createCommunicationEndpoint
+      tags:
+      - Communication choices
+      summary: Create or explicitly replace a protected endpoint
+      description: Separate contact-edit/authority permission, append-only evidence
+        and endpoint generations. Address is write-only. This command cannot independently
+        verify a patient identity or override suppression. Replacement requires current
+        prior endpoint/version.
+      parameters:
+      - "$ref": "#/components/parameters/LocationId"
+      - "$ref": "#/components/parameters/Id"
+      - "$ref": "#/components/parameters/IfMatchOnRotation"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      responses:
+        '201':
+          description: Create or explicitly replace a protected endpoint; durable
+            server facts only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/CommunicationEndpoint"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateCommunicationEndpoint"
+  "/api/v1/patients/{patientId}/communication-permission-events":
+    post:
+      operationId: recordCommunicationPermission
+      tags:
+      - Communication choices
+      summary: Append a staff-recorded communication permission decision
+      description: Server resolves current authenticated practice/patient/location
+        authority and authorized evidence. If-Match targets exact endpoint/purpose
+        effective permission revision. Server derives actor/source and timestamps;
+        body cannot assert patient identity. Provider opt-out/complaint still suppresses
+        delivery.
+      parameters:
+      - "$ref": "#/components/parameters/PatientId"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      - "$ref": "#/components/parameters/IfMatch"
+      responses:
+        '201':
+          description: Append a staff-recorded communication permission decision;
+            durable server facts only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/CommunicationPermissionEvent"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CommunicationPermissionCommand"
+  "/api/v1/locations/{locationId}/workflow/notification-policy":
+    get:
+      operationId: getNotificationPolicy
+      tags:
+      - Policy
+      summary: Read current location notification policy
+      description: Authorized location operational manager. Safe configuration only;
+        provider credentials never appear in the response.
+      parameters:
+      - "$ref": "#/components/parameters/LocationId"
+      responses:
+        '200':
+          description: Read current location notification policy; durable server facts
+            only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/NotificationPolicy"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+    patch:
+      operationId: updateNotificationPolicy
+      tags:
+      - Policy
+      summary: Version location patient-reminder and staff-alert policy
+      description: Validate configured caps, approved templates, explicit recipient
+        timezones and eligible audiences. Recompute future unsent occurrences; never
+        reset request lifetime budgets or rewrite past delivery facts.
+      parameters:
+      - "$ref": "#/components/parameters/LocationId"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      - "$ref": "#/components/parameters/IfMatch"
+      responses:
+        '200':
+          description: Version location patient-reminder and staff-alert policy; durable
+            server facts only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/NotificationPolicy"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/NotificationPolicyPatch"
+  "/api/v1/staff/notifications":
+    get:
+      operationId: listStaffNotifications
+      tags:
+      - Staff inbox
+      summary: Read the authenticated staff member’s authorized inbox
+      description: Self only; no recipient query. Reauthorize each subject/page and
+        badge count. Return exact unread/attention counts, snapshot token and bounded
+        materialized snapshot membership for read-all. Late commits are not retroactively
+        included.
+      parameters:
+      - "$ref": "#/components/parameters/ScopeQuery"
+      - "$ref": "#/components/parameters/LocationQuery"
+      - "$ref": "#/components/parameters/InboxFilter"
+      - "$ref": "#/components/parameters/Limit"
+      - "$ref": "#/components/parameters/Cursor"
+      responses:
+        '200':
+          description: Read the authenticated staff member’s authorized inbox; durable
+            server facts only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/StaffInbox"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+  "/api/v1/staff/notifications/{id}/read":
+    post:
+      operationId: markStaffNotificationRead
+      tags:
+      - Staff inbox
+      summary: Mark own notification read
+      description: Recipient-only receipt mutation. If-Match targets receipt revision;
+        work ownership, due date, completion and current attention remain independent.
+        Missing/inaccessible subject returns uniform unavailable.
+      parameters:
+      - "$ref": "#/components/parameters/Id"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      - "$ref": "#/components/parameters/IfMatch"
+      responses:
+        '200':
+          description: Mark own notification read; durable server facts only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/StaffReceipt"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ReceiptCommand"
+  "/api/v1/staff/notifications/{id}/archive":
+    post:
+      operationId: archiveStaffNotification
+      tags:
+      - Staff inbox
+      summary: Archive own notification receipt
+      description: Recipient-only receipt mutation. If-Match targets receipt revision;
+        work ownership, due date, completion and current attention remain independent.
+        Missing/inaccessible subject returns uniform unavailable.
+      parameters:
+      - "$ref": "#/components/parameters/Id"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      - "$ref": "#/components/parameters/IfMatch"
+      responses:
+        '200':
+          description: Archive own notification receipt; durable server facts only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/StaffReceipt"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ReceiptCommand"
+  "/api/v1/staff/notifications/{id}/snooze":
+    post:
+      operationId: snoozeStaffNotification
+      tags:
+      - Staff inbox
+      summary: Snooze own notification receipt
+      description: Recipient-only receipt mutation. If-Match targets receipt revision;
+        work ownership, due date, completion and current attention remain independent.
+        Missing/inaccessible subject returns uniform unavailable.
+      parameters:
+      - "$ref": "#/components/parameters/Id"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      - "$ref": "#/components/parameters/IfMatch"
+      responses:
+        '200':
+          description: Snooze own notification receipt; durable server facts only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/StaffReceipt"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/SnoozeCommand"
+  "/api/v1/staff/notifications/read-all":
+    post:
+      operationId: markAllStaffNotificationsRead
+      tags:
+      - Staff inbox
+      summary: Mark only eligible notifications in an inbox snapshot read
+      description: Idempotent signed-snapshot command. Recheck current recipient authority,
+        token scope/filter/cutoff/expiry and bounded membership; new arrivals and
+        late commits stay unread. No timestamp-only broad UPDATE. Return changed count
+        and fresh authorized unread count.
+      parameters:
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      responses:
+        '200':
+          description: Mark only eligible notifications in an inbox snapshot read;
+            durable server facts only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/ReadAllResult"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ReadAllCommand"
+  "/api/v1/staff/notification-preferences":
+    get:
+      operationId: getStaffPreferences
+      tags:
+      - Staff preferences
+      summary: Read own practice notification preferences
+      description: Self only. Does not grant clinical access or disable the underlying
+        work queue.
+      parameters: []
+      responses:
+        '200':
+          description: Read own practice notification preferences; durable server
+            facts only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/StaffPreferences"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+    patch:
+      operationId: updateStaffPreferences
+      tags:
+      - Staff preferences
+      summary: Update own optional external notification preferences
+      description: Allowlisted event/channel settings with current revision. Locale
+        and quiet-hours timezone must be confirmed; do not expose a patient detail
+        in email/push preview. Deferred alerts recheck current source status before
+        send.
+      parameters:
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      - "$ref": "#/components/parameters/IfMatch"
+      responses:
+        '200':
+          description: Update own optional external notification preferences; durable
+            server facts only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/StaffPreferences"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/StaffPreferenceValues"
+  "/api/v1/staff/notification-devices/{id}":
+    post:
+      operationId: registerStaffDevice
+      tags:
+      - Staff preferences
+      summary: Register or rotate own native device
+      description: Only if native push adapter is activated. Device belongs to current
+        authenticated staff principal; encrypt token and bind installation/app/environment.
+        If-Match required for rotation, omitted for creation.
+      parameters:
+      - "$ref": "#/components/parameters/Id"
+      - "$ref": "#/components/parameters/IfMatchOnRotation"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      responses:
+        '200':
+          description: Register or rotate own native device; durable server facts
+            only.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/DeviceRegistration"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/DeviceCommand"
+    delete:
+      operationId: revokeStaffDevice
+      tags:
+      - Staff preferences
+      summary: Revoke own native device
+      description: Current authenticated owner only; sign-out/session-loss policy
+        invalidates tokens. A revoked device cannot receive later protected work invalidations.
+      parameters:
+      - "$ref": "#/components/parameters/Id"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      - "$ref": "#/components/parameters/IfMatch"
+      responses:
+        '204':
+          "$ref": "#/components/responses/NoContent"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+  "/api/v1/webhooks/delivery/{connectionRoute}":
+    post:
+      operationId: receiveDeliveryWebhook
+      tags:
+      - Provider ingress
+      summary: Durably ingest a provider-authenticated raw callback
+      description: PLATFORM TRUST BOUNDARY. User bearer authentication does not apply.
+        The selected connection adapter MUST verify exact raw bytes plus its documented
+        signing/canonical-request/replay/timestamp rules before accepting an event.
+        connectionRoute is only a routing handle, not a secret or tenant authority.
+        Resolve trusted practice/patient scope only from an existing connection/account/message
+        mapping. Never trust payload practiceId/patientId. Persist a bounded protected
+        receipt before asynchronous processing. Dedupe on connection/account/provider
+        event ID and hash; same ID with changed bytes or conflicting mapping is quarantined.
+        Late delivery/bounce/complaint facts remain append-only. Exact provider signature
+        headers/ack body must be finalized with the selected adapter; this provider-neutral
+        outline intentionally invents none.
+      security: []
+      parameters:
+      - name: connectionRoute
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 8
+          maxLength: 128
+        description: Opaque allowlisted platform connection route handle; not a credential.
+      x-provider-authentication:
+        required: true
+        mechanism: selected adapter raw-body signature validation; no generic invented
+          header
+        trusted_scope_source: existing connection/account/message-to-intent mapping
+        unmatched_event_policy: durable encrypted platform quarantine; no clinical
+          tenant until trusted mapping
+        principal: narrow platform ingress principal; no BYPASSRLS clinical worker
+      requestBody:
+        required: true
+        description: Capture original bytes before JSON/form parsing. Strict configured
+          content-type, size and rate limits apply. Provider-specific schema belongs
+          to selected adapter.
+        content:
+          application/json:
+            schema: {}
+            x-raw-body-required: true
+          application/x-www-form-urlencoded:
+            schema: {}
+            x-raw-body-required: true
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+            x-raw-body-required: true
+      responses:
+        '202':
+          description: Verified raw receipt persisted; event may be asynchronous,
+            duplicate or unmatched/quarantined. Adapter-specific acknowledgement must
+            be documented before activation.
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/WebhookAcknowledgement"
+        '200':
+          description: Provider-specific success acknowledgement for a safely recognized
+            duplicate; no second domain transition.
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          description: Invalid or unverified provider authentication/replay context;
+            no clinical transition.
+        '413':
+          description: Configured raw-body size limit exceeded; no clinical transition.
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          description: Durable receipt unavailable; return provider-compatible retryable
+            failure, never acknowledge an unpersisted event.
+      x-design-status: proposed; provider-neutral outline, not an activated adapter
+  "/api/v1/locations/{locationId}/workflow/deliveries/{intentId}/reconcile":
+    post:
+      operationId: reconcileDeliveryIntent
+      tags:
+      - Patient delivery
+      summary: Check the original provider operation without sending
+      description: Start status/lookup reconciliation only under current intent revision.
+        No provider submit and no new message/grant generation. Unsupported lookup
+        returns 409 DELIVERY_RECONCILIATION_UNAVAILABLE; an unresolved original remains
+        unknown. Intent state and operation state are separate.
+      parameters:
+      - "$ref": "#/components/parameters/LocationId"
+      - "$ref": "#/components/parameters/IntentId"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      - "$ref": "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/DeliveryControlCommand"
+      responses:
+        '202':
+          description: Check the original provider operation without sending
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/DeliveryReconciliationOperation"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+  "/api/v1/locations/{locationId}/workflow/deliveries/{intentId}/cancel":
+    post:
+      operationId: cancelDeliveryIntent
+      tags:
+      - Patient delivery
+      summary: Cancel a scheduled or queued intent before dispatch
+      description: Atomic cancellation permitted only for scheduled/queued before
+        call_started. Worker and cancellation share current-state locking/conditional
+        update. Submitting/accepted/delivered/unknown returns 409 DELIVERY_ALREADY_SUBMITTING;
+        cannot retract a possible or accepted external send. Request, signatures and
+        completed copy stay unchanged.
+      parameters:
+      - "$ref": "#/components/parameters/LocationId"
+      - "$ref": "#/components/parameters/IntentId"
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      - "$ref": "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/DeliveryControlCommand"
+      responses:
+        '200':
+          description: Cancel a scheduled or queued intent before dispatch
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/CancelledDeliveryIntent"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed; not integrated
+  "/api/v1/patient-paperwork/communication-preferences":
+    get:
+      operationId: getPatientCommunicationPreferences
+      tags:
+      - Patient communication preferences
+      summary: Read current patient account communication contexts
+      description: Separate authenticated patient-principal boundary under the existing
+        patient-paperwork account prefix. Derive current adult-self grant scope server-side,
+        recheck age/location/release policy and account/session authority. No arbitrary
+        patientId, identity assertion, contact-address edit, proxy/minor extension
+        or request-cookie authority. Current interface locale never changes frozen
+        paperwork language. Return masked endpoints, per-purpose settings, effective
+        eligibility, revisions and opaque context selectors. Multiple current grants
+        require explicit selection. Existing paperworkEmailEnabled remains a required
+        prerequisite until an explicit reviewed canonical consent migration.
+      security:
+      - PatientPortalBearer: []
+      responses:
+        '200':
+          description: Current authorized communication contexts, no-store.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/PatientCommunicationPreferences"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-design-status: proposed gated extension; not integrated
+    patch:
+      operationId: updatePatientCommunicationPreferences
+      tags:
+      - Patient communication preferences
+      summary: Update choices for one current authorized patient context
+      description: Separate authenticated patient-principal boundary under the existing
+        patient-paperwork account prefix. Derive current adult-self grant scope server-side,
+        recheck age/location/release policy and account/session authority. No arbitrary
+        patientId, identity assertion, contact-address edit, proxy/minor extension
+        or request-cookie authority. Current interface locale never changes frozen
+        paperwork language. Idempotency-Key and If-Match target current effective
+        preference revision. Token selects a server-resolved same-principal/grant
+        context; append permission events and protected audit. Withdrawal invalidates
+        future queued eligibility without cancelling request/signing. Enabled choice
+        does not clear provider opt-out/complaint or activate unsupported paperwork
+        SMS. Existing paperworkEmailEnabled remains a required prerequisite until
+        an explicit reviewed canonical consent migration.
+      security:
+      - PatientPortalBearer: []
+      parameters:
+      - "$ref": "#/components/parameters/IdempotencyKey"
+      - "$ref": "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/PatientCommunicationPreferencesPatch"
+      responses:
+        '200':
+          description: Committed context choices and current effective eligibility.
+          headers:
+            Cache-Control:
+              "$ref": "#/components/headers/NoStore"
+            X-Request-ID:
+              "$ref": "#/components/headers/RequestId"
+            ETag:
+              "$ref": "#/components/headers/ETag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/PatientCommunicationPreferenceContext"
+                required:
+                - data
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+        '401':
+          "$ref": "#/components/responses/Unauthenticated"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/UnavailableSubject"
+        '409':
+          "$ref": "#/components/responses/Conflict"
+        '412':
+          "$ref": "#/components/responses/RevisionConflict"
+        '422':
+          "$ref": "#/components/responses/Validation"
+        '428':
+          "$ref": "#/components/responses/PreconditionRequired"
+        '429':
+          "$ref": "#/components/responses/RateLimited"
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+      x-browser-request-protection: Apply existing strict approved Origin and CSRF
+        protections to patient mutations. A request-scoped cookie is never accepted
+        as portal authority.
+      x-design-status: proposed gated extension; not integrated
+components:
+  securitySchemes:
+    StaffBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: Clerk JWT
+      description: Current authenticated staff token; server rechecks enrollment,
+        directory policy, location and explicit action/subject access. Never reused
+        by a background worker as stale authority.
+    PatientPortalBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: Clerk JWT
+      description: Verified patient account principal with current explicit adult-self
+        portal grant, current age/location eligibility and session checks. A restricted
+        request cookie/link cannot authorize these endpoints. Authentication alone
+        does not establish a patient binding.
+  parameters:
+    LocationId:
+      name: locationId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Explicit current clinical location; server resolves practice and
+        validates current membership/record access.
+    PatientId:
+      name: patientId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    IntentId:
+      name: intentId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Stable UUID for one logical actor/scope/target/body/precondition
+        command. Replay same key and fingerprint returns original result; changed
+        fingerprint returns 409 IDEMPOTENCY_KEY_REUSED. After timeout reconcile/replay
+        original, never generate a new key blindly.
+    IfMatch:
+      name: If-Match
+      in: header
+      required: true
+      schema:
+        type: string
+        pattern: ^"[1-9][0-9]*"$
+      description: Exact quoted revision of targeted mutable request/intent/policy/receipt/permission/preferences.
+        Missing 428 PRECONDITION_REQUIRED; stale 412 REVISION_CONFLICT. Read-all uses
+        signed snapshot membership instead.
+    IfMatchOnRotation:
+      name: If-Match
+      in: header
+      required: false
+      schema:
+        type: string
+        pattern: ^"[1-9][0-9]*"$
+      description: Required when rotating an existing device registration or replacing
+        a confirmed endpoint; omitted only for new resource creation.
+    Cursor:
+      name: cursor
+      in: query
+      schema:
+        type: string
+      description: Opaque signed cursor bound to caller, authorized scope, filters
+        and snapshot. Reauthorize every page; no cursor broadening.
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 50
+    ScopeQuery:
+      name: scope
+      in: query
+      required: true
+      schema:
+        "$ref": "#/components/schemas/Scope"
+      description: selected_location requires locationId; all_permitted_locations
+        derives current allowed set. Browser never chooses practice authority.
+    LocationQuery:
+      name: locationId
+      in: query
+      schema:
+        type: string
+        format: uuid
+      description: Required with selected_location. Cannot be used to expand current
+        permitted locations.
+    InboxFilter:
+      name: filter
+      in: query
+      schema:
+        type: string
+        enum:
+        - all
+        - unread
+        - assignments
+        - overdue
+        - delivery_follow_up
+        default: all
+  headers:
+    NoStore:
+      description: Protected responses are not cacheable.
+      schema:
+        type: string
+        const: no-store
+    RequestId:
+      description: Safe diagnostic correlation ID; no patient data or bearer secret.
+      schema:
+        type: string
+    ETag:
+      description: Quoted current targeted resource or receipt revision; use for If-Match.
+      schema:
+        type: string
+        pattern: ^"[1-9][0-9]*"$
+    RetryAfter:
+      description: Minimum seconds until eligible retry; always recheck expiry, limits
+        and authority.
+      schema:
+        type: integer
+        minimum: 0
+    Location:
+      description: Durably committed status resource, normally /api/v1/delivery-intents/{intentId}.
+      schema:
+        type: string
+        format: uri-reference
+  responses:
+    BadRequest:
+      description: Invalid header/body/cursor or snapshot token. Codes include IDEMPOTENCY_KEY_REQUIRED,
+        INVALID_PRECONDITION, SNAPSHOT_SCOPE_MISMATCH, SNAPSHOT_EXPIRED.
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    Unauthenticated:
+      description: Current authentication unavailable.
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    Forbidden:
+      description: Explicit command capability or current location authority unavailable.
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    UnavailableSubject:
+      description: Uniform non-disclosing unavailable result for missing/inaccessible
+        notification or delivery subject. NOTIFICATION_SUBJECT_UNAVAILABLE.
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    Conflict:
+      description: 'State/eligibility conflict: DELIVERY_RECONCILIATION_REQUIRED,
+        DELIVERY_SUPPRESSED, DELIVERY_DESTINATION_CHANGED, DELIVERY_PERMISSION_UNAVAILABLE,
+        DELIVERY_WINDOW_EXPIRED, PATIENT_TIME_ZONE_UNCONFIRMED, PROVIDER_CONNECTION_DISABLED,
+        IDEMPOTENCY_KEY_REUSED. No forced retry. Reconciliation/cancellation additions:
+        DELIVERY_RECONCILIATION_UNAVAILABLE, DELIVERY_ALREADY_SUBMITTING. Patient
+        enable remains blocked by PROVIDER_OPTOUT_ACTIVE.'
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    RevisionConflict:
+      description: REVISION_CONFLICT. Return safe currentRevision; retain authorized
+        draft and reload before deciding a new command.
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    Validation:
+      description: Field/policy validation failed, including REMINDER_NOT_DUE and
+        incompatible purpose/channel/version.
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    PreconditionRequired:
+      description: PRECONDITION_REQUIRED; missing current mutable-resource If-Match.
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    RateLimited:
+      description: REMINDER_COOLDOWN, DELIVERY_CAP_REACHED or bounded service rate.
+        Retry-After is advisory and never overrides suppression/expiry.
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+        Retry-After:
+          "$ref": "#/components/headers/RetryAfter"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    ServiceUnavailable:
+      description: Temporary service/directory/provider lookup unavailability; no
+        inference that external delivery failed. Reconcile original key/operation
+        after uncertain mutation.
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+        Retry-After:
+          "$ref": "#/components/headers/RetryAfter"
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    NoContent:
+      description: Device revocation persisted; invalid/revoked tokens cannot dispatch.
+      headers:
+        Cache-Control:
+          "$ref": "#/components/headers/NoStore"
+        X-Request-ID:
+          "$ref": "#/components/headers/RequestId"
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Stable untranslated catalog code; UI translates through
+                existing EN/ES catalogs.
+            message:
+              type: string
+              description: Safe user-facing fallback, with no provider payload or
+                sensitive identifiers.
+            requestId:
+              type: string
+            retryable:
+              type: boolean
+            details:
+              type: object
+              properties:
+                currentRevision:
+                  type: integer
+                  minimum: 1
+                nextEligibleAt:
+                  type: string
+                  format: date-time
+                retryAfterSeconds:
+                  type: integer
+                  minimum: 0
+              additionalProperties: false
+          required:
+          - code
+          - message
+          - requestId
+          - retryable
+      required:
+      - error
+    Revisioned:
+      type: object
+      properties:
+        revision:
+          type: integer
+          minimum: 1
+        concurrency:
+          type: object
+          properties:
+            revision:
+              type: integer
+              minimum: 1
+            ifMatch:
+              type: string
+              pattern: ^"[1-9][0-9]*"$
+          required:
+          - revision
+          - ifMatch
+      required:
+      - revision
+    EndpointReference:
+      type: object
+      properties:
+        endpointId:
+          type: string
+          format: uuid
+        endpointVersion:
+          type: integer
+          minimum: 1
+      required:
+      - endpointId
+      - endpointVersion
+      additionalProperties: false
+    DeliverySelection:
+      type: object
+      properties:
+        endpointId:
+          type: string
+          format: uuid
+        endpointVersion:
+          type: integer
+          minimum: 1
+        channel:
+          type: string
+          enum:
+          - email
+          - sms
+      required:
+      - endpointId
+      - endpointVersion
+      - channel
+      additionalProperties: false
+    DeliveryOptions:
+      type: object
+      properties:
+        sendNow:
+          type: boolean
+          default: false
+        selections:
+          type: array
+          items:
+            "$ref": "#/components/schemas/DeliverySelection"
+          minItems: 1
+          maxItems: 2
+        locale:
+          type: string
+          enum:
+          - en
+          - es
+      description: Versioned proposed extension. Existing sendNow remains compatible.
+        Each selected channel needs separate current permission and confirmation;
+        no automatic fallback. Worker reloads endpoint/version, never trusts an arbitrary
+        address from a stale command.
+      additionalProperties: false
+    Recipient:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 200
+        channel:
+          type: string
+          enum:
+          - email
+          - sms
+          - local_review
+        address:
+          type: string
+          maxLength: 254
+          writeOnly: true
+          description: Legacy protected command input. Validate and resolve a confirmed
+            endpoint synchronously; stored address alone does not authorize provider
+            dispatch.
+      required:
+      - name
+      - channel
+      additionalProperties: false
+    CreateWorkflowRequest:
+      type: object
+      properties:
+        patientId:
+          type: string
+          format: uuid
+        appointmentId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+        purpose:
+          type: string
+          enum:
+          - collection
+          - signature
+          - replacement
+          default: collection
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              requirementId:
+                type: string
+                format: uuid
+              sourceDocumentVersionId:
+                type: string
+                format: uuid
+            required:
+            - requirementId
+            additionalProperties: false
+          minItems: 1
+          maxItems: 30
+        recipient:
+          "$ref": "#/components/schemas/Recipient"
+        dueAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        expiresAt:
+          type: string
+          format: date-time
+        assigneeUserId:
+          type: string
+          maxLength: 128
+        delivery:
+          "$ref": "#/components/schemas/DeliveryOptions"
+        reasonCode:
+          type: string
+          maxLength: 80
+      required:
+      - patientId
+      - items
+      description: Preserves existing command fields. Signature requires exactly one
+        item and an eligible immutable sourceDocumentVersionId; replacement requires
+        reasonCode. Activation adds explicitly selected confirmed endpoint versions.
+        Caller cannot relax recipient/signer policy.
+      additionalProperties: false
+    CreatePaperworkRequest:
+      type: object
+      properties:
+        patientId:
+          type: string
+          format: uuid
+        templateVersionId:
+          type: string
+          format: uuid
+        requirementId:
+          type: string
+          format: uuid
+        appointmentId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+        recipient:
+          "$ref": "#/components/schemas/Recipient"
+        dueAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        expiresAt:
+          type: string
+          format: date-time
+        delivery:
+          "$ref": "#/components/schemas/DeliveryOptions"
+      required:
+      - patientId
+      - templateVersionId
+      description: Pins a published template and patient draft before freeze. Current
+        source accepts only email/local_review. SMS and real dispatch are versioned
+        proposal gates; adult-self and signer authority remain unchanged.
+      additionalProperties: false
+    ReminderCommand:
+      type: object
+      properties:
+        reasonCode:
+          type: string
+          maxLength: 80
+        delivery:
+          "$ref": "#/components/schemas/DeliveryOptions"
+      description: Existing empty/reason-only shape remains accepted. Proposed selection
+        can only choose current eligible endpoints under the same intended recipient/request
+        authority. A reminder gets a fresh bounded request grant without revoking
+        the active patient session.
+      additionalProperties: false
+    ReissueCommand:
+      oneOf:
+      - type: object
+        properties:
+          reasonCode:
+            type: string
+            minLength: 1
+            maxLength: 80
+        required:
+        - reasonCode
+        additionalProperties: false
+      - type: object
+        properties:
+          schemaVersion:
+            type: integer
+            const: 2
+          reasonCode:
+            type: string
+            minLength: 1
+            maxLength: 80
+          recipientEndpoint:
+            "$ref": "#/components/schemas/DeliverySelection"
+        required:
+        - schemaVersion
+        - reasonCode
+        - recipientEndpoint
+        additionalProperties: false
+      description: First shape is the current reason-only command. Recipient correction
+        is explicitly proposed schemaVersion 2, confirms the same intended person
+        authority, rotates request generation and revokes old grants/sessions. It
+        cannot repair a completed-copy identity binding.
+    RetryCommand:
+      type: object
+      properties:
+        reasonCode:
+          type: string
+          maxLength: 80
+      description: Retry only known-safe transient failure, preserving exact destination/message/provider
+        idempotency generation. Unknown outcome returns DELIVERY_RECONCILIATION_REQUIRED.
+      additionalProperties: false
+    ResendCommand:
+      type: object
+      properties:
+        reasonCode:
+          type: string
+          minLength: 1
+          maxLength: 80
+        recipientEndpoint:
+          "$ref": "#/components/schemas/DeliverySelection"
+      required:
+      - reasonCode
+      - recipientEndpoint
+      description: New logical manual intent after known outcome. Server rechecks
+        current endpoint/version, authority, suppression, cap and expiry. Does not
+        repeat completion or change the exact library copy.
+      additionalProperties: false
+    PaperworkRetryCommand:
+      oneOf:
+      - type: object
+        properties: {}
+        additionalProperties: false
+      - type: object
+        properties:
+          schemaVersion:
+            type: integer
+            const: 2
+          reasonCode:
+            type: string
+            minLength: 1
+            maxLength: 80
+          replacementGrantId:
+            type: string
+            format: uuid
+          recipientEndpoint:
+            "$ref": "#/components/schemas/DeliverySelection"
+        required:
+        - schemaVersion
+        - reasonCode
+        - replacementGrantId
+        - recipientEndpoint
+        additionalProperties: false
+      description: 'Empty body is the current command. Explicit repair is a proposed
+        privileged v2 extension: same patient/practice/location and independently
+        verified portal principal, exact grant/endpoint version, same immutable notification/library/document
+        version. Cannot transfer identity or override suppression; reconcile unknown
+        original send first.'
+    DeliveryState:
+      type: string
+      enum:
+      - scheduled
+      - queued
+      - submitting
+      - accepted
+      - delivered
+      - retry_wait
+      - failed
+      - unknown
+      - suppressed
+      - cancelled
+    DeliveryFact:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        eventType:
+          type: string
+          enum:
+          - prepared
+          - call_started
+          - accepted
+          - delivery_confirmed
+          - transient_failure
+          - permanent_failure
+          - timeout
+          - unknown
+          - reconciled
+          - bounce
+          - complaint
+          - suppressed
+          - cancelled
+        occurredAt:
+          type: string
+          format: date-time
+        receivedAt:
+          type: string
+          format: date-time
+        attemptId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+        safeCode:
+          anyOf:
+          - type: string
+          - type: 'null'
+      required:
+      - id
+      - eventType
+      - receivedAt
+    DeliveryAttempt:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        callOrdinal:
+          type: integer
+          minimum: 1
+        state:
+          type: string
+          enum:
+          - queued
+          - submitting
+          - accepted
+          - delivered
+          - failed
+          - unknown
+        startedAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        providerAcceptedAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        providerDeliveredAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        failureClass:
+          anyOf:
+          - type: string
+            enum:
+            - transient
+            - permanent
+            - ambiguous
+          - type: 'null'
+        reconciliationDueAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        events:
+          type: array
+          items:
+            "$ref": "#/components/schemas/DeliveryFact"
+          maxItems: 100
+      required:
+      - id
+      - callOrdinal
+      - state
+    DeliveryIntent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        revision:
+          type: integer
+          minimum: 1
+        requestId:
+          type: string
+          format: uuid
+        locationId:
+          type: string
+          format: uuid
+        purpose:
+          type: string
+          enum:
+          - initial
+          - reminder
+          - reissue
+          - paperwork_ready
+          - paperwork_resend
+        state:
+          "$ref": "#/components/schemas/DeliveryState"
+        destination:
+          type: object
+          properties:
+            channel:
+              type: string
+              enum:
+              - email
+              - sms
+            masked:
+              type: string
+            version:
+              type: integer
+              minimum: 1
+          required:
+          - channel
+          - masked
+          - version
+        facts:
+          type: object
+          properties:
+            queuedAt:
+              anyOf:
+              - type: string
+                format: date-time
+              - type: 'null'
+            providerAcceptedAt:
+              anyOf:
+              - type: string
+                format: date-time
+              - type: 'null'
+            providerDeliveredAt:
+              anyOf:
+              - type: string
+                format: date-time
+              - type: 'null'
+            latestBounceAt:
+              anyOf:
+              - type: string
+                format: date-time
+              - type: 'null'
+            latestComplaintAt:
+              anyOf:
+              - type: string
+                format: date-time
+              - type: 'null'
+          required:
+          - queuedAt
+          - providerAcceptedAt
+          - providerDeliveredAt
+        failureCode:
+          anyOf:
+          - type: string
+          - type: 'null'
+        nextAction:
+          type: string
+        nextEligibleAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        allowedActions:
+          type: array
+          items:
+            type: string
+          maxItems: 20
+        statusUrl:
+          type: string
+          format: uri-reference
+          description: Canonical proposed detail route /api/v1/delivery-intents/{intentId}.
+        template:
+          type: object
+          properties:
+            versionId:
+              type: string
+              format: uuid
+            renderHash:
+              type: string
+              description: Protected-content hash only; no rendered message body.
+          required:
+          - versionId
+          - renderHash
+        operation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            state:
+              type: string
+          required:
+          - id
+          - state
+        attempts:
+          type: array
+          items:
+            "$ref": "#/components/schemas/DeliveryAttempt"
+          maxItems: 100
+        historyNextCursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+      required:
+      - id
+      - revision
+      - requestId
+      - locationId
+      - purpose
+      - state
+      - destination
+      - facts
+      - failureCode
+      - nextAction
+      - allowedActions
+      description: Provider acceptance/delivery, application access, signature and
+        staff review are separate. Late bounce/complaint is retained after delivery.
+        No raw link, full message body, full destination or credentials.
+    DeliveryCommandResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        revision:
+          type: integer
+          minimum: 1
+        state:
+          type: string
+          description: Business request/notification state; independent of delivery.
+        intents:
+          type: array
+          items:
+            "$ref": "#/components/schemas/DeliveryIntent"
+          maxItems: 2
+        operationId:
+          type: string
+          format: uuid
+        statusUrl:
+          type: string
+          format: uri-reference
+        failureCode:
+          anyOf:
+          - type: string
+          - type: 'null'
+        nextEligibleAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      required:
+      - id
+      - revision
+      - state
+      description: Durable result only after command+intent+outbox commit. It is not
+        proof of provider acceptance. Local-review and feature-disabled results remain
+        truthful; a retry key returns the original result.
+    Scope:
+      type: string
+      enum:
+      - selected_location
+      - all_permitted_locations
+    DeliveryQueue:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            "$ref": "#/components/schemas/DeliveryIntent"
+          maxItems: 100
+        counts:
+          type: object
+          properties:
+            total:
+              type: integer
+              minimum: 0
+            needsAttention:
+              type: integer
+              minimum: 0
+            inProgress:
+              type: integer
+              minimum: 0
+            delivered:
+              type: integer
+              minimum: 0
+            suppressed:
+              type: integer
+              minimum: 0
+          required:
+          - total
+          - needsAttention
+          - inProgress
+          - delivered
+          - suppressed
+        asOf:
+          type: string
+          format: date-time
+        scopeSnapshotId:
+          type: string
+        scopeFilterFingerprint:
+          type: string
+        nextCursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+      required:
+      - items
+      - counts
+      - asOf
+      - scopeSnapshotId
+      - scopeFilterFingerprint
+      - nextCursor
+      description: Page and exact intent counts use one repeatable-read snapshot and
+        identical authorized scope/filters. Needs attention is a derived aggregate.
+        Categories need not be mutually exclusive.
+    CreateCommunicationEndpoint:
+      type: object
+      properties:
+        channel:
+          type: string
+          enum:
+          - email
+          - sms
+        address:
+          type: string
+          minLength: 3
+          maxLength: 254
+          writeOnly: true
+        locale:
+          type: string
+          enum:
+          - en
+          - es
+        timeZone:
+          type: string
+          description: IANA zone; unconfirmed/unknown zone blocks automated delivery.
+        confirmationEvidenceReference:
+          type: string
+          maxLength: 240
+          writeOnly: true
+        replacesEndpointId:
+          type: string
+          format: uuid
+        expectedPreviousEndpointVersion:
+          type: integer
+          minimum: 1
+      required:
+      - channel
+      - address
+      description: Protected address write; separate edit/authority privilege. Server
+        validates same-patient scope and evidence. No automatic confirmation from
+        staff text entry or portal identity binding. Replacement needs exact prior
+        version.
+      additionalProperties: false
+    CommunicationEndpoint:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        revision:
+          type: integer
+          minimum: 1
+        channel:
+          type: string
+          enum:
+          - email
+          - sms
+        masked:
+          type: string
+        version:
+          type: integer
+          minimum: 1
+        status:
+          type: string
+          enum:
+          - active
+          - invalid
+          - replaced
+        confirmedAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        locale:
+          type: string
+          enum:
+          - en
+          - es
+        timeZone:
+          anyOf:
+          - type: string
+          - type: 'null'
+        timeZoneConfirmed:
+          type: boolean
+        permissions:
+          type: array
+          items:
+            type: object
+            properties:
+              purpose:
+                type: string
+                enum:
+                - request
+                - reminder
+                - paperwork
+              decision:
+                type: string
+                enum:
+                - allowed
+                - withdrawn
+              revision:
+                type: integer
+                minimum: 1
+              effectiveAt:
+                type: string
+                format: date-time
+            required:
+            - purpose
+            - decision
+            - revision
+            - effectiveAt
+          maxItems: 3
+        suppressed:
+          type: boolean
+        suppressionReason:
+          anyOf:
+          - type: string
+          - type: 'null'
+      required:
+      - id
+      - revision
+      - channel
+      - masked
+      - version
+      - status
+      - confirmedAt
+      - timeZoneConfirmed
+      - permissions
+      - suppressed
+    CommunicationPermissionCommand:
+      type: object
+      properties:
+        endpointId:
+          type: string
+          format: uuid
+        endpointVersion:
+          type: integer
+          minimum: 1
+        purpose:
+          type: string
+          enum:
+          - request
+          - reminder
+          - paperwork
+        channel:
+          type: string
+          enum:
+          - email
+          - sms
+        decision:
+          type: string
+          enum:
+          - allowed
+          - withdrawn
+        reasonCode:
+          type: string
+          minLength: 1
+          maxLength: 80
+        evidenceReference:
+          type: string
+          minLength: 1
+          maxLength: 240
+      required:
+      - endpointId
+      - endpointVersion
+      - purpose
+      - channel
+      - decision
+      - reasonCode
+      - evidenceReference
+      description: Staff-recorded evidence, not asserted patient identity. If-Match
+        is current endpoint/purpose permission revision. Actor/scope/source/recorded
+        and effective time derive from trusted server state. Does not override provider
+        STOP/complaint suppression.
+      additionalProperties: false
+    CommunicationPermissionEvent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        endpointId:
+          type: string
+          format: uuid
+        endpointVersion:
+          type: integer
+          minimum: 1
+        purpose:
+          type: string
+          enum:
+          - request
+          - reminder
+          - paperwork
+        channel:
+          type: string
+          enum:
+          - email
+          - sms
+        decision:
+          type: string
+          enum:
+          - allowed
+          - withdrawn
+        revision:
+          type: integer
+          minimum: 1
+        recordedAt:
+          type: string
+          format: date-time
+        effectiveAt:
+          type: string
+          format: date-time
+        effectiveDeliveryAllowed:
+          type: boolean
+      required:
+      - id
+      - endpointId
+      - endpointVersion
+      - purpose
+      - channel
+      - decision
+      - revision
+      - recordedAt
+      - effectiveAt
+      - effectiveDeliveryAllowed
+    PatientPolicy:
+      type: object
+      properties:
+        automaticRemindersEnabled:
+          type: boolean
+          default: false
+        reminderHoursBeforeDue:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+          maxItems: 2
+          default:
+          - 48
+          - 24
+        minimumAutomaticGapHours:
+          type: integer
+          minimum: 1
+          default: 24
+        maximumAutomaticPerRequestLifetime:
+          type: integer
+          minimum: 0
+          default: 2
+        manualCooldownSeconds:
+          type: integer
+          minimum: 0
+          default: 3600
+        combinedPerDestination24HourCap:
+          type: integer
+          minimum: 1
+          default: 3
+        windowStart:
+          type: string
+          pattern: "^[0-2][0-9]:[0-5][0-9]$"
+          default: '09:00'
+        windowEnd:
+          type: string
+          pattern: "^[0-2][0-9]:[0-5][0-9]$"
+          default: '18:00'
+        timeZoneRule:
+          type: string
+          const: confirmed_recipient
+        missingTimeZoneAction:
+          type: string
+          const: hold_for_review
+        automaticFallback:
+          type: boolean
+          const: false
+        approvedTemplateVersionIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          maxItems: 40
+        emailEnabled:
+          type: boolean
+        smsEnabled:
+          type: boolean
+      description: Starting product defaults for owner review, not universal legal/clinical
+        requirements. Reviewed server limits cannot be expanded by ordinary managers.
+        Due/expiry and provider state can suppress an occurrence.
+    StaffRules:
+      type: object
+      properties:
+        assignmentEnabled:
+          type: boolean
+        ownerChangeEnabled:
+          type: boolean
+        overdueEnabled:
+          type: boolean
+        suppressActorExternalAlert:
+          type: boolean
+          default: true
+        groupCurrentWorkEpisode:
+          type: boolean
+          default: true
+        escalationAfterBusinessDays:
+          type: integer
+          minimum: 0
+          maximum: 2
+          default: 1
+        businessCalendarId:
+          type: string
+          format: uuid
+        escalationAudienceId:
+          type: string
+          format: uuid
+        unassignedAudienceId:
+          type: string
+          format: uuid
+      description: Audiences resolve only current authorized eligible users. Explicit
+        calendar required for business-day escalation; lack of eligible audience never
+        expands access.
+    NotificationPolicy:
+      type: object
+      properties:
+        revision:
+          type: integer
+          minimum: 1
+        effectiveVersion:
+          type: string
+        effectiveAt:
+          type: string
+          format: date-time
+        locationId:
+          type: string
+          format: uuid
+        patient:
+          "$ref": "#/components/schemas/PatientPolicy"
+        staff:
+          "$ref": "#/components/schemas/StaffRules"
+      required:
+      - revision
+      - effectiveVersion
+      - effectiveAt
+      - locationId
+      - patient
+      - staff
+    NotificationPolicyPatch:
+      type: object
+      properties:
+        patient:
+          "$ref": "#/components/schemas/PatientPolicy"
+        staff:
+          "$ref": "#/components/schemas/StaffRules"
+        reasonCode:
+          type: string
+          maxLength: 80
+      minProperties: 1
+      additionalProperties: false
+      description: Authorized single-location manager only. Recompute future unsent
+        occurrences; preserve delivered facts and consumed budgets.
+    StaffNotification:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        revision:
+          type: integer
+          minimum: 1
+        eventType:
+          type: string
+          enum:
+          - assignment
+          - owner_change
+          - overdue
+          - delivery_follow_up
+        locationId:
+          type: string
+          format: uuid
+        titleKey:
+          type: string
+        bodyKey:
+          type: string
+        parameters:
+          type: object
+          properties: {}
+          description: Minimal protected projection, derived by server after current
+            subject authorization; no arbitrary HTML.
+          additionalProperties:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        currentWork:
+          type: object
+          properties:
+            state:
+              type: string
+            ownerLabel:
+              anyOf:
+              - type: string
+              - type: 'null'
+            dueAt:
+              anyOf:
+              - type: string
+                format: date-time
+              - type: 'null'
+            attentionResolvedAt:
+              anyOf:
+              - type: string
+                format: date-time
+              - type: 'null'
+            route:
+              type: string
+              format: uri-reference
+              description: Allowlisted current authorized subject route; never arbitrary
+                returnTo.
+          required:
+          - state
+          - route
+        receipt:
+          type: object
+          properties:
+            revision:
+              type: integer
+              minimum: 1
+            readAt:
+              anyOf:
+              - type: string
+                format: date-time
+              - type: 'null'
+            archivedAt:
+              anyOf:
+              - type: string
+                format: date-time
+              - type: 'null'
+            snoozedUntil:
+              anyOf:
+              - type: string
+                format: date-time
+              - type: 'null'
+          required:
+          - revision
+          - readAt
+          - archivedAt
+          - snoozedUntil
+      required:
+      - id
+      - revision
+      - eventType
+      - locationId
+      - titleKey
+      - createdAt
+      - currentWork
+      - receipt
+      description: Rendered only after current membership/location/record access.
+        Receipt changes never complete work or accept assignment.
+    StaffInbox:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            "$ref": "#/components/schemas/StaffNotification"
+          maxItems: 100
+        counts:
+          type: object
+          properties:
+            unread:
+              type: integer
+              minimum: 0
+            attention:
+              type: integer
+              minimum: 0
+            total:
+              type: integer
+              minimum: 0
+          required:
+          - unread
+          - attention
+          - total
+        asOf:
+          type: string
+          format: date-time
+        scopeSnapshotId:
+          type: string
+        snapshotToken:
+          type: string
+          description: Opaque signed recipient/filter/scope/cutoff/expiry token referring
+            to bounded materialized IDs, not timestamp-only membership.
+        nextCursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+      required:
+      - items
+      - counts
+      - asOf
+      - scopeSnapshotId
+      - snapshotToken
+      - nextCursor
+    ReceiptCommand:
+      type: object
+      properties: {}
+      additionalProperties: false
+      description: Mark read/archive affects only authenticated recipient. If-Match
+        targets receipt revision, not current source-work revision.
+    SnoozeCommand:
+      type: object
+      properties:
+        until:
+          type: string
+          format: date-time
+      required:
+      - until
+      additionalProperties: false
+      description: Bounded future time validated by policy; does not defer the source
+        due date or remove work visibility.
+    StaffReceipt:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        revision:
+          type: integer
+          minimum: 1
+        readAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        archivedAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        snoozedUntil:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      required:
+      - id
+      - revision
+      - readAt
+      - archivedAt
+      - snoozedUntil
+    ReadAllCommand:
+      type: object
+      properties:
+        snapshotToken:
+          type: string
+          minLength: 1
+        scope:
+          "$ref": "#/components/schemas/Scope"
+        locationId:
+          type: string
+          format: uuid
+        filters:
+          type: object
+          properties:
+            filter:
+              type: string
+              enum:
+              - all
+              - unread
+              - assignments
+              - overdue
+              - delivery_follow_up
+          additionalProperties: false
+      required:
+      - snapshotToken
+      - scope
+      additionalProperties: false
+      description: Token must match exact recipient, explicit scope/location and filters;
+        required locationId for selected_location. Only unread currently authorized
+        IDs materialized in snapshot can change. Proposed bound 10,000 IDs; expired/mismatched
+        token requires reload. New/late-commit alerts remain unread.
+    ReadAllResult:
+      type: object
+      properties:
+        updatedCount:
+          type: integer
+          minimum: 0
+        unreadCount:
+          type: integer
+          minimum: 0
+        asOf:
+          type: string
+          format: date-time
+        scopeSnapshotId:
+          type: string
+      required:
+      - updatedCount
+      - unreadCount
+      - asOf
+      - scopeSnapshotId
+      description: Fresh authorized unread count; no subject details for inaccessible
+        rows. Same key replays original mutation result.
+    StaffPreferenceValues:
+      type: object
+      properties:
+        locale:
+          type: string
+          enum:
+          - en
+          - es
+        timeZone:
+          type: string
+        timeZoneConfirmed:
+          type: boolean
+        quietHours:
+          type: object
+          properties:
+            start:
+              type: string
+              default: '18:00'
+            end:
+              type: string
+              default: '08:00'
+          required:
+          - start
+          - end
+        digestAtLocal:
+          type: string
+          default: '08:30'
+        events:
+          type: object
+          properties:
+            assignment:
+              type: string
+              enum:
+              - in_app_only
+              - immediate_email
+              - daily_digest
+            owner_change:
+              type: string
+              enum:
+              - in_app_only
+              - immediate_email
+              - daily_digest
+            overdue:
+              type: string
+              enum:
+              - in_app_only
+              - immediate_email
+              - daily_digest
+            delivery_follow_up:
+              type: string
+              enum:
+              - in_app_only
+              - immediate_email
+              - daily_digest
+          additionalProperties: false
+        pushEnabled:
+          type: boolean
+          default: false
+      description: Current-user/practice preferences. In-app work remains available.
+        Optional push requires activated adapter/device registration; no preference
+        confers record access.
+    StaffPreferences:
+      allOf:
+      - "$ref": "#/components/schemas/StaffPreferenceValues"
+      - type: object
+        properties:
+          revision:
+            type: integer
+            minimum: 1
+          effectiveAt:
+            type: string
+            format: date-time
+        required:
+        - revision
+        - effectiveAt
+    DeviceCommand:
+      type: object
+      properties:
+        platform:
+          type: string
+          enum:
+          - ios
+          - android
+        providerToken:
+          type: string
+          minLength: 1
+          maxLength: 4096
+          writeOnly: true
+        installationId:
+          type: string
+          maxLength: 128
+        appEnvironment:
+          type: string
+          enum:
+          - development
+          - staging
+          - production
+      required:
+      - platform
+      - providerToken
+      - installationId
+      - appEnvironment
+      additionalProperties: false
+      description: Authenticated user owns the device registration. Encrypt provider
+        token, bind app/environment, rotate safely; no caller-supplied recipient/practice
+        grant.
+    DeviceRegistration:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        revision:
+          type: integer
+          minimum: 1
+        platform:
+          type: string
+          enum:
+          - ios
+          - android
+        state:
+          type: string
+          enum:
+          - active
+          - revoked
+          - invalid
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - revision
+      - platform
+      - state
+      - updatedAt
+    WebhookAcknowledgement:
+      type: object
+      properties:
+        receiptId:
+          type: string
+          format: uuid
+        state:
+          type: string
+          enum:
+          - recorded
+          - duplicate
+          - quarantined
+      required:
+      - receiptId
+      - state
+      description: Acknowledges durable platform ingestion only, not accepted clinical
+        authority or delivery. Unmapped signed events remain protected/quarantined
+        for reconciliation.
+    DeliveryControlCommand:
+      type: object
+      properties:
+        reasonCode:
+          type: string
+          maxLength: 80
+      additionalProperties: false
+    DeliveryReconciliationOperation:
+      type: object
+      properties:
+        operationId:
+          type: string
+          format: uuid
+        statusUrl:
+          type: string
+          format: uri-reference
+        intentId:
+          type: string
+          format: uuid
+        intentState:
+          "$ref": "#/components/schemas/DeliveryState"
+        operationState:
+          type: string
+          const: queued
+      required:
+      - operationId
+      - statusUrl
+      - intentId
+      - intentState
+      - operationState
+      description: Lookup-only operation. Unknown intent remains unknown; queued operation
+        is not a queued send. No provider submit occurs.
+    CancelledDeliveryIntent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        state:
+          type: string
+          const: cancelled
+        revision:
+          type: integer
+          minimum: 1
+      required:
+      - id
+      - state
+      - revision
+    PatientCommunicationPreferencesPatch:
+      type: object
+      properties:
+        preferenceContextToken:
+          type: string
+          minLength: 1
+        choices:
+          type: array
+          items:
+            type: object
+            properties:
+              purpose:
+                type: string
+                enum:
+                - request
+                - reminder
+                - paperwork
+              channel:
+                type: string
+                enum:
+                - email
+                - sms
+              enabled:
+                type: boolean
+            required:
+            - purpose
+            - channel
+            - enabled
+            additionalProperties: false
+          minItems: 1
+          maxItems: 6
+        locale:
+          type: string
+          enum:
+          - en
+          - es
+        confirmedTimeZone:
+          type: string
+          description: Confirmed IANA timezone; validate current TZ database.
+      required:
+      - preferenceContextToken
+      - choices
+      additionalProperties: false
+      description: Token selects one current server-resolved adult-self principal/grant/scope
+        context. Body cannot choose patientId, change an address, establish identity
+        or create/rebind a portal grant. Duplicate purpose/channel choices rejected.
+        Enabling choice never clears provider opt-out or activates unsupported paperwork
+        SMS.
+    PatientCommunicationPreferenceContext:
+      type: object
+      properties:
+        preferenceContextToken:
+          type: string
+          description: Opaque signed expiring context selector, not authentication.
+            Reauthorize account and exact current grant on each use.
+        revision:
+          type: integer
+          minimum: 1
+        locale:
+          type: string
+          enum:
+          - en
+          - es
+        confirmedTimeZone:
+          anyOf:
+          - type: string
+          - type: 'null'
+        maskedEndpoints:
+          type: array
+          items:
+            type: object
+            properties:
+              channel:
+                type: string
+                enum:
+                - email
+                - sms
+              masked:
+                type: string
+              confirmed:
+                type: boolean
+            required:
+            - channel
+            - masked
+            - confirmed
+          maxItems: 2
+        choices:
+          type: array
+          items:
+            type: object
+            properties:
+              purpose:
+                type: string
+                enum:
+                - request
+                - reminder
+                - paperwork
+              channel:
+                type: string
+                enum:
+                - email
+                - sms
+              enabled:
+                type: boolean
+              effectiveAllowed:
+                type: boolean
+              blockedReasonCode:
+                anyOf:
+                - type: string
+                - type: 'null'
+            required:
+            - purpose
+            - channel
+            - enabled
+            - effectiveAllowed
+            - blockedReasonCode
+          maxItems: 6
+      required:
+      - preferenceContextToken
+      - revision
+      - locale
+      - confirmedTimeZone
+      - maskedEndpoints
+      - choices
+      description: User preference and effective eligibility remain separate. Provider
+        suppression, missing confirmed endpoint or unsupported channel can prevent
+        effective delivery despite an enabled preference.
+    PatientCommunicationPreferences:
+      type: object
+      properties:
+        contexts:
+          type: array
+          items:
+            "$ref": "#/components/schemas/PatientCommunicationPreferenceContext"
+          maxItems: 100
+        asOf:
+          type: string
+          format: date-time
+      required:
+      - contexts
+      - asOf
+      description: Derive current contexts from verified authenticated account and
+        current explicit adult-self grants. Multiple grants require explicit context
+        selection; never use email equality or browser-supplied patient ID to discover
+        records.

@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "checks": [
+    "Self-contained prototype loads without JavaScript errors",
+    "Default delivery fixtures render",
+    "Handoff fits 320px",
+    "Bundle document links resolve"
+  ],
+  "errors": []
+}

@@ -1,18 +1,42 @@
 # CareIQ
 
+October 26 security patches and verification: [main security review](docs/verification/security-2026-10-26/README.md).
+
+Security implementation and rollout: [hardening guide](docs/security-hardening.md) · [release status and owner actions](docs/deployment/security-release-status.md).
+
 CareIQ is a healthcare operations platform being built for small and independent medical practices.
 
 The platform is focused on reducing administrative workload around patient intake, scheduling, referrals, document collection, communication, and other front-office workflows.
+
+Manager dashboard and manual insurance verification: [implementation and audit coverage](docs/manager-insurance-implementation.md).
+
+Manager team activity by person and action day: [scope, permissions and verification](docs/manager-team-activity.md).
+
+UI capitalization: [November 2 review, exact change inventory and local checklist](docs/verification/ui-capitalization-2026-11-02.md).
+
+Patient list hover spacing: [desktop and phone review](docs/verification/patient-row-spacing-2026-11-02.md).
+
+Shared loading indicators: [coverage, verification and local checklist](docs/verification/shared-loading-2026-11-02.md).
+
+November 2 end-to-end release: [deployment and verification results](docs/verification/e2e-release-2026-11-02.md).
 
 ## Status
 
 🚧 **Active development**
 
-CareIQ is currently in the foundation and first vertical-slice stage.
+**Latest tagged release: [v0.1.0 — Interview baseline](docs/releases/0.1.0.md)** · October 3, 2026 · Synthetic/demo use only.
 
-The current slice supports Clerk sign-in, practice selection, patient creation/listing, and appointment creation/listing backed by PostgreSQL tenant isolation. The **v0.1 — Interview Design** adds a light front-desk workspace, patient search, day/week navigation, and centered creation dialogs. A separate reviewer bar opens a static architecture explanation; it does not display live telemetry.
+See the [version history](CHANGELOG.md) and [release process](docs/releasing.md). The implementation below is subsequent unreleased work; it does not change the deployed release.
 
-See the [design specification](docs/design/interview-v0.1.md), [interview architecture notes](docs/interview-architecture.md), and [development and deployment guide](docs/development.md). The v0.1 label identifies the interview design, not production readiness. This application writes to the configured API/database; use synthetic demo data.
+CareIQ now includes the local staff workflow across web and API/PostgreSQL: scheduling, patient profiles, document/version review, requirement evidence, templates, restricted patient collection/signing and protected audit review.
+
+Start with the [workflow implementation and review guide](docs/workflow-implementation.md), [runtime API contract](docs/design/workflow/runtime-contract.md) and [OpenAPI payload/response definitions](docs/api/workflow.openapi.json). The [interactive workflow preview](http://localhost:3101/workflow-preview) uses clearly labeled synthetic data; the authenticated workspace writes to the configured API/database. Local review uses isolated databases and existing test authentication. Delivery/scanning/storage activation and physical device acceptance are documented explicitly; no deployment was performed.
+
+October 17: the [Forms Studio and patient paperwork implementation](docs/forms-studio-implementation.md) adds guided forms, immutable submissions, reviewed demographic changes and an authenticated completed-copy library. The guide identifies supported adult-self signing, account-grant expiry and the remaining email/provider activation boundaries.
+
+Owner-controlled account, hosting, storage, backup and release measures are listed in the [security checklist](docs/security/owner-security-checklist.md). Local safeguards and hosted acceptance are tracked separately.
+
+The previous [interview design](docs/design/interview-v0.1.md) and [authentication/onboarding guide](docs/auth-onboarding.md) remain reference material and supported paths.
 
 ## Initial Product Direction
 
@@ -22,15 +46,15 @@ CareIQ is designed as a multi-tenant SaaS platform where multiple practices oper
 
 Initial workflow areas include:
 
-* Patient intake
-* Appointment scheduling
-* Practice and provider management
-* Referral workflows
-* Document collection
-* Administrative task automation
-* Patient communication
-* Operational dashboards
-* Future AI-assisted workflow capabilities
+- Patient intake
+- Appointment scheduling
+- Practice and provider management
+- Referral workflows
+- Document collection
+- Administrative task automation
+- Patient communication
+- Operational dashboards
+- Future AI-assisted workflow capabilities
 
 The goal is not to replace an EHR. CareIQ is intended to improve the operational workflows surrounding existing clinical systems.
 
@@ -62,7 +86,7 @@ Authentication: Clerk
 Infrastructure: Render
 ```
 
-Additional clients, including mobile applications, can consume the same backend API as the platform evolves.
+Native mobile source was separated from this checkout on October18,2026 and preserved locally for a future repository. The backend practice/location and gated native-auth contracts remain available for that future client. See [mobile separation and recovery](docs/mobile-separation.md).
 
 ## Technology Stack
 
@@ -125,7 +149,7 @@ PostgreSQL Row-Level Security provides an additional enforcement boundary for te
 
 Clerk provides user identity and authentication.
 
-CareIQ maps the authenticated Clerk organization to an internal practice. Role-specific permissions and membership administration remain planned.
+CareIQ maps the authenticated Clerk organization to an internal practice. The API enforces fresh membership, explicit permissions and assigned-location access. Verified approved founders create practices through controlled onboarding; reading session context does not provision an organization or practice.
 
 ### Auditable Healthcare Workflows
 
@@ -157,14 +181,22 @@ CareIQ currently uses PostgreSQL with Drizzle ORM.
 
 Important database conventions include:
 
-* UUIDv7 identifiers for domain entities
-* Explicit foreign-key relationships
-* Tenant-aware data modeling
-* PostgreSQL Row-Level Security
-* Planned database-backed audit capabilities (not implemented in this slice)
-* Version-controlled schema migrations
+- UUIDv7 identifiers for domain entities
+- Explicit foreign-key relationships
+- Tenant-aware data modeling
+- PostgreSQL Row-Level Security
+- Append-only clinical/admin audit metadata with narrow runtime grants; separate protected search, evidence review and snapshot exports
+- Version-controlled schema migrations
 
 Database migrations are owned by the API application.
+
+## Authentication and practice onboarding
+
+The current [Little hello authentication](docs/little-hello-authentication.md) and [email implementation](docs/little-hello-emails.md) keep white tones across sign-in, recovery, invitation and session flows. See the [October 21 verification record](docs/verification/little-hello-2026-10-21/README.md) for completed local checks and remaining provider/inbox acceptance.
+
+The current designs and implementation are documented in [the authentication/onboarding guide](docs/auth-onboarding.md). Review [web, iOS and Android designs](docs/design/auth-onboarding/design-handoff.md) and the [interactive prototype](docs/design/auth-onboarding/prototype.html).
+
+Use this existing checkout at `/Users/kristian/Documents/Server/CareIQ`; do not create fresh GitHub checkouts for routine work. The [local review guide](docs/local-review.md) starts isolated environments for these changes. No GitHub push or remote deployment was performed.
 
 ## Local Development
 
@@ -202,21 +234,21 @@ See:
 
 Current decisions cover areas including:
 
-* Repository architecture
-* API-first platform design
-* Integration architecture
-* Multi-tenant SaaS architecture
-* Authentication and authorization
-* PostgreSQL database platform
-* Tenant data isolation
-* Database access strategy
-* Identifier strategy
-* Audit logging
-* API versioning
-* Background jobs
-* File storage
-* Secrets management
-* Deployment infrastructure
+- Repository architecture
+- API-first platform design
+- Integration architecture
+- Multi-tenant SaaS architecture
+- Authentication and authorization
+- PostgreSQL database platform
+- Tenant data isolation
+- Database access strategy
+- Identifier strategy
+- Audit logging
+- API versioning
+- Background jobs
+- File storage
+- Secrets management
+- Deployment infrastructure
 
 ADRs record why a decision was made, not just what technology was selected.
 
@@ -232,31 +264,63 @@ CareIQ deals with healthcare workflows and is therefore being designed with secu
 
 Current design considerations include:
 
-* Tenant isolation
-* Role-based authorization
-* Secure external authentication
-* Database-level access controls
-* Immutable audit history
-* Secrets management
-* Structured application logging
-* Least-privilege database access
+- Tenant isolation
+- Role-based authorization
+- Secure external authentication
+- Database-level access controls
+- Immutable audit history
+- Secrets management
+- Structured application logging
+- Least-privilege database access
 
 Formal compliance requirements and controls will evolve as the product approaches real patient data and production healthcare deployments.
 
 ## Documentation
 
-* [Public marketing website](docs/marketing.md)
-* [Marketing verification](docs/marketing-verification.md)
-* [Product Vision](docs/product-vision.md)
-* [Architecture](docs/architecture.md)
-* [v0.1 — Interview Design](docs/design/interview-v0.1.md)
-* [Interview architecture notes](docs/interview-architecture.md)
-* [Development](docs/development.md)
-* [Verification record](docs/verification.md)
-* [Architecture Decision Records](docs/decisions)
+- [Code quality and release checks](docs/code-quality.md) — formatting, lint, naming, coverage policy and remaining deployment gates.
+- [Exact-commit release gates and smoke verification](docs/deployment/release-verification.md) — required checks, scanning, deployment identity and rollback verification.
+- [Managed-owner database repair](docs/verification/managed-owner-repair-2026-11-02.md) — approved local repair, fresh and upgrade rehearsals, isolation tests and rollback limits.
+- [Migration-50 rollback build](docs/deployment/local-rollback.md) — pinned local fallback, strict startup checks and source/build provenance.
+- [Security remediation verification](docs/verification/rollback-security-remediation-2026-11-02.md) — resolved CodeQL findings, coverage and remaining release acceptance.
+
+- [Patient delivery and staff notification implementation](docs/notifications-implementation.md) — configuration, queued delivery, recipient inbox, permissions and verification limits.
+- [Notification verification record](docs/verification/notifications-2026-10-18/README.md) — staged checks and outstanding acceptance.
+- [PR #11 check repairs](docs/verification/pr-11-ci/README.md) — notification integration fixes, additive migration and local regression evidence.
+
+- [Patient delivery and staff notification designs](docs/design/patient-delivery-and-staff-notifications/design-handoff.md) — proposed UI, API and delivery architecture; no provider activation.
+
+- [Workflow implementation and review](docs/workflow-implementation.md)
+- [Workflow API contract](docs/design/workflow/runtime-contract.md)
+- [OpenAPI definitions](docs/api/workflow.openapi.json)
+- [Public marketing website](docs/marketing.md)
+- [Marketing verification](docs/marketing-verification.md)
+- [Version history](CHANGELOG.md)
+- [Release process and cadence](docs/releasing.md)
+- [Product Vision](docs/product-vision.md)
+- [Architecture](docs/architecture.md)
+- [v0.1 — Interview Design](docs/design/interview-v0.1.md)
+- [Interview architecture notes](docs/interview-architecture.md)
+- [Development](docs/development.md)
+- [Authentication and onboarding](docs/auth-onboarding.md)
+- [Production-readiness status](docs/production-readiness.md)
+- [Web production checks](docs/web-production-readiness.md)
+- [API production checks](docs/api-production-release.md)
+- [Mobile production checks](docs/mobile-production-readiness.md)
+- [Local review environments](docs/local-review.md)
+- [Interface languages and dropdown styling](docs/localization.md)
+- [Mobile development](docs/mobile-development.md)
+- [Practice/location access](docs/practice-access-implementation.md)
+- [Security hardening](docs/security-hardening.md)
+- [Releases](docs/releasing.md)
+- [Verification record](docs/verification.md)
+- [Architecture Decision Records](docs/decisions)
 
 ## Project Philosophy
 
 CareIQ is being built incrementally around complete vertical workflows rather than attempting to build an entire practice-management platform at once.
 
 Architecture decisions are made early where changing them later would be expensive, while product behavior remains flexible enough to evolve through customer discovery and real practice feedback.
+
+Current local [security, login stability and capacity evidence](docs/verification/security-load-2026-10-17/README.md).
+
+October 18 local main integration and refreshed end-to-end evidence: [PR #10 conflict-resolution verification](docs/verification/pr-10-main-2026-10-18/README.md). The merge remains uncommitted/unpushed at user request.

@@ -1,0 +1,20 @@
+{
+  "verifiedAt": "2026-10-18T16:46:13.700197+00:00",
+  "check": {
+    "name": "expo-doctor",
+    "command": [
+      "pnpm",
+      "--filter",
+      "@careiq/mobile",
+      "exec",
+      "expo-doctor"
+    ],
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "durationSeconds": 8.005,
+    "counts": {},
+    "pass": true
+  },
+  "allDoctorChecksPassed": true,
+  "scope": "Online Expo project/dependency diagnostics using preview configuration; no binary/device acceptance."
+}

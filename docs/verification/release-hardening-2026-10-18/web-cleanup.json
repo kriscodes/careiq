@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-18",
+  "checks": [
+    {
+      "port": 3191,
+      "taskOwnedServerStopped": true
+    },
+    {
+      "port": 3192,
+      "taskOwnedServerStopped": true
+    }
+  ],
+  "existingServicesStopped": false,
+  "committed": false,
+  "staged": false,
+  "pushed": false,
+  "deployed": false
+}

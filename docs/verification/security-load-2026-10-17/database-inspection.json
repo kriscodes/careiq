@@ -1,0 +1,1499 @@
+{
+  "runId": "af2065c8-12c1-415e-81c1-494d35ccf4cc",
+  "database": "careiq_bench_4d26086addda",
+  "seedComplete": true,
+  "practices": 100,
+  "hardware": {
+    "host": {
+      "cpu": "Apple M2",
+      "logicalCpus": 8,
+      "nodeVersion": "v22.23.2",
+      "memoryBytes": 8589934592,
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "docker": {
+      "cpus": 8,
+      "memoryBytes": 4106604544,
+      "serverVersion": "29.8.0",
+      "containerMemoryLimitBytes": null,
+      "containerNanoCpus": null,
+      "image": "postgres:18.6"
+    },
+    "backgroundLoad": [
+      5.56982421875,
+      5.365234375,
+      5.14208984375
+    ]
+  },
+  "counts": {
+    "tables": {
+      "practices": 100,
+      "locations": 200,
+      "patients": 100000,
+      "appointments": 300000,
+      "providers": 1000,
+      "documents": 100000,
+      "document_versions": 200000,
+      "file_objects": 200000,
+      "document_reviews": 50058,
+      "visit_requirements": 20000,
+      "requirement_evidence": 4932,
+      "document_requests": 10000,
+      "document_request_items": 10000,
+      "work_items": 15068,
+      "audit.events": 3734,
+      "audit.database_records": 1113678
+    },
+    "databaseBytes": 2260711103
+  },
+  "settings": [
+    {
+      "name": "default_statistics_target",
+      "setting": "100",
+      "unit": null
+    },
+    {
+      "name": "effective_cache_size",
+      "setting": "524288",
+      "unit": "8kB"
+    },
+    {
+      "name": "jit",
+      "setting": "on",
+      "unit": null
+    },
+    {
+      "name": "max_connections",
+      "setting": "100",
+      "unit": null
+    },
+    {
+      "name": "max_parallel_workers_per_gather",
+      "setting": "2",
+      "unit": null
+    },
+    {
+      "name": "shared_buffers",
+      "setting": "16384",
+      "unit": "8kB"
+    },
+    {
+      "name": "work_mem",
+      "setting": "4096",
+      "unit": "kB"
+    }
+  ],
+  "indexes": [
+    {
+      "schemaname": "public",
+      "tablename": "appointments",
+      "indexname": "appointments_id_scope_key",
+      "indexdef": "CREATE UNIQUE INDEX appointments_id_scope_key ON public.appointments USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "appointments",
+      "indexname": "appointments_location_schedule_idx",
+      "indexdef": "CREATE INDEX appointments_location_schedule_idx ON public.appointments USING btree (practice_id, location_id, scheduled_at, id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "appointments",
+      "indexname": "appointments_patient_schedule_idx",
+      "indexdef": "CREATE INDEX appointments_patient_schedule_idx ON public.appointments USING btree (practice_id, location_id, patient_id, scheduled_at, id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "appointments",
+      "indexname": "appointments_patient_scope_key",
+      "indexdef": "CREATE UNIQUE INDEX appointments_patient_scope_key ON public.appointments USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "appointments",
+      "indexname": "appointments_pkey",
+      "indexdef": "CREATE UNIQUE INDEX appointments_pkey ON public.appointments USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "appointments",
+      "indexname": "appointments_practice_schedule_idx",
+      "indexdef": "CREATE INDEX appointments_practice_schedule_idx ON public.appointments USING btree (practice_id, scheduled_at, id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "appointments",
+      "indexname": "appointments_provider_overlap",
+      "indexdef": "CREATE INDEX appointments_provider_overlap ON public.appointments USING gist (practice_id, provider_id, tstzrange(scheduled_at, ends_at, '[)'::text)) WHERE ((provider_id IS NOT NULL) AND (ends_at IS NOT NULL) AND (status = ANY (ARRAY['scheduled'::text, 'confirmed'::text, 'checked_in'::text, 'in_progress'::text])))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "appointments",
+      "indexname": "appointments_scope_created_idx",
+      "indexdef": "CREATE INDEX appointments_scope_created_idx ON public.appointments USING btree (practice_id, location_id, created_at DESC, id DESC)"
+    },
+    {
+      "schemaname": "audit",
+      "tablename": "archive_manifests",
+      "indexname": "archive_manifests_pkey",
+      "indexdef": "CREATE UNIQUE INDEX archive_manifests_pkey ON audit.archive_manifests USING btree (id)"
+    },
+    {
+      "schemaname": "audit",
+      "tablename": "capture_policies",
+      "indexname": "capture_policies_pkey",
+      "indexdef": "CREATE UNIQUE INDEX capture_policies_pkey ON audit.capture_policies USING btree (id)"
+    },
+    {
+      "schemaname": "audit",
+      "tablename": "capture_policies",
+      "indexname": "capture_policies_table_name_field_path_policy_version_key",
+      "indexdef": "CREATE UNIQUE INDEX capture_policies_table_name_field_path_policy_version_key ON audit.capture_policies USING btree (table_name, field_path, policy_version)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "careiq_benchmark_marker",
+      "indexname": "careiq_benchmark_marker_pkey",
+      "indexdef": "CREATE UNIQUE INDEX careiq_benchmark_marker_pkey ON public.careiq_benchmark_marker USING btree (run_id)"
+    },
+    {
+      "schemaname": "audit",
+      "tablename": "changes",
+      "indexname": "changes_pkey",
+      "indexdef": "CREATE UNIQUE INDEX changes_pkey ON audit.changes USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "clinical_audit_events",
+      "indexname": "clinical_audit_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX clinical_audit_events_pkey ON public.clinical_audit_events USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "clinical_audit_events",
+      "indexname": "clinical_audit_events_practice_time_idx",
+      "indexdef": "CREATE INDEX clinical_audit_events_practice_time_idx ON public.clinical_audit_events USING btree (practice_id, occurred_at)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "clinical_request_keys",
+      "indexname": "clinical_request_keys_legacy_unique",
+      "indexdef": "CREATE UNIQUE INDEX clinical_request_keys_legacy_unique ON public.clinical_request_keys USING btree (practice_id, operation, request_key) WHERE (location_id IS NULL)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "clinical_request_keys",
+      "indexname": "clinical_request_keys_scoped_unique",
+      "indexdef": "CREATE UNIQUE INDEX clinical_request_keys_scoped_unique ON public.clinical_request_keys USING btree (practice_id, actor_user_id, location_id, operation, request_key) WHERE (location_id IS NOT NULL)"
+    },
+    {
+      "schemaname": "audit",
+      "tablename": "database_records",
+      "indexname": "database_records_pkey",
+      "indexdef": "CREATE UNIQUE INDEX database_records_pkey ON audit.database_records USING btree (id)"
+    },
+    {
+      "schemaname": "audit",
+      "tablename": "database_records",
+      "indexname": "database_records_scope_time_idx",
+      "indexdef": "CREATE INDEX database_records_scope_time_idx ON audit.database_records USING btree (practice_id, location_id, recorded_at, id)"
+    },
+    {
+      "schemaname": "audit",
+      "tablename": "database_records",
+      "indexname": "database_records_transaction_idx",
+      "indexdef": "CREATE INDEX database_records_transaction_idx ON audit.database_records USING btree (transaction_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "delivery_attempts",
+      "indexname": "delivery_attempts_dedupe_key_key",
+      "indexdef": "CREATE UNIQUE INDEX delivery_attempts_dedupe_key_key ON public.delivery_attempts USING btree (dedupe_key)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "delivery_attempts",
+      "indexname": "delivery_attempts_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX delivery_attempts_id_patient_id_practice_id_location_id_key ON public.delivery_attempts USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "delivery_attempts",
+      "indexname": "delivery_attempts_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX delivery_attempts_id_practice_id_location_id_key ON public.delivery_attempts USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "delivery_attempts",
+      "indexname": "delivery_attempts_id_practice_unique",
+      "indexdef": "CREATE UNIQUE INDEX delivery_attempts_id_practice_unique ON public.delivery_attempts USING btree (id, practice_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "delivery_attempts",
+      "indexname": "delivery_attempts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX delivery_attempts_pkey ON public.delivery_attempts USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "delivery_attempts",
+      "indexname": "delivery_attempts_request_id_sequence_key",
+      "indexdef": "CREATE UNIQUE INDEX delivery_attempts_request_id_sequence_key ON public.delivery_attempts USING btree (request_id, sequence)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_access_grants",
+      "indexname": "document_access_grants_id_patient_id_practice_id_location_i_key",
+      "indexdef": "CREATE UNIQUE INDEX document_access_grants_id_patient_id_practice_id_location_i_key ON public.document_access_grants USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_access_grants",
+      "indexname": "document_access_grants_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX document_access_grants_id_practice_id_location_id_key ON public.document_access_grants USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_access_grants",
+      "indexname": "document_access_grants_pkey",
+      "indexdef": "CREATE UNIQUE INDEX document_access_grants_pkey ON public.document_access_grants USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_holds",
+      "indexname": "document_holds_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX document_holds_id_patient_id_practice_id_location_id_key ON public.document_holds USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_holds",
+      "indexname": "document_holds_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX document_holds_id_practice_id_location_id_key ON public.document_holds USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_holds",
+      "indexname": "document_holds_pkey",
+      "indexdef": "CREATE UNIQUE INDEX document_holds_pkey ON public.document_holds USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_request_items",
+      "indexname": "document_request_items_id_patient_id_practice_id_location_i_key",
+      "indexdef": "CREATE UNIQUE INDEX document_request_items_id_patient_id_practice_id_location_i_key ON public.document_request_items USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_request_items",
+      "indexname": "document_request_items_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX document_request_items_id_practice_id_location_id_key ON public.document_request_items USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_request_items",
+      "indexname": "document_request_items_one_open",
+      "indexdef": "CREATE UNIQUE INDEX document_request_items_one_open ON public.document_request_items USING btree (requirement_id) WHERE is_open"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_request_items",
+      "indexname": "document_request_items_pkey",
+      "indexdef": "CREATE UNIQUE INDEX document_request_items_pkey ON public.document_request_items USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_request_items",
+      "indexname": "document_request_items_request_id_requirement_id_key",
+      "indexdef": "CREATE UNIQUE INDEX document_request_items_request_id_requirement_id_key ON public.document_request_items USING btree (request_id, requirement_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_request_items",
+      "indexname": "request_item_prepared_unique",
+      "indexdef": "CREATE UNIQUE INDEX request_item_prepared_unique ON public.document_request_items USING btree (prepared_document_id) WHERE (prepared_document_id IS NOT NULL)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_requests",
+      "indexname": "document_requests_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX document_requests_id_patient_id_practice_id_location_id_key ON public.document_requests USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_requests",
+      "indexname": "document_requests_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX document_requests_id_practice_id_location_id_key ON public.document_requests USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_requests",
+      "indexname": "document_requests_pkey",
+      "indexdef": "CREATE UNIQUE INDEX document_requests_pkey ON public.document_requests USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_requests",
+      "indexname": "document_requests_scope_created_idx",
+      "indexdef": "CREATE INDEX document_requests_scope_created_idx ON public.document_requests USING btree (practice_id, location_id, created_at DESC, id DESC)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_retention",
+      "indexname": "document_retention_document_id_key",
+      "indexdef": "CREATE UNIQUE INDEX document_retention_document_id_key ON public.document_retention USING btree (document_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_retention",
+      "indexname": "document_retention_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX document_retention_id_patient_id_practice_id_location_id_key ON public.document_retention USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_retention",
+      "indexname": "document_retention_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX document_retention_id_practice_id_location_id_key ON public.document_retention USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_retention",
+      "indexname": "document_retention_pkey",
+      "indexdef": "CREATE UNIQUE INDEX document_retention_pkey ON public.document_retention USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_reviews",
+      "indexname": "document_reviews_id_document_version_id_patient_id_practice_key",
+      "indexdef": "CREATE UNIQUE INDEX document_reviews_id_document_version_id_patient_id_practice_key ON public.document_reviews USING btree (id, document_version_id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_reviews",
+      "indexname": "document_reviews_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX document_reviews_id_patient_id_practice_id_location_id_key ON public.document_reviews USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_reviews",
+      "indexname": "document_reviews_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX document_reviews_id_practice_id_location_id_key ON public.document_reviews USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_reviews",
+      "indexname": "document_reviews_initial_unique",
+      "indexdef": "CREATE UNIQUE INDEX document_reviews_initial_unique ON public.document_reviews USING btree (document_version_id) WHERE (supersedes_review_id IS NULL)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_reviews",
+      "indexname": "document_reviews_pkey",
+      "indexdef": "CREATE UNIQUE INDEX document_reviews_pkey ON public.document_reviews USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_reviews",
+      "indexname": "document_reviews_successor_unique",
+      "indexdef": "CREATE UNIQUE INDEX document_reviews_successor_unique ON public.document_reviews USING btree (supersedes_review_id) WHERE (supersedes_review_id IS NOT NULL)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_reviews",
+      "indexname": "document_reviews_version_created_idx",
+      "indexdef": "CREATE INDEX document_reviews_version_created_idx ON public.document_reviews USING btree (document_version_id, created_at DESC, id DESC)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_templates",
+      "indexname": "document_templates_id_practice_id_key",
+      "indexdef": "CREATE UNIQUE INDEX document_templates_id_practice_id_key ON public.document_templates USING btree (id, practice_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_templates",
+      "indexname": "document_templates_pkey",
+      "indexdef": "CREATE UNIQUE INDEX document_templates_pkey ON public.document_templates USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_templates",
+      "indexname": "document_templates_scope_created_idx",
+      "indexdef": "CREATE INDEX document_templates_scope_created_idx ON public.document_templates USING btree (practice_id, created_at DESC, id DESC)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_types",
+      "indexname": "document_types_id_practice_id_key",
+      "indexdef": "CREATE UNIQUE INDEX document_types_id_practice_id_key ON public.document_types USING btree (id, practice_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_types",
+      "indexname": "document_types_pkey",
+      "indexdef": "CREATE UNIQUE INDEX document_types_pkey ON public.document_types USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_types",
+      "indexname": "document_types_practice_id_code_key",
+      "indexdef": "CREATE UNIQUE INDEX document_types_practice_id_code_key ON public.document_types USING btree (practice_id, code)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_types",
+      "indexname": "document_types_scope_created_idx",
+      "indexdef": "CREATE INDEX document_types_scope_created_idx ON public.document_types USING btree (practice_id, created_at DESC, id DESC)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_versions",
+      "indexname": "document_versions_document_created_idx",
+      "indexdef": "CREATE INDEX document_versions_document_created_idx ON public.document_versions USING btree (practice_id, location_id, document_id, created_at DESC, id DESC)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_versions",
+      "indexname": "document_versions_document_id_version_number_key",
+      "indexdef": "CREATE UNIQUE INDEX document_versions_document_id_version_number_key ON public.document_versions USING btree (document_id, version_number)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_versions",
+      "indexname": "document_versions_id_document_id_patient_id_practice_id_loc_key",
+      "indexdef": "CREATE UNIQUE INDEX document_versions_id_document_id_patient_id_practice_id_loc_key ON public.document_versions USING btree (id, document_id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_versions",
+      "indexname": "document_versions_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX document_versions_id_patient_id_practice_id_location_id_key ON public.document_versions USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_versions",
+      "indexname": "document_versions_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX document_versions_id_practice_id_location_id_key ON public.document_versions USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_versions",
+      "indexname": "document_versions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX document_versions_pkey ON public.document_versions USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "documents",
+      "indexname": "documents_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX documents_id_patient_id_practice_id_location_id_key ON public.documents USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "documents",
+      "indexname": "documents_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX documents_id_practice_id_location_id_key ON public.documents USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "documents",
+      "indexname": "documents_patient_type_created_idx",
+      "indexdef": "CREATE INDEX documents_patient_type_created_idx ON public.documents USING btree (practice_id, location_id, patient_id, document_type_id, created_at DESC, id DESC) WHERE (archived_at IS NULL)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "documents",
+      "indexname": "documents_pkey",
+      "indexdef": "CREATE UNIQUE INDEX documents_pkey ON public.documents USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "documents",
+      "indexname": "documents_scope_created_idx",
+      "indexdef": "CREATE INDEX documents_scope_created_idx ON public.documents USING btree (practice_id, location_id, created_at DESC, id DESC)"
+    },
+    {
+      "schemaname": "audit",
+      "tablename": "event_resources",
+      "indexname": "event_resources_event_id_resource_type_resource_id_relation_key",
+      "indexdef": "CREATE UNIQUE INDEX event_resources_event_id_resource_type_resource_id_relation_key ON audit.event_resources USING btree (event_id, resource_type, resource_id, relationship)"
+    },
+    {
+      "schemaname": "audit",
+      "tablename": "event_resources",
+      "indexname": "event_resources_lookup_idx",
+      "indexdef": "CREATE INDEX event_resources_lookup_idx ON audit.event_resources USING btree (practice_id, location_id, resource_type, resource_id, event_id)"
+    },
+    {
+      "schemaname": "audit",
+      "tablename": "event_resources",
+      "indexname": "event_resources_patient_idx",
+      "indexdef": "CREATE INDEX event_resources_patient_idx ON audit.event_resources USING btree (practice_id, location_id, patient_id, event_id) WHERE (patient_id IS NOT NULL)"
+    },
+    {
+      "schemaname": "audit",
+      "tablename": "event_resources",
+      "indexname": "event_resources_pkey",
+      "indexdef": "CREATE UNIQUE INDEX event_resources_pkey ON audit.event_resources USING btree (event_id, ordinal)"
+    },
+    {
+      "schemaname": "audit",
+      "tablename": "events",
+      "indexname": "events_operation_idx",
+      "indexdef": "CREATE INDEX events_operation_idx ON audit.events USING btree (operation_id, recorded_at, id) WHERE (operation_id IS NOT NULL)"
+    },
+    {
+      "schemaname": "audit",
+      "tablename": "events",
+      "indexname": "events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX events_pkey ON audit.events USING btree (id)"
+    },
+    {
+      "schemaname": "audit",
+      "tablename": "events",
+      "indexname": "events_scope_time_idx",
+      "indexdef": "CREATE INDEX events_scope_time_idx ON audit.events USING btree (practice_id, location_id, recorded_at DESC, id DESC)"
+    },
+    {
+      "schemaname": "audit",
+      "tablename": "events",
+      "indexname": "events_transaction_idx",
+      "indexdef": "CREATE INDEX events_transaction_idx ON audit.events USING btree (transaction_id, recorded_at, id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "file_access_observations",
+      "indexname": "file_access_observations_id_patient_id_practice_id_location_key",
+      "indexdef": "CREATE UNIQUE INDEX file_access_observations_id_patient_id_practice_id_location_key ON public.file_access_observations USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "file_access_observations",
+      "indexname": "file_access_observations_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX file_access_observations_id_practice_id_location_id_key ON public.file_access_observations USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "file_access_observations",
+      "indexname": "file_access_observations_observer_provider_event_id_key",
+      "indexdef": "CREATE UNIQUE INDEX file_access_observations_observer_provider_event_id_key ON public.file_access_observations USING btree (observer, provider_event_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "file_access_observations",
+      "indexname": "file_access_observations_pkey",
+      "indexdef": "CREATE UNIQUE INDEX file_access_observations_pkey ON public.file_access_observations USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "file_objects",
+      "indexname": "file_objects_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX file_objects_id_patient_id_practice_id_location_id_key ON public.file_objects USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "file_objects",
+      "indexname": "file_objects_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX file_objects_id_practice_id_location_id_key ON public.file_objects USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "file_objects",
+      "indexname": "file_objects_pkey",
+      "indexdef": "CREATE UNIQUE INDEX file_objects_pkey ON public.file_objects USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "file_objects",
+      "indexname": "file_objects_storage_key_key",
+      "indexdef": "CREATE UNIQUE INDEX file_objects_storage_key_key ON public.file_objects USING btree (storage_key)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "file_scan_runs",
+      "indexname": "file_scan_runs_file_object_id_attempt_key",
+      "indexdef": "CREATE UNIQUE INDEX file_scan_runs_file_object_id_attempt_key ON public.file_scan_runs USING btree (file_object_id, attempt)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "file_scan_runs",
+      "indexname": "file_scan_runs_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX file_scan_runs_id_patient_id_practice_id_location_id_key ON public.file_scan_runs USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "file_scan_runs",
+      "indexname": "file_scan_runs_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX file_scan_runs_id_practice_id_location_id_key ON public.file_scan_runs USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "file_scan_runs",
+      "indexname": "file_scan_runs_pkey",
+      "indexdef": "CREATE UNIQUE INDEX file_scan_runs_pkey ON public.file_scan_runs USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "form_change_candidates",
+      "indexname": "form_change_candidates_id_scope_key",
+      "indexdef": "CREATE UNIQUE INDEX form_change_candidates_id_scope_key ON public.form_change_candidates USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "form_change_candidates",
+      "indexname": "form_change_candidates_pending_idx",
+      "indexdef": "CREATE INDEX form_change_candidates_pending_idx ON public.form_change_candidates USING btree (practice_id, location_id, patient_id, created_at DESC NULLS LAST)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "form_change_candidates",
+      "indexname": "form_change_candidates_pkey",
+      "indexdef": "CREATE UNIQUE INDEX form_change_candidates_pkey ON public.form_change_candidates USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "form_change_candidates",
+      "indexname": "form_change_candidates_source_key",
+      "indexdef": "CREATE UNIQUE INDEX form_change_candidates_source_key ON public.form_change_candidates USING btree (submission_id, binding_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "form_change_decisions",
+      "indexname": "form_change_decisions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX form_change_decisions_pkey ON public.form_change_decisions USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "form_submissions",
+      "indexname": "form_submissions_id_scope_key",
+      "indexdef": "CREATE UNIQUE INDEX form_submissions_id_scope_key ON public.form_submissions USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "form_submissions",
+      "indexname": "form_submissions_patient_idx",
+      "indexdef": "CREATE INDEX form_submissions_patient_idx ON public.form_submissions USING btree (practice_id, location_id, patient_id, submitted_at DESC NULLS LAST)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "form_submissions",
+      "indexname": "form_submissions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX form_submissions_pkey ON public.form_submissions USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "form_submissions",
+      "indexname": "form_submissions_prepared_key",
+      "indexdef": "CREATE UNIQUE INDEX form_submissions_prepared_key ON public.form_submissions USING btree (prepared_document_id)"
+    },
+    {
+      "schemaname": "audit",
+      "tablename": "hold_events",
+      "indexname": "hold_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX hold_events_pkey ON audit.hold_events USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "job_runs",
+      "indexname": "job_runs_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX job_runs_id_practice_id_location_id_key ON public.job_runs USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "job_runs",
+      "indexname": "job_runs_operation_id_job_type_attempt_key",
+      "indexdef": "CREATE UNIQUE INDEX job_runs_operation_id_job_type_attempt_key ON public.job_runs USING btree (operation_id, job_type, attempt)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "job_runs",
+      "indexname": "job_runs_pkey",
+      "indexdef": "CREATE UNIQUE INDEX job_runs_pkey ON public.job_runs USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "location_assignments",
+      "indexname": "location_assignments_pkey",
+      "indexdef": "CREATE UNIQUE INDEX location_assignments_pkey ON public.location_assignments USING btree (practice_id, user_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "locations",
+      "indexname": "locations_id_practice_id_key",
+      "indexdef": "CREATE UNIQUE INDEX locations_id_practice_id_key ON public.locations USING btree (id, practice_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "locations",
+      "indexname": "locations_pkey",
+      "indexdef": "CREATE UNIQUE INDEX locations_pkey ON public.locations USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "marketing_interview_requests",
+      "indexname": "marketing_interview_requests_pkey",
+      "indexdef": "CREATE UNIQUE INDEX marketing_interview_requests_pkey ON public.marketing_interview_requests USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "marketing_interview_requests",
+      "indexname": "marketing_interview_requests_submission_key_unique",
+      "indexdef": "CREATE UNIQUE INDEX marketing_interview_requests_submission_key_unique ON public.marketing_interview_requests USING btree (submission_key)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "onboarding_drafts",
+      "indexname": "onboarding_drafts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX onboarding_drafts_pkey ON public.onboarding_drafts USING btree (actor_user_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "outbox_events",
+      "indexname": "outbox_events_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX outbox_events_id_practice_id_location_id_key ON public.outbox_events USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "outbox_events",
+      "indexname": "outbox_events_pending_idx",
+      "indexdef": "CREATE INDEX outbox_events_pending_idx ON public.outbox_events USING btree (available_at, id) WHERE (published_at IS NULL)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "outbox_events",
+      "indexname": "outbox_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX outbox_events_pkey ON public.outbox_events USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "paperwork_library_items",
+      "indexname": "paperwork_library_items_document_version_id_key",
+      "indexdef": "CREATE UNIQUE INDEX paperwork_library_items_document_version_id_key ON public.paperwork_library_items USING btree (document_version_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "paperwork_library_items",
+      "indexname": "paperwork_library_items_id_patient_id_practice_id_location__key",
+      "indexdef": "CREATE UNIQUE INDEX paperwork_library_items_id_patient_id_practice_id_location__key ON public.paperwork_library_items USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "paperwork_library_items",
+      "indexname": "paperwork_library_items_pkey",
+      "indexdef": "CREATE UNIQUE INDEX paperwork_library_items_pkey ON public.paperwork_library_items USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "paperwork_library_items",
+      "indexname": "paperwork_library_patient_idx",
+      "indexdef": "CREATE INDEX paperwork_library_patient_idx ON public.paperwork_library_items USING btree (practice_id, location_id, patient_id, completed_at DESC, id DESC)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "paperwork_notifications",
+      "indexname": "paperwork_notifications_dedupe_key_key",
+      "indexdef": "CREATE UNIQUE INDEX paperwork_notifications_dedupe_key_key ON public.paperwork_notifications USING btree (dedupe_key)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "paperwork_notifications",
+      "indexname": "paperwork_notifications_id_patient_id_practice_id_location__key",
+      "indexdef": "CREATE UNIQUE INDEX paperwork_notifications_id_patient_id_practice_id_location__key ON public.paperwork_notifications USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "paperwork_notifications",
+      "indexname": "paperwork_notifications_library_item_id_key",
+      "indexdef": "CREATE UNIQUE INDEX paperwork_notifications_library_item_id_key ON public.paperwork_notifications USING btree (library_item_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "paperwork_notifications",
+      "indexname": "paperwork_notifications_pkey",
+      "indexdef": "CREATE UNIQUE INDEX paperwork_notifications_pkey ON public.paperwork_notifications USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patient_access_grants",
+      "indexname": "patient_access_grants_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX patient_access_grants_id_patient_id_practice_id_location_id_key ON public.patient_access_grants USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patient_access_grants",
+      "indexname": "patient_access_grants_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX patient_access_grants_id_practice_id_location_id_key ON public.patient_access_grants USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patient_access_grants",
+      "indexname": "patient_access_grants_pkey",
+      "indexdef": "CREATE UNIQUE INDEX patient_access_grants_pkey ON public.patient_access_grants USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patient_access_grants",
+      "indexname": "patient_access_grants_request_scope_key",
+      "indexdef": "CREATE UNIQUE INDEX patient_access_grants_request_scope_key ON public.patient_access_grants USING btree (id, request_id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patient_access_grants",
+      "indexname": "patient_access_grants_token_hash_key",
+      "indexdef": "CREATE UNIQUE INDEX patient_access_grants_token_hash_key ON public.patient_access_grants USING btree (token_hash)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patient_portal_grants",
+      "indexname": "patient_portal_grants_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX patient_portal_grants_id_patient_id_practice_id_location_id_key ON public.patient_portal_grants USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patient_portal_grants",
+      "indexname": "patient_portal_grants_pkey",
+      "indexdef": "CREATE UNIQUE INDEX patient_portal_grants_pkey ON public.patient_portal_grants USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patient_portal_grants",
+      "indexname": "patient_portal_live_patient_unique",
+      "indexdef": "CREATE UNIQUE INDEX patient_portal_live_patient_unique ON public.patient_portal_grants USING btree (practice_id, location_id, patient_id) WHERE (revoked_at IS NULL)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patient_portal_grants",
+      "indexname": "patient_portal_live_subject_unique",
+      "indexdef": "CREATE UNIQUE INDEX patient_portal_live_subject_unique ON public.patient_portal_grants USING btree (practice_id, location_id, patient_id, clerk_user_id) WHERE (revoked_at IS NULL)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patient_portal_grants",
+      "indexname": "patient_portal_subject_idx",
+      "indexdef": "CREATE INDEX patient_portal_subject_idx ON public.patient_portal_grants USING btree (clerk_user_id, expires_at) WHERE (revoked_at IS NULL)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patient_sessions",
+      "indexname": "patient_sessions_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX patient_sessions_id_patient_id_practice_id_location_id_key ON public.patient_sessions USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patient_sessions",
+      "indexname": "patient_sessions_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX patient_sessions_id_practice_id_location_id_key ON public.patient_sessions USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patient_sessions",
+      "indexname": "patient_sessions_id_request_id_patient_id_practice_id_locat_key",
+      "indexdef": "CREATE UNIQUE INDEX patient_sessions_id_request_id_patient_id_practice_id_locat_key ON public.patient_sessions USING btree (id, request_id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patient_sessions",
+      "indexname": "patient_sessions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX patient_sessions_pkey ON public.patient_sessions USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patient_sessions",
+      "indexname": "patient_sessions_token_hash_key",
+      "indexdef": "CREATE UNIQUE INDEX patient_sessions_token_hash_key ON public.patient_sessions USING btree (token_hash)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patients",
+      "indexname": "patients_id_practice_id_unique",
+      "indexdef": "CREATE UNIQUE INDEX patients_id_practice_id_unique ON public.patients USING btree (id, practice_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patients",
+      "indexname": "patients_id_practice_location_unique",
+      "indexdef": "CREATE UNIQUE INDEX patients_id_practice_location_unique ON public.patients USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patients",
+      "indexname": "patients_location_name_idx",
+      "indexdef": "CREATE INDEX patients_location_name_idx ON public.patients USING btree (practice_id, location_id, last_name, first_name, id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patients",
+      "indexname": "patients_pkey",
+      "indexdef": "CREATE UNIQUE INDEX patients_pkey ON public.patients USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patients",
+      "indexname": "patients_practice_name_idx",
+      "indexdef": "CREATE INDEX patients_practice_name_idx ON public.patients USING btree (practice_id, last_name, first_name, id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "patients",
+      "indexname": "patients_scope_created_idx",
+      "indexdef": "CREATE INDEX patients_scope_created_idx ON public.patients USING btree (practice_id, location_id, created_at DESC, id DESC)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "practice_admin_events",
+      "indexname": "practice_admin_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX practice_admin_events_pkey ON public.practice_admin_events USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "practice_asset_objects",
+      "indexname": "practice_asset_objects_id_practice_id_key",
+      "indexdef": "CREATE UNIQUE INDEX practice_asset_objects_id_practice_id_key ON public.practice_asset_objects USING btree (id, practice_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "practice_asset_objects",
+      "indexname": "practice_asset_objects_pkey",
+      "indexdef": "CREATE UNIQUE INDEX practice_asset_objects_pkey ON public.practice_asset_objects USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "practice_asset_objects",
+      "indexname": "practice_asset_objects_storage_key_key",
+      "indexdef": "CREATE UNIQUE INDEX practice_asset_objects_storage_key_key ON public.practice_asset_objects USING btree (storage_key)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "practice_invitation_attempts",
+      "indexname": "practice_invitation_attempts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX practice_invitation_attempts_pkey ON public.practice_invitation_attempts USING btree (invitation_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "practice_invitations",
+      "indexname": "practice_invitation_outstanding_recipient",
+      "indexdef": "CREATE UNIQUE INDEX practice_invitation_outstanding_recipient ON public.practice_invitations USING btree (practice_id, email) WHERE (status = ANY (ARRAY['sending'::text, 'invited'::text]))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "practice_invitations",
+      "indexname": "practice_invitations_clerk_invitation_id_key",
+      "indexdef": "CREATE UNIQUE INDEX practice_invitations_clerk_invitation_id_key ON public.practice_invitations USING btree (clerk_invitation_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "practice_invitations",
+      "indexname": "practice_invitations_pkey",
+      "indexdef": "CREATE UNIQUE INDEX practice_invitations_pkey ON public.practice_invitations USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "practice_invitations",
+      "indexname": "practice_invitations_practice_id_actor_user_id_request_key_key",
+      "indexdef": "CREATE UNIQUE INDEX practice_invitations_practice_id_actor_user_id_request_key_key ON public.practice_invitations USING btree (practice_id, actor_user_id, request_key)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "practice_member_access",
+      "indexname": "practice_member_access_pkey",
+      "indexdef": "CREATE UNIQUE INDEX practice_member_access_pkey ON public.practice_member_access USING btree (practice_id, user_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "practice_member_access",
+      "indexname": "practice_member_access_practice_id_membership_id_key",
+      "indexdef": "CREATE UNIQUE INDEX practice_member_access_practice_id_membership_id_key ON public.practice_member_access USING btree (practice_id, membership_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "practice_onboarding",
+      "indexname": "practice_onboarding_id_key",
+      "indexdef": "CREATE UNIQUE INDEX practice_onboarding_id_key ON public.practice_onboarding USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "practice_onboarding",
+      "indexname": "practice_onboarding_pkey",
+      "indexdef": "CREATE UNIQUE INDEX practice_onboarding_pkey ON public.practice_onboarding USING btree (actor_user_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "practice_provider_events",
+      "indexname": "practice_provider_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX practice_provider_events_pkey ON public.practice_provider_events USING btree (practice_id, event_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "practices",
+      "indexname": "practices_clerk_org_id_unique",
+      "indexdef": "CREATE UNIQUE INDEX practices_clerk_org_id_unique ON public.practices USING btree (clerk_org_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "practices",
+      "indexname": "practices_pkey",
+      "indexdef": "CREATE UNIQUE INDEX practices_pkey ON public.practices USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "prepared_documents",
+      "indexname": "prepared_documents_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX prepared_documents_id_patient_id_practice_id_location_id_key ON public.prepared_documents USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "prepared_documents",
+      "indexname": "prepared_documents_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX prepared_documents_id_practice_id_location_id_key ON public.prepared_documents USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "prepared_documents",
+      "indexname": "prepared_documents_pkey",
+      "indexdef": "CREATE UNIQUE INDEX prepared_documents_pkey ON public.prepared_documents USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "provider_availability_exceptions",
+      "indexname": "provider_availability_exceptions_active_idx",
+      "indexdef": "CREATE INDEX provider_availability_exceptions_active_idx ON public.provider_availability_exceptions USING btree (practice_id, location_id, provider_id, starts_at, ends_at) WHERE active"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "provider_availability_exceptions",
+      "indexname": "provider_availability_exceptions_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX provider_availability_exceptions_id_practice_id_location_id_key ON public.provider_availability_exceptions USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "provider_availability_exceptions",
+      "indexname": "provider_availability_exceptions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX provider_availability_exceptions_pkey ON public.provider_availability_exceptions USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "provider_availability_rules",
+      "indexname": "provider_availability_rules_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX provider_availability_rules_id_practice_id_location_id_key ON public.provider_availability_rules USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "provider_availability_rules",
+      "indexname": "provider_availability_rules_pkey",
+      "indexdef": "CREATE UNIQUE INDEX provider_availability_rules_pkey ON public.provider_availability_rules USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "provider_locations",
+      "indexname": "provider_locations_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX provider_locations_id_practice_id_location_id_key ON public.provider_locations USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "provider_locations",
+      "indexname": "provider_locations_pkey",
+      "indexdef": "CREATE UNIQUE INDEX provider_locations_pkey ON public.provider_locations USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "provider_locations",
+      "indexname": "provider_locations_practice_id_provider_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX provider_locations_practice_id_provider_id_location_id_key ON public.provider_locations USING btree (practice_id, provider_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "provider_webhook_receipts",
+      "indexname": "provider_webhook_receipts_id_practice_id_key",
+      "indexdef": "CREATE UNIQUE INDEX provider_webhook_receipts_id_practice_id_key ON public.provider_webhook_receipts USING btree (id, practice_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "provider_webhook_receipts",
+      "indexname": "provider_webhook_receipts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX provider_webhook_receipts_pkey ON public.provider_webhook_receipts USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "provider_webhook_receipts",
+      "indexname": "provider_webhook_receipts_provider_provider_event_id_key",
+      "indexdef": "CREATE UNIQUE INDEX provider_webhook_receipts_provider_provider_event_id_key ON public.provider_webhook_receipts USING btree (provider, provider_event_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "providers",
+      "indexname": "providers_id_practice_id_key",
+      "indexdef": "CREATE UNIQUE INDEX providers_id_practice_id_key ON public.providers USING btree (id, practice_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "providers",
+      "indexname": "providers_pkey",
+      "indexdef": "CREATE UNIQUE INDEX providers_pkey ON public.providers USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "providers",
+      "indexname": "providers_scope_created_idx",
+      "indexdef": "CREATE INDEX providers_scope_created_idx ON public.providers USING btree (practice_id, created_at DESC, id DESC)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "requirement_evidence",
+      "indexname": "requirement_evidence_current_unique",
+      "indexdef": "CREATE UNIQUE INDEX requirement_evidence_current_unique ON public.requirement_evidence USING btree (requirement_id) WHERE (revoked_at IS NULL)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "requirement_evidence",
+      "indexname": "requirement_evidence_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX requirement_evidence_id_patient_id_practice_id_location_id_key ON public.requirement_evidence USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "requirement_evidence",
+      "indexname": "requirement_evidence_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX requirement_evidence_id_practice_id_location_id_key ON public.requirement_evidence USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "requirement_evidence",
+      "indexname": "requirement_evidence_pkey",
+      "indexdef": "CREATE UNIQUE INDEX requirement_evidence_pkey ON public.requirement_evidence USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "requirement_evidence",
+      "indexname": "requirement_evidence_review_idx",
+      "indexdef": "CREATE INDEX requirement_evidence_review_idx ON public.requirement_evidence USING btree (accepted_review_id) WHERE (revoked_at IS NULL)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "requirement_evidence",
+      "indexname": "requirement_evidence_version_idx",
+      "indexdef": "CREATE INDEX requirement_evidence_version_idx ON public.requirement_evidence USING btree (document_version_id) WHERE (revoked_at IS NULL)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "requirement_rule_sets",
+      "indexname": "requirement_rule_sets_active_idx",
+      "indexdef": "CREATE UNIQUE INDEX requirement_rule_sets_active_idx ON public.requirement_rule_sets USING btree (practice_id) WHERE active"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "requirement_rule_sets",
+      "indexname": "requirement_rule_sets_id_practice_id_key",
+      "indexdef": "CREATE UNIQUE INDEX requirement_rule_sets_id_practice_id_key ON public.requirement_rule_sets USING btree (id, practice_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "requirement_rule_sets",
+      "indexname": "requirement_rule_sets_pkey",
+      "indexdef": "CREATE UNIQUE INDEX requirement_rule_sets_pkey ON public.requirement_rule_sets USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "requirement_rule_sets",
+      "indexname": "requirement_rule_sets_practice_id_version_key",
+      "indexdef": "CREATE UNIQUE INDEX requirement_rule_sets_practice_id_version_key ON public.requirement_rule_sets USING btree (practice_id, version)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "requirement_rules",
+      "indexname": "requirement_rules_id_practice_id_key",
+      "indexdef": "CREATE UNIQUE INDEX requirement_rules_id_practice_id_key ON public.requirement_rules USING btree (id, practice_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "requirement_rules",
+      "indexname": "requirement_rules_pkey",
+      "indexdef": "CREATE UNIQUE INDEX requirement_rules_pkey ON public.requirement_rules USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "requirement_rules",
+      "indexname": "requirement_rules_precedence_unique",
+      "indexdef": "CREATE UNIQUE INDEX requirement_rules_precedence_unique ON public.requirement_rules USING btree (rule_set_id, document_type_id, visit_type_id, location_id) NULLS NOT DISTINCT"
+    },
+    {
+      "schemaname": "audit",
+      "tablename": "retention_assignments",
+      "indexname": "retention_assignments_pkey",
+      "indexdef": "CREATE UNIQUE INDEX retention_assignments_pkey ON audit.retention_assignments USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "signature_events",
+      "indexname": "signature_events_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX signature_events_id_patient_id_practice_id_location_id_key ON public.signature_events USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "signature_events",
+      "indexname": "signature_events_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX signature_events_id_practice_id_location_id_key ON public.signature_events USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "signature_events",
+      "indexname": "signature_events_pkey",
+      "indexdef": "CREATE UNIQUE INDEX signature_events_pkey ON public.signature_events USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "signature_fields",
+      "indexname": "signature_fields_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX signature_fields_id_patient_id_practice_id_location_id_key ON public.signature_fields USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "signature_fields",
+      "indexname": "signature_fields_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX signature_fields_id_practice_id_location_id_key ON public.signature_fields USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "signature_fields",
+      "indexname": "signature_fields_packet_id_field_key_key",
+      "indexdef": "CREATE UNIQUE INDEX signature_fields_packet_id_field_key_key ON public.signature_fields USING btree (packet_id, field_key)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "signature_fields",
+      "indexname": "signature_fields_pkey",
+      "indexdef": "CREATE UNIQUE INDEX signature_fields_pkey ON public.signature_fields USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "signature_packets",
+      "indexname": "signature_packets_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX signature_packets_id_patient_id_practice_id_location_id_key ON public.signature_packets USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "signature_packets",
+      "indexname": "signature_packets_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX signature_packets_id_practice_id_location_id_key ON public.signature_packets USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "signature_packets",
+      "indexname": "signature_packets_output_idx",
+      "indexdef": "CREATE INDEX signature_packets_output_idx ON public.signature_packets USING btree (practice_id, location_id, output_version_id) WHERE (output_version_id IS NOT NULL)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "signature_packets",
+      "indexname": "signature_packets_pkey",
+      "indexdef": "CREATE UNIQUE INDEX signature_packets_pkey ON public.signature_packets USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "signature_packets",
+      "indexname": "signature_packets_request_id_key",
+      "indexdef": "CREATE UNIQUE INDEX signature_packets_request_id_key ON public.signature_packets USING btree (request_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "template_field_bindings",
+      "indexname": "template_field_bindings_field_key",
+      "indexdef": "CREATE UNIQUE INDEX template_field_bindings_field_key ON public.template_field_bindings USING btree (template_version_id, field_key)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "template_field_bindings",
+      "indexname": "template_field_bindings_id_practice_key",
+      "indexdef": "CREATE UNIQUE INDEX template_field_bindings_id_practice_key ON public.template_field_bindings USING btree (id, practice_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "template_field_bindings",
+      "indexname": "template_field_bindings_pkey",
+      "indexdef": "CREATE UNIQUE INDEX template_field_bindings_pkey ON public.template_field_bindings USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "template_publication_checks",
+      "indexname": "template_publication_checks_pkey",
+      "indexdef": "CREATE UNIQUE INDEX template_publication_checks_pkey ON public.template_publication_checks USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "template_versions",
+      "indexname": "template_versions_id_practice_id_key",
+      "indexdef": "CREATE UNIQUE INDEX template_versions_id_practice_id_key ON public.template_versions USING btree (id, practice_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "template_versions",
+      "indexname": "template_versions_id_template_id_practice_id_key",
+      "indexdef": "CREATE UNIQUE INDEX template_versions_id_template_id_practice_id_key ON public.template_versions USING btree (id, template_id, practice_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "template_versions",
+      "indexname": "template_versions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX template_versions_pkey ON public.template_versions USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "template_versions",
+      "indexname": "template_versions_template_created_idx",
+      "indexdef": "CREATE INDEX template_versions_template_created_idx ON public.template_versions USING btree (practice_id, template_id, created_at DESC, id DESC)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "template_versions",
+      "indexname": "template_versions_template_id_version_number_key",
+      "indexdef": "CREATE UNIQUE INDEX template_versions_template_id_version_number_key ON public.template_versions USING btree (template_id, version_number)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "upload_sessions",
+      "indexname": "upload_sessions_file_object_id_key",
+      "indexdef": "CREATE UNIQUE INDEX upload_sessions_file_object_id_key ON public.upload_sessions USING btree (file_object_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "upload_sessions",
+      "indexname": "upload_sessions_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX upload_sessions_id_patient_id_practice_id_location_id_key ON public.upload_sessions USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "upload_sessions",
+      "indexname": "upload_sessions_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX upload_sessions_id_practice_id_location_id_key ON public.upload_sessions USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "upload_sessions",
+      "indexname": "upload_sessions_pkey",
+      "indexdef": "CREATE UNIQUE INDEX upload_sessions_pkey ON public.upload_sessions USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "visit_requirements",
+      "indexname": "visit_requirements_current_unique",
+      "indexdef": "CREATE UNIQUE INDEX visit_requirements_current_unique ON public.visit_requirements USING btree (practice_id, location_id, appointment_id, document_type_id) WHERE (lifecycle_state <> 'retired'::text)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "visit_requirements",
+      "indexname": "visit_requirements_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX visit_requirements_id_patient_id_practice_id_location_id_key ON public.visit_requirements USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "visit_requirements",
+      "indexname": "visit_requirements_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX visit_requirements_id_practice_id_location_id_key ON public.visit_requirements USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "visit_requirements",
+      "indexname": "visit_requirements_pkey",
+      "indexdef": "CREATE UNIQUE INDEX visit_requirements_pkey ON public.visit_requirements USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "visit_types",
+      "indexname": "visit_types_id_practice_id_key",
+      "indexdef": "CREATE UNIQUE INDEX visit_types_id_practice_id_key ON public.visit_types USING btree (id, practice_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "visit_types",
+      "indexname": "visit_types_pkey",
+      "indexdef": "CREATE UNIQUE INDEX visit_types_pkey ON public.visit_types USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "visit_types",
+      "indexname": "visit_types_practice_id_code_key",
+      "indexdef": "CREATE UNIQUE INDEX visit_types_practice_id_code_key ON public.visit_types USING btree (practice_id, code)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "visit_types",
+      "indexname": "visit_types_scope_created_idx",
+      "indexdef": "CREATE INDEX visit_types_scope_created_idx ON public.visit_types USING btree (practice_id, created_at DESC, id DESC)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "work_items",
+      "indexname": "work_items_active_delivery",
+      "indexdef": "CREATE UNIQUE INDEX work_items_active_delivery ON public.work_items USING btree (practice_id, location_id, request_id, kind) WHERE ((kind = 'delivery_follow_up'::text) AND (state = ANY (ARRAY['open'::text, 'in_progress'::text])))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "work_items",
+      "indexname": "work_items_active_requirement_kind",
+      "indexdef": "CREATE UNIQUE INDEX work_items_active_requirement_kind ON public.work_items USING btree (practice_id, location_id, requirement_id, kind) WHERE ((requirement_id IS NOT NULL) AND (state = ANY (ARRAY['open'::text, 'in_progress'::text])))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "work_items",
+      "indexname": "work_items_id_patient_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX work_items_id_patient_id_practice_id_location_id_key ON public.work_items USING btree (id, patient_id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "work_items",
+      "indexname": "work_items_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX work_items_id_practice_id_location_id_key ON public.work_items USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "work_items",
+      "indexname": "work_items_pkey",
+      "indexdef": "CREATE UNIQUE INDEX work_items_pkey ON public.work_items USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "work_items",
+      "indexname": "work_items_queue_idx",
+      "indexdef": "CREATE INDEX work_items_queue_idx ON public.work_items USING btree (practice_id, location_id, state, due_at, id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "work_items",
+      "indexname": "work_items_scope_created_idx",
+      "indexdef": "CREATE INDEX work_items_scope_created_idx ON public.work_items USING btree (practice_id, location_id, created_at DESC, id DESC)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_operations",
+      "indexname": "workflow_operations_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX workflow_operations_id_practice_id_location_id_key ON public.workflow_operations USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_operations",
+      "indexname": "workflow_operations_pkey",
+      "indexdef": "CREATE UNIQUE INDEX workflow_operations_pkey ON public.workflow_operations USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_operations",
+      "indexname": "workflow_operations_signature_completion_unique",
+      "indexdef": "CREATE UNIQUE INDEX workflow_operations_signature_completion_unique ON public.workflow_operations USING btree (practice_id, location_id, patient_request_id) WHERE ((operation_type = 'signature_completion'::text) AND (state = ANY (ARRAY['queued'::text, 'running'::text, 'succeeded'::text])))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_request_keys",
+      "indexname": "workflow_request_keys_id_practice_id_location_id_key",
+      "indexdef": "CREATE UNIQUE INDEX workflow_request_keys_id_practice_id_location_id_key ON public.workflow_request_keys USING btree (id, practice_id, location_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_request_keys",
+      "indexname": "workflow_request_keys_pkey",
+      "indexdef": "CREATE UNIQUE INDEX workflow_request_keys_pkey ON public.workflow_request_keys USING btree (id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "workflow_request_keys",
+      "indexname": "workflow_request_keys_practice_id_location_id_actor_user_id_key",
+      "indexdef": "CREATE UNIQUE INDEX workflow_request_keys_practice_id_location_id_actor_user_id_key ON public.workflow_request_keys USING btree (practice_id, location_id, actor_user_id, request_key)"
+    }
+  ]
+}

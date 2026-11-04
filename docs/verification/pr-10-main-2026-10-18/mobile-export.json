@@ -1,0 +1,25 @@
+{
+  "reviewDate": "2026-10-18",
+  "runtime": "Node22.23.2",
+  "variant": "preview",
+  "expoCompatibility": {
+    "exitCode": 0,
+    "onlineMetadata": true,
+    "dependenciesUpToDate": true,
+    "installedPackagesChanged": false
+  },
+  "exports": {
+    "exitCode": 0,
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "output": "ignored .local-review/pr-10-mobile-export",
+    "metadataPresent": true
+  },
+  "limits": [
+    "JavaScript/static exports, not installed native binaries or device acceptance.",
+    "No production signing identity, provider configuration, real message or release was activated."
+  ]
+}

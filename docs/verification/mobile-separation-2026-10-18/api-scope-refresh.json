@@ -1,0 +1,35 @@
+{
+  "verifiedAt": "2026-10-18T17:30:24.653005+00:00",
+  "checks": [
+    {
+      "name": "api-build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@careiq/api",
+        "build"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 0.776,
+      "counts": {},
+      "pass": true
+    },
+    {
+      "name": "owned-api-scope-refresh",
+      "command": [
+        "python3",
+        "scripts/local-review.py",
+        "restart",
+        "api"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 5.328,
+      "counts": {},
+      "pass": true
+    }
+  ],
+  "pass": true,
+  "scope": "Build plus ownership-safe restart of only the local review API to apply current origin settings. Runner verifies/repeats existing loopback migration ledgers; no hosted database/service or other preview is restarted."
+}

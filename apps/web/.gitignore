@@ -15,6 +15,10 @@
 
 # next.js
 /.next/
+/.next-local-review/
+/.next-production-check/
+/test-results/
+/playwright-report/
 /out/
 
 # production

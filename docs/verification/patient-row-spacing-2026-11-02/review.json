@@ -1,0 +1,16 @@
+[
+  {
+    "name": "desktop",
+    "padding": "18px 16px",
+    "avatarInset": 16,
+    "background": "rgb(246, 249, 255)",
+    "overflow": false
+  },
+  {
+    "name": "phone",
+    "padding": "18px 16px",
+    "avatarInset": 16,
+    "background": "rgb(246, 249, 255)",
+    "overflow": false
+  }
+]

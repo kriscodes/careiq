@@ -1,0 +1,139 @@
+{
+  "verifiedAt": "2026-10-18T16:34:53.129392+00:00",
+  "head": "11df3349d87d9f36235ec5c4047398d290cb9306",
+  "group": "mobile-shared",
+  "checks": [
+    {
+      "name": "mobile-lint",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@careiq/mobile",
+        "lint"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 10.1,
+      "counts": {},
+      "pass": true
+    },
+    {
+      "name": "mobile-types",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@careiq/mobile",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 4.489,
+      "counts": {},
+      "pass": true
+    },
+    {
+      "name": "mobile-tests",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@careiq/mobile",
+        "test"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 1.502,
+      "counts": {
+        "tests": 56,
+        "pass": 56,
+        "fail": 0,
+        "skipped": 0
+      },
+      "pass": true
+    },
+    {
+      "name": "contract-types",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@careiq/interview-contract",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 0.498,
+      "counts": {},
+      "pass": true
+    },
+    {
+      "name": "contract-tests",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@careiq/interview-contract",
+        "test"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 0.435,
+      "counts": {
+        "tests": 3,
+        "pass": 3,
+        "fail": 0,
+        "skipped": 0
+      },
+      "pass": true
+    },
+    {
+      "name": "i18n-types",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@careiq/i18n",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 0.887,
+      "counts": {},
+      "pass": true
+    },
+    {
+      "name": "i18n-tests",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@careiq/i18n",
+        "test"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 0.573,
+      "counts": {
+        "tests": 5,
+        "pass": 5,
+        "fail": 0,
+        "skipped": 0
+      },
+      "pass": true
+    },
+    {
+      "name": "mobile-associations",
+      "command": [
+        "pnpm",
+        "mobile:links:test"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 0.507,
+      "counts": {
+        "tests": 8,
+        "pass": 8,
+        "fail": 0,
+        "skipped": 0
+      },
+      "pass": true
+    }
+  ],
+  "pass": true,
+  "boundary": "Local synthetic test configuration; no hosted deployment, database mutation or provider acceptance."
+}

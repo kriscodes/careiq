@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-10-18",
+  "scope": "Parsed local workflow YAML and root commands after separation. No GitHub Actions run, commit, push or deployment was performed.",
+  "checks": [
+    {
+      "file": "ci.yml",
+      "pass": true,
+      "pinnedActionReferences": true,
+      "contentsReadOnly": true,
+      "disposableMigrationReplay": true,
+      "securityAndAssociationTests": true,
+      "componentAndRealApiBrowser": true,
+      "serialProductionBuilds": true,
+      "rawProductionAudit": true,
+      "activeMobileRequirements": false
+    },
+    {
+      "file": "readiness.yml",
+      "pass": true,
+      "pinnedActionReferences": true,
+      "contentsReadOnly": true,
+      "disposableMigrationReplay": true,
+      "securityAndAssociationTests": true,
+      "componentAndRealApiBrowser": true,
+      "serialProductionBuilds": true,
+      "rawProductionAudit": true,
+      "activeMobileRequirements": false
+    }
+  ]
+}

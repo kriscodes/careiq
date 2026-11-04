@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-10-18",
+  "scope": "Actual submitInterview source and native fetch against task-owned loopback HTTP servers. Synthetic contact fields only; no external request.",
+  "redirectStatus": 307,
+  "originalRequests": 1,
+  "redirectedRequests": 0,
+  "referrerReceived": false,
+  "result": "error",
+  "pass": true
+}

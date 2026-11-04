@@ -1,0 +1,25 @@
+CareIQ fresh workflow migration replay
+Target: isolated loopback PostgreSQL,127.0.0.1:55434
+Disposable database: careiq_workflow_replay_test
+Container: careiq-auth-review-db
+Started: 2026-10-16T23:45:42.342Z
+Container identity,PostgreSQL18.6 image and exclusive loopback port binding validated.
+Created a fresh empty database from template0.
+First direct Node22/tsx migration run:
+Applying verified database migrations...
+Database migration history verified (27 entries).
+First replay ledger:27 entries.
+Second direct Node22/tsx migration run (idempotency):
+Applying verified database migrations...
+Database migration history verified (27 entries).
+Second replay ledger:27 unchanged ordered timestamps/checksums.
+Restricted runtime release catalog verification:
+API release database checks passed. This does not certify provider configuration, hosted acceptance or device authentication.
+Runtime connects directly as restricted login; no superuser,BYPASSRLS,CREATEDB,CREATEROLE or replication.
+Forced RLS catalog: 51 of 51 policy-bearing domain tables.
+Protected audit catalog: 8 tables;0 direct runtime privilege tables.
+careiq_review and careiq_test names/OIDs unchanged; no queries or mutations were run against their domain data.
+Cleanup: dropped only the newly created disposable replay database.
+No shared cluster roles were dropped.
+Result: PASS
+Finished: 2026-10-16T23:45:45.189Z

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "patches": [
+    {
+      "package": "braces",
+      "version": "3.0.3",
+      "patch": "patches/braces@3.0.3.patch",
+      "patchSha256": "f46149b456f0f0e3e42cc4adf1027ad72afd23673bb4f58173ae56915ed7bad9",
+      "files": [
+        {
+          "path": "lib/compile.js",
+          "sha256": "82d4386b052cc68e388c70e85ad2a6ca0d5c94294dc539748a7067fdee052c67"
+        },
+        {
+          "path": "lib/expand.js",
+          "sha256": "0295a772cbe7355e9f6a8f30d3d1ff50fdcefd2419164d92fefbde220bc408cd"
+        },
+        {
+          "path": "lib/parse.js",
+          "sha256": "0074fcc3ac26ae258e1dbebeccecf401868073189cbb6b4e56ffa527b11bed53"
+        },
+        {
+          "path": "lib/stringify.js",
+          "sha256": "7f46c5f669377484b77193e8e41de9786c719445281e90c7d8f024575dbb0f59"
+        },
+        {
+          "path": "lib/validate-depth.js",
+          "sha256": "efdcb1b44c9226d64b8d3ee94b42ca6b921a6600d2a8ee6c62defdbdea6c8359"
+        }
+      ],
+      "sources": [
+        "https://github.com/micromatch/braces/issues/70"
+      ]
+    }
+  ]
+}

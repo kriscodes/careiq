@@ -1,0 +1,82 @@
+{
+  "verifiedAt": "2026-10-18T16:36:01.100399+00:00",
+  "results": [
+    {
+      "name": "security-regressions",
+      "exitCode": 0,
+      "durationSeconds": 1.357,
+      "tests": 22,
+      "pass": 22,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    {
+      "name": "drizzle-check",
+      "exitCode": 0,
+      "durationSeconds": 0.389,
+      "configuration": "Explicit synthetic loopback port 1 URL; metadata check did not connect to any database.",
+      "outputSummary": "Reading config file '/Users/kristian/Documents/Server/CareIQ/apps/api/drizzle.config.ts'\nEverything's fine \ud83d\udc36\ud83d\udd25"
+    }
+  ],
+  "expectedSecurityCases": 22,
+  "dependencyChanges": [
+    "Moved braces AST depth/node/width checks from root wrappers into compile/expand/stringify walker entry points, so direct submodule imports cannot bypass checks.",
+    "Scoped @esbuild-kit/core-utils@3.3.2 esbuild override to genuine published 0.25.12; preserved other esbuild/tsx versions and qs 6.16.0."
+  ],
+  "limits": [
+    "No hosted provider, clinical data, deployment or hosted database was accessed by these checks."
+  ],
+  "frozenInstallFinal": {
+    "exitCode": 0,
+    "durationSeconds": 1,
+    "patchFormat": "Standard contextful unified diff",
+    "installedPostImageIntegrity": "All manifest hashes verified against actual pnpm-resolved files by security regression case 1."
+  },
+  "repairHistory": [
+    "A zero-context formatting-only patch attempt installed incorrectly through the pnpm patch parser; its ReferenceError was detected immediately by the security suite. The standard contextful patch was restored, frozen-installed, and all 22 security cases rerun successfully. No application code was changed for this transient failure."
+  ],
+  "commitCandidateBullets": [
+    "Guard every braces AST walker entry, including direct submodule imports, and verify reviewed package hashes.",
+    "Replace the legacy Drizzle loader's vulnerable esbuild with the genuine parent-scoped 0.25.12 release; preserve qs 6.16.0 and other esbuild/tsx edges.",
+    "Add six security/compatibility cases covering direct walker entry, actual parent resolution, TypeScript transforms and dev-server CORS/Host protection.",
+    "Record independent unsuppressed production/full audits, registry availability, upstream tarball integrity and bounded exploit controls; retain the two HIGH release blockers until genuine fixed upstream releases are available."
+  ],
+  "sourceArtifactHashes": {
+    "pnpm-workspace.yaml": "aab4681d4faafcf6378047c173a40787022f3c6cd00372d21b38b5bd98fd4972",
+    "pnpm-lock.yaml": "7604e21be6b79912c61f86958ef93516e57f5ab25e9e1eafc34de9b8a2cb8fa6",
+    "patches/security-manifest.json": "724d48150d3ce228fcbec95ad52c5472266d1b5071577aaa221fe7fb2f5ff324",
+    "patches/braces@3.0.3.patch": "f46149b456f0f0e3e42cc4adf1027ad72afd23673bb4f58173ae56915ed7bad9",
+    "scripts/tests/security-dependencies.test.mjs": "f8ee4465087a03e57b529b348f3f17c4e01818cf9fb9c79a2da316a475a17bd2"
+  },
+  "checks": {
+    "qsOverridePreserved": true,
+    "legacyDrizzleEsbuildOverride": true,
+    "auditIgnoresAdded": false,
+    "inventedVersionsAdded": false,
+    "committed": false,
+    "pushed": false,
+    "deployed": false
+  },
+  "patchArtifactWhitespace": "Standard unified patch context lines contain a required leading context marker on otherwise empty lines. git diff --check flags the newly added patch artifact context; application/source changes are checked separately without weakening their whitespace checks. Keep the verified contextful format because the pnpm parser misapplies zero-context inserts.",
+  "esbuildRemediation": {
+    "initialCompleteAudit": {
+      "high": 2,
+      "moderate": 1
+    },
+    "finalCompleteAudit": {
+      "high": 2,
+      "moderate": 0
+    },
+    "path": "@careiq/api devDependency drizzle-kit@0.31.10 -> @esbuild-kit/esm-loader@2.6.5 -> @esbuild-kit/core-utils@3.3.2 -> esbuild@0.18.20",
+    "scopedReplacement": "esbuild@0.25.12",
+    "compatibility": "Reviewed installed core-utils uses transformSync and transform, not the changed serve return API. Both transforms/source maps, real loopback CORS/Host checks and drizzle-kit check pass.",
+    "sources": [
+      "https://github.com/advisories/GHSA-67mh-4wv8-2f99",
+      "https://github.com/evanw/esbuild/releases/tag/v0.25.0",
+      "https://registry.npmjs.org/esbuild/0.25.12"
+    ],
+    "distIntegrity": "sha512-bbPBYYrtZbkt6Os6FiTLCTFxvq4tt3JKall1vRwshA3fdVztsLAatFaZobhkBC8/BrPetoa0oksYoKXoG4ryJg==",
+    "limits": "This is a reviewed cross-minor override for the legacy transformation-only caller; future loader upgrades must recheck the override."
+  }
+}

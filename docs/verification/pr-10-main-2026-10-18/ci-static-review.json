@@ -1,0 +1,87 @@
+{
+  "verifiedAt": "2026-10-18T08:20:02.723Z",
+  "parser": "installed yaml2.9.1",
+  "nodeVersion": "v22.23.2",
+  "workflows": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "7496a2b898bd231ae69dd3d0f099d1de62507b28a522f177105b4cfd053698b1",
+      "syntaxValid": true,
+      "uniqueKeysValidated": true,
+      "triggers": {
+        "push": {
+          "branches": [
+            "main",
+            "dev",
+            "codex/**"
+          ]
+        },
+        "pull_request": null
+      },
+      "jobs": [
+        {
+          "name": "verify",
+          "needs": [],
+          "postgresImage": "postgres:18.6",
+          "databaseFixtureTarget": "127.0.0.1/careiq_test",
+          "productionWebFixtureChecks": 1,
+          "buildCommands": [
+            "pnpm --fail-if-no-match --filter @careiq/interview-contract build\npnpm --fail-if-no-match --filter @careiq/i18n build\npnpm --fail-if-no-match --filter @careiq/api build\npnpm --fail-if-no-match --filter ./apps/web exec next build --webpack\npnpm --fail-if-no-match --filter @careiq/marketing exec next build --webpack\npnpm --fail-if-no-match --filter @careiq/mobile exec expo install --check\npnpm --fail-if-no-match --filter @careiq/mobile build\n"
+          ]
+        }
+      ]
+    },
+    {
+      "file": ".github/workflows/readiness.yml",
+      "sha256": "9328eb0d96cc62c6f252c1376c355fd699ba4dd6b7b760bff980ed908a6a226e",
+      "syntaxValid": true,
+      "uniqueKeysValidated": true,
+      "triggers": {
+        "pull_request": null,
+        "push": {
+          "branches": [
+            "main"
+          ]
+        },
+        "workflow_dispatch": null
+      },
+      "jobs": [
+        {
+          "name": "quality",
+          "needs": [],
+          "postgresImage": "postgres:18.6",
+          "databaseFixtureTarget": "127.0.0.1/careiq_test",
+          "productionWebFixtureChecks": 1,
+          "buildCommands": [
+            "pnpm --fail-if-no-match --filter @careiq/interview-contract build\npnpm --fail-if-no-match --filter @careiq/api build\n",
+            "pnpm --fail-if-no-match --filter ./apps/web exec next build --webpack",
+            "pnpm --fail-if-no-match --filter @careiq/marketing exec next build --webpack",
+            "pnpm --fail-if-no-match --filter @careiq/mobile exec expo install --check\npnpm --fail-if-no-match --filter @careiq/mobile build\n"
+          ]
+        },
+        {
+          "name": "dependency-audit",
+          "needs": [],
+          "postgresImage": null,
+          "databaseFixtureTarget": null,
+          "productionWebFixtureChecks": 0,
+          "buildCommands": []
+        }
+      ],
+      "realApiIntegration": {
+        "enabled": true,
+        "explicitOptIn": true,
+        "migrationSetupPrecedes": true,
+        "chromiumInstallPrecedes": true,
+        "providerIdentity": "synthetic",
+        "databaseTarget": "127.0.0.1/careiq_test"
+      }
+    }
+  ],
+  "limits": [
+    "Static parse/job-reference/production web fixture validation only; GitHub Actions itself was not run.",
+    "Raw registry audit remains independently non-green with2HIGH advisories.",
+    "Main CI build commands now serialize shared/API/webpack web/marketing/Expo checks; local build and export evidence is recorded separately.",
+    "Readiness now opts in to the real local API/restricted database browser harness after migration and Chromium setup; identity-provider authentication remains synthetic."
+  ]
+}

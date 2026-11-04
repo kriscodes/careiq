@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-18",
+  "checks": [
+    {
+      "name": "web-production-build",
+      "exitCode": 0,
+      "seconds": 22.23,
+      "isolatedOutput": ".next-release-hardening-20261018",
+      "configuration": "Reserved .invalid synthetic live-shaped keys; never deployment configuration"
+    },
+    {
+      "name": "marketing-production-build",
+      "exitCode": 0,
+      "seconds": 11.52,
+      "isolatedOutput": ".next-release-hardening-20261018",
+      "configuration": "Submission disabled; indexing disabled; canonical site URL"
+    }
+  ],
+  "scope": "Local compilation and export only, not live production identity or hosted acceptance."
+}

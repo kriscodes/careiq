@@ -1,0 +1,261 @@
+{
+  "checked_at_utc": "2026-11-02T16:14:26Z",
+  "finished_at_utc": "2026-11-02T16:14:27Z",
+  "checked_at_los_angeles": "2026-11-02T08:14:26-08:00",
+  "deployment_commit": "7d2cabe4b48d4e4d2aa8006a7bb253c539d79d12",
+  "verified_live_at_utc": {
+    "api": "2026-11-02T16:12:06Z",
+    "web": "2026-11-02T16:12:02Z"
+  },
+  "transport": "System /usr/bin/curl using default full certificate verification; no redirects followed.",
+  "scope": "Public read-only HTTP checks. No authentication, provider sign-in, cookies, credentials, mutations, tokens, raw headers or HTML retained.",
+  "sign_in_nonce_changes_between_requests": true,
+  "all_checks_passed": true,
+  "results": [
+    {
+      "check": "api_health",
+      "url": "https://careiq-api-7ssz.onrender.com/health",
+      "expected_status": 200,
+      "tls_certificate_verified": true,
+      "status": 200,
+      "health": {
+        "status": "ok",
+        "service": "careiq-api",
+        "database": "connected"
+      },
+      "headers": {
+        "cache_control_no_store": true,
+        "content_type_json": true
+      },
+      "pass": true
+    },
+    {
+      "check": "unsigned_me",
+      "url": "https://careiq-api-7ssz.onrender.com/api/v1/me",
+      "expected_status": 401,
+      "tls_certificate_verified": true,
+      "status": 401,
+      "error_code": "UNAUTHENTICATED",
+      "headers": {
+        "cache_control_no_store": true,
+        "content_type_json": true
+      },
+      "pass": true
+    },
+    {
+      "check": "web_root",
+      "url": "https://app.careiqlabs.com/",
+      "expected_status": 200,
+      "tls_certificate_verified": true,
+      "status": 200,
+      "headers": {
+        "cache_control_no_store": true,
+        "csp_present": true,
+        "csp_nonce_present": true,
+        "csp_nonce_matches_html": true,
+        "csp_strict_dynamic": true,
+        "csp_disallows_unsafe_eval": true,
+        "csp_frame_ancestors_none": true,
+        "referrer_policy_no_referrer": true,
+        "content_type_options_nosniff": true,
+        "frame_options_deny": true,
+        "robots_noindex": true
+      },
+      "pass": true
+    },
+    {
+      "check": "sign_in",
+      "url": "https://app.careiqlabs.com/sign-in",
+      "expected_status": 200,
+      "tls_certificate_verified": true,
+      "status": 200,
+      "headers": {
+        "cache_control_no_store": true,
+        "csp_present": true,
+        "csp_nonce_present": true,
+        "csp_nonce_matches_html": true,
+        "csp_strict_dynamic": true,
+        "csp_disallows_unsafe_eval": true,
+        "csp_frame_ancestors_none": true,
+        "referrer_policy_no_referrer": true,
+        "content_type_options_nosniff": true,
+        "frame_options_deny": true,
+        "robots_noindex": true
+      },
+      "pass": true
+    },
+    {
+      "check": "sign_up",
+      "url": "https://app.careiqlabs.com/sign-up",
+      "expected_status": 200,
+      "tls_certificate_verified": true,
+      "status": 200,
+      "headers": {
+        "cache_control_no_store": true,
+        "csp_present": true,
+        "csp_nonce_present": true,
+        "csp_nonce_matches_html": true,
+        "csp_strict_dynamic": true,
+        "csp_disallows_unsafe_eval": true,
+        "csp_frame_ancestors_none": true,
+        "referrer_policy_no_referrer": true,
+        "content_type_options_nosniff": true,
+        "frame_options_deny": true,
+        "robots_noindex": true
+      },
+      "pass": true
+    },
+    {
+      "check": "sign_in_repeat",
+      "url": "https://app.careiqlabs.com/sign-in",
+      "expected_status": 200,
+      "tls_certificate_verified": true,
+      "status": 200,
+      "headers": {
+        "cache_control_no_store": true,
+        "csp_present": true,
+        "csp_nonce_present": true,
+        "csp_nonce_matches_html": true,
+        "csp_strict_dynamic": true,
+        "csp_disallows_unsafe_eval": true,
+        "csp_frame_ancestors_none": true,
+        "referrer_policy_no_referrer": true,
+        "content_type_options_nosniff": true,
+        "frame_options_deny": true,
+        "robots_noindex": true
+      },
+      "pass": true
+    },
+    {
+      "check": "preview_denied_1",
+      "url": "https://app.careiqlabs.com/design-preview",
+      "expected_status": 404,
+      "tls_certificate_verified": true,
+      "status": 404,
+      "headers": {
+        "cache_control_no_store": true,
+        "robots_noindex_nofollow": true
+      },
+      "pass": true
+    },
+    {
+      "check": "preview_denied_2",
+      "url": "https://app.careiqlabs.com/workflow-preview",
+      "expected_status": 404,
+      "tls_certificate_verified": true,
+      "status": 404,
+      "headers": {
+        "cache_control_no_store": true,
+        "robots_noindex_nofollow": true
+      },
+      "pass": true
+    },
+    {
+      "check": "preview_denied_3",
+      "url": "https://app.careiqlabs.com/workflow%2Dpreview",
+      "expected_status": 404,
+      "tls_certificate_verified": true,
+      "status": 404,
+      "headers": {
+        "cache_control_no_store": true,
+        "robots_noindex_nofollow": true
+      },
+      "pass": true
+    },
+    {
+      "check": "preview_denied_4",
+      "url": "https://app.careiqlabs.com/workflow-preview%2Findex.html",
+      "expected_status": 404,
+      "tls_certificate_verified": true,
+      "status": 404,
+      "headers": {
+        "cache_control_no_store": true,
+        "robots_noindex_nofollow": true
+      },
+      "pass": true
+    },
+    {
+      "check": "preview_denied_5",
+      "url": "https://app.careiqlabs.com/design-preview/index.html",
+      "expected_status": 404,
+      "tls_certificate_verified": true,
+      "status": 404,
+      "headers": {
+        "cache_control_no_store": true,
+        "robots_noindex_nofollow": true
+      },
+      "pass": true
+    },
+    {
+      "check": "preview_denied_6",
+      "url": "https://app.careiqlabs.com/design-preview/web-design-board.png",
+      "expected_status": 404,
+      "tls_certificate_verified": true,
+      "status": 404,
+      "headers": {
+        "cache_control_no_store": true,
+        "robots_noindex_nofollow": true
+      },
+      "pass": true
+    },
+    {
+      "check": "preview_denied_7",
+      "url": "https://app.careiqlabs.com/design-preview/ios-design-board.png",
+      "expected_status": 404,
+      "tls_certificate_verified": true,
+      "status": 404,
+      "headers": {
+        "cache_control_no_store": true,
+        "robots_noindex_nofollow": true
+      },
+      "pass": true
+    },
+    {
+      "check": "preview_denied_8",
+      "url": "https://app.careiqlabs.com/design-preview/android-design-board.png",
+      "expected_status": 404,
+      "tls_certificate_verified": true,
+      "status": 404,
+      "headers": {
+        "cache_control_no_store": true,
+        "robots_noindex_nofollow": true
+      },
+      "pass": true
+    },
+    {
+      "check": "preview_denied_9",
+      "url": "https://app.careiqlabs.com/design-preview%2Findex.html",
+      "expected_status": 404,
+      "tls_certificate_verified": true,
+      "status": 404,
+      "headers": {
+        "cache_control_no_store": true,
+        "robots_noindex_nofollow": true
+      },
+      "pass": true
+    },
+    {
+      "check": "preview_denied_10",
+      "url": "https://app.careiqlabs.com/design%2Dpreview/index.html",
+      "expected_status": 404,
+      "tls_certificate_verified": true,
+      "status": 404,
+      "headers": {
+        "cache_control_no_store": true,
+        "robots_noindex_nofollow": true
+      },
+      "pass": true
+    },
+    {
+      "check": "companion_asset",
+      "url": "https://app.careiqlabs.com/brand/little-hello/little-hello-companion.png",
+      "expected_status": 200,
+      "tls_certificate_verified": true,
+      "status": 200,
+      "headers": {
+        "content_type_png": true
+      },
+      "pass": true
+    }
+  ]
+}

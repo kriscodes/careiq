@@ -1,0 +1,226 @@
+{
+  "runId": "af2065c8-12c1-415e-81c1-494d35ccf4cc",
+  "database": "careiq_bench_4d26086addda",
+  "seedStartedAt": "2026-10-18T04:54:14.160Z",
+  "seedCompletedAt": "2026-10-18T05:03:35.272Z",
+  "hardware": {
+    "host": {
+      "cpu": "Apple M2",
+      "logicalCpus": 8,
+      "memoryBytes": 8589934592,
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "docker": {
+      "cpus": 8,
+      "memoryBytes": 4106604544,
+      "serverVersion": "29.8.0",
+      "containerMemoryLimitBytes": null,
+      "containerNanoCpus": null,
+      "image": "postgres:18.6"
+    },
+    "backgroundLoad": [
+      5.119140625,
+      4.58837890625,
+      4.24609375
+    ]
+  },
+  "counts": {
+    "tables": {
+      "practices": 100,
+      "locations": 200,
+      "patients": 100000,
+      "appointments": 300000,
+      "providers": 1000,
+      "documents": 100000,
+      "document_versions": 200000,
+      "file_objects": 200000,
+      "document_reviews": 50058,
+      "visit_requirements": 20000,
+      "requirement_evidence": 4932,
+      "document_requests": 10000,
+      "document_request_items": 10000,
+      "work_items": 15068,
+      "audit.events": 100,
+      "audit.database_records": 1113358
+    },
+    "databaseBytes": 1870558911
+  },
+  "manifest": [
+    {
+      "tag": "0000_real_gambit",
+      "when": 1788060723124,
+      "hash": "c3d20c087055a394399d344296c7d1c6cebde1300fd3e35b9d888af03097de57"
+    },
+    {
+      "tag": "0001_oval_hulk",
+      "when": 1788653061125,
+      "hash": "b3316d7353ab7a93f7ce35b8fd98701912cd650ba28ce5c84bad59caa0d035f1"
+    },
+    {
+      "tag": "0002_smart_stephen_strange",
+      "when": 1788721045966,
+      "hash": "a3f846bdd01990d3aa4806ceb3a99128c135e6b7dce29a1c63b070838252497d"
+    },
+    {
+      "tag": "0003_icy_moira_mactaggert",
+      "when": 1788729619021,
+      "hash": "7b3c25f01a98b3f396b4b58f3ac51e907668a47495136f35a05e9ebca68733d8"
+    },
+    {
+      "tag": "0004_patients-rls",
+      "when": 1788748885950,
+      "hash": "8b6a4d2b8634074d8c6b7ed774ec0736dfa537fef17aef2afa3aedb70c3cc916"
+    },
+    {
+      "tag": "0005_appointments-rls",
+      "when": 1788752443973,
+      "hash": "a4380d4e69024759586cfa8687002f413b86f1a1b247615c94c31ad1d15274e1"
+    },
+    {
+      "tag": "0006_lazy_drax",
+      "when": 1788752504768,
+      "hash": "f83d6882896159d627abc7e9f43415234e9c25d470031b0d6aa2e736d494df62"
+    },
+    {
+      "tag": "0007_appointments-rls",
+      "when": 1788752520350,
+      "hash": "b3cc75fa802f8a5b333c480eb0d77f3d2185602e108f36fb33d3ade3c6939413"
+    },
+    {
+      "tag": "0008_appointments-rls",
+      "when": 1788752628869,
+      "hash": "6b1ab485962388f8448028b76d942cbc1913430430b9fe77d38bb61907edb68b"
+    },
+    {
+      "tag": "0009_fix-appointments-rls",
+      "when": 1788753271780,
+      "hash": "b3cc75fa802f8a5b333c480eb0d77f3d2185602e108f36fb33d3ade3c6939413"
+    },
+    {
+      "tag": "0010_apply-appointments-rls",
+      "when": 1788753656396,
+      "hash": "6b1ab485962388f8448028b76d942cbc1913430430b9fe77d38bb61907edb68b"
+    },
+    {
+      "tag": "0011_massive_human_cannonball",
+      "when": 1788819513247,
+      "hash": "e04efc2eb8b9d5805c7a91256caa8537667b6c2ae2ab3721ec10a79d87c83bc5"
+    },
+    {
+      "tag": "0012_remove-tenant-test-records",
+      "when": 1788834011385,
+      "hash": "9eb98838e34f755773c177f9165c195d6b5c80abd9aa5f0bc1fb33297a51c84d"
+    },
+    {
+      "tag": "0013_tenant-context-empty",
+      "when": 1790047000000,
+      "hash": "27aed2df638616dd2519dca9e5eacd3b3f6765268133e72b26df169b7483aa6c"
+    },
+    {
+      "tag": "0014_marketing-interview-requests",
+      "when": 1791001695601,
+      "hash": "e8b23f439402d0afeaf89cbcbc5ce2c7a409b7571b352ad2c4899badf2cb2d92"
+    },
+    {
+      "tag": "0015_clinical-security",
+      "when": 1791010090397,
+      "hash": "eb281aed624ca86d8e988ba3a940809d66fb0690946c2eb14a3d77b7f2b5cb1a"
+    },
+    {
+      "tag": "0016_location-membership",
+      "when": 1791187200000,
+      "hash": "02301c7b9c8d330dd628c11036df260bac7951f661013e479f34795b1929fc70"
+    },
+    {
+      "tag": "0017_onboarding-drafts",
+      "when": 1791278006160,
+      "hash": "24b616e1f049e28529c526248575129aad6420b8b3deb3082a5448c3ad3e9f06"
+    },
+    {
+      "tag": "0018_runtime-release-guards",
+      "when": 1791280800000,
+      "hash": "187fe2cef5ab588b282a7d80263809780303b6152d087e89c56d36c580f92983"
+    },
+    {
+      "tag": "0019_workflow-foundation",
+      "when": 1792108800000,
+      "hash": "e4faf673b31f6ef08b84cf5eaac3650cd0302ee08374517066b6b06fc92c59f8"
+    },
+    {
+      "tag": "0020_workflow-audit-patient-context",
+      "when": 1792108900000,
+      "hash": "32ca5d5608d3b00422955aa219b8a6dc9fb4150da99035ffec4bce7db2114bf0"
+    },
+    {
+      "tag": "0021_workflow-patient-completion",
+      "when": 1792109000000,
+      "hash": "9b40ab3192581a2e764f2a99717a1038c1109b67f985c8b5f7ae5d49ab51ab19"
+    },
+    {
+      "tag": "0022_workflow-patient-collection",
+      "when": 1792109100000,
+      "hash": "4c92dac6b46207d288e827cb4f53865741b6130db397448cfde889da5e47251b"
+    },
+    {
+      "tag": "0023_workflow-context-guards",
+      "when": 1792109200000,
+      "hash": "48122cb98886306cf3cb7d09fa82413fb68262c5fde31712ab7e44e3d36b9fae"
+    },
+    {
+      "tag": "0024_workflow-availability-retirement",
+      "when": 1792109300000,
+      "hash": "896ff6fd6f9d810fdeebdbc458fc5606a8e75f109efe78d048499a11f8c92b7d"
+    },
+    {
+      "tag": "0025_workflow-terminal-retries",
+      "when": 1792109400000,
+      "hash": "eed987235a1f069a11bb9f572710b037be9382f15278f6fa1b3372767a5d0f6e"
+    },
+    {
+      "tag": "0026_workflow-read-indexes",
+      "when": 1792109500000,
+      "hash": "b4fb770e44f2b13aebef8a490d1fe78b2eaf53e3fa32120b79a59d7260feea6b"
+    },
+    {
+      "tag": "0027_forms-studio-v2",
+      "when": 1792294357767,
+      "hash": "0100d18b164f3d1012213368ea7e70765efccfba53b055ce4674418fd1c7c1af"
+    },
+    {
+      "tag": "0028_patient-paperwork",
+      "when": 1792294726342,
+      "hash": "1406720d98f9958d8e394121b1be3a61a0cd0f067a987dd5475c696c631f5c77"
+    },
+    {
+      "tag": "0029_paperwork-publication-guards",
+      "when": 1792294726343,
+      "hash": "553844ea9ec77a9d9e9bbf3967d8e7fbf470dd947e45037f58234e46d8ce4cc2"
+    },
+    {
+      "tag": "0030_form-completion-receipts",
+      "when": 1792294726344,
+      "hash": "5bf0b00766b61b3e949032376bfa4c13a2e0244b08e443946312de63c7b2eb71"
+    },
+    {
+      "tag": "0031_form-signer-authority",
+      "when": 1792294726345,
+      "hash": "3a7440c09dd33251aa660b3d95fd55ea5e0e4b8e652bbb5c4419808da460bbc2"
+    },
+    {
+      "tag": "0032_location-calendar-eligibility",
+      "when": 1792294726346,
+      "hash": "80fd697116f09afa1f900b837ceacecdff18048b5f87423e63285774cafb9afb"
+    },
+    {
+      "tag": "0033_patient-fulfillment-purpose",
+      "when": 1792294726347,
+      "hash": "fd0b451a6f444abbebd3b70197697c153f566b51a3494ba98fdda1ce697997b4"
+    }
+  ],
+  "notes": [
+    "Synthetic metadata only; no actual PDF files, email, scanner or external identity traffic.",
+    "Audit capture, constraints, RLS and indexes remained enabled during seeding.",
+    "One populated clinic and one empty location-isolation fixture per practice; 30 days of 100 appointments per practice."
+  ]
+}

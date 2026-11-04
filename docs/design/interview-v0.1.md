@@ -43,7 +43,7 @@ Green is an accent, not a background theme. Errors use readable text and an expl
 
 Place the reviewer bar **above and outside the application shell**. The integrated bar says **Interview demo · Developer notes**, with **v0.1 — Interview Design · Outside the staff application** below. Its **Architecture notes** action opens **Behind the front desk**, labeled **DEVELOPER NOTES · INTERVIEW DEMO**, with the disclosure **Illustrated architecture — not live telemetry**. These labels are implemented in `InterviewNotes.tsx`, `PracticeWorkspace.tsx`, and `InterviewModal.tsx`.
 
-`NEXT_PUBLIC_INTERVIEW_MODE` controls the reviewer layer: enabled by default in development unless `false`, hidden in production unless `true` at build time. It does not change authentication or data behavior. The standalone mockup always includes the reviewer explanation and uses a shorter “Illustrated flow” caption.
+`NEXT_PUBLIC_INTERVIEW_MODE` controls the reviewer layer: enabled by default in development unless `false`, always hidden in production, regardless of the flag. It does not change authentication or data behavior. The standalone mockup always includes the reviewer explanation and uses a shorter “Illustrated flow” caption.
 
 Architecture steps explain authentication, practice resolution, validation, database access, and the response. They must not show fabricated timings, animated request events, success checks, or security badges that suggest measured behavior. Keep implementation commentary out of patient details and scheduling controls. The explanatory panel is documentation for the demo, not a staff workflow.
 

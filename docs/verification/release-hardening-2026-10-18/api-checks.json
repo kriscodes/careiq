@@ -1,0 +1,56 @@
+{
+  "verifiedAt": "2026-10-18T16:41:54.900700+00:00",
+  "head": "11df3349d87d9f36235ec5c4047398d290cb9306",
+  "group": "api",
+  "checks": [
+    {
+      "name": "api-tests",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@careiq/api",
+        "test"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 11.784,
+      "counts": {
+        "tests": 224,
+        "pass": 224,
+        "fail": 0,
+        "skipped": 0
+      },
+      "pass": true
+    },
+    {
+      "name": "api-typecheck",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@careiq/api",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 0.762,
+      "counts": {},
+      "pass": true
+    },
+    {
+      "name": "api-build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@careiq/api",
+        "build"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 0.617,
+      "counts": {},
+      "pass": true
+    }
+  ],
+  "pass": true,
+  "boundary": "Local synthetic test configuration; no hosted deployment, database mutation or provider acceptance."
+}

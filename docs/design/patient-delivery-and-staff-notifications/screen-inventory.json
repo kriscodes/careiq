@@ -1,0 +1,1160 @@
+{
+  "schema_version": "1.0",
+  "title": "CareIQ patient delivery and staff notifications — screen inventory",
+  "date": "2026-10-18",
+  "status": "proposed designs; no application integration or provider activation",
+  "canonical_repository": "/Users/kristian/Documents/Server/CareIQ",
+  "prototype_source": "prototype/app.js",
+  "coverage_definitions": {
+    "drawn": "Reviewable local page/dialog/state exists; production behavior is not implied.",
+    "partial": "Some aspects are drawn; listed production variants or commands remain specification requirements.",
+    "specification_only": "Requirement and integration notes only; a related entry/preview may exist."
+  },
+  "prototype_page_ids": [
+    "delivery",
+    "reminders",
+    "templates",
+    "inbox",
+    "preferences",
+    "rules",
+    "providers",
+    "patient",
+    "states",
+    "handoff"
+  ],
+  "platform_coverage": {
+    "responsive_web": "Prototype drawings; root validation record is authoritative for browser checks.",
+    "patient_email_sms": "Synthetic email/SMS and phone-width web journey previews.",
+    "native_ios_android": "Adaptation requirements only; no installed-device acceptance or native screens claimed."
+  },
+  "global_contracts": [
+    "Status text and icons never rely only on color.",
+    "Request/document state, delivery intent/attempt evidence, staff read state and current work state remain separate.",
+    "Current server authorization governs record content, badges, counts and deep links.",
+    "No real recipients, provider calls, persistent clinical drafts or actual authentication in the prototype.",
+    "Patient launch access preserves canonical adult-self boundary; proxy/minor extension is out of scope."
+  ],
+  "surface_count": 25,
+  "surfaces": [
+    {
+      "id": "P01",
+      "name": "Send patient request",
+      "coverage": "partial",
+      "prototype": [
+        {
+          "kind": "dialog",
+          "function": "compose",
+          "open_action": "compose",
+          "title": "Send a paperwork request"
+        },
+        {
+          "kind": "dialog",
+          "function": "compose(true)",
+          "open_action": "compose-review",
+          "title": "Review patient message"
+        }
+      ],
+      "important_states": [
+        "eligible Email/SMS/both",
+        "masked confirmed endpoints",
+        "per-channel intent queued",
+        "partial channel outcome"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/FormsStudio.tsx",
+          "anchor": "prepareRequest and signing/secure-copy settings"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Prototype chooses one prepared synthetic request; production request creation remains in existing forms.",
+        "Verify endpoint/version, purpose, recipient authority, current lifecycle and time zone at commit and dispatch.",
+        "Server renders approved locale/template; selecting both channels creates independently governed intents."
+      ],
+      "proposed_api_operations": [
+        "createWorkflowRequest",
+        "createPaperworkRequest"
+      ]
+    },
+    {
+      "id": "P02",
+      "name": "Patient communication profile",
+      "coverage": "partial",
+      "prototype": [
+        {
+          "kind": "dialog",
+          "function": "contact",
+          "open_action": "contact-{deliveryId}",
+          "title": "Review communication choices"
+        },
+        {
+          "kind": "page",
+          "page_id": "patient",
+          "function": "patientSurface",
+          "state_or_control": "Communication choices"
+        }
+      ],
+      "important_states": [
+        "confirmed/unconfirmed destination",
+        "SMS opted out",
+        "hard bounce",
+        "completed-copy recipient repair"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PortalAccessManager.tsx",
+          "anchor": "existing independently verified account binding"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/StaffPaperwork.tsx",
+          "anchor": "paperwork/patients/{id} copies and notifications"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Destination create/correct/confirm and permission evidence need approved separate workflows.",
+        "Contact editing never establishes identity, verifies an endpoint automatically or overrides provider opt-out.",
+        "Completed-copy repair retains exact library/version and independently verified principal."
+      ],
+      "proposed_api_operations": [
+        "listCommunicationEndpoints",
+        "createCommunicationEndpoint",
+        "recordCommunicationPermission"
+      ]
+    },
+    {
+      "id": "P03",
+      "name": "Request created and dispatch pending",
+      "coverage": "drawn",
+      "prototype": [
+        {
+          "kind": "page",
+          "page_id": "delivery",
+          "function": "deliveryRows",
+          "state_or_control": "Queued/Scheduled rows"
+        },
+        {
+          "kind": "dialog",
+          "function": "detail",
+          "open_action": "detail-d5",
+          "title": "Message delivery"
+        }
+      ],
+      "important_states": [
+        "intent created",
+        "queued",
+        "scheduled",
+        "provider unavailable",
+        "no provider call yet"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/FormsStudio.tsx",
+          "anchor": "prepareRequest and signing/secure-copy settings"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Back request/intent operation and safe refresh with durable server state.",
+        "Never treat queued as accepted/sent/delivered.",
+        "Keep assisted completion available according to environment/access policy."
+      ],
+      "proposed_api_operations": [
+        "createWorkflowRequest",
+        "createPaperworkRequest",
+        "getDeliveryIntent",
+        "cancelDeliveryIntent"
+      ]
+    },
+    {
+      "id": "P04",
+      "name": "Request delivery detail and timeline",
+      "coverage": "drawn",
+      "prototype": [
+        {
+          "kind": "dialog",
+          "function": "detail",
+          "open_action": "detail-{deliveryId}",
+          "title": "Message delivery"
+        }
+      ],
+      "important_states": [
+        "queued",
+        "accepted",
+        "delivered",
+        "failed",
+        "unknown",
+        "suppressed",
+        "request open/completed"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/StaffPaperwork.tsx",
+          "anchor": "paperwork/patients/{id} copies and notifications"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Signed-cursor bounded attempt/event history, source and received timestamps.",
+        "Preserve late bounce/complaint independently from earlier delivered evidence.",
+        "No raw secret, provider credential, full body or unrestricted provider error in status DTO.",
+        "Cancel scheduled message uses atomic pre-dispatch cancellation only; submitting/accepted/unknown cannot be retracted and returns DELIVERY_ALREADY_SUBMITTING."
+      ],
+      "proposed_api_operations": [
+        "getRequestDelivery",
+        "getDeliveryIntent",
+        "reconcileDeliveryIntent",
+        "cancelDeliveryIntent"
+      ]
+    },
+    {
+      "id": "P05",
+      "name": "Manual reminder, safe retry and explicit resend",
+      "coverage": "partial",
+      "prototype": [
+        {
+          "kind": "dialog",
+          "function": "manualReminder",
+          "open_action": "manual-reminder-d1",
+          "title": "Review manual reminder"
+        },
+        {
+          "kind": "dialog",
+          "function": "detail",
+          "open_action": "detail-d2",
+          "title": "Message delivery"
+        }
+      ],
+      "important_states": [
+        "cooldown disabled until nextEligibleAt",
+        "unknown blocks second send",
+        "known-safe retry",
+        "explicit resend after known result"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/StaffPaperwork.tsx",
+          "anchor": "paperwork/patients/{id} copies and notifications"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Only cooldown and simulated reconciliation are drawn; full resend/retry payload/reason flows need implementation.",
+        "HTTP key replay returns original operation; same message/destination generation for safe retry.",
+        "No manual bypass of suppression, expiry, caps or request lifecycle."
+      ],
+      "proposed_api_operations": [
+        "remindRequest",
+        "reissueRequest",
+        "retryDeliveryIntent",
+        "resendDeliveryIntent",
+        "retryPaperworkNotification",
+        "reconcileDeliveryIntent"
+      ]
+    },
+    {
+      "id": "P06",
+      "name": "Patient delivery attention queue",
+      "coverage": "drawn",
+      "prototype": [
+        {
+          "kind": "page",
+          "page_id": "delivery",
+          "function": "delivery"
+        }
+      ],
+      "important_states": [
+        "All",
+        "Needs attention",
+        "In progress",
+        "Delivered",
+        "Suppressed",
+        "location filter",
+        "no matches"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/StaffPaperwork.tsx",
+          "anchor": "paperwork/patients/{id} copies and notifications"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Server list, exact counts and as-of snapshot replace synthetic local filtering.",
+        "Cursor/search/channel/purpose/patient/time filters require bounded implementation.",
+        "Each row is one channel intent; request/copy state remains separate."
+      ],
+      "proposed_api_operations": [
+        "listDeliveryIntents"
+      ]
+    },
+    {
+      "id": "P07",
+      "name": "Resolve patient delivery problem",
+      "coverage": "partial",
+      "prototype": [
+        {
+          "kind": "dialog",
+          "function": "contact",
+          "open_action": "contact-d3",
+          "title": "Review communication choices"
+        },
+        {
+          "kind": "page",
+          "page_id": "states",
+          "function": "deliveryException",
+          "state_or_control": "Opted out/No valid recipient/Unknown outcome"
+        }
+      ],
+      "important_states": [
+        "contact follow-up note validation",
+        "hard bounce",
+        "provider unknown",
+        "suppression",
+        "no eligible destination"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/StaffPaperwork.tsx",
+          "anchor": "paperwork/patients/{id} copies and notifications"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PortalAccessManager.tsx",
+          "anchor": "existing independently verified account binding"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Follow-up creation must use existing work commands with accountable eligible owner.",
+        "Approved contact confirmation and repaired-grant selection not simulated as real authorization.",
+        "Unknown outcome remains unknown if lookup cannot settle; assisted follow-up does not force delivered.",
+        "Check original send starts a lookup-only reconciliation operation; queued operation is distinct from unknown intent state and cannot create a new external message."
+      ],
+      "proposed_api_operations": [
+        "retryDeliveryIntent",
+        "resendDeliveryIntent",
+        "retryPaperworkNotification",
+        "recordCommunicationPermission",
+        "reconcileDeliveryIntent"
+      ]
+    },
+    {
+      "id": "P08",
+      "name": "Patient reminder policy",
+      "coverage": "drawn",
+      "prototype": [
+        {
+          "kind": "page",
+          "page_id": "reminders",
+          "function": "reminders"
+        }
+      ],
+      "important_states": [
+        "automatic reminders off",
+        "one-location editor",
+        "48h/24h slots",
+        "confirmed recipient zone",
+        "09:00–18:00",
+        "policy save"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/FormsStudio.tsx",
+          "anchor": "prepareRequest and signing/secure-copy settings"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Server-reviewed limits, version, If-Match and recomputation of future unsent occurrences.",
+        "Recipient timezone missing holds automation; DST policy, lifecycle cancellation, budgets survive reissue.",
+        "Local controls demonstrate settings only; schedules/workers do not execute."
+      ],
+      "proposed_api_operations": [
+        "getNotificationPolicy",
+        "updateNotificationPolicy"
+      ]
+    },
+    {
+      "id": "P09",
+      "name": "Completed-copy availability and notice state",
+      "coverage": "partial",
+      "prototype": [
+        {
+          "kind": "dialog",
+          "function": "detail",
+          "open_action": "detail-d3",
+          "title": "Message delivery"
+        },
+        {
+          "kind": "page",
+          "page_id": "patient",
+          "function": "patientSurface",
+          "state_or_control": "Preparing copy/Copy available"
+        },
+        {
+          "kind": "dialog",
+          "function": "runAction",
+          "open_action": "view-copy",
+          "title": "Completed copy"
+        }
+      ],
+      "important_states": [
+        "preparing",
+        "available",
+        "failed notification",
+        "exact immutable version"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/StaffPaperwork.tsx",
+          "anchor": "paperwork/patients/{id} copies and notifications"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientPaperworkLibrary.tsx",
+          "anchor": "authenticated released exact-version copies"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientWorkflow.tsx",
+          "anchor": "request-only public workflow, terminal and completion states"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/FormsStudio.tsx",
+          "anchor": "prepareRequest and signing/secure-copy settings"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Library and notification publication occur only after durable final copy.",
+        "Required signer gates and unsigned-versus-signed labels reuse canonical completion policy.",
+        "Download/file view uses current released-copy access; notification failure cannot remove it."
+      ],
+      "proposed_api_operations": [
+        "getDeliveryIntent",
+        "retryPaperworkNotification",
+        "resendDeliveryIntent"
+      ]
+    },
+    {
+      "id": "P10",
+      "name": "Patient email templates",
+      "coverage": "partial",
+      "prototype": [
+        {
+          "kind": "page",
+          "page_id": "templates",
+          "function": "templates",
+          "state_or_control": "Email + request/reminder/complete + en/es"
+        }
+      ],
+      "important_states": [
+        "request",
+        "reminder",
+        "completed copy",
+        "English",
+        "proposed Spanish"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/FormsStudio.tsx",
+          "anchor": "prepareRequest and signing/secure-copy settings"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientWorkflow.tsx",
+          "anchor": "request-only public workflow, terminal and completion states"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientPaperworkLibrary.tsx",
+          "anchor": "authenticated released exact-version copies"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Final HTML and plain text email tests, subject/from/reply handling, approved translations and immutable message template versions.",
+        "No patient name, form title, answers, signature, attachment, tracking pixel or arbitrary third-party link.",
+        "Contact-verification email not drawn."
+      ],
+      "proposed_api_operations": []
+    },
+    {
+      "id": "P11",
+      "name": "Patient SMS templates and service replies",
+      "coverage": "partial",
+      "prototype": [
+        {
+          "kind": "page",
+          "page_id": "templates",
+          "function": "templates",
+          "state_or_control": "SMS + request/reminder/complete + en/es"
+        }
+      ],
+      "important_states": [
+        "request",
+        "reminder",
+        "completed copy",
+        "STOP/HELP footer"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientWorkflow.tsx",
+          "anchor": "request-only public workflow, terminal and completion states"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientPaperworkLibrary.tsx",
+          "anchor": "authenticated released exact-version copies"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "STOP/START/HELP replies, sender approval, actual provider segment calculation and locale approval are specification requirements.",
+        "Opt-out scope matches actual sender/provider semantics.",
+        "Each channel needs its own permission and verified endpoint."
+      ],
+      "proposed_api_operations": []
+    },
+    {
+      "id": "P12",
+      "name": "Patient link entry, verification and recovery",
+      "coverage": "partial",
+      "prototype": [
+        {
+          "kind": "page",
+          "page_id": "patient",
+          "function": "patientSurface",
+          "state_or_control": "Secure sign-in/Open request/Expired link/Cancelled request/Access unavailable"
+        },
+        {
+          "kind": "dialog",
+          "function": "runAction",
+          "open_action": "open-paperwork",
+          "title": "Continue to existing paperwork flow"
+        },
+        {
+          "kind": "dialog",
+          "function": "runAction",
+          "open_action": "practice-help",
+          "title": "Contact Evergreen Medical"
+        }
+      ],
+      "important_states": [
+        "received message",
+        "sign-in/verification",
+        "open request",
+        "expired",
+        "cancelled",
+        "access unavailable"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientWorkflow.tsx",
+          "anchor": "request-only public workflow, terminal and completion states"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientPaperworkLibrary.tsx",
+          "anchor": "authenticated released exact-version copies"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PortalAccessManager.tsx",
+          "anchor": "existing independently verified account binding"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Prototype simulates access; request-scoped and account/library access remain separate.",
+        "Wrong account, revoked recipient, consumed link, link scanner, missing assurance and fresh access need production coverage.",
+        "Current launch scope remains adult self; proxy/minor binding is not introduced by this design."
+      ],
+      "proposed_api_operations": []
+    },
+    {
+      "id": "P13",
+      "name": "Patient communication preferences",
+      "coverage": "partial",
+      "prototype": [
+        {
+          "kind": "page",
+          "page_id": "patient",
+          "function": "patientSurface",
+          "state_or_control": "Communication choices"
+        }
+      ],
+      "important_states": [
+        "email requests on",
+        "completed notices on",
+        "SMS remains opted out",
+        "demo save"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PortalAccessManager.tsx",
+          "anchor": "existing independently verified account binding"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientPaperworkLibrary.tsx",
+          "anchor": "authenticated released exact-version copies"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientWorkflow.tsx",
+          "anchor": "request-only public workflow, terminal and completion states"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Proposed GET/PATCH /api/v1/patient-paperwork/communication-preferences resolve current adult-self account/grant contexts with a server-issued preferenceContextToken, current revision and idempotency. No patientId/address/identity binding edits; origin/CSRF controls and current portal authority required.",
+        "Preference withdrawal appends current purpose/channel event; cannot be confused with signing/treatment consent.",
+        "Offer supported alternate communication and truthful effective timing."
+      ],
+      "proposed_api_operations": [
+        "getPatientCommunicationPreferences",
+        "updatePatientCommunicationPreferences"
+      ]
+    },
+    {
+      "id": "S01",
+      "name": "Notification entry and quick popover",
+      "coverage": "specification_only",
+      "prototype": [
+        {
+          "kind": "entry",
+          "action": "bell",
+          "behavior": "opens full inbox directly"
+        }
+      ],
+      "important_states": [
+        "unread badge",
+        "entry to inbox",
+        "future popover loading/empty/error"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Prototype draws the bell entry but no popover.",
+        "If a popover ships, use authorized latest items, bounded counts and keyboard/focus behavior."
+      ],
+      "proposed_api_operations": [
+        "listStaffNotifications"
+      ]
+    },
+    {
+      "id": "S02",
+      "name": "Staff notification center",
+      "coverage": "drawn",
+      "prototype": [
+        {
+          "kind": "page",
+          "page_id": "inbox",
+          "function": "inbox"
+        }
+      ],
+      "important_states": [
+        "All",
+        "Unread",
+        "Assignments including ownership",
+        "Overdue",
+        "scope filter",
+        "empty inbox",
+        "current source state"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Recipient-only authenticated bounded list reauthorizes every subject/location.",
+        "Implement cursor, exact unread/attention counts and snapshot time; do not accept recipientUserId filters.",
+        "Read/unread independent of work status."
+      ],
+      "proposed_api_operations": [
+        "listStaffNotifications",
+        "markStaffNotificationRead"
+      ]
+    },
+    {
+      "id": "S03",
+      "name": "Staff notification event and current work detail",
+      "coverage": "drawn",
+      "prototype": [
+        {
+          "kind": "dialog",
+          "function": "alertDetail",
+          "open_action": "alert-{notificationId}",
+          "title": "Work item update"
+        },
+        {
+          "kind": "dialog",
+          "function": "work",
+          "open_action": "work-{notificationId}",
+          "title": "Current work item"
+        }
+      ],
+      "important_states": [
+        "assignment",
+        "overdue",
+        "ownership change",
+        "delivery follow-up",
+        "reassigned",
+        "already resolved"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/InsuranceWorkspace.tsx",
+          "anchor": "follow-up owner/due fields; requires separately reviewed typed subject adapter"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Deep links are allowlisted typed subject routes with fresh current capability checks.",
+        "Insurance/claims require reviewed typed adapters rather than generic table-name subjects.",
+        "Unread receipt mutation must not complete source work or grant access."
+      ],
+      "proposed_api_operations": [
+        "listStaffNotifications",
+        "markStaffNotificationRead"
+      ]
+    },
+    {
+      "id": "S04",
+      "name": "Personal staff notification preferences",
+      "coverage": "drawn",
+      "prototype": [
+        {
+          "kind": "page",
+          "page_id": "preferences",
+          "function": "preferences"
+        }
+      ],
+      "important_states": [
+        "instant email",
+        "daily digest",
+        "in-app only",
+        "18:00–08:00 quiet hours",
+        "08:30 digest",
+        "confirmed timezone"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Server revision/idempotency, approved event/channel catalog and permission-safe current preference evaluation.",
+        "Resolved/rescheduled work suppresses obsolete deferred external notice.",
+        "In-app work visibility remains available; generic preview omits patient information."
+      ],
+      "proposed_api_operations": [
+        "getStaffPreferences",
+        "updateStaffPreferences"
+      ]
+    },
+    {
+      "id": "S05",
+      "name": "Manager event routing and overdue rules",
+      "coverage": "drawn",
+      "prototype": [
+        {
+          "kind": "page",
+          "page_id": "rules",
+          "function": "rules"
+        }
+      ],
+      "important_states": [
+        "first assignment",
+        "owner A to B",
+        "due threshold",
+        "single escalation",
+        "authorized manager fallback",
+        "one-location editor"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/InsuranceWorkspace.tsx",
+          "anchor": "follow-up owner/due fields; requires separately reviewed typed subject adapter"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Commit event once, dedupe per recipient/event and skip redundant self-alerts.",
+        "Due generation, current owner/status and explicit business/holiday calendar drive scheduling.",
+        "No eligible audience creates configuration follow-up; notification does not broaden record access."
+      ],
+      "proposed_api_operations": [
+        "getNotificationPolicy",
+        "updateNotificationPolicy"
+      ]
+    },
+    {
+      "id": "S06",
+      "name": "Assignment and ownership change command",
+      "coverage": "specification_only",
+      "prototype": [
+        {
+          "kind": "dialog",
+          "function": "work",
+          "open_action": "work-{notificationId}",
+          "title": "Current work item"
+        }
+      ],
+      "important_states": [
+        "unassigned to assigned",
+        "owner changed",
+        "self assignment",
+        "inactive assignee",
+        "stale revision"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/InsuranceWorkspace.tsx",
+          "anchor": "follow-up owner/due fields; requires separately reviewed typed subject adapter"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Source owner picker/confirm flow is existing/future canonical work UI rather than a new prototype command.",
+        "Reauthorize actor and target assignee; check revision; commit source event and work mutation atomically.",
+        "Saving ownership and notification dispatch are separate outcomes."
+      ],
+      "proposed_api_operations": []
+    },
+    {
+      "id": "S07",
+      "name": "Overdue digest and escalation",
+      "coverage": "partial",
+      "prototype": [
+        {
+          "kind": "page",
+          "page_id": "rules",
+          "function": "rules",
+          "state_or_control": "Overdue escalation policy"
+        },
+        {
+          "kind": "page",
+          "page_id": "preferences",
+          "function": "preferences",
+          "state_or_control": "Daily digest + generic preview"
+        }
+      ],
+      "important_states": [
+        "first threshold",
+        "still overdue",
+        "resolved before dispatch",
+        "unassigned/inactive owner"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/InsuranceWorkspace.tsx",
+          "anchor": "follow-up owner/due fields; requires separately reviewed typed subject adapter"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Rendered digest email and escalation history screen are not drawn.",
+        "One recipient/window digest links to authorized current overdue queue; no PHI externally.",
+        "Schedulers must not emit duplicates on every scan; one escalation per approved threshold/generation."
+      ],
+      "proposed_api_operations": [
+        "getNotificationPolicy",
+        "getStaffPreferences"
+      ]
+    },
+    {
+      "id": "S08",
+      "name": "Native push and device settings",
+      "coverage": "specification_only",
+      "prototype": [
+        {
+          "kind": "page",
+          "page_id": "preferences",
+          "function": "preferences",
+          "state_or_control": "Generic email and lock-screen preview only"
+        }
+      ],
+      "important_states": [
+        "permission not asked",
+        "granted",
+        "denied/restricted",
+        "invalid/revoked token",
+        "signed out"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Native iOS/Android screens, native OS prompts and push adapter are deferred.",
+        "Authenticated current-user device binding, sign-out invalidation, app/universal links and access refresh before record view.",
+        "Canonical apps/mobile is absent; mirror Expo app is foundation only."
+      ],
+      "proposed_api_operations": [
+        "registerStaffDevice",
+        "revokeStaffDevice"
+      ]
+    },
+    {
+      "id": "A01",
+      "name": "Provider setup and service health",
+      "coverage": "drawn",
+      "prototype": [
+        {
+          "kind": "page",
+          "page_id": "providers",
+          "function": "providers"
+        },
+        {
+          "kind": "dialog",
+          "function": "runAction",
+          "open_action": "email-setup",
+          "title": "Email activation checklist"
+        },
+        {
+          "kind": "dialog",
+          "function": "runAction",
+          "open_action": "sms-setup",
+          "title": "SMS activation checklist"
+        },
+        {
+          "kind": "dialog",
+          "function": "runAction",
+          "open_action": "email-test",
+          "title": "Queue a staff test email"
+        }
+      ],
+      "important_states": [
+        "synthetic email readiness",
+        "SMS needs activation",
+        "paused dispatch",
+        "test queue simulation",
+        "callback health"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Readiness is synthetic; real provider activation/configuration/health endpoints are not specified by this outline.",
+        "Credentials belong in deployment secret manager; staff see safe readiness only.",
+        "Approved adapter capability, signed callback, suppression and reconciliation evidence precede activation."
+      ],
+      "proposed_api_operations": [
+        "receiveDeliveryWebhook"
+      ]
+    },
+    {
+      "id": "S09",
+      "name": "Bulk read state, archive and snooze",
+      "coverage": "partial",
+      "prototype": [
+        {
+          "kind": "page",
+          "page_id": "inbox",
+          "function": "inbox",
+          "state_or_control": "Mark all as read"
+        }
+      ],
+      "important_states": [
+        "bounded scope mark read",
+        "new arrivals after cutoff",
+        "already read",
+        "archive/snooze"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Prototype Mark all mutates scoped local fixtures. Production uses signed server cutoff/snapshot and idempotent receipt command.",
+        "Archive and snooze UI are specification-only optional controls; they never resolve source attention."
+      ],
+      "proposed_api_operations": [
+        "markAllStaffNotificationsRead",
+        "archiveStaffNotification",
+        "snoozeStaffNotification"
+      ]
+    },
+    {
+      "id": "R01",
+      "name": "Shared recovery state gallery",
+      "coverage": "drawn",
+      "prototype": [
+        {
+          "kind": "page",
+          "page_id": "states",
+          "function": "states"
+        },
+        {
+          "kind": "page",
+          "page_id": "delivery",
+          "function": "deliveryException"
+        }
+      ],
+      "important_states": [
+        "service unavailable",
+        "access removed",
+        "no messages",
+        "read only",
+        "dispatch paused",
+        "stale request",
+        "unknown",
+        "opted out",
+        "no valid recipient"
+      ],
+      "canonical_integration_points": [
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/StaffPaperwork.tsx",
+          "anchor": "paperwork/patients/{id} copies and notifications"
+        },
+        {
+          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
+        }
+      ],
+      "production_requirements_not_verified_by_prototype": [
+        "Loading/partial results/offline/rate limit/retry exhausted/missing translation or timezone/late event/enlarged text require implementation QA.",
+        "Preserve permitted draft on transient failure; clear protected content on access loss.",
+        "Disabled controls state reason and dialogs return focus."
+      ],
+      "proposed_api_operations": []
+    },
+    {
+      "id": "A02",
+      "name": "Provider callback trust boundary and receipt review",
+      "coverage": "specification_only",
+      "prototype": [
+        {
+          "kind": "page",
+          "page_id": "providers",
+          "function": "providers",
+          "state_or_control": "Signed callback readiness reference"
+        }
+      ],
+      "important_states": [
+        "verified",
+        "duplicate same hash",
+        "duplicate different hash quarantine",
+        "unmapped account/message",
+        "bad signature",
+        "late bounce/complaint"
+      ],
+      "canonical_integration_points": [],
+      "production_requirements_not_verified_by_prototype": [
+        "No tenant context derived from route handle or payload practice/patient IDs.",
+        "Verify provider-specific raw bytes, canonical request context and replay/timestamp before durable platform receipt.",
+        "Resolve trusted clinical scope only from existing connection/account/message mapping; bounded encrypted unmatched quarantine and narrow operational principal.",
+        "No generic webhook trust header or credentials invented in browser."
+      ],
+      "proposed_api_operations": [
+        "receiveDeliveryWebhook"
+      ]
+    }
+  ],
+  "read_only_sources": [
+    "workflow-audit.md",
+    "backend-design.md",
+    "prototype/app.js",
+    "/Users/kristian/Documents/Server/CareIQ/AGENTS.md"
+  ],
+  "api_scope_note": "proposed-api.yaml contains only routes explicitly named in backend-design.md section 8, including lookup-only reconciliation, atomic queued-intent cancellation and patient account communication preferences. Provider admin setup, contact verification, portal binding and source-work commands reuse existing or separately reviewed contracts; none is invented by this outline."
+}

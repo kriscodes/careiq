@@ -2,11 +2,9 @@
 
 The public site is `apps/marketing`; the authenticated product remains `apps/web`. The existing Express API owns database access. Read [ADR-016](decisions/016-public-marketing-interviews.md) for the public/tenant boundary and [marketing verification](marketing-verification.md) for actual checks and remaining evidence.
 
-October 26 runtime and dependency patches: [marketing security verification](verification/marketing-security-2026-10-26.md).
-
 ## Start locally
 
-Use the repository's Node 22.23.4 and pnpm 11.22.0. From the repository root:
+Use the repository's Node 22.23+ and pnpm 11.22.0. From the repository root:
 
 ```sh
 pnpm install --frozen-lockfile
@@ -159,3 +157,7 @@ References: [Render Next.js static deployment](https://render.com/docs/deploy-ne
 - Confirm an operator will review requests and personally coordinate by email. No automatic notification or booked meeting exists.
 
 Optional founder photo, LinkedIn and public application link are not blockers. No compliance certification, business entity designation, customer outcome, employer endorsement or launch date is claimed.
+
+## October 2026 security rollout
+
+The intended monitored address is `kristian@careiqlabs.com`; the owner must still set up/test it before enabling intake. The API security release also requires migration0015 and checked clinical-runtime grants. Follow [security hardening](security-hardening.md) and [current release status](deployment/security-release-status.md) for the combined production rollout. The custom apex/www now work over HTTPS; this does not prove that intake is enabled.

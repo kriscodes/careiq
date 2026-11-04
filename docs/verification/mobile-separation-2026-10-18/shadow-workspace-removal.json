@@ -1,0 +1,20 @@
+{
+  "verifiedAt": "2026-10-18T17:23:22.253481+00:00",
+  "removed": [
+    {
+      "path": "apps/web/pnpm-workspace.yaml",
+      "sha256": "29767ab063b3a055ad26c8ad51dcecfe88b7635fcd2441cd0fd07a2ba095360d",
+      "unchangedFromStartingHead": true,
+      "recovery": "git show 11df334:apps/web/pnpm-workspace.yaml",
+      "reason": "Stale nested workspace bypasses the current root lock and security policy; web must use the canonical six-project workspace."
+    },
+    {
+      "path": "apps/web/pnpm-lock.yaml",
+      "sha256": "750f03c6431733882fd8538109e698d7384a3486e34222bdf80e10155b282083",
+      "unchangedFromStartingHead": true,
+      "recovery": "git show 11df334:apps/web/pnpm-lock.yaml",
+      "reason": "Stale nested workspace bypasses the current root lock and security policy; web must use the canonical six-project workspace."
+    }
+  ],
+  "applicationDependencyVersionsChanged": false
+}

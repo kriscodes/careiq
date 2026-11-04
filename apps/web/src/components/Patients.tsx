@@ -1,159 +1,145 @@
-"use client";
+'use client';
 
-import { useAuth } from "@clerk/nextjs";
-import {
-  type SubmitEvent,
-  useState,
-} from "react";
+import { AccessLoading } from '@/components/access/AccessLoading';
 
-import {
-  createPatient,
-  type Patient,
-} from "@/lib/api/patients";
+import { useI18n } from '@/i18n/provider';
+import { useAuth } from '@clerk/nextjs';
+import { type SubmitEvent, useState } from 'react';
 
-export function Patients({ patients, onCreated }: { patients: Patient[]; onCreated: (patient: Patient) => void; }) {
-    const { getToken } = useAuth();
+import { createPatient, type Patient } from '@/lib/api/patients';
 
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
+export function Patients({
+  patients,
+  onCreated,
+}: {
+  patients: Patient[];
+  onCreated: (patient: Patient) => void;
+}) {
+  const { t, uiError } = useI18n();
+  const { getToken } = useAuth();
 
-    const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
 
-    async function handleSubmit(
-        event: SubmitEvent<HTMLFormElement>,
-    ) {
-        event.preventDefault();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-        try {
-            setLoading(true);
-            setError(null);
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
 
-            const token = await getToken();
+    try {
+      setLoading(true);
+      setError(null);
 
-            if (!token) {
-                throw new Error("Authentication token unavailable.");
-            }
+      const token = await getToken();
 
-            const patient = await createPatient(token, {
-                firstName: firstName.trim(),
-                lastName: lastName.trim(),
-                email: email.trim() || undefined,
-                phone: phone.trim() || undefined,
-            });
+      if (!token) {
+        throw new Error(t('access.copy.authentication_token_unavailable'));
+      }
 
-            setFirstName("");
-            setLastName("");
-            setEmail("");
-            setPhone("");
+      const patient = await createPatient(token, {
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim() || undefined,
+        phone: phone.trim() || undefined,
+      });
 
-            onCreated(patient);
-        } catch (err) {
-            setError(
-            err instanceof Error
-                ? err.message
-                : "Unable to create patient.",
-            );
-        } finally {
-            setLoading(false);
-        }
+      setFirstName('');
+      setLastName('');
+      setEmail('');
+      setPhone('');
+
+      onCreated(patient);
+    } catch (err) {
+      setError(uiError(err, 'access.copy.unable_to_create_patient'));
+    } finally {
+      setLoading(false);
     }
+  }
 
-    return (
-        <section className="mt-10 space-y-8">
-            <div>
-                <h2 className="text-xl font-semibold">Patients</h2>
-                <p className="text-sm text-gray-600">
-                    Create and view patients for the active practice.
-                </p>
-            </div>
+  return (
+    <section className="mt-10 space-y-8">
+      <div>
+        <h2 className="text-xl font-semibold">{t('access.copy.patients')}</h2>
+        <p className="text-sm text-gray-600">
+          {t('access.copy.create_and_view_patients_for_the_active_practice')}{' '}
+        </p>
+      </div>
 
-            <form
-            onSubmit={handleSubmit}
-            className="grid max-w-xl gap-4"
-            >
-                <input 
-                value={firstName}
-                onChange={(event) => setFirstName(event.target.value)}
-                aria-label="First name"
-                placeholder="First name"
-                className="rounded border p-2"
-                required
-                />
+      <form onSubmit={handleSubmit} className="grid max-w-xl gap-4">
+        <input
+          value={firstName}
+          onChange={(event) => setFirstName(event.target.value)}
+          aria-label={t('access.copy.first_name')}
+          placeholder={t('access.copy.first_name')}
+          className="rounded border p-2"
+          required
+        />
 
-                <input 
-                value={lastName}
-                onChange={(event) => setLastName(event.target.value)}
-                aria-label="Last name"
-                placeholder="Last name"
-                className="rounded border p-2"
-                required
-                />
-                
-                <input 
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                aria-label="Email"
-                placeholder="Email"
-                type="email"
-                className="rounded border p-2"
-                />
+        <input
+          value={lastName}
+          onChange={(event) => setLastName(event.target.value)}
+          aria-label={t('access.copy.last_name')}
+          placeholder={t('access.copy.last_name')}
+          className="rounded border p-2"
+          required
+        />
 
-                <input 
-                value={phone}
-                onChange={(event) => setPhone(event.target.value)}
-                aria-label="Phone"
-                placeholder="Phone"
-                className="rounded border p-2"
-                />
+        <input
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          aria-label={t('access.copy.email')}
+          placeholder={t('access.copy.email')}
+          type="email"
+          className="rounded border p-2"
+        />
 
-                <button 
-                type="submit"
-                disabled={loading}
-                className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
-                >
-                    {loading ? "Creating..." : "Create Patient"}
-                </button>
-            </form>
+        <input
+          value={phone}
+          onChange={(event) => setPhone(event.target.value)}
+          aria-label={t('access.copy.phone')}
+          placeholder={t('access.copy.phone')}
+          className="rounded border p-2"
+        />
 
-            {error && (
-                <p role="alert" className="text-sm text-red-600">
-                    {error}
-                </p>
-            )}
+        <button
+          type="submit"
+          disabled={loading}
+          className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
+        >
+          {loading ? (
+            <AccessLoading label={t('access.copy.creating')} inline />
+          ) : (
+            t('access.copy.create_patient')
+          )}
+        </button>
+      </form>
 
-            <div className="space-y-3">
-                {patients.map((patient) => (
-                    <div
-                    key={patient.id}
-                    className="rounded border p-4"
-                    >
-                        <p className="font-medium">
-                            {patient.firstName} {patient.lastName}
-                        </p>
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
 
-                        {patient.email && (
-                            <p className="text-sm text-gray-600">
-                                {patient.email}
-                            </p>
-                        )}
+      <div className="space-y-3">
+        {patients.map((patient) => (
+          <div key={patient.id} className="rounded border p-4">
+            <p className="font-medium">
+              {patient.firstName} {patient.lastName}
+            </p>
 
-                        {patient.phone && (
-                            <p className="text-sm text-gray-600">
-                                {patient.phone}
-                            </p>
-                        )}
-                    </div>
-                ))}
+            {patient.email && <p className="text-sm text-gray-600">{patient.email}</p>}
 
-                {patients.length === 0 && (
-                    <p className="text-sm text-gray-600">
-                        No patients yet.
-                    </p>
-                )}
-            </div>
-        </section>
-    );
+            {patient.phone && <p className="text-sm text-gray-600">{patient.phone}</p>}
+          </div>
+        ))}
+
+        {patients.length === 0 && (
+          <p className="text-sm text-gray-600">{t('access.copy.no_patients_yet')} </p>
+        )}
+      </div>
+    </section>
+  );
 }

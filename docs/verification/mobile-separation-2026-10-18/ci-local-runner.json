@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-18",
+  "applications": [
+    "api",
+    "web",
+    "marketing"
+  ],
+  "mobileEnvironmentAndCommandRejected": true,
+  "unknownOwnershipFailsClosed": true,
+  "mobileProcessRecordAbsent": true,
+  "apiCorsPorts": [
+    3101,
+    3102
+  ],
+  "nativeAuthenticationEnabled": false,
+  "expoEnvironmentKeys": 0,
+  "retainedCommandsResolve": true,
+  "scope": "Python module loaded without bytecode and exercised with synthetic in-memory environment fixtures. No provider file read, service start/stop, database call or private configuration mutation."
+}

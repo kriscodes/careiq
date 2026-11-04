@@ -1,0 +1,1904 @@
+[
+  {
+    "name": "today-row",
+    "width": 1440,
+    "leftInset": 0,
+    "rightInset": 0,
+    "columnGap": "14px",
+    "overflow": false
+  },
+  {
+    "name": "booking",
+    "width": 1440,
+    "dialog": {
+      "x": 470,
+      "y": 165.703125,
+      "width": 500,
+      "height": 668.59375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Patient",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Provider",
+        "leftInset": 1,
+        "rightInset": 258.5,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Visit type",
+        "leftInset": 258.5,
+        "rightInset": 1,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Date and time",
+        "leftInset": 1,
+        "rightInset": 258.5,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Duration in minutes",
+        "leftInset": 258.5,
+        "rightInset": 1,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "TEXTAREA",
+        "name": "Reason for visit",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave changes",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "new-patient",
+    "width": 1440,
+    "dialog": {
+      "x": 470,
+      "y": 288.203125,
+      "width": 500,
+      "height": 423.59375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "INPUT",
+        "name": "First name",
+        "leftInset": 1,
+        "rightInset": 258.5,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Last name",
+        "leftInset": 258.5,
+        "rightInset": 1,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Email",
+        "leftInset": 1,
+        "rightInset": 258.5,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Phone",
+        "leftInset": 258.5,
+        "rightInset": 1,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Date of birth",
+        "leftInset": 1,
+        "rightInset": 258.5,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave changes",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "waiver",
+    "width": 1440,
+    "dialog": {
+      "x": 470,
+      "y": 367.703125,
+      "width": 500,
+      "height": 264.59375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Reason",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave changes",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "upload",
+    "width": 1440,
+    "dialog": {
+      "x": 470,
+      "y": 265.453125,
+      "width": 500,
+      "height": 469.09375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Patient",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Document type",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "File",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelUpload document",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "document",
+    "width": 1440,
+    "dialog": {
+      "x": 470,
+      "y": 212.453125,
+      "width": 500,
+      "height": 575.09375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "DIV",
+        "name": "Review this versionUpload replacementArchive document",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "review",
+    "width": 1440,
+    "dialog": {
+      "x": 470,
+      "y": 190.203125,
+      "width": 500,
+      "height": 619.59375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Review decision",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "TEXTAREA",
+        "name": "Review note",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave review",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "template-editor",
+    "width": 1440,
+    "dialog": {
+      "x": 470,
+      "y": 106.203125,
+      "width": 500,
+      "height": 787.59375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "INPUT",
+        "name": "Template title",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Document type",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "TEXTAREA",
+        "name": "Document text",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Field 1 label",
+        "leftInset": 17,
+        "rightInset": 258.5,
+        "width": 225,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Field 1 type",
+        "leftInset": 258.5,
+        "rightInset": 17,
+        "width": 225,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave draft",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "template",
+    "width": 1440,
+    "dialog": {
+      "x": 470,
+      "y": 364.703125,
+      "width": 500,
+      "height": 270.59375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "DIV",
+        "name": "Create new draftPrepare for patient",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "availability",
+    "width": 1440,
+    "dialog": {
+      "x": 470,
+      "y": 178.953125,
+      "width": 500,
+      "height": 642.09375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Provider",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "startsAtLocal",
+        "leftInset": 1,
+        "rightInset": 258.5,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "endsAtLocal",
+        "leftInset": 258.5,
+        "rightInset": 1,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "effectiveFrom",
+        "leftInset": 1,
+        "rightInset": 258.5,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "effectiveUntil",
+        "leftInset": 258.5,
+        "rightInset": 1,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave configuration",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "provider-assignment",
+    "width": 1440,
+    "dialog": {
+      "x": 470,
+      "y": 319.953125,
+      "width": 500,
+      "height": 360.09375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Provider",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "active",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave configuration",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "requirement-rules",
+    "width": 1440,
+    "dialog": {
+      "x": 470,
+      "y": 20,
+      "width": 500,
+      "height": 960,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "INPUT",
+        "name": "name",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "visitTypeId",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "reusePolicy",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "maximumAgeDays",
+        "leftInset": 1,
+        "rightInset": 258.5,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "dueOffsetMinutes",
+        "leftInset": 258.5,
+        "rightInset": 1,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelPublish requirements",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "today-row",
+    "width": 768,
+    "leftInset": 0,
+    "rightInset": 0,
+    "columnGap": "10px",
+    "overflow": false
+  },
+  {
+    "name": "booking",
+    "width": 768,
+    "dialog": {
+      "x": 134,
+      "y": 165.703125,
+      "width": 500,
+      "height": 668.59375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Patient",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Provider",
+        "leftInset": 1,
+        "rightInset": 258.5,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Visit type",
+        "leftInset": 258.5,
+        "rightInset": 1,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Date and time",
+        "leftInset": 1,
+        "rightInset": 258.5,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Duration in minutes",
+        "leftInset": 258.5,
+        "rightInset": 1,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "TEXTAREA",
+        "name": "Reason for visit",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave changes",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "new-patient",
+    "width": 768,
+    "dialog": {
+      "x": 134,
+      "y": 288.203125,
+      "width": 500,
+      "height": 423.59375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "INPUT",
+        "name": "First name",
+        "leftInset": 1,
+        "rightInset": 258.5,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Last name",
+        "leftInset": 258.5,
+        "rightInset": 1,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Email",
+        "leftInset": 1,
+        "rightInset": 258.5,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Phone",
+        "leftInset": 258.5,
+        "rightInset": 1,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Date of birth",
+        "leftInset": 1,
+        "rightInset": 258.5,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave changes",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "waiver",
+    "width": 768,
+    "dialog": {
+      "x": 134,
+      "y": 367.703125,
+      "width": 500,
+      "height": 264.59375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Reason",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave changes",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "upload",
+    "width": 768,
+    "dialog": {
+      "x": 134,
+      "y": 265.453125,
+      "width": 500,
+      "height": 469.09375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Patient",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Document type",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "File",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelUpload document",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "document",
+    "width": 768,
+    "dialog": {
+      "x": 134,
+      "y": 212.453125,
+      "width": 500,
+      "height": 575.09375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "DIV",
+        "name": "Review this versionUpload replacementArchive document",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "review",
+    "width": 768,
+    "dialog": {
+      "x": 134,
+      "y": 190.203125,
+      "width": 500,
+      "height": 619.59375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Review decision",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "TEXTAREA",
+        "name": "Review note",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave review",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "template-editor",
+    "width": 768,
+    "dialog": {
+      "x": 134,
+      "y": 106.203125,
+      "width": 500,
+      "height": 787.59375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "INPUT",
+        "name": "Template title",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Document type",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "TEXTAREA",
+        "name": "Document text",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Field 1 label",
+        "leftInset": 17,
+        "rightInset": 258.5,
+        "width": 225,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Field 1 type",
+        "leftInset": 258.5,
+        "rightInset": 17,
+        "width": 225,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave draft",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "template",
+    "width": 768,
+    "dialog": {
+      "x": 134,
+      "y": 364.703125,
+      "width": 500,
+      "height": 270.59375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "DIV",
+        "name": "Create new draftPrepare for patient",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "availability",
+    "width": 768,
+    "dialog": {
+      "x": 134,
+      "y": 178.953125,
+      "width": 500,
+      "height": 642.09375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Provider",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "startsAtLocal",
+        "leftInset": 1,
+        "rightInset": 258.5,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "endsAtLocal",
+        "leftInset": 258.5,
+        "rightInset": 1,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "effectiveFrom",
+        "leftInset": 1,
+        "rightInset": 258.5,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "effectiveUntil",
+        "leftInset": 258.5,
+        "rightInset": 1,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave configuration",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "provider-assignment",
+    "width": 768,
+    "dialog": {
+      "x": 134,
+      "y": 319.953125,
+      "width": 500,
+      "height": 360.09375,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Provider",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "active",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave configuration",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "requirement-rules",
+    "width": 768,
+    "dialog": {
+      "x": 134,
+      "y": 20,
+      "width": 500,
+      "height": 960,
+      "clientWidth": 498,
+      "scrollWidth": 498
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "INPUT",
+        "name": "name",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "visitTypeId",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "reusePolicy",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "maximumAgeDays",
+        "leftInset": 1,
+        "rightInset": 258.5,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "dueOffsetMinutes",
+        "leftInset": 258.5,
+        "rightInset": 1,
+        "width": 241,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelPublish requirements",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 498,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "today-row",
+    "width": 320,
+    "leftInset": 0,
+    "rightInset": 0,
+    "columnGap": "9px",
+    "overflow": false
+  },
+  {
+    "name": "booking",
+    "width": 320,
+    "dialog": {
+      "x": 16,
+      "y": 20,
+      "width": 288,
+      "height": 720,
+      "clientWidth": 286,
+      "scrollWidth": 286
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Patient",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Provider",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Visit type",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Date and time",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Duration in minutes",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "TEXTAREA",
+        "name": "Reason for visit",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave changes",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "new-patient",
+    "width": 320,
+    "dialog": {
+      "x": 16,
+      "y": 63.65625,
+      "width": 288,
+      "height": 632.6875,
+      "clientWidth": 286,
+      "scrollWidth": 286
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "INPUT",
+        "name": "First name",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Last name",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Email",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Phone",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Date of birth",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave changes",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "waiver",
+    "width": 320,
+    "dialog": {
+      "x": 16,
+      "y": 242.703125,
+      "width": 288,
+      "height": 274.59375,
+      "clientWidth": 286,
+      "scrollWidth": 286
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Reason",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave changes",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "upload",
+    "width": 320,
+    "dialog": {
+      "x": 16,
+      "y": 129.953125,
+      "width": 288,
+      "height": 500.09375,
+      "clientWidth": 286,
+      "scrollWidth": 286
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Patient",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Document type",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "File",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelUpload document",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "document",
+    "width": 320,
+    "dialog": {
+      "x": 16,
+      "y": 52.953125,
+      "width": 288,
+      "height": 654.09375,
+      "clientWidth": 286,
+      "scrollWidth": 286
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "DIV",
+        "name": "Review this versionUpload replacementArchive document",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "review",
+    "width": 320,
+    "dialog": {
+      "x": 16,
+      "y": 56.953125,
+      "width": 288,
+      "height": 646.09375,
+      "clientWidth": 286,
+      "scrollWidth": 286
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Review decision",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "TEXTAREA",
+        "name": "Review note",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave review",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "template-editor",
+    "width": 320,
+    "dialog": {
+      "x": 16,
+      "y": 20,
+      "width": 288,
+      "height": 720,
+      "clientWidth": 286,
+      "scrollWidth": 286
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "INPUT",
+        "name": "Template title",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Document type",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "TEXTAREA",
+        "name": "Document text",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "Field 1 label",
+        "leftInset": 17,
+        "rightInset": 17,
+        "width": 254,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "Field 1 type",
+        "leftInset": 17,
+        "rightInset": 17,
+        "width": 254,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave draft",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "template",
+    "width": 320,
+    "dialog": {
+      "x": 16,
+      "y": 205.203125,
+      "width": 288,
+      "height": 349.59375,
+      "clientWidth": 286,
+      "scrollWidth": 286
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "DIV",
+        "name": "Create new draftPrepare for patient",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "availability",
+    "width": 320,
+    "dialog": {
+      "x": 16,
+      "y": 20,
+      "width": 288,
+      "height": 720,
+      "clientWidth": 286,
+      "scrollWidth": 286
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Provider",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "startsAtLocal",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "endsAtLocal",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "effectiveFrom",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "effectiveUntil",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave configuration",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "provider-assignment",
+    "width": 320,
+    "dialog": {
+      "x": 16,
+      "y": 184.453125,
+      "width": 288,
+      "height": 391.09375,
+      "clientWidth": 286,
+      "scrollWidth": 286
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "SELECT",
+        "name": "Provider",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "active",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelSave configuration",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  },
+  {
+    "name": "requirement-rules",
+    "width": 320,
+    "dialog": {
+      "x": 16,
+      "y": 20,
+      "width": 288,
+      "height": 720,
+      "clientWidth": 286,
+      "scrollWidth": 286
+    },
+    "bodyPadding": null,
+    "controls": [
+      {
+        "tag": "INPUT",
+        "name": "name",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "visitTypeId",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "SELECT",
+        "name": "reusePolicy",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "maximumAgeDays",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "INPUT",
+        "name": "dueOffsetMinutes",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "12px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "auto"
+      },
+      {
+        "tag": "FOOTER",
+        "name": "CancelPublish requirements",
+        "leftInset": 1,
+        "rightInset": 1,
+        "width": 286,
+        "paddingRight": "0px",
+        "backgroundPosition": "0% 0%",
+        "appearance": "none"
+      }
+    ],
+    "documentOverflow": false
+  }
+]

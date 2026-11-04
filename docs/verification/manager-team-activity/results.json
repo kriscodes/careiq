@@ -1,0 +1,42 @@
+{
+  "date": "2026-11-02",
+  "scope": "local-only",
+  "api": {
+    "passed": 398,
+    "failed": 0,
+    "skipped": 0
+  },
+  "focusedApi": {
+    "passed": 10,
+    "skipped": 0
+  },
+  "webUnit": {
+    "passed": 131,
+    "failed": 0,
+    "skipped": 0
+  },
+  "managerBrowser": {
+    "passed": 5
+  },
+  "realApiBrowser": {
+    "passed": 3
+  },
+  "apiTypecheck": "passed",
+  "webTypecheck": "passed",
+  "webLint": "passed",
+  "optimizedCompilation": "passed; reserved-domain configuration fixtures",
+  "migrationEntries": 49,
+  "migration": "0048_manager_activity",
+  "databases": [
+    "127.0.0.1:55434/careiq_test",
+    "127.0.0.1:55434/careiq_review"
+  ],
+  "independentReview": "no remaining blockers",
+  "deployed": false,
+  "notion": {
+    "feature": "SW-F16",
+    "task": "SW-T47",
+    "status": "In progress",
+    "reason": "broader reporting and hosted acceptance remain"
+  }
+}

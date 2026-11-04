@@ -1,0 +1,180 @@
+{
+  "reviewDate": "2026-10-17",
+  "environment": {
+    "database": "isolated loopback test database only",
+    "runtime": "Node.js22",
+    "principalFixture": "Trusted test authentication fixture; real HTTP handlers and non-owner/non-superuser/NOBYPASSRLS database role. External identity-provider token verification is outside this fixture.",
+    "syntheticDataOnly": true,
+    "productionChanges": false
+  },
+  "verification": [
+    {
+      "file": "apps/api/tests/workflow-security.test.ts",
+      "status": "passed",
+      "testsIncludingParent": 9,
+      "practices": 12,
+      "locationContexts": 24,
+      "actualHttpRequests": 494,
+      "allowedOwnScopeRequests": 96,
+      "negativeHttpRequests": 398,
+      "restrictedDatabaseChecks": {
+        "foreignRecordReadsDenied": 96,
+        "forgedPatientRelationsRejected": 24,
+        "rawAuditReadsDenied": 24,
+        "wrongPurposeFulfillmentRejectedBeforeVersionLookup": 1
+      },
+      "coverage": [
+        "Staff patient/document/file/library/form-change/portal-grant ID isolation",
+        "Foreign template editing/preview/validation/publication denial",
+        "Foreign paperwork issuance/binding/revocation/library mutation denial",
+        "Patient account selection forgery and cross-patient byte access denial",
+        "Read-only permission denials and forged body scope rejection",
+        "Form-only token upload/signing-purpose denial at each upload phase",
+        "Cookie-route hostile Origin denial",
+        "Membership revocation revalidation",
+        "No raw bearer or answer marker in audit metadata",
+        "Private headers and list DTO byte-pointer suppression"
+      ]
+    },
+    {
+      "file": "apps/api/tests/workflow-grant-race.test.ts",
+      "status": "passed",
+      "tests": 1,
+      "actualHttpRequests": 3,
+      "result": "Two concurrent exchanges of one grant return one200 and one410, create exactly one session, and subsequent replay returns410. A held database row lock makes the race deterministic."
+    },
+    {
+      "file": "apps/api/tests/forms.test.ts",
+      "status": "passed",
+      "tests": 16,
+      "coverage": [
+        "Conditional graph complexity and cycle rejection",
+        "Repeating answer context isolation",
+        "Required fields, registered mapping limits and immutable content hashes",
+        "Spanish glyph preservation and unsupported glyph rejection",
+        "All assigned signatures paginate",
+        "PNG pixel/chunk/decompression/animation bounds and ancillary metadata removal",
+        "Generated/signature PDF page expansion limit",
+        "Private storage key traversal denial"
+      ]
+    },
+    {
+      "file": "apps/api/tests/workflow-service.test.ts",
+      "status": "passed",
+      "testsIncludingParents": 12,
+      "coverage": "Existing restricted-runtime clinical workflow, v1 signing, upload scanning, immutable versions, retry receipts and actual route permission compatibility."
+    },
+    {
+      "file": "apps/api/tests/patient-paperwork.test.ts",
+      "status": "passed before final method-label-only refinement; full-suite reconfirmation recorded by parent review",
+      "testsIncludingParent": 10,
+      "coverage": "v2 authority decision evidence retains exact protected scope, policy, timestamp, source/hash, audit reference and decision hash after demographic change; replacement of private bytes, signature facts and audit facts is denied. Existing signed/unsigned completion, portal binding and calendar eligibility continue."
+    },
+    {
+      "check": "API TypeScript",
+      "status": "passed after final v2 method label, authority evidence and resource bounds"
+    },
+    {
+      "file": "apps/api/tests/api-security.test.ts",
+      "status": "passed",
+      "tests": 14,
+      "coverage": "Core list/create aliases preserve safe retryable503 on injected bounded-pool admission failure and recover on later requests, retaining write retry keys and authorization behavior."
+    },
+    {
+      "file": "apps/api/tests/public-interview-requests.test.ts",
+      "status": "passed",
+      "tests": 9,
+      "coverage": "Public intake returns safe retryable503 on capacity admission, preserves the same submission for a successful retry, and logs no private exception or submitted values."
+    },
+    {
+      "file": "apps/api/tests/protected-audit.test.ts",
+      "status": "passed",
+      "testsIncludingParents": 8,
+      "coverage": "Terminating the task-owned restricted audit-reader idle backend produces one safe57P01log and a verified scoped read reconnects through a new backend. Reader role, read-only transactions, location isolation and export integrity remain enforced."
+    }
+  ],
+  "fixedFindings": [
+    {
+      "finding": "One-time grant could issue two sessions during concurrent exchanges",
+      "repair": "Transaction advisory lock keyed by token hash before resolving the unused grant; no raw token in lock name or logs.",
+      "regression": "workflow-grant-race.test.ts"
+    },
+    {
+      "finding": "Form-completion token could enter legacy upload allocation/fulfillment paths",
+      "repair": "Collection/replacement allowlist at reservation/content/completion API entry points, plus forward migration0033 purpose guard in the restricted fulfillment helper. Existing applied migrations remain unchanged.",
+      "regression": "workflow-security.test.ts"
+    },
+    {
+      "finding": "Successful staff file transfer attempted response header mutation in a finish callback and crashed the HTTP process",
+      "repair": "Capture correlation ID before sending bytes, reuse it in finish/close evidence callbacks. Other API finish/close callbacks inspected.",
+      "regression": "Actual successful file requests across all24location contexts in workflow-security.test.ts"
+    },
+    {
+      "finding": "Untrusted drawn PNG headers/chunks could drive excessive allocation or decoder traversal; compressed data had no explicit inflation bound",
+      "repair": "Validate dimensions, pixel count, format and chunk extents before decoding; reject animation/unknown critical chunks, remove ancillary metadata, enforce expected bounded inflation.",
+      "regression": "forms.test.ts crafted header/chunk/compressed-image fixtures"
+    },
+    {
+      "finding": "Small valid multiline legal content could allocate excessive PDF pages before the post-render byte check",
+      "repair": "Maximum100PDF pages, checked before adding each generated/signature page; oversized signing sources rejected before an appended page.",
+      "regression": "forms.test.ts legal text and signing source expansion fixtures"
+    },
+    {
+      "finding": "New adult-self policy decision was enforced but not retained as a separately linked immutable signing fact",
+      "repair": "Newv2 protected authority decision event and evidence with policy version, evaluated timestamp, exact scope/request/source/hash, decision hash and event link; no DOB/name/raw answers in audit metadata. Link-possession assurance remains unchanged.",
+      "regression": "patient-paperwork.test.ts signing completion subtest"
+    },
+    {
+      "finding": "Local-review-issued v2 signing was labeled email_link despite no real email delivery",
+      "repair": "Newv2 session/exchange audit, projection/evidence/completion audit and terminal receipt access audit use patient_request_link and link_possession. Forward-only0034 derives receipt method from the verified joined request purpose. Legacyv1 retained facts/method and all authorization/receipt predicates remain unchanged.",
+      "regression": "patient-paperwork.test.ts v2 session/exchange/freeze/signature receipt assertions and workflow-service.test.ts v1 preservation assertions; aggregate final run reconfirms"
+    },
+    {
+      "finding": "Core clinical list/create handlers converted bounded-pool admission failures into generic500responses",
+      "repair": "A dependency-neutral classifier preserves safe DATABASE_BUSY503 with retryabletrue and Retry-After. Later requests recover with their write retry keys.",
+      "regression": "api-security.test.ts legacy and location route aliases"
+    },
+    {
+      "finding": "Public intake converted bounded-pool admission failures into generic500responses",
+      "repair": "Preserve a safe retryable503 and an unavailable operational outcome without importing a database client or echoing exception/submission values. The same submission can later succeed.",
+      "regression": "public-interview-requests.test.ts"
+    },
+    {
+      "finding": "The separate configured audit-reader pool had no idle error listener, so a disconnected idle backend could crash the API",
+      "repair": "Use the shared bounded/error-handled pool while retaining max2, the separate restricted reader login and existing read-only transaction semantics.",
+      "regression": "protected-audit.test.ts actual private-loopback idle-backend termination and reconnection"
+    }
+  ],
+  "currentResourceBounds": {
+    "maximumPdfPages": 100,
+    "maximumDrawnPngWidth": 2048,
+    "maximumDrawnPngHeight": 1024,
+    "maximumDrawnPngPixels": 1048576,
+    "drawnSignatureDataUrlCharacters": 150000,
+    "answerJsonBytes": 128000,
+    "workflowJsonBodyLimit": "256KiB",
+    "formFields": 100,
+    "conditionalRules": 100,
+    "sections": 20,
+    "maximumRowsPerRepeatingSection": 20,
+    "signatureFields": 30
+  },
+  "remainingVerificationBoundaries": [
+    "This matrix is adversarial correctness coverage, not an HTTP throughput/capacity benchmark or a claim of zero vulnerabilities.",
+    "External identity-provider credentials/session verification and production account recovery are not exercised by the trusted-principal HTTP fixture.",
+    "No hosted database, email provider, external account, object-storage policy, production renderer/worker, deployment or certificate signing was activated.",
+    "Distributed per-tenant API/render admission, isolated production PDF workers, scanner/provider capacity, privacy-safe operational monitoring and end-to-end production capacity acceptance remain deployment work. Database benchmark results alone do not establish that capacity.",
+    "PDF parsing of arbitrary uploaded legacy documents still requires the documented isolated production worker boundary; local page/input/image bounds are not a complete hostile-PDF sandbox.",
+    "The retained adult-self decision records a local policy check; it does not independently establish signer identity, legal authority in every jurisdiction, or certificate validity."
+  ],
+  "availabilityFocusedRun": {
+    "status": "passed",
+    "tests": 31,
+    "failures": 0,
+    "skipped": 0,
+    "apiTypecheck": "passed",
+    "sourceWhitespace": "passed",
+    "benchmarkWindow": "Run only after the explicit clean benchmark window closed.",
+    "scope": "The three approved API/audit-reader availability fixes. Checked-out idle-transaction disconnect handling is separately owned by the database reviewer and requires its own final evidence; the idle-pool regression does not establish that behavior."
+  }
+}

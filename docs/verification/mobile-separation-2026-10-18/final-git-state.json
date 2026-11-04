@@ -1,0 +1,14 @@
+{
+  "verifiedAt": "2026-10-18T17:39:09.487703+00:00",
+  "headUnchanged": true,
+  "stagedPaths": 0,
+  "mobileTrackedDeletions": 62,
+  "mobileDirectoryAbsent": true,
+  "temporaryBytecodeRemoved": [
+    "local-review.cpython-311.pyc"
+  ],
+  "remainingBytecodeTrackedOrUntracked": false,
+  "committed": false,
+  "pushed": false,
+  "deployed": false
+}
