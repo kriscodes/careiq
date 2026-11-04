@@ -271,6 +271,84 @@ test('CodeQL severity gate fails closed on missing analysis and security finding
   assert.throws(() => codeqlViolations(sarif), /failed/);
 });
 
+test('CodeQL gate resolves grouped query-pack rules without losing severity or language checks', () => {
+  const reports = ['js', 'py', 'actions'].map((language) => ({
+    version: '2.1.0',
+    runs: [
+      {
+        tool: {
+          driver: { name: 'CodeQL', rules: [] },
+          extensions: [
+            {
+              name: `codeql/${language}-queries`,
+              rules: [{ id: `${language}/test`, properties: { 'security-severity': '7.5' } }],
+            },
+          ],
+        },
+        invocations: [{ executionSuccessful: true }],
+        results: [],
+      },
+    ],
+  }));
+  assert.deepEqual(verifyCodeqlReports(reports), []);
+  assert.throws(() => verifyCodeqlReports(reports.slice(1)), /must include/);
+  const report = structuredClone(reports[0]);
+  const run = report.runs[0];
+  run.results.push({
+    ruleId: 'js/test',
+    rule: { id: 'js/test', index: 0, toolComponent: { index: 0, name: 'codeql/js-queries' } },
+    level: 'note',
+  });
+  assert.deepEqual(codeqlViolations(report), [{ rule: 'js/test', severity: 7.5, level: 'note' }]);
+  run.tool.extensions[0].rules[0].properties['security-severity'] = '0';
+  run.results[0].level = 'warning';
+  assert.equal(codeqlViolations(report).length, 1);
+  run.invocations[0].executionSuccessful = false;
+  assert.throws(() => codeqlViolations(report), /failed/);
+});
+
+test('CodeQL gate rejects missing, ambiguous and mismatched grouped rule references', () => {
+  const report = {
+    version: '2.1.0',
+    runs: [
+      {
+        tool: {
+          driver: { name: 'CodeQL', rules: [] },
+          extensions: [
+            {
+              name: 'codeql/first',
+              rules: [{ id: 'js/test', properties: { 'security-severity': '7.5' } }],
+            },
+            {
+              name: 'codeql/second',
+              rules: [{ id: 'js/test', properties: { 'security-severity': '0' } }],
+            },
+          ],
+        },
+        results: [{ ruleId: 'js/test', level: 'note' }],
+      },
+    ],
+  };
+  assert.throws(() => codeqlViolations(report), /unique matching/);
+  const run = report.runs[0];
+  run.results[0].rule = { id: 'js/test', index: 0, toolComponent: { index: 0 } };
+  assert.equal(codeqlViolations(report).length, 1);
+  run.results[0].rule.toolComponent.index = 2;
+  assert.throws(() => codeqlViolations(report), /tool component/);
+  run.results[0].rule.toolComponent = { index: 0, name: 'codeql/second' };
+  assert.throws(() => codeqlViolations(report), /tool component/);
+  run.results[0].rule.toolComponent = { name: 'codeql/first' };
+  assert.equal(codeqlViolations(report).length, 1);
+  run.results[0].rule.index = 1;
+  assert.throws(() => codeqlViolations(report), /matching rule/);
+  run.results[0].rule.index = 0;
+  run.results[0].rule.id = 'js/mismatch';
+  assert.throws(() => codeqlViolations(report), /inconsistent/);
+  run.results = [];
+  run.tool.extensions = [{ name: 'codeql/empty', rules: [] }];
+  assert.throws(() => codeqlViolations(report), /Incomplete/);
+});
+
 test('post-deployment events pin the emitted SHA and require explicit environment and marketing identity', () => {
   const event = {
     deployment_status: { state: 'success' },
