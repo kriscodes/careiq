@@ -2,6 +2,9 @@ import type { Page, Route } from '@playwright/test';
 import { test, expect } from './harness';
 import type { AccessContext, WorkspaceCapabilities } from '../../src/lib/api/practice';
 
+// These access fixtures use UTC locations; date-reconciliation behavior has separate tests.
+test.use({ timezoneId: 'UTC' });
+
 const first = {
   id: '11111111-1111-4111-8111-111111111111',
   name: 'Main location',

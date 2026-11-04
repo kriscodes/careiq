@@ -398,5 +398,8 @@
     "apps/api/tests/owner-access-database.test.ts",
     "apps/api/tests/practice-lifecycle.test.ts",
     "apps/api/tests/workflow-read-model.test.ts"
+  ],
+  "browserFixtureReliabilityPaths": [
+    "apps/web/tests/browser/practice-home.spec.ts"
   ]
 }
