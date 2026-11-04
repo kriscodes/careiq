@@ -1,4 +1,3 @@
-
 # Packages
 
 This directory contains reusable libraries and shared code used across CareIQ applications.
@@ -20,3 +19,4 @@ Packages must not depend on individual applications.
 
 ```text
 apps/* → packages/*
+```

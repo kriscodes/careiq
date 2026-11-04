@@ -1,4 +1,4 @@
-import { parseSiteConfig } from "./config";
+import { parseSiteConfig } from './config';
 
 // Explicit accesses let Next.js incorporate only these public values at build time.
 export const siteConfig = parseSiteConfig({

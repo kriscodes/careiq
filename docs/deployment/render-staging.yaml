@@ -1,0 +1,145 @@
+# yaml-language-server: $schema=https://render.com/schema/render.yaml.json
+# Read staging-rollback.md for initialization and deployment evidence before applying.
+# Adopt only database dpg-dbl9tgegekts73fos8qg-a after its initialization is verified.
+# autoDeployTrigger: off does not prevent Render's initial deployment on creation.
+# Use only the confirmed Care IQ Labs workspace; these names must not match production.
+previews:
+  generation: off
+
+projects:
+  - name: CareIQ Staging
+    environments:
+      - name: staging
+        # Virginia is intentionally outside production's Oregon private network.
+        # Enable environment networking isolation separately if the workspace supports it.
+        databases:
+          - name: careiq-staging-db
+            databaseName: careiq_staging_db
+            user: careiq_staging_db_user
+            postgresMajorVersion: '18'
+            region: virginia
+            plan: 0.1c-256mb
+            diskSizeGB: 1
+            storageAutoscalingEnabled: false
+            connectionPool: none
+            ipAllowList: []
+
+        services:
+          - type: web
+            name: careiq-staging-api
+            runtime: node
+            repo: https://github.com/kriscodes/careiq
+            branch: release/migration-50-fallback-2026-11-03
+            region: virginia
+            plan: 0.5c-512mb
+            numInstances: 1
+            autoDeployTrigger: off
+            buildCommand: pnpm install --frozen-lockfile && pnpm --filter ./apps/api build
+            # This is only private-volume provisioning. Migrations run separately.
+            startCommand: >-
+              node --input-type=commonjs -e '
+              const fs=require("node:fs");
+              const root="/var/data",dir=root+"/careiq-documents";
+              const fail=()=>{throw new Error("PRIVATE_STORAGE_PROVISIONING_REQUIRED");};
+              if(process.env.CAREIQ_PRIVATE_STORAGE_DIR!==dir)fail();
+              const mounted=fs.readFileSync("/proc/self/mountinfo","utf8").split("\n").some(line=>line.split(" ")[4]===root);
+              const mount=fs.lstatSync(root);
+              if(!mounted||!mount.isDirectory()||mount.isSymbolicLink()||fs.realpathSync(root)!==root)fail();
+              process.umask(0o077);
+              try{fs.mkdirSync(dir,{mode:0o700});}catch(error){if(error.code!=="EEXIST")throw error;}
+              const stat=fs.lstatSync(dir);
+              if(!stat.isDirectory()||stat.isSymbolicLink()||fs.realpathSync(dir)!==dir||stat.uid!==process.getuid()||(stat.mode&0o777)!==0o700)fail();
+              fs.accessSync(dir,fs.constants.R_OK|fs.constants.W_OK|fs.constants.X_OK);
+              ' && exec pnpm --filter ./apps/api start
+            healthCheckPath: /health
+            domains:
+              - api-staging.careiqlabs.com
+            disk:
+              name: careiq-staging-documents
+              mountPath: /var/data
+              sizeGB: 1
+            envVars:
+              - key: NODE_ENV
+                value: production
+              - key: NODE_VERSION
+                value: 22.23.4
+              - key: HOST
+                value: 0.0.0.0
+              - key: PORT
+                value: '10000'
+              # Supply the staging careiq_api login, never the database owner URL.
+              - key: DATABASE_URL
+                sync: false
+              - key: DATABASE_SSL_MODE
+                value: require
+              - key: DATABASE_POOL_MAX
+                value: '5'
+              - key: CORS_ORIGINS
+                value: https://staging.careiqlabs.com
+              - key: TRUSTED_PROXY_CIDRS
+                value: ''
+              - key: CLERK_PUBLISHABLE_KEY
+                sync: false
+              - key: CLERK_SECRET_KEY
+                sync: false
+              - key: CLERK_WEBHOOK_SIGNING_SECRET
+                sync: false
+              - key: CAREIQ_PRACTICE_CREATOR_USER_IDS
+                sync: false
+              - key: CAREIQ_STAFF_ROLES
+                value: ''
+              - key: CAREIQ_INVITATION_REDIRECT_URL
+                value: https://staging.careiqlabs.com/join
+              - key: CLERK_NATIVE_AUTH_ENABLED
+                value: 'false'
+              - key: CLERK_NATIVE_AUTHORIZED_PARTIES
+                value: ''
+              - key: INTERVIEW_REQUESTS_ENABLED
+                value: 'false'
+              - key: CAREIQ_PRIVATE_STORAGE_DIR
+                value: /var/data/careiq-documents
+              # CareIQ requires hexadecimal; Render generateValue uses base64.
+              - key: CAREIQ_WORKFLOW_CURSOR_SECRET
+                sync: false
+              - key: CAREIQ_SCANNER_COMMAND
+                value: ''
+              - key: CAREIQ_AUDIT_DATABASE_URL
+                value: ''
+              - key: CAREIQ_DELIVERY_ENABLED
+                value: 'false'
+              - key: CAREIQ_NOTIFICATION_WORKER_ENABLED
+                value: 'false'
+              - key: CAREIQ_NOTIFICATION_WORKER_SCOPES
+                value: ''
+
+          - type: web
+            name: careiq-staging-web
+            runtime: node
+            repo: https://github.com/kriscodes/careiq
+            branch: release/migration-50-fallback-2026-11-03
+            region: virginia
+            plan: 0.5c-512mb
+            numInstances: 1
+            autoDeployTrigger: off
+            buildCommand: pnpm install --frozen-lockfile && pnpm --filter ./apps/web build
+            startCommand: pnpm --filter ./apps/web start
+            healthCheckPath: /
+            domains:
+              - staging.careiqlabs.com
+            envVars:
+              - key: NODE_ENV
+                value: production
+              - key: NODE_VERSION
+                value: 22.23.4
+              - key: NEXT_TELEMETRY_DISABLED
+                value: '1'
+              - key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+                sync: false
+              - key: CLERK_SECRET_KEY
+                sync: false
+              - key: NEXT_PUBLIC_API_URL
+                value: https://api-staging.careiqlabs.com
+              - key: NEXT_PUBLIC_CAREIQ_AUTH_PROVIDERS
+                value: ''
+              - key: NEXT_PUBLIC_INTERVIEW_MODE
+                value: 'false'

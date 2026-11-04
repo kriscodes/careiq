@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --port 3002",
-    "build": "next build",
-    "lint": "eslint",
+    "build": "node ../../scripts/verify-deployment-checks.mjs --render-build && node ../../scripts/release-metadata.mjs marketing && next build",
+    "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx --test tests/*.test.ts",
     "preview": "node scripts/preview.mjs"
