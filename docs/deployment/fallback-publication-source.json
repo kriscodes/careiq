@@ -1,0 +1,402 @@
+{
+  "version": 1,
+  "baselineCommit": "7d2cabe4b48d4e4d2aa8006a7bb253c539d79d12",
+  "retainedArtifactSourceDigest": "25918c84654457a16a3ac32d5e66121c85edcbf2c4efcce7ccc2364d00435057",
+  "retainedArtifactOverlay": [
+    {
+      "path": "apps/api/drizzle/meta/_journal.json",
+      "reason": "Migration 50 compatibility and unchanged strict database boundaries.",
+      "category": "database-compatibility",
+      "sha256": "0fc127803b0207feab74725cd85efa520ebc3ef20f4c8c346051522d191a0685",
+      "baselineSha256": "4c98bbcbe5a251013505aaa60249322a141848faa65c05bf42ceac0d0d8a4bcf"
+    },
+    {
+      "path": "apps/api/drizzle/0049_managed_helper_ownership.sql",
+      "reason": "Migration 50 compatibility and unchanged strict database boundaries.",
+      "category": "database-compatibility",
+      "sha256": "7de11385f22d8f4da502fb46aab62583b02f96b9a0e59a604a3cebe216162cf8",
+      "baselineSha256": null
+    },
+    {
+      "path": "apps/api/src/db/release-check.ts",
+      "reason": "Migration 50 compatibility and unchanged strict database boundaries.",
+      "category": "database-compatibility",
+      "sha256": "3f6f36ffd01a14d32c8385d030e7f847ce5fbb6019d4801d17518a16b4ed0cc1",
+      "baselineSha256": "c21e1af041901d0e383dff3edff4cf0ada4baa70c3ac998380445ae71cb38783"
+    },
+    {
+      "path": "apps/api/src/db/notification-release-check.ts",
+      "reason": "Migration 50 compatibility and unchanged strict database boundaries.",
+      "category": "database-compatibility",
+      "sha256": "0e8ba7d270fe26d66c3cd11e1220820d476dc44406f7bd99b0d799dc42f74b0a",
+      "baselineSha256": "d8b84588364f4145976173cf1fac3311f5b304f357cce33de779ca35b5a32b1b"
+    },
+    {
+      "path": "apps/api/src/db/managed-owner-policy.ts",
+      "reason": "Migration 50 compatibility and unchanged strict database boundaries.",
+      "category": "database-compatibility",
+      "sha256": "c597272e41733f32de70e75ac5b7a437ab548199cab3c0c5e5cd6e53798c7ea3",
+      "baselineSha256": null
+    },
+    {
+      "path": "apps/api/src/db/managed-owner-release-check.ts",
+      "reason": "Migration 50 compatibility and unchanged strict database boundaries.",
+      "category": "database-compatibility",
+      "sha256": "e7b0dc26d6411169e6f54dd588fc9f8dfe45e46619218c90a9efeeedb2c9a3e8",
+      "baselineSha256": null
+    },
+    {
+      "path": "apps/api/src/app.ts",
+      "sha256": "7f9810a8384348de3bca47be5a504c8b84ea0b2f62d740ededcbfe981787255b",
+      "reason": "Reviewed route rate limits and matching locked dependency.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": "514320c6583af0bd1be98ab03b5a5e5cc13c6fc8b3cd77c86f29a5dc52922f5c"
+    },
+    {
+      "path": "apps/api/src/middleware/api-rate-limit.ts",
+      "sha256": "077c52646d7f58bdf41907cd4a43a4963248f8da484b9c362817f962769fb98c",
+      "reason": "Reviewed route rate limits and matching locked dependency.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": null
+    },
+    {
+      "path": "apps/api/package.json",
+      "sha256": "15c5900a15d5b6234f6b067861360ff5bcf372f78ac464902a5bd1dae2a2a525",
+      "reason": "Reviewed route rate limits and matching locked dependency.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": "0e83c5b93bd1800fb1cba2fe9745dd7a25b5b24168ea68de55c74a91ec98b5e7"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "b715a9bf83950656a154510032d830d4384771923e43b4ac72731272cc6c3f7a",
+      "reason": "Reviewed route rate limits and matching locked dependency.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": "d5312cbe4aa1e9c5ff418eb1acbc65ab8884ae3973c64a880de8aea39f7a1900"
+    },
+    {
+      "path": "pnpm-workspace.yaml",
+      "sha256": "2110e862f004ca3c2db303c9b98950239f112a33ad0dc12a117cc5d57632538d",
+      "reason": "Reviewed route rate limits and matching locked dependency.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": "569f58dc31e0cf7b9474fadf533a657625ccd6e4bea813a26a0bff28f55673e0"
+    },
+    {
+      "path": "package.json",
+      "sha256": "f2d9332b14c63b72a7478d92bd56e8a8bb17d7f4676a3b2153701b293ad0aaab",
+      "reason": "Reviewed route rate limits and matching locked dependency.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": "f14c27fa9e62095e70eae5dd734fe94692061661e01fa67654c21b245d7c245b"
+    },
+    {
+      "path": "apps/api/src/routes/private-read.ts",
+      "sha256": "53af54334f0c7d199cd4e7583e1526ddc8000296ad4ce20a0da962147e5a55eb",
+      "reason": "Reviewed sensitive-filter POST contracts; API and web must roll back together.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": null
+    },
+    {
+      "path": "apps/api/src/routes/workflow.ts",
+      "sha256": "f9512ad3670f96e6aa5de616954baebd65c24c8a3d2d5343c08799b3cf34bfca",
+      "reason": "Reviewed sensitive-filter POST contracts; API and web must roll back together.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": "94e7b7a31fdcaa760fde7e8aae268384cd89cee16dbdafadce42072c1cd24ea4"
+    },
+    {
+      "path": "apps/api/src/routes/patient-delivery.ts",
+      "sha256": "0b6287dcdf72c31e8b848f1e00ce8271686297272f2b6ec481ce55a26c182e31",
+      "reason": "Reviewed sensitive-filter POST contracts; API and web must roll back together.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": "f61d0fb33eb1113a5d0d2476bc17068b815dd0308a1554980e17ef7fbe8b6597"
+    },
+    {
+      "path": "apps/web/src/lib/api/workflow.ts",
+      "sha256": "946e0e39898c6bf5fa667efaf99c1f382be04ac4369bad67f0e684302c461d02",
+      "reason": "Reviewed sensitive-filter POST contracts; API and web must roll back together.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": "eef9312de96358c3e5dfb070d509668eb87b83f9b6daf703137e55e481b869bc"
+    },
+    {
+      "path": "apps/web/src/lib/api/client.ts",
+      "sha256": "bd2b0a32837571fceff8aea4ab51a9a8b26e149d9d47a739136faff9beb3cccf",
+      "reason": "Reviewed sensitive-filter POST contracts; API and web must roll back together.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": "a367f390c8fb9bc0b49f4ba141c0ed86c5f2478fc49710b07a66427321734eba"
+    },
+    {
+      "path": "apps/api/src/notifications/delivery-provider.ts",
+      "sha256": "e695d3c13f06bcecdfb0cf056782d4a2c363fea151213cb5d682b1544512d6b7",
+      "reason": "Reviewed type guards and safe handling of provider form fields and opaque cursors.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": "4d2276892410935675b85695039ff6e81ce3de4cd7290ba9bc13913e7e6448b4"
+    },
+    {
+      "path": "apps/api/src/services/form-changes.service.ts",
+      "sha256": "5267674815d3f547b92a08af8099e63c850d8365db7dbdf1a077c6cb40523e1b",
+      "reason": "Reviewed type guards and safe handling of provider form fields and opaque cursors.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": "7834e7611e3b06cc13c15c7e843532a521938ddf4d6f2ff11e0332afa2a91ffe"
+    },
+    {
+      "path": "apps/api/src/workflow/paperwork-policy.ts",
+      "sha256": "d3c9640445b66aa1cb86fe79c2ae5969b3b456fb2ee2fbfc6aea3019b3f45891",
+      "reason": "Reviewed type guards and safe handling of provider form fields and opaque cursors.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": "86ec4561f0348c69c8e2128575c9072ef03f969b856f59782c67e997468a324a"
+    },
+    {
+      "path": "apps/web/src/components/workflow/preview-adapter.ts",
+      "sha256": "89ec34b97af2b0e1d34626b7dc6b5df1db3213e8584cfdc6645f8caa6db1e37a",
+      "reason": "Reviewed removal of persistent preview records from browser local storage.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": "124fb06ad6b839c634d979665a3ec8c2ba21a962d4e6a5755fb7426cc02772b7"
+    },
+    {
+      "path": "apps/api/src/release-revision.ts",
+      "sha256": "33da53b760da1e7dc3ec66e7323f8fdf1dd27ca2bb1e5910e4c282f3fb29c8f2",
+      "reason": "Current protected app entry requires explicit build identity and typed clinical errors.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": null
+    },
+    {
+      "path": "apps/api/src/routes/clinical-failure.ts",
+      "sha256": "85444a94b35c8bd3eda100197f0c8435ffb5c55d054d42a77c9a66e68b8608e7",
+      "reason": "Current protected app entry requires explicit build identity and typed clinical errors.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": null
+    },
+    {
+      "path": "apps/api/src/services/clinical-security.ts",
+      "sha256": "85ef67741616b0b77125b0d7b9d259bd5a68e88ea0b5ef6f61f282ecc556210e",
+      "reason": "Current protected app entry requires explicit build identity and typed clinical errors.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": "287b0e9dd5928d4b28883683052589cf734a4012ccdf55e604ecb2baa01a519b"
+    },
+    {
+      "path": "apps/api/src/db/with-tenant.ts",
+      "sha256": "65d15b994fd3c48aa93b4ff5e5d2a749211ae71fc9493c687a2dab4c557ff122",
+      "reason": "Current protected app entry requires explicit build identity and typed clinical errors.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": "a433e7fad265a7afcba7ac16ca98f12fccdbc4f84389757ae44d2ad228ee44d5"
+    },
+    {
+      "path": "apps/api/src/services/appointment.service.ts",
+      "sha256": "83b7ef0d11766a501db1bafda4f0a7b5d6ea7dfa518781b9d1272724200c1048",
+      "reason": "Current protected app entry requires explicit build identity and typed clinical errors.",
+      "category": "reviewed-security-fix",
+      "baselineSha256": "464c0f68dc422c432003e0fd4d14e8d060e25db13e037e3efc68346fd04e8d8a"
+    },
+    {
+      "path": "scripts/verify-deployment-checks.mjs",
+      "sha256": "1bd3c948f6580cf5d8f7308e5dbd82907351e01c27ace8e851d009e5d0740281",
+      "reason": "Preserve exact-commit deployment build hooks and generated web release metadata.",
+      "category": "release-safety",
+      "baselineSha256": null
+    },
+    {
+      "path": "scripts/release-metadata.mjs",
+      "sha256": "2be3eda333d9a418c737928a3792d35818c64de0191e869f91c40fd9d1332c33",
+      "reason": "Preserve exact-commit deployment build hooks and generated web release metadata.",
+      "category": "release-safety",
+      "baselineSha256": null
+    },
+    {
+      "path": "apps/web/package.json",
+      "sha256": "a94b9282e0b55acdeade4d8263fb13fd53ea57ddb06627c8033bbe3ecc1ccaaf",
+      "reason": "Preserve exact-commit deployment build hooks and generated web release metadata.",
+      "category": "release-safety",
+      "baselineSha256": "a70862ce647e3fd899af1fdac4dff2ab294f20c98fa8cabcb7f4e0a0a14bf561"
+    },
+    {
+      "path": "apps/api/tests/api-security.test.ts",
+      "sha256": "3562f114e302d9ca8abe25d49555f0d5d6998029a71e1fefbf332c2bcaf3cb6f",
+      "reason": "Matching regressions verify the overlaid rate limits, source identity and helper isolation.",
+      "category": "matching-regression-test",
+      "baselineSha256": "beb77d4336489b0a54e3c44ef62a99496040f1bad64ee195a38e019db4d2ecff"
+    },
+    {
+      "path": "apps/api/tests/public-interview-requests.test.ts",
+      "sha256": "2763d08a8b9fce2d4b69406a88efb5dd62e4502e2e854301d61d811b54671711",
+      "reason": "Matching regressions verify the overlaid rate limits, source identity and helper isolation.",
+      "category": "matching-regression-test",
+      "baselineSha256": "260ec3fc1f44f693405e5a67d0b276792da17349d39359bbc87ee52f619e61b0"
+    },
+    {
+      "path": "apps/api/tests/workflow-openapi.test.ts",
+      "sha256": "1f42bf791b4a6b607e68a9bb0ec9b91ea7c6f5462ad4dd6ebe3da29ca819ceb7",
+      "reason": "Matching regressions verify the overlaid rate limits, source identity and helper isolation.",
+      "category": "matching-regression-test",
+      "baselineSha256": "17c7c51bf2d59f525367637aea723d1d61b288092dc6ca2814046d50fdea98fc"
+    },
+    {
+      "path": "apps/api/tests/api-rate-limit.test.ts",
+      "sha256": "0e7bfc0fd68174ba8d2d3cb497922313a346b1ba879b9826bae73917a9300cf0",
+      "reason": "Matching regressions verify the overlaid rate limits, source identity and helper isolation.",
+      "category": "matching-regression-test",
+      "baselineSha256": null
+    },
+    {
+      "path": "apps/api/tests/release-revision.test.ts",
+      "sha256": "cffc3e78ff087ecc3914ea2f1383dbceaa50f54f0c1b574f5623bcdae1a29890",
+      "reason": "Matching regressions verify the overlaid rate limits, source identity and helper isolation.",
+      "category": "matching-regression-test",
+      "baselineSha256": null
+    },
+    {
+      "path": "apps/api/tests/managed-owner-policy.test.ts",
+      "sha256": "45fe2c7fdf224ada7cfa67a4c180e84b78ae6e5c8c7480f84130b702a2ff7314",
+      "reason": "Matching regressions verify the overlaid rate limits, source identity and helper isolation.",
+      "category": "matching-regression-test",
+      "baselineSha256": null
+    },
+    {
+      "path": "apps/api/tests/patient-delivery-policy.test.ts",
+      "sha256": "f4095e5803e93fa9cf6a328619afcb77d3fbbf4ce4c81c551c1c966a2d7a66a0",
+      "reason": "Matching regressions verify the overlaid rate limits, source identity and helper isolation.",
+      "category": "matching-regression-test",
+      "baselineSha256": "051fdb9dd513ac62c3cad24de3faa3934f6b0a469e9233ef2ccaaef12910fd49"
+    },
+    {
+      "path": "apps/api/tests/patient-delivery-routes.test.ts",
+      "sha256": "33a2d2f3b001876be8029c6b6c342eabdaf60c8613d574f7d7a3c7803165d078",
+      "reason": "Matching regressions verify the overlaid rate limits, source identity and helper isolation.",
+      "category": "matching-regression-test",
+      "baselineSha256": "80e21de51b8cac125f46a54184f512c7d7fa7a4937796a02529f1fe9669d807c"
+    },
+    {
+      "path": "apps/api/tests/paperwork-policy.test.ts",
+      "sha256": "f68dce0ee0fd65e7a49e1d170d895390f19f01f0545c9ccd9914b4354f642151",
+      "reason": "Matching regressions verify the overlaid rate limits, source identity and helper isolation.",
+      "category": "matching-regression-test",
+      "baselineSha256": "8bffa12cdeb99eb009e265c9e94ea85947ce109e00d5e5b7a7f8cd58430daede"
+    },
+    {
+      "path": "apps/api/tests/workflow-availability.test.ts",
+      "sha256": "3b60874a53693ea8c5d9b2fb3beb6a3395fe9bdfa8682e7ec1bd09744b3d0aba",
+      "reason": "Matching regressions verify the overlaid rate limits, source identity and helper isolation.",
+      "category": "matching-regression-test",
+      "baselineSha256": "3e0ea53ec69326afb4f437344462266e4401a6010a37cf69def47b3d15e8cc27"
+    },
+    {
+      "path": "apps/web/tests/workflow-api.test.ts",
+      "sha256": "2363678bf75a81e935953e4e76c16d6107e46d1c333f0b65c5afc3577396c8df",
+      "reason": "Matching regressions verify the overlaid rate limits, source identity and helper isolation.",
+      "category": "matching-regression-test",
+      "baselineSha256": "56d324cb8aea02885963046dd7e361aa8ed4f36c2b359aa002de5e8934832f71"
+    },
+    {
+      "path": "apps/web/tests/workflow-schedule.test.ts",
+      "sha256": "3cfb956f1fac5967250e463b9b8e6e9f8afeebfb75e4003721d6fc35e0877e11",
+      "reason": "Matching regressions verify the overlaid rate limits, source identity and helper isolation.",
+      "category": "matching-regression-test",
+      "baselineSha256": "5dad1493f0ef5044a34ec69f5be35239da8146327403bffb5b4b5a8062f89be5"
+    }
+  ],
+  "releaseToolingCommit": "812a00f401720612119db6ce4246fde125c978ef",
+  "releaseToolingPaths": [
+    ".editorconfig",
+    ".github/codeql-config.yml",
+    ".github/workflows/ci.yml",
+    ".github/workflows/post-deploy.yml",
+    ".github/workflows/readiness.yml",
+    ".github/workflows/security-analysis.yml",
+    ".gitignore",
+    ".gitleaks.toml",
+    ".prettierignore",
+    ".prettierrc",
+    "apps/api/tsconfig.json",
+    "apps/api/tsconfig.test.json",
+    "apps/marketing/eslint.config.mjs",
+    "apps/marketing/package.json",
+    "apps/web/eslint.config.mjs",
+    "coverage-policy.json",
+    "docs/api/workflow.openapi.json",
+    "eslint-suppressions.json",
+    "eslint.config.mjs",
+    "packages/i18n/package.json",
+    "packages/interview-contract/package.json",
+    "repository-size-baseline.json",
+    "scripts/changed-coverage.mjs",
+    "scripts/check-repository.mjs",
+    "scripts/coverage-policy.mjs",
+    "scripts/coverage-test-reporter.mjs",
+    "scripts/export-little-hello-emails.ts",
+    "scripts/generate-mobile-associations.mjs",
+    "scripts/little-hello-clerk-copy.mjs",
+    "scripts/little-hello-clerk-emails.mjs",
+    "scripts/local-review.py",
+    "scripts/prepare-rollback.mjs",
+    "scripts/release-manifest.mjs",
+    "scripts/release-metadata.mjs",
+    "scripts/release-smoke.mjs",
+    "scripts/secret-scan.mjs",
+    "scripts/security-results.mjs",
+    "scripts/test-coverage.mjs",
+    "scripts/test-managed-owner.mjs",
+    "scripts/test-rollback.mjs",
+    "scripts/test-secret-scanner.mjs",
+    "scripts/tests/changed-coverage.test.mjs",
+    "scripts/tests/coverage-policy.test.mjs",
+    "scripts/tests/deployment-checks.test.mjs",
+    "scripts/tests/little-hello-clerk-copy.test.mjs",
+    "scripts/tests/little-hello-clerk-emails.test.mjs",
+    "scripts/tests/managed-owner-runner.test.mjs",
+    "scripts/tests/mobile-associations.test.mjs",
+    "scripts/tests/release-tools.test.mjs",
+    "scripts/tests/repository-hygiene.test.mjs",
+    "scripts/tests/rollback-artifact.test.mjs",
+    "scripts/tests/security-dependencies.test.mjs",
+    "scripts/tests/test_local_review.py",
+    "scripts/tests/test_local_review_runtime.py",
+    "scripts/verify-deployment-checks.mjs"
+  ],
+  "lintCompatibilityPaths": [
+    "apps/api/scripts/tenant-capacity-benchmark.ts",
+    "apps/api/src/db/schema/practice-access.ts",
+    "apps/api/src/db/schema/workflow.ts",
+    "apps/api/src/notifications/little-hello-email.ts",
+    "apps/api/src/notifications/worker.ts",
+    "apps/api/src/routes/patient-paperwork.ts",
+    "apps/api/src/routes/protected-audit.ts",
+    "apps/api/src/routes/staff-notifications.ts",
+    "apps/api/src/services/account-lifecycle.service.ts",
+    "apps/api/src/services/insurance.service.ts",
+    "apps/api/src/services/onboarding-draft.ts",
+    "apps/api/src/services/patient-delivery.service.ts",
+    "apps/api/src/services/patient-paperwork.service.ts",
+    "apps/api/src/services/practice-access.service.ts",
+    "apps/api/src/services/practice-policy.ts",
+    "apps/api/src/services/protected-audit.service.ts",
+    "apps/api/src/services/staff-notifications.service.ts",
+    "apps/api/src/services/workflow.service.ts",
+    "apps/api/src/validation.ts",
+    "apps/api/src/workflow/forms.ts",
+    "apps/api/src/workflow/policy.ts",
+    "apps/api/src/workflow/read-model.ts",
+    "apps/api/tests/account-archive.test.ts",
+    "apps/api/tests/account-lifecycle.test.ts",
+    "apps/api/tests/forms-studio-release-check.test.ts",
+    "apps/api/tests/forms.test.ts",
+    "apps/api/tests/release-check.test.ts",
+    "apps/api/tests/staff-notification-routes.test.ts",
+    "apps/api/tests/workflow-security.test.ts",
+    "packages/interview-contract/index.js"
+  ],
+  "officialSarifCompatibilityCommit": "9e17441ee219f3ccb515a8ea7fe1f785f8cc6a51",
+  "officialSarifCompatibilityPaths": [
+    "scripts/security-results.mjs",
+    "scripts/tests/release-tools.test.mjs"
+  ],
+  "matchingTypeAndPreviewTestPaths": [
+    "apps/api/src/middleware/tenant-context.ts",
+    "apps/web/tests/browser/fixtures/auth-runtime-entry.tsx",
+    "apps/web/tests/browser/workflow.spec.ts"
+  ],
+  "strictApiTestCompatibilityPaths": [
+    "apps/api/tests/availability-release-check.test.ts",
+    "apps/api/tests/forms-studio-service.test.ts",
+    "apps/api/tests/onboarding-state.test.ts",
+    "apps/api/tests/owner-access-database.test.ts",
+    "apps/api/tests/practice-lifecycle.test.ts",
+    "apps/api/tests/workflow-read-model.test.ts"
+  ]
+}

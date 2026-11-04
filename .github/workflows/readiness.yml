@@ -2,9 +2,15 @@ name: CareIQ readiness checks
 
 on:
   pull_request:
+  merge_group:
   push:
-    branches: [main]
+    branches: [main, 'codex/deploy-marketing', 'release/**']
   workflow_dispatch:
+    inputs:
+      coverage_base_sha:
+        description: Reviewed base commit SHA for changed-code coverage
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -30,6 +36,8 @@ jobs:
           --health-interval 10s --health-timeout 5s --health-retries 10
     env:
       CI: true
+      CAREIQ_BUILD_REVISION: ${{ github.sha }}
+      COVERAGE_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before || inputs.coverage_base_sha }}
       DATABASE_URL: postgresql://careiq_ci:disposable_ci_only@127.0.0.1:5432/careiq_test
       TEST_DATABASE_URL: postgresql://careiq_ci:disposable_ci_only@127.0.0.1:5432/careiq_test
       DATABASE_SSL_MODE: disable
@@ -38,6 +46,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: 11.22.0
@@ -51,9 +60,14 @@ jobs:
         run: |
           pnpm --fail-if-no-match --filter @careiq/api db:migrate
           pnpm --fail-if-no-match --filter @careiq/api db:migrate
+      - run: pnpm format:check
+      - run: pnpm repo:check
       - run: pnpm lint
       - run: pnpm typecheck
-      - run: pnpm test
+      - run: pnpm test:quality
+      - name: All-source coverage (API unit and integration; frontend and shared unit tests)
+        run: pnpm test:coverage
+      - run: pnpm coverage:changed
       - run: pnpm security:regressions
       - run: pnpm web:associations:test
       - name: Browser harness (synthetic identity and API only)
@@ -62,6 +76,7 @@ jobs:
           pnpm --fail-if-no-match --filter ./apps/web test:browser
       - name: Browser paperwork through the real local API and restricted database
         run: pnpm test:browser:api
+      - run: pnpm release:metadata
       - name: Build API and shared contract
         run: |
           pnpm --fail-if-no-match --filter @careiq/interview-contract build
@@ -85,6 +100,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: 11.22.0
@@ -97,3 +113,44 @@ jobs:
       - run: pnpm security:regressions
       # Keep the raw audit gate. Backported versions remain visible to scanners.
       - run: pnpm security:audit
+
+  managed-owner:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CI: true
+      CAREIQ_BUILD_REVISION: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          version: 11.22.0
+          run_install: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Migrate and test with production-like non-bypass ownership
+        run: pnpm test:managed-owner
+
+  release-gate:
+    if: ${{ always() }}
+    needs: [quality, dependency-audit, managed-owner]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Require success from every readiness job
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          node --input-type=module -e '
+            const jobs = JSON.parse(process.env.RESULTS);
+            for (const name of ["quality", "dependency-audit", "managed-owner"]) {
+              if (jobs[name]?.result !== "success") {
+                throw new Error(`Required job ${name} did not succeed`);
+              }
+            }
+          '

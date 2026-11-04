@@ -1,0 +1,47 @@
+title = "CareIQ secret detection"
+[extend]
+useDefault = true
+
+# Reviewed non-secrets only. Do not exclude entire tests, docs, or history commits.
+[[allowlists]]
+description = "Clerk publishable keys are public browser configuration"
+targetRules = ["generic-api-key"]
+regexTarget = "match"
+regexes = ['''NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY[:= ]+pk_(live|test)_[A-Za-z0-9=]+''']
+
+[[allowlists]]
+description = "Fixed public idempotency UUID examples, scoped to their reviewed fixtures"
+targetRules = ["generic-api-key"]
+condition = "AND"
+paths = ['''^(apps/(marketing/tests/marketing|mobile/tests/api)\.test\.ts|docs/marketing\.md|docs/design/forms-studio/api-contract-design\.md)$''']
+regexes = ['''^(2b0f2978-9ed2-446b-bce4-4eb3f4157e8a|5f14872e-c4de-4d0a-ae25-fb035b750c66|672c1148-4a95-473a-8a24-ce7823eeb383|8fbfdad1-d503-46d0-9e91-d351710d57b6|a912e8c1-475a-4cc0-befe-66bdb5a2c123)$''']
+
+[[allowlists]]
+description = "Translation lookup labels are not authentication values"
+targetRules = ["generic-api-key"]
+condition = "AND"
+paths = ['''^apps/web/src/lib/access-flow\.ts$''']
+regexes = ['''^America/Chicago$''']
+
+[[allowlists]]
+description = "Recorded content hashes for separated mobile files"
+targetRules = ["generic-api-key"]
+condition = "AND"
+paths = ['''^docs/verification/mobile-separation-2026-10-18/review\.json$''']
+regexTarget = "match"
+regexes = ['''(authentication\.ts|native-authentication\.test\.ts)": "[0-9a-f]{64}"''']
+
+[[allowlists]]
+description = "Release prose names the Today/Appointments UI"
+targetRules = ["generic-api-key"]
+condition = "AND"
+paths = ['''^docs/verification/render-release-2026-10-31\.md$''']
+regexes = ['''^Today/Appointments$''']
+
+[[allowlists]]
+description = "Historical verification records contain content SHA-256 values"
+targetRules = ["generic-api-key"]
+condition = "AND"
+paths = ['''^docs/verification/pr-10-main-2026-10-18/verification-summary\.json$''']
+regexTarget = "match"
+regexes = ['''api([-/][a-z/-]+|\.spec)\.tsx?": "[0-9a-f]{64}"''']

@@ -1,8 +1,8 @@
 packages:
-  - "apps/api"
-  - "apps/web"
-  - "apps/marketing"
-  - "packages/*"
+  - 'apps/api'
+  - 'apps/web'
+  - 'apps/marketing'
+  - 'packages/*'
 
 allowBuilds:
   esbuild: true
@@ -14,13 +14,16 @@ engineStrict: true
 # Reviewed pins retained by the API, web and marketing dependency graph.
 overrides:
   # October 2026 security fixes; reject compressed-body crashes and collection OOM.
-  "body-parser@>=2.0.0 <2.4.0": 2.4.0
-  "zod@>=4.0.0 <4.6.6": 4.6.6
+  'body-parser@>=2.0.0 <2.4.0': 2.4.0
+  'zod@>=4.0.0 <4.6.6': 4.6.6
   qs: 6.16.1
-  "brace-expansion@>=5.0.0 <5.0.12": 5.0.12
-  "sharp@>=0.35.0 <0.35.5": 0.35.5
+  'brace-expansion@>=5.0.0 <5.0.12': 5.0.12
+  'sharp@>=0.35.0 <0.35.5': 0.35.5
   # Drizzle's legacy transform-only loader must not retain the vulnerable dev server.
-  "@esbuild-kit/core-utils@3.3.2>esbuild": 0.25.12
+  '@esbuild-kit/core-utils@3.3.2>esbuild': 0.25.12
+  # Coverage traversal uses the patched async-cancellation and pattern limits.
+  'test-exclude>glob': 14.0.2
+  'minimatch@>=9 <11.0.1': 11.0.1
 
 # Next's lint tooling still uses braces; keep its reviewed depth guards.
 # The complete raw audit remains visible; no advisory is ignored.

@@ -67,54 +67,6 @@
             "schema": {
               "$ref": "#/components/schemas/Date"
             }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
           }
         ],
         "responses": {
@@ -190,7 +142,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "At least one current patient, appointment or document read permission"
+        "x-required-permission": "At least one current patient, appointment or document read permission",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/query with a JSON body."
       }
     },
     "/api/v1/locations/{locationId}/workspace": {
@@ -231,54 +184,6 @@
             "in": "query",
             "schema": {
               "$ref": "#/components/schemas/Date"
-            }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
             }
           }
         ],
@@ -356,7 +261,8 @@
           }
         },
         "x-required-permission": "At least one current patient, appointment or document read permission",
-        "x-alias-of": "/api/v1/locations/{locationId}/workflow"
+        "x-alias-of": "/api/v1/locations/{locationId}/workflow",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workspace/query with a JSON body."
       }
     },
     "/api/v1/locations/{locationId}/workflow/patients": {
@@ -397,54 +303,6 @@
             "in": "query",
             "schema": {
               "$ref": "#/components/schemas/Date"
-            }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
             }
           }
         ],
@@ -529,7 +387,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:patients:read"
+        "x-required-permission": "org:patients:read",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/patients/query with a JSON body."
       },
       "post": {
         "operationId": "post_api_v1_locations_locationId_workflow_patients",
@@ -678,54 +537,6 @@
             "schema": {
               "$ref": "#/components/schemas/Date"
             }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
           }
         ],
         "responses": {
@@ -801,7 +612,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:patients:read"
+        "x-required-permission": "org:patients:read",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/patients/{id}/query with a JSON body."
       },
       "patch": {
         "operationId": "patch_api_v1_locations_locationId_workflow_patients_id",
@@ -953,54 +765,6 @@
             "schema": {
               "$ref": "#/components/schemas/Date"
             }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
           }
         ],
         "responses": {
@@ -1084,7 +848,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:appointments:read"
+        "x-required-permission": "org:appointments:read",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/appointments/query with a JSON body."
       },
       "post": {
         "operationId": "post_api_v1_locations_locationId_workflow_appointments",
@@ -1233,54 +998,6 @@
             "schema": {
               "$ref": "#/components/schemas/Date"
             }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
           }
         ],
         "responses": {
@@ -1356,7 +1073,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:appointments:read"
+        "x-required-permission": "org:appointments:read",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/appointments/{id}/query with a JSON body."
       },
       "patch": {
         "operationId": "patch_api_v1_locations_locationId_workflow_appointments_id",
@@ -1508,54 +1226,6 @@
             "schema": {
               "$ref": "#/components/schemas/Date"
             }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
           }
         ],
         "responses": {
@@ -1639,7 +1309,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:documents:read"
+        "x-required-permission": "org:documents:read",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/documents/query with a JSON body."
       }
     },
     "/api/v1/locations/{locationId}/workflow/documents/{id}": {
@@ -1683,54 +1354,6 @@
             "in": "query",
             "schema": {
               "$ref": "#/components/schemas/Date"
-            }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
             }
           }
         ],
@@ -1807,7 +1430,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:documents:read"
+        "x-required-permission": "org:documents:read",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/documents/{id}/query with a JSON body."
       }
     },
     "/api/v1/locations/{locationId}/workflow/templates": {
@@ -1848,54 +1472,6 @@
             "in": "query",
             "schema": {
               "$ref": "#/components/schemas/Date"
-            }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
             }
           }
         ],
@@ -1980,7 +1556,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:documents:read OR org:workflow:configure"
+        "x-required-permission": "org:documents:read OR org:workflow:configure",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/templates/query with a JSON body."
       },
       "post": {
         "operationId": "post_api_v1_locations_locationId_workflow_templates",
@@ -2129,54 +1706,6 @@
             "schema": {
               "$ref": "#/components/schemas/Date"
             }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
           }
         ],
         "responses": {
@@ -2252,7 +1781,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:documents:read OR org:workflow:configure"
+        "x-required-permission": "org:documents:read OR org:workflow:configure",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/templates/{id}/query with a JSON body."
       },
       "patch": {
         "operationId": "patch_api_v1_locations_locationId_workflow_templates_id",
@@ -2404,54 +1934,6 @@
             "schema": {
               "$ref": "#/components/schemas/Date"
             }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
           }
         ],
         "responses": {
@@ -2535,7 +2017,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:appointments:read OR org:workflow:configure"
+        "x-required-permission": "org:appointments:read OR org:workflow:configure",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/providers/query with a JSON body."
       },
       "post": {
         "operationId": "post_api_v1_locations_locationId_workflow_providers",
@@ -2681,54 +2164,6 @@
             "schema": {
               "$ref": "#/components/schemas/Date"
             }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
           }
         ],
         "responses": {
@@ -2812,7 +2247,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:appointments:read OR org:workflow:configure"
+        "x-required-permission": "org:appointments:read OR org:workflow:configure",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/visit-types/query with a JSON body."
       },
       "post": {
         "operationId": "post_api_v1_locations_locationId_workflow_visit_types",
@@ -2958,54 +2394,6 @@
             "schema": {
               "$ref": "#/components/schemas/Date"
             }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
           }
         ],
         "responses": {
@@ -3089,7 +2477,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:appointments:read OR org:workflow:configure"
+        "x-required-permission": "org:appointments:read OR org:workflow:configure",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/document-types/query with a JSON body."
       },
       "post": {
         "operationId": "post_api_v1_locations_locationId_workflow_document_types",
@@ -3235,54 +2624,6 @@
             "schema": {
               "$ref": "#/components/schemas/Date"
             }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
           }
         ],
         "responses": {
@@ -3366,7 +2707,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:documents:read"
+        "x-required-permission": "org:documents:read",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/requests/query with a JSON body."
       },
       "post": {
         "operationId": "post_api_v1_locations_locationId_workflow_requests",
@@ -3524,54 +2866,6 @@
             "schema": {
               "$ref": "#/components/schemas/Date"
             }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
           }
         ],
         "responses": {
@@ -3647,7 +2941,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:documents:read"
+        "x-required-permission": "org:documents:read",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/requests/{id}/query with a JSON body."
       }
     },
     "/api/v1/locations/{locationId}/workflow/work-items": {
@@ -3688,54 +2983,6 @@
             "in": "query",
             "schema": {
               "$ref": "#/components/schemas/Date"
-            }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
             }
           }
         ],
@@ -3820,7 +3067,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:appointments:read"
+        "x-required-permission": "org:appointments:read",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/work-items/query with a JSON body."
       }
     },
     "/api/v1/locations/{locationId}/workflow/patients/{id}/edit-state": {
@@ -4681,54 +3929,6 @@
             "schema": {
               "$ref": "#/components/schemas/Date"
             }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
           }
         ],
         "responses": {
@@ -4872,7 +4072,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:appointments:read"
+        "x-required-permission": "org:appointments:read",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/today/query with a JSON body."
       }
     },
     "/api/v1/locations/{locationId}/workflow/documents/{id}/versions": {
@@ -4916,54 +4117,6 @@
             "in": "query",
             "schema": {
               "$ref": "#/components/schemas/Date"
-            }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
             }
           }
         ],
@@ -5048,7 +4201,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:documents:read"
+        "x-required-permission": "org:documents:read",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/documents/{id}/versions/query with a JSON body."
       }
     },
     "/api/v1/locations/{locationId}/workflow/templates/{id}/versions": {
@@ -5092,54 +4246,6 @@
             "in": "query",
             "schema": {
               "$ref": "#/components/schemas/Date"
-            }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "templateId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "requestId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
             }
           }
         ],
@@ -5224,7 +4330,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:documents:read OR org:workflow:configure"
+        "x-required-permission": "org:documents:read OR org:workflow:configure",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/templates/{id}/versions/query with a JSON body."
       },
       "post": {
         "operationId": "post_api_v1_locations_locationId_workflow_templates_id_versions",
@@ -5369,30 +4476,6 @@
               "minimum": 1,
               "maximum": 100
             }
-          },
-          {
-            "name": "patientId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "appointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "documentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
           }
         ],
         "responses": {
@@ -5493,7 +4576,8 @@
             "$ref": "#/components/responses/Status500"
           }
         },
-        "x-required-permission": "org:activity:read"
+        "x-required-permission": "org:activity:read",
+        "description": "Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/activity/query with a JSON body."
       }
     },
     "/api/v1/locations/{locationId}/workflow/operations/{id}": {
@@ -13080,7 +12164,7 @@
       "get": {
         "operationId": "get_api_v1_locations_locationId_workflow_availability",
         "summary": "Find provider appointment times on one location-local day",
-        "description": "At most 96 suggestions at 15-minute intervals, using the same configured provider rules, exceptions and active appointment conflicts as booking validation. The appointment save rechecks availability. Repeated and nonexistent local times are omitted. Excluding an appointment requires appointment update permission and an appointment in the current authorized location.",
+        "description": "At most 96 suggestions at 15-minute intervals, using the same configured provider rules, exceptions and active appointment conflicts as booking validation. The appointment save rechecks availability. Repeated and nonexistent local times are omitted. Excluding an appointment requires appointment update permission and an appointment in the current authorized location. Private query-string filters are rejected with HTTP 400 PRIVATE_FILTER_REQUIRES_POST; use POST /api/v1/locations/{locationId}/workflow/availability/query with a JSON body.",
         "tags": [
           "Staff workflow"
         ],
@@ -13119,14 +12203,6 @@
               "type": "integer",
               "minimum": 5,
               "maximum": 480
-            }
-          },
-          {
-            "name": "excludeAppointmentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
             }
           }
         ],
@@ -13218,6 +12294,2407 @@
           }
         },
         "x-required-permission": "org:appointments:read"
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow",
+        "summary": "Read paged workspace with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Workspace"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "At least one current patient, appointment or document read permission",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workspace/query": {
+      "post": {
+        "operationId": "query_workspace_alias",
+        "summary": "Read paged workspace with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Workspace"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "At least one current patient, appointment or document read permission",
+        "x-alias-of": "/api/v1/locations/{locationId}/workflow",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/patients/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_patients",
+        "summary": "List patients with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Patient"
+                      },
+                      "maxItems": 100
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:patients:read",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/patients/{id}/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_patients_id",
+        "summary": "Read patients detail with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          },
+          {
+            "$ref": "#/components/parameters/EntityId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Patient"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:patients:read",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/appointments/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_appointments",
+        "summary": "List appointments with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Appointment"
+                      },
+                      "maxItems": 100
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:appointments:read",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/appointments/{id}/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_appointments_id",
+        "summary": "Read appointments detail with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          },
+          {
+            "$ref": "#/components/parameters/EntityId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Appointment"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:appointments:read",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/documents/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_documents",
+        "summary": "List documents with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Document"
+                      },
+                      "maxItems": 100
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:documents:read",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/documents/{id}/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_documents_id",
+        "summary": "Read documents detail with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          },
+          {
+            "$ref": "#/components/parameters/EntityId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Document"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:documents:read",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/templates/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_templates",
+        "summary": "List templates with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Template"
+                      },
+                      "maxItems": 100
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:documents:read OR org:workflow:configure",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/templates/{id}/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_templates_id",
+        "summary": "Read templates detail with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          },
+          {
+            "$ref": "#/components/parameters/EntityId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Template"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:documents:read OR org:workflow:configure",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/providers/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_providers",
+        "summary": "List providers with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Provider"
+                      },
+                      "maxItems": 100
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:appointments:read OR org:workflow:configure",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/visit-types/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_visit_types",
+        "summary": "List visit-types with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/VisitType"
+                      },
+                      "maxItems": 100
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:appointments:read OR org:workflow:configure",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/document-types/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_document_types",
+        "summary": "List document-types with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/DocumentType"
+                      },
+                      "maxItems": 100
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:appointments:read OR org:workflow:configure",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/requests/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_requests",
+        "summary": "List requests with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/DocumentRequest"
+                      },
+                      "maxItems": 100
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:documents:read",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/requests/{id}/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_requests_id",
+        "summary": "Read requests detail with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          },
+          {
+            "$ref": "#/components/parameters/EntityId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/DocumentRequest"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:documents:read",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/work-items/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_work_items",
+        "summary": "List work-items with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/WorkItem"
+                      },
+                      "maxItems": 100
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:appointments:read",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/today/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_today",
+        "summary": "Read location-local Today queue with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "locationId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "date": {
+                          "$ref": "#/components/schemas/Date"
+                        },
+                        "timeZone": {
+                          "type": "string",
+                          "maxLength": 80
+                        },
+                        "asOf": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "summary": {
+                          "$ref": "#/components/schemas/Summary"
+                        },
+                        "appointments": {
+                          "type": "object",
+                          "properties": {
+                            "items": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/Appointment"
+                              },
+                              "maxItems": 100
+                            },
+                            "pagination": {
+                              "$ref": "#/components/schemas/Pagination"
+                            }
+                          },
+                          "required": [
+                            "items",
+                            "pagination"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "workItems": {
+                          "type": "object",
+                          "properties": {
+                            "items": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/WorkItem"
+                              },
+                              "maxItems": 100
+                            },
+                            "pagination": {
+                              "$ref": "#/components/schemas/Pagination"
+                            }
+                          },
+                          "required": [
+                            "items",
+                            "pagination"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "locationId",
+                        "date",
+                        "summary",
+                        "appointments",
+                        "workItems"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:appointments:read",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/documents/{id}/versions/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_documents_id_versions",
+        "summary": "List immutable documents versions with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          },
+          {
+            "$ref": "#/components/parameters/EntityId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/DocumentVersion"
+                      },
+                      "maxItems": 100
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:documents:read",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/templates/{id}/versions/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_templates_id_versions",
+        "summary": "List immutable templates versions with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          },
+          {
+            "$ref": "#/components/parameters/EntityId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TemplateVersion"
+                      },
+                      "maxItems": 100
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:documents:read OR org:workflow:configure",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/activity/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_activity",
+        "summary": "Read safe clinical activity with private filters",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Status410"
+          },
+          "412": {
+            "$ref": "#/components/responses/Status412"
+          },
+          "413": {
+            "$ref": "#/components/responses/Status413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "428": {
+            "$ref": "#/components/responses/Status428"
+          },
+          "429": {
+            "$ref": "#/components/responses/Status429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Success. Protected responses are never cacheable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Activity"
+                          },
+                          "maxItems": 100
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "nextCursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "maxLength": 4000
+                        }
+                      },
+                      "required": [
+                        "items",
+                        "hasMore",
+                        "nextCursor"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Status500"
+          }
+        },
+        "x-required-permission": "org:activity:read",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivityReadFilters"
+              }
+            }
+          }
+        },
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters."
+      }
+    },
+    "/api/v1/locations/{locationId}/workflow/availability/query": {
+      "post": {
+        "operationId": "query_api_v1_locations_locationId_workflow_availability",
+        "summary": "Find provider appointment times on one location-local day with private filters",
+        "description": "Read-only query with unchanged authorization and response shape. Private filters belong in this JSON body. Query-string parameters on this operation are rejected. Entity identifiers in the route take precedence over body filters.",
+        "tags": [
+          "Staff workflow"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LocationId"
+          }
+        ],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/Status400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Status401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Status403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Status404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Status409"
+          },
+          "422": {
+            "$ref": "#/components/responses/Status422"
+          },
+          "503": {
+            "$ref": "#/components/responses/Status503"
+          },
+          "200": {
+            "description": "Authorized suggestions; an empty list means no matching times.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "providerId",
+                        "date",
+                        "timeZone",
+                        "durationMinutes",
+                        "slots"
+                      ],
+                      "properties": {
+                        "providerId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "date": {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        "timeZone": {
+                          "type": "string"
+                        },
+                        "durationMinutes": {
+                          "type": "integer",
+                          "minimum": 5,
+                          "maximum": 480
+                        },
+                        "slots": {
+                          "type": "array",
+                          "maxItems": 96,
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "startsAt",
+                              "endsAt"
+                            ],
+                            "properties": {
+                              "startsAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "endsAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-permission": "org:appointments:read",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AvailabilityReadFilters"
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -19173,6 +20650,119 @@
           "adultSelfEligible",
           "pagination"
         ]
+      },
+      "WorkflowReadFilters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "cursor": {
+            "type": "string",
+            "maxLength": 4000
+          },
+          "limit": {
+            "type": "string",
+            "pattern": "^(?:[1-9]|[1-9][0-9]|100)$",
+            "description": "String form retained for cursor/filter compatibility."
+          },
+          "date": {
+            "$ref": "#/components/schemas/Date"
+          },
+          "q": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "patientId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "appointmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "documentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "templateId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ActivityReadFilters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "cursor": {
+            "type": "string",
+            "maxLength": 4000
+          },
+          "limit": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              },
+              {
+                "type": "string",
+                "pattern": "^(?:[1-9]|[1-9][0-9]|100)$"
+              }
+            ]
+          },
+          "patientId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "appointmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "documentId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "AvailabilityReadFilters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "providerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "durationMinutes": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 5,
+                "maximum": 480
+              },
+              {
+                "type": "string",
+                "pattern": "^[0-9]{1,3}$"
+              }
+            ]
+          },
+          "excludeAppointmentId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "providerId",
+          "date",
+          "durationMinutes"
+        ]
       }
     },
     "responses": {
@@ -19364,6 +20954,8 @@
     "All protected reads audit exact returned IDs/versions before response. Failures/denials append separately after rollback.",
     "Collection cursors bind actor, membership, tenant/location, filters, collection and page limit. Default50/max100. SQL totals cover all filtered rows, independent of page.",
     "Local scanner exit0 clean,1 unsafe; unavailable/error/unknown quarantines. Unconfigured delivery records failed provider attempt and local outbox, never a fake delivery.",
-    "Current version selection after stale upload requires explicit revision and reason. Immutable previous bytes/reviews/evidence remain."
+    "Current version selection after stale upload requires explicit revision and reason. Immutable previous bytes/reviews/evidence remain.",
+    "Private search/filter fields use POST .../query JSON bodies, including patient names/contact search q and appointment exclusion. GET retains only public pagination/date/provider controls. Private POST reads preserve read permissions, no-store and cursor binding; no idempotency key is required. Deploy the matching web and API builds together and refresh existing browser sessions.",
+    "All /api ingress has per-process request budgets before parsing/authentication, plus verified-user and write budgets. HTTP 429 RATE_LIMITED includes Retry-After; existing smaller public interview limits remain. A shared external store is required before treating these budgets as fleet-wide limits."
   ]
 }

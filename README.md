@@ -46,15 +46,15 @@ CareIQ is designed as a multi-tenant SaaS platform where multiple practices oper
 
 Initial workflow areas include:
 
-* Patient intake
-* Appointment scheduling
-* Practice and provider management
-* Referral workflows
-* Document collection
-* Administrative task automation
-* Patient communication
-* Operational dashboards
-* Future AI-assisted workflow capabilities
+- Patient intake
+- Appointment scheduling
+- Practice and provider management
+- Referral workflows
+- Document collection
+- Administrative task automation
+- Patient communication
+- Operational dashboards
+- Future AI-assisted workflow capabilities
 
 The goal is not to replace an EHR. CareIQ is intended to improve the operational workflows surrounding existing clinical systems.
 
@@ -181,12 +181,12 @@ CareIQ currently uses PostgreSQL with Drizzle ORM.
 
 Important database conventions include:
 
-* UUIDv7 identifiers for domain entities
-* Explicit foreign-key relationships
-* Tenant-aware data modeling
-* PostgreSQL Row-Level Security
-* Append-only clinical/admin audit metadata with narrow runtime grants; separate protected search, evidence review and snapshot exports
-* Version-controlled schema migrations
+- UUIDv7 identifiers for domain entities
+- Explicit foreign-key relationships
+- Tenant-aware data modeling
+- PostgreSQL Row-Level Security
+- Append-only clinical/admin audit metadata with narrow runtime grants; separate protected search, evidence review and snapshot exports
+- Version-controlled schema migrations
 
 Database migrations are owned by the API application.
 
@@ -234,21 +234,21 @@ See:
 
 Current decisions cover areas including:
 
-* Repository architecture
-* API-first platform design
-* Integration architecture
-* Multi-tenant SaaS architecture
-* Authentication and authorization
-* PostgreSQL database platform
-* Tenant data isolation
-* Database access strategy
-* Identifier strategy
-* Audit logging
-* API versioning
-* Background jobs
-* File storage
-* Secrets management
-* Deployment infrastructure
+- Repository architecture
+- API-first platform design
+- Integration architecture
+- Multi-tenant SaaS architecture
+- Authentication and authorization
+- PostgreSQL database platform
+- Tenant data isolation
+- Database access strategy
+- Identifier strategy
+- Audit logging
+- API versioning
+- Background jobs
+- File storage
+- Secrets management
+- Deployment infrastructure
 
 ADRs record why a decision was made, not just what technology was selected.
 
@@ -264,50 +264,50 @@ CareIQ deals with healthcare workflows and is therefore being designed with secu
 
 Current design considerations include:
 
-* Tenant isolation
-* Role-based authorization
-* Secure external authentication
-* Database-level access controls
-* Immutable audit history
-* Secrets management
-* Structured application logging
-* Least-privilege database access
+- Tenant isolation
+- Role-based authorization
+- Secure external authentication
+- Database-level access controls
+- Immutable audit history
+- Secrets management
+- Structured application logging
+- Least-privilege database access
 
 Formal compliance requirements and controls will evolve as the product approaches real patient data and production healthcare deployments.
 
 ## Documentation
 
-* [Patient delivery and staff notification implementation](docs/notifications-implementation.md) — configuration, queued delivery, recipient inbox, permissions and verification limits.
-* [Notification verification record](docs/verification/notifications-2026-10-18/README.md) — staged checks and outstanding acceptance.
-* [PR #11 check repairs](docs/verification/pr-11-ci/README.md) — notification integration fixes, additive migration and local regression evidence.
+- [Patient delivery and staff notification implementation](docs/notifications-implementation.md) — configuration, queued delivery, recipient inbox, permissions and verification limits.
+- [Notification verification record](docs/verification/notifications-2026-10-18/README.md) — staged checks and outstanding acceptance.
+- [PR #11 check repairs](docs/verification/pr-11-ci/README.md) — notification integration fixes, additive migration and local regression evidence.
 
-* [Patient delivery and staff notification designs](docs/design/patient-delivery-and-staff-notifications/design-handoff.md) — proposed UI, API and delivery architecture; no provider activation.
+- [Patient delivery and staff notification designs](docs/design/patient-delivery-and-staff-notifications/design-handoff.md) — proposed UI, API and delivery architecture; no provider activation.
 
-* [Workflow implementation and review](docs/workflow-implementation.md)
-* [Workflow API contract](docs/design/workflow/runtime-contract.md)
-* [OpenAPI definitions](docs/api/workflow.openapi.json)
-* [Public marketing website](docs/marketing.md)
-* [Marketing verification](docs/marketing-verification.md)
-* [Version history](CHANGELOG.md)
-* [Release process and cadence](docs/releasing.md)
-* [Product Vision](docs/product-vision.md)
-* [Architecture](docs/architecture.md)
-* [v0.1 — Interview Design](docs/design/interview-v0.1.md)
-* [Interview architecture notes](docs/interview-architecture.md)
-* [Development](docs/development.md)
-* [Authentication and onboarding](docs/auth-onboarding.md)
-* [Production-readiness status](docs/production-readiness.md)
-* [Web production checks](docs/web-production-readiness.md)
-* [API production checks](docs/api-production-release.md)
-* [Mobile production checks](docs/mobile-production-readiness.md)
-* [Local review environments](docs/local-review.md)
-* [Interface languages and dropdown styling](docs/localization.md)
-* [Mobile development](docs/mobile-development.md)
-* [Practice/location access](docs/practice-access-implementation.md)
-* [Security hardening](docs/security-hardening.md)
-* [Releases](docs/releasing.md)
-* [Verification record](docs/verification.md)
-* [Architecture Decision Records](docs/decisions)
+- [Workflow implementation and review](docs/workflow-implementation.md)
+- [Workflow API contract](docs/design/workflow/runtime-contract.md)
+- [OpenAPI definitions](docs/api/workflow.openapi.json)
+- [Public marketing website](docs/marketing.md)
+- [Marketing verification](docs/marketing-verification.md)
+- [Version history](CHANGELOG.md)
+- [Release process and cadence](docs/releasing.md)
+- [Product Vision](docs/product-vision.md)
+- [Architecture](docs/architecture.md)
+- [v0.1 — Interview Design](docs/design/interview-v0.1.md)
+- [Interview architecture notes](docs/interview-architecture.md)
+- [Development](docs/development.md)
+- [Authentication and onboarding](docs/auth-onboarding.md)
+- [Production-readiness status](docs/production-readiness.md)
+- [Web production checks](docs/web-production-readiness.md)
+- [API production checks](docs/api-production-release.md)
+- [Mobile production checks](docs/mobile-production-readiness.md)
+- [Local review environments](docs/local-review.md)
+- [Interface languages and dropdown styling](docs/localization.md)
+- [Mobile development](docs/mobile-development.md)
+- [Practice/location access](docs/practice-access-implementation.md)
+- [Security hardening](docs/security-hardening.md)
+- [Releases](docs/releasing.md)
+- [Verification record](docs/verification.md)
+- [Architecture Decision Records](docs/decisions)
 
 ## Project Philosophy
 
@@ -318,3 +318,5 @@ Architecture decisions are made early where changing them later would be expensi
 Current local [security, login stability and capacity evidence](docs/verification/security-load-2026-10-17/README.md).
 
 October 18 local main integration and refreshed end-to-end evidence: [PR #10 conflict-resolution verification](docs/verification/pr-10-main-2026-10-18/README.md). The merge remains uncommitted/unpushed at user request.
+
+Migration-50 recovery: [published fallback source and release requirements](docs/deployment/published-fallback.md).
