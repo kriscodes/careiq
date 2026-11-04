@@ -1,0 +1,12 @@
+name: CareIQ application and delivery tooling
+paths:
+  - apps/api/src
+  - apps/web/src
+  - apps/marketing/src
+  - packages
+  - scripts
+  - .github/workflows
+paths-ignore:
+  - '**/tests/**'
+  - '**/node_modules/**'
+  - '**/dist/**'
