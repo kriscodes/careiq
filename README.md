@@ -1,320 +1,126 @@
 # CareIQ
 
-October 26 security patches and verification: [main security review](docs/verification/security-2026-10-26/README.md).
+[![CareIQ checks](https://github.com/kriscodes/careiq/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kriscodes/careiq/actions/workflows/ci.yml)
+[![Readiness checks](https://github.com/kriscodes/careiq/actions/workflows/readiness.yml/badge.svg?branch=main)](https://github.com/kriscodes/careiq/actions/workflows/readiness.yml)
 
-Security implementation and rollout: [hardening guide](docs/security-hardening.md) · [release status and owner actions](docs/deployment/security-release-status.md).
+CareIQ is a healthcare operations platform for small and independent medical practices, focused on the administrative work around patient intake, appointments, paperwork, and staff coordination.
 
-CareIQ is a healthcare operations platform being built for small and independent medical practices.
+An independent product and engineering project by [Kristian Salmeron](https://kristiansalmeron.com/), spanning frontend and API architecture, multi-tenant data modeling, workflow design, and delivery.
 
-The platform is focused on reducing administrative workload around patient intake, scheduling, referrals, document collection, communication, and other front-office workflows.
+**Active development · Synthetic/demo use only**
 
-Manager dashboard and manual insurance verification: [implementation and audit coverage](docs/manager-insurance-implementation.md).
+![CareIQ patient directory in a synthetic local preview](docs/verification/patient-row-spacing-2026-11-02/desktop.png)
 
-Manager team activity by person and action day: [scope, permissions and verification](docs/manager-team-activity.md).
+_Synthetic local verification capture · November 2, 2026. [Scope and verification](docs/verification/patient-row-spacing-2026-11-02.md)._
 
-UI capitalization: [November 2 review, exact change inventory and local checklist](docs/verification/ui-capitalization-2026-11-02.md).
+[Workflow scope](#workflow-scope) · [Architecture](#architecture) · [Run locally](#run-locally) · [Quality checks](#quality-checks) · [Current status](#current-status)
 
-Patient list hover spacing: [desktop and phone review](docs/verification/patient-row-spacing-2026-11-02.md).
+## Workflow scope
 
-Shared loading indicators: [coverage, verification and local checklist](docs/verification/shared-loading-2026-11-02.md).
+The current web/API implementation covers:
 
-November 2 end-to-end release: [deployment and verification results](docs/verification/e2e-release-2026-11-02.md).
+- Appointments, patient profiles, provider availability, and readiness requirements.
+- Document/version review, guided forms, restricted patient collection and signing, and a completed-copy library.
+- Manual insurance observations, corrections, and follow-up assignments.
+- Manager team activity, staff notifications, and protected audit review.
 
-## Status
-
-🚧 **Active development**
-
-**Latest tagged release: [v0.1.0 — Interview baseline](docs/releases/0.1.0.md)** · October 3, 2026 · Synthetic/demo use only.
-
-See the [version history](CHANGELOG.md) and [release process](docs/releasing.md). The implementation below is subsequent unreleased work; it does not change the deployed release.
-
-CareIQ now includes the local staff workflow across web and API/PostgreSQL: scheduling, patient profiles, document/version review, requirement evidence, templates, restricted patient collection/signing and protected audit review.
-
-Start with the [workflow implementation and review guide](docs/workflow-implementation.md), [runtime API contract](docs/design/workflow/runtime-contract.md) and [OpenAPI payload/response definitions](docs/api/workflow.openapi.json). The [interactive workflow preview](http://localhost:3101/workflow-preview) uses clearly labeled synthetic data; the authenticated workspace writes to the configured API/database. Local review uses isolated databases and existing test authentication. Delivery/scanning/storage activation and physical device acceptance are documented explicitly; no deployment was performed.
-
-October 17: the [Forms Studio and patient paperwork implementation](docs/forms-studio-implementation.md) adds guided forms, immutable submissions, reviewed demographic changes and an authenticated completed-copy library. The guide identifies supported adult-self signing, account-grant expiry and the remaining email/provider activation boundaries.
-
-Owner-controlled account, hosting, storage, backup and release measures are listed in the [security checklist](docs/security/owner-security-checklist.md). Local safeguards and hosted acceptance are tracked separately.
-
-The previous [interview design](docs/design/interview-v0.1.md) and [authentication/onboarding guide](docs/auth-onboarding.md) remain reference material and supported paths.
-
-## Initial Product Direction
-
-The initial target customer is an independent healthcare practice with approximately 2–10 providers.
-
-CareIQ is designed as a multi-tenant SaaS platform where multiple practices operate within the same hosted application while maintaining strict tenant-level data isolation.
-
-Initial workflow areas include:
-
-* Patient intake
-* Appointment scheduling
-* Practice and provider management
-* Referral workflows
-* Document collection
-* Administrative task automation
-* Patient communication
-* Operational dashboards
-* Future AI-assisted workflow capabilities
-
-The goal is not to replace an EHR. CareIQ is intended to improve the operational workflows surrounding existing clinical systems.
+The initial audience is practices with approximately 2–10 providers. CareIQ supports the operational workflows surrounding existing clinical systems; external EHR integration and broader automation remain separate product work. See the [product vision](docs/product-vision.md) and [workflow implementation guide](docs/workflow-implementation.md) for scope and activation boundaries.
 
 ## Architecture
 
-CareIQ uses an API-first, multi-tenant architecture.
-
-```text
-                    ┌─────────────────────┐
-                    │      Web App        │
-                    │   Next.js / React   │
-                    └──────────┬──────────┘
-                               │
-                               │ HTTPS / REST
-                               ▼
-                    ┌─────────────────────┐
-                    │     CareIQ API      │
-                    │ Node.js / TypeScript│
-                    └──────────┬──────────┘
-                               │
-                               │ Drizzle ORM
-                               ▼
-                    ┌─────────────────────┐
-                    │     PostgreSQL      │
-                    │ RLS tenant isolation│
-                    └─────────────────────┘
-
-Authentication: Clerk
-Infrastructure: Render
+```mermaid
+flowchart LR
+    Web["Next.js / React / TypeScript"] -->|HTTPS / REST| API["Node.js / TypeScript API"]
+    Identity["Clerk identity"] --> API
+    API -->|Drizzle ORM| DB["PostgreSQL / tenant RLS"]
 ```
 
-Native mobile source was separated from this checkout on October18,2026 and preserved locally for a future repository. The backend practice/location and gated native-auth contracts remain available for that future client. See [mobile separation and recovery](docs/mobile-separation.md).
+The monorepo contains the authenticated web application, backend API, public marketing application, and shared packages. Infrastructure uses Render. Native mobile source was separated from the active workspace; retained server contracts support a future client.
 
-## Technology Stack
+Three decisions shape the implementation:
 
-| Layer              | Technology                    |
-| ------------------ | ----------------------------- |
-| Web                | Next.js, React, TypeScript    |
-| API                | Node.js, TypeScript           |
-| Database           | PostgreSQL                    |
-| ORM                | Drizzle ORM                   |
-| Authentication     | Clerk                         |
-| Multi-tenancy      | PostgreSQL Row-Level Security |
-| Identifiers        | UUIDv7                        |
-| Package Management | pnpm                          |
-| Repository         | Monorepo                      |
-| Hosting            | Render                        |
+| Decision                                                                                            | Reason and tradeoff                                                                                                                                                                                                   |
+| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [API-first platform](docs/decisions/002-api-first-platform.md)                                      | Keep business behavior and authorization in one backend that clients can share. This makes API contracts and compatibility a deliberate platform responsibility.                                                      |
+| [Database-enforced tenant isolation](docs/decisions/007-multi-tenant-data-isolation.md)             | Combine explicit application scoping with transaction-local PostgreSQL RLS and a restricted runtime role. This adds policy, migration, and integration-test complexity in exchange for a second enforcement boundary. |
+| [External identity, domain authorization](docs/decisions/017-practice-location-membership-model.md) | Map Clerk organizations to practices and narrow access through explicit permissions and location assignments. Identity, membership, and application resource access remain distinct concerns.                         |
 
-## Repository Structure
+[Architecture overview](docs/architecture.md) · [All architecture decisions](docs/decisions) · [Runtime API contract](docs/design/workflow/runtime-contract.md) · [OpenAPI definitions](docs/api/workflow.openapi.json)
 
-```text
-careiq/
-├── apps/
-│   ├── api/            # Backend API
-│   ├── web/            # Authenticated web application
-│   └── marketing/      # Public static website and discovery-interview form
-│
-├── packages/           # Shared packages and reusable code
-│
-├── docs/
-│   ├── decisions/      # Architecture Decision Records
-│   ├── architecture.md
-│   ├── development.md
-│   └── product-vision.md
-│
-├── package.json
-├── pnpm-workspace.yaml
-└── README.md
+## Run locally
+
+### Prerequisites
+
+- Node.js **22.23.4**, as pinned in [`.nvmrc`](.nvmrc), and pnpm **11.22.0**.
+- PostgreSQL **18**, including its built-in `uuidv7()` function.
+- A Clerk **test** application with Organizations enabled.
+
+From a local checkout:
+
+```sh
+nvm use
+pnpm install --frozen-lockfile
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env.local
 ```
 
-## Core Architecture Principles
+If you use another Node version manager, select the version in `.nvmrc` instead of running `nvm use`.
 
-### Multi-Tenant by Default
+Configure both environment files with keys from the same Clerk test application. Point the API at an isolated local database; `DATABASE_SSL_MODE=disable` is for loopback PostgreSQL without TLS. Use separate migration-capable and restricted runtime database roles, following the [development guide](docs/development.md) and [database setup guidance](docs/security-hardening.md).
 
-CareIQ is built as a shared SaaS platform rather than deploying a separate application for every healthcare practice.
+Apply the schema with the migration-capable role, then configure the API to use its restricted runtime role before starting the applications:
 
-Tenant-aware domain data is associated with a practice and protected at the database layer using PostgreSQL Row-Level Security.
-
-### API-First
-
-Business capabilities are exposed through a versioned backend API.
-
-The web application is one client of that API rather than containing the primary business logic itself.
-
-### Database-Level Tenant Isolation
-
-Application-level authorization is not considered sufficient protection for tenant data.
-
-PostgreSQL Row-Level Security provides an additional enforcement boundary for tenant isolation.
-
-### External Identity, Internal Authorization
-
-Clerk provides user identity and authentication.
-
-CareIQ maps the authenticated Clerk organization to an internal practice. The API enforces fresh membership, explicit permissions and assigned-location access. Verified approved founders create practices through controlled onboarding; reading session context does not provision an organization or practice.
-
-### Auditable Healthcare Workflows
-
-The architecture is being designed with auditability, structured logging, security boundaries, and future healthcare compliance requirements in mind from the beginning.
-
-## API
-
-Versioned application endpoints use:
-
-```text
-/api/v1/*
+```sh
+pnpm --filter ./apps/api db:migrate
+pnpm dev
 ```
 
-Example:
+| Application | Local URL                      |
+| ----------- | ------------------------------ |
+| Web         | <http://localhost:3001>        |
+| API health  | <http://localhost:3000/health> |
+| Marketing   | <http://localhost:3002>        |
 
-```text
-GET /api/v1/me
+Practice creation requires an explicitly approved test user ID in the API configuration. Signing up does not automatically create a practice or grant clinical access. Use synthetic records.
+
+For supervised previews on separate ports and a dedicated Docker database, follow the [isolated local review guide](docs/local-review.md). That guide also covers the synthetic workflow preview, runtime grants, and stopping only the processes owned by the review runner.
+
+## Quality checks
+
+With an isolated loopback test database named `careiq_test` configured, the core checks are:
+
+```sh
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
 ```
 
-Infrastructure-level endpoints such as health checks are intentionally kept outside the versioned application API.
+`pnpm release:check` validates the test database target before running release checks. It includes component browser scenarios, browser workflows through the real API and restricted database, dependency regression checks, and the production dependency audit.
 
-```text
-GET /health
-```
+The [CI](.github/workflows/ci.yml) and [readiness](.github/workflows/readiness.yml) workflows also replay migrations on disposable PostgreSQL and build with reserved configuration fixtures. They do not deploy the application. Use [GitHub Actions](https://github.com/kriscodes/careiq/actions) for current run results; dated verification reports describe the revisions and acceptance boundaries they actually checked.
 
-## Database
+## Current status
 
-CareIQ currently uses PostgreSQL with Drizzle ORM.
+| Surface                             | Recorded status                                                                                                                                                                                                                                                                                                        |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Current `main`                      | Active development of the web/API workflows described above. [Implementation and review](docs/workflow-implementation.md)                                                                                                                                                                                              |
+| Latest tagged release               | [v0.1.0 — Interview baseline](docs/releases/0.1.0.md), October 3, 2026. The tag is a named baseline and does not represent all subsequent work on `main`.                                                                                                                                                              |
+| Last documented hosted verification | [November 2, 2026](docs/verification/e2e-release-2026-11-02.md): API and web deployed at `7d2cabe`; 17 public HTTP smoke checks passed in that recorded review. This is dated evidence, not a new live check.                                                                                                          |
+| Remaining acceptance                | Authenticated hosted workflows, provider/device activation, older managed-owner workflow paths, and operating requirements retain the limits in the [release verification report](docs/verification/e2e-release-2026-11-02.md#known-limits-retained) and [owner checklist](docs/security/owner-security-checklist.md). |
+| Usage boundary                      | Synthetic/demo use only. Local safeguards and passing automated checks do not establish readiness for real patient production use.                                                                                                                                                                                     |
 
-Important database conventions include:
-
-* UUIDv7 identifiers for domain entities
-* Explicit foreign-key relationships
-* Tenant-aware data modeling
-* PostgreSQL Row-Level Security
-* Append-only clinical/admin audit metadata with narrow runtime grants; separate protected search, evidence review and snapshot exports
-* Version-controlled schema migrations
-
-Database migrations are owned by the API application.
-
-## Authentication and practice onboarding
-
-The current [Little hello authentication](docs/little-hello-authentication.md) and [email implementation](docs/little-hello-emails.md) keep white tones across sign-in, recovery, invitation and session flows. See the [October 21 verification record](docs/verification/little-hello-2026-10-21/README.md) for completed local checks and remaining provider/inbox acceptance.
-
-The current designs and implementation are documented in [the authentication/onboarding guide](docs/auth-onboarding.md). Review [web, iOS and Android designs](docs/design/auth-onboarding/design-handoff.md) and the [interactive prototype](docs/design/auth-onboarding/prototype.html).
-
-Use this existing checkout at `/Users/kristian/Documents/Server/CareIQ`; do not create fresh GitHub checkouts for routine work. The [local review guide](docs/local-review.md) starts isolated environments for these changes. No GitHub push or remote deployment was performed.
-
-## Local Development
-
-Install dependencies from the repository root:
-
-```bash
-pnpm install
-```
-
-Run the API:
-
-```bash
-pnpm --filter ./apps/api dev
-```
-
-Run the web application:
-
-```bash
-pnpm --filter ./apps/web dev
-```
-
-Environment-specific configuration is supplied through local environment files and deployment environment variables.
-
-Secrets must never be committed to the repository.
-
-See [`docs/development.md`](docs/development.md) for additional development information.
-
-## Architecture Decisions
-
-Important architectural decisions are documented using Architecture Decision Records (ADRs).
-
-See:
-
-[`docs/decisions`](docs/decisions)
-
-Current decisions cover areas including:
-
-* Repository architecture
-* API-first platform design
-* Integration architecture
-* Multi-tenant SaaS architecture
-* Authentication and authorization
-* PostgreSQL database platform
-* Tenant data isolation
-* Database access strategy
-* Identifier strategy
-* Audit logging
-* API versioning
-* Background jobs
-* File storage
-* Secrets management
-* Deployment infrastructure
-
-ADRs record why a decision was made, not just what technology was selected.
-
-## Environments
-
-CareIQ currently uses separate local development and hosted development environments.
-
-Production infrastructure will be introduced as the platform approaches external practice usage.
-
-## Security
-
-CareIQ deals with healthcare workflows and is therefore being designed with security boundaries established early in the architecture.
-
-Current design considerations include:
-
-* Tenant isolation
-* Role-based authorization
-* Secure external authentication
-* Database-level access controls
-* Immutable audit history
-* Secrets management
-* Structured application logging
-* Least-privilege database access
-
-Formal compliance requirements and controls will evolve as the product approaches real patient data and production healthcare deployments.
+[Version history](CHANGELOG.md) · [Release process](docs/releasing.md) · [Deployment evidence](docs/deployment/security-release-status.md)
 
 ## Documentation
 
-* [Patient delivery and staff notification implementation](docs/notifications-implementation.md) — configuration, queued delivery, recipient inbox, permissions and verification limits.
-* [Notification verification record](docs/verification/notifications-2026-10-18/README.md) — staged checks and outstanding acceptance.
-* [PR #11 check repairs](docs/verification/pr-11-ci/README.md) — notification integration fixes, additive migration and local regression evidence.
+| Area                        | Start here                                                                                                                                                                                     |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Product and workflows       | [Product vision](docs/product-vision.md), [workflow implementation](docs/workflow-implementation.md), [Forms Studio and paperwork](docs/forms-studio-implementation.md)                        |
+| Staff operations            | [Manager and manual insurance verification](docs/manager-insurance-implementation.md), [team activity](docs/manager-team-activity.md), [notifications](docs/notifications-implementation.md)   |
+| Engineering                 | [Architecture](docs/architecture.md), [ADRs](docs/decisions), [API contract](docs/design/workflow/runtime-contract.md)                                                                         |
+| Development                 | [Setup and deployment](docs/development.md), [isolated local review](docs/local-review.md), [authentication and onboarding](docs/auth-onboarding.md)                                           |
+| Verification and operations | [November 2 release verification](docs/verification/e2e-release-2026-11-02.md), [security hardening](docs/security-hardening.md), [owner checklist](docs/security/owner-security-checklist.md) |
+| Historical context          | [Development history and earlier verification references](docs/development-history.md), [mobile separation](docs/mobile-separation.md)                                                         |
 
-* [Patient delivery and staff notification designs](docs/design/patient-delivery-and-staff-notifications/design-handoff.md) — proposed UI, API and delivery architecture; no provider activation.
-
-* [Workflow implementation and review](docs/workflow-implementation.md)
-* [Workflow API contract](docs/design/workflow/runtime-contract.md)
-* [OpenAPI definitions](docs/api/workflow.openapi.json)
-* [Public marketing website](docs/marketing.md)
-* [Marketing verification](docs/marketing-verification.md)
-* [Version history](CHANGELOG.md)
-* [Release process and cadence](docs/releasing.md)
-* [Product Vision](docs/product-vision.md)
-* [Architecture](docs/architecture.md)
-* [v0.1 — Interview Design](docs/design/interview-v0.1.md)
-* [Interview architecture notes](docs/interview-architecture.md)
-* [Development](docs/development.md)
-* [Authentication and onboarding](docs/auth-onboarding.md)
-* [Production-readiness status](docs/production-readiness.md)
-* [Web production checks](docs/web-production-readiness.md)
-* [API production checks](docs/api-production-release.md)
-* [Mobile production checks](docs/mobile-production-readiness.md)
-* [Local review environments](docs/local-review.md)
-* [Interface languages and dropdown styling](docs/localization.md)
-* [Mobile development](docs/mobile-development.md)
-* [Practice/location access](docs/practice-access-implementation.md)
-* [Security hardening](docs/security-hardening.md)
-* [Releases](docs/releasing.md)
-* [Verification record](docs/verification.md)
-* [Architecture Decision Records](docs/decisions)
-
-## Project Philosophy
-
-CareIQ is being built incrementally around complete vertical workflows rather than attempting to build an entire practice-management platform at once.
-
-Architecture decisions are made early where changing them later would be expensive, while product behavior remains flexible enough to evolve through customer discovery and real practice feedback.
-
-Current local [security, login stability and capacity evidence](docs/verification/security-load-2026-10-17/README.md).
-
-October 18 local main integration and refreshed end-to-end evidence: [PR #10 conflict-resolution verification](docs/verification/pr-10-main-2026-10-18/README.md). The merge remains uncommitted/unpushed at user request.
+CareIQ is developed around complete vertical workflows. Architectural decisions are recorded where they affect data boundaries, API contracts, or operating behavior; product details evolve through discovery and review.
