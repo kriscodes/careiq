@@ -1,20 +1,31 @@
 @import 'tailwindcss';
 
-/* Narrowly copied from the approved CareIQ product design. Keep in sync with
-   apps/web/src/app/globals.css and docs/design/interview-v0.1.md. */
+/* CareIQ brand assets are shared with the product; see docs/marketing.md. */
+@font-face {
+  font-family: 'Caprasimo';
+  src: url('/brand/fonts/caprasimo.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nunito Sans';
+  src: url('/brand/fonts/nunito-sans.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
 :root {
   color-scheme: light;
-  --cq-bg: #f8faf9;
+  --cq-bg: #ffffff;
   --cq-panel: #ffffff;
-  --cq-text: #2b3832;
-  --cq-muted: #626f68;
-  --cq-border: #e4e9e6;
-  --cq-accent: #496f5a;
-  --cq-soft: #f0f5f2;
-  --cq-hover: #f5f8f6;
+  --cq-text: #202b34;
+  --cq-muted: #566879;
+  --cq-border: #e3ebf3;
+  --cq-accent: #0067e8;
+  --cq-soft: #edf5ff;
+  --cq-hover: #f6f9fd;
 }
 @theme inline {
-  --font-sans: 'Segoe UI', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans: 'Nunito Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 * {
   box-sizing: border-box;
@@ -28,7 +39,7 @@ body {
   background: var(--cq-bg);
   color: var(--cq-text);
   font-family:
-    'Segoe UI',
+    'Nunito Sans',
     ui-sans-serif,
     system-ui,
     -apple-system,
@@ -75,11 +86,11 @@ summary:focus-visible,
   outline-offset: 4px;
 }
 ::selection {
-  background: #dbe9df;
+  background: #dceaff;
   color: var(--cq-text);
 }
 .container {
-  width: min(1160px, calc(100% - 80px));
+  width: min(1180px, calc(100% - 48px));
   margin-inline: auto;
 }
 .section {
@@ -139,7 +150,7 @@ h2 {
   color: white;
 }
 .cq-primary:hover:not(:disabled) {
-  background: #3e604d;
+  background: #0055c6;
 }
 .cq-button .cq-icon {
   width: 17px;
@@ -197,37 +208,6 @@ h2 {
   letter-spacing: -1.6px;
   white-space: nowrap;
   line-height: 1;
-}
-.cq-brand-labs {
-  display: inline-block;
-  font-size: 10px;
-  color: var(--cq-muted);
-  font-weight: 600;
-  letter-spacing: 1.6px;
-  text-transform: uppercase;
-  margin-left: 9px;
-}
-.cq-symbol {
-  display: inline-block;
-  width: 30px;
-  height: 30px;
-  position: relative;
-  transform: rotate(-10deg);
-  flex: 0 0 30px;
-}
-.cq-symbol::before,
-.cq-symbol::after {
-  content: '';
-  position: absolute;
-  background: var(--cq-accent);
-  border-radius: 5px;
-  left: 11px;
-  top: 1px;
-  width: 9px;
-  height: 28px;
-}
-.cq-symbol::after {
-  transform: rotate(90deg);
 }
 .main-navigation {
   display: flex;
@@ -344,7 +324,7 @@ h2 {
   left: 20px;
   top: 43px;
   bottom: 3px;
-  border-left: 1px dashed #c5d2c9;
+  border-left: 1px dashed #dce6f1;
 }
 .workflow-step-icon {
   display: flex;
@@ -353,7 +333,7 @@ h2 {
   width: 42px;
   height: 42px;
   flex: 0 0 42px;
-  border: 1px solid #dce6df;
+  border: 1px solid #dce6f1;
   border-radius: 12px;
   color: var(--cq-accent);
   background: var(--cq-soft);
@@ -477,7 +457,7 @@ h2 {
   display: grid;
   place-items: center;
   border-radius: 15px;
-  background: #eaf0ec;
+  background: #edf5ff;
   color: var(--cq-accent);
   font-size: 14px;
   font-weight: 600;
@@ -562,7 +542,7 @@ h2 {
 }
 .interview-boundary {
   padding-top: 24px;
-  border-top: 1px solid #d8e2db;
+  border-top: 1px solid #dce6f1;
   color: var(--cq-muted);
   font-size: 12px;
   max-width: 405px;
@@ -630,7 +610,7 @@ h2 {
   font-weight: 400;
 }
 .cq-input:hover:not(:disabled) {
-  border-color: #bccdc2;
+  border-color: #9fc6ff;
 }
 .cq-input:disabled {
   background: var(--cq-bg);
@@ -1283,5 +1263,125 @@ h2 {
   }
   .main-navigation {
     order: 4;
+  }
+}
+
+/* Product-first brand and research page. */
+h1,
+h2 {
+  font-family: 'Caprasimo', Georgia, serif;
+  font-weight: 400;
+}
+.cq-logo {
+  flex-shrink: 0;
+}
+.cq-logo img {
+  display: block;
+  width: 132px;
+  height: 44px;
+  object-fit: contain;
+}
+.cq-button {
+  font-weight: 800;
+  font-size: 14px;
+}
+.main-navigation {
+  font-weight: 800;
+}
+.research-hero {
+  padding-block: 86px 72px;
+}
+.research-hero .hero-copy {
+  max-width: 850px;
+}
+.research-hero h1 {
+  font-size: clamp(40px, 5vw, 64px);
+  margin-block: 17px 22px;
+  line-height: 1.12;
+}
+.research-hero .hero-description {
+  max-width: 730px;
+  font-size: 19px;
+}
+.research-hero .hero-supporting {
+  max-width: 700px;
+}
+.focus-section {
+  background: #f6f9fd;
+}
+.stage-note {
+  color: var(--cq-muted);
+}
+@media (min-width: 851px) {
+  .header-inner > .cq-language {
+    order: 3;
+  }
+  .main-navigation {
+    margin-left: auto;
+  }
+}
+@media (max-width: 850px) {
+  .header-inner > .cq-language {
+    order: 1;
+    inline-size: auto;
+    margin-left: auto;
+  }
+  .header-inner > .cq-language > select.cq-language-select {
+    inline-size: auto;
+  }
+  .menu-toggle {
+    margin-left: 0;
+  }
+  .research-hero {
+    padding-block: 56px;
+  }
+}
+@media (max-width: 480px) {
+  .container {
+    width: calc(100% - 32px);
+  }
+  .header-inner {
+    gap: 10px;
+  }
+  .cq-logo img {
+    width: 108px;
+    height: 36px;
+  }
+  .header-inner > .cq-language {
+    flex-shrink: 1;
+  }
+  .header-inner > .cq-language > select.cq-language-select {
+    min-inline-size: 110px;
+  }
+  .research-hero .hero-description {
+    font-size: 17px;
+  }
+}
+
+@media (min-width: 851px) and (max-width: 1100px) {
+  .header-inner {
+    flex-wrap: nowrap;
+    gap: 18px;
+  }
+  .main-navigation {
+    flex-basis: auto;
+    gap: 18px;
+  }
+}
+
+.research-hero .eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+@media (max-width: 360px) {
+  .site-header .header-inner > .cq-language > select.cq-language-select {
+    inline-size: 110px;
+    min-inline-size: 110px;
+    padding-inline-start: 38px;
+    font-size: 11px;
+  }
+  .header-inner {
+    gap: 8px;
   }
 }

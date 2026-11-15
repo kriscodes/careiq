@@ -8,6 +8,8 @@ import { parseSiteConfig } from '../src/lib/config';
 import { prepareSubmission, submitInterview, type FormValues } from '../src/lib/submission';
 import Home from '../src/app/page';
 import Privacy from '../src/app/privacy/page';
+import Research from '../src/app/research/page';
+import spanish from '../src/content/site-content.es.json';
 import { InterviewForm } from '../src/components/InterviewForm';
 
 const key = '8fbfdad1-d503-46d0-9e91-d351710d57b6';
@@ -30,10 +32,7 @@ const json = (value: unknown, status = 200) =>
 
 // These are client-contract tests, not proof of database persistence or permissions.
 test('central copy validates, catches blank copy and empty FAQs, and preserves machine role values', () => {
-  assert.equal(
-    validateContent(content).hero.headline,
-    'A simpler path from new-patient request to scheduled appointment.',
-  );
+  assert.equal(validateContent(content).hero.headline, 'Built with the people who know the work.');
   assert.throws(
     () => validateContent({ ...content, hero: { ...content.hero, headline: ' ' } }),
     /must not be blank/,
@@ -51,8 +50,15 @@ test('central copy validates, catches blank copy and empty FAQs, and preserves m
 test('information renders with no Clerk, API, database, or submission configuration', () => {
   const home = renderToStaticMarkup(createElement(Home));
   const privacy = renderToStaticMarkup(createElement(Privacy));
-  assert.match(home, /A simpler path from new-patient request/);
-  assert.match(home, /Illustrative workflow/);
+  const research = renderToStaticMarkup(createElement(Research));
+  assert.match(home, /Care for the work around care/);
+  assert.match(home, /fictional/i);
+  assert.match(home, /synthetic data/);
+  assert.doesNotMatch(home, /<form/);
+  assert.match(home, /href="\/research\/?[^"]*"/);
+  assert.match(research, /Built with the people who know the work/);
+  assert.match(research, /id="interview-form"/);
+  assert.match(research, /Website privacy|privacy notice/);
   assert.match(privacy, /Website privacy notice/);
   assert.doesNotMatch(home + privacy, /clerk|\/api\/v1\/me|postgresql:\/\//i);
   const unavailable = renderToStaticMarkup(
@@ -285,4 +291,12 @@ test('a redirect cannot forward an interview submission to another local origin'
       ),
     );
   }
+});
+
+test('Spanish research preserves the API role contract and nonempty copy', () => {
+  assert.deepEqual(
+    Object.keys(validateContent(spanish).form.roleLabels),
+    Object.keys(content.form.roleLabels),
+  );
+  assert.match(spanish.hero.stageNote, /datos sintéticos/);
 });

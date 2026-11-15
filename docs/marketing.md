@@ -2,6 +2,14 @@
 
 The public site is `apps/marketing`; the authenticated product remains `apps/web`. The existing Express API owns database access. Read [ADR-016](decisions/016-public-marketing-interviews.md) for the public/tenant boundary and [marketing verification](marketing-verification.md) for actual checks and remaining evidence.
 
+## Product-first marketing release
+
+The homepage introduces CareIQ to doctors, nurses, medical assistants, front-desk staff, practice managers, and owners of independent medical practices. Features and the visit workflow are the primary content; “Explore CareIQ” leads to the feature overview. “Talk with us” leads to the research interview request at `/research/#interview-form`. Research questions, founder background, FAQ, and the unchanged interview form now live at `/research/`. Existing homepage interview/research anchors forward to their new locations after hydration.
+
+The visual reference is the [Notion product-first design](https://app.notion.com/p/419e9784880681919e7ed25b0f6abbb3). CareIQ remains in development, for demonstration with synthetic data. The dashboard is explicitly fictional and illustrative. Insurance observations and follow-up are manual; planned integrations, automated verification, and production readiness are not represented as available.
+
+Success for this release means a visitor can identify who CareIQ is for, understand its current demo scope, and reach the interview form and privacy notice. No conversion-rate or customer-outcome claim is made. See the [November 15 verification record](verification/marketing-product-first-2026-11-15.md) for checks and deployment evidence.
+
 ## Start locally
 
 Use the repository's Node 22.23+ and pnpm 11.22.0. From the repository root:
@@ -12,10 +20,10 @@ cp apps/marketing/.env.example apps/marketing/.env.local
 pnpm --filter @careiq/marketing dev
 ```
 
-Open `http://localhost:3002`. The product stays on 3001; API stays on 3000. The homepage, privacy notice, FAQ and navigation work with no API, database or Clerk configuration. With no real privacy address the form remains unavailable. To test submissions, configure the marketing API URL and a real monitored privacy address, configure an isolated/local API database, apply migrations with migration credentials, grant the runtime role, set API `INTERVIEW_REQUESTS_ENABLED=true`, and run `pnpm --filter ./apps/api dev`. A localhost API process can still point to a remote database: always inspect the target before migration or test commands.
+Open `http://localhost:3002`. The product stays on 3001; API stays on 3000. The homepage, research page, privacy notice, FAQ and navigation work with no API, database or Clerk configuration. With no real privacy address the form remains unavailable. To test submissions, configure the marketing API URL and a real monitored privacy address, configure an isolated/local API database, apply migrations with migration credentials, grant the runtime role, set API `INTERVIEW_REQUESTS_ENABLED=true`, and run `pnpm --filter ./apps/api dev`. A localhost API process can still point to a remote database: always inspect the target before migration or test commands.
 
 ```sh
-pnpm --filter @careiq/marketing... build
+CAREIQ_BUILD_REVISION=$(git rev-parse HEAD) pnpm --filter @careiq/marketing... build
 pnpm --filter @careiq/marketing typecheck
 pnpm --filter @careiq/marketing lint
 pnpm --filter @careiq/marketing test
@@ -25,11 +33,11 @@ pnpm --filter ./apps/api test
 
 After building, stop the dev server and run `pnpm --filter @careiq/marketing preview` to serve the export on `http://127.0.0.1:3002` (IPv4 loopback). The preview serves only static files, including direct privacy and true custom 404 responses.
 
-The production export is `apps/marketing/out`. It contains static HTML and assets, including `privacy/index.html` and `404.html`; `next start` is not used for this application.
+The production export is `apps/marketing/out`. It contains static HTML and assets, including `research/index.html`, `privacy/index.html` and `404.html`; `next start` is not used for this application.
 
 ## Edit website copy
 
-Edit **`apps/marketing/src/content/site-content.json`**. It owns navigation, hero/sections, founder biography, FAQs, form labels/help/errors/status copy, footer, page titles/descriptions and privacy text. For example, change `hero.headline` to revise the headline, or append a `{ "question": "…", "answer": "…" }` object to `faq.items`. Keep the existing structure and use plain text; React renders it as text, never arbitrary HTML.
+Edit **`apps/marketing/src/content/product-content.ts`** for the bilingual product homepage. Edit **`apps/marketing/src/content/site-content.json`** and **`site-content.es.json`** together for navigation, research sections, founder biography, FAQs, form labels/help/errors/status copy, footer, page titles/descriptions, and privacy text. Keep both languages equivalent. The research headline is `hero.headline` in the JSON catalogs. Use plain text; React renders it as text, never arbitrary HTML.
 
 The TypeScript content contract and runtime validation reject missing/empty required fields and invalid collections while loading content. The marketing tests and production build exercise that validation. API role values come from `packages/interview-contract`, while their visible labels live in the JSON. Editing a role label does not change the API value. If privacy practices change, revise the notice text and deliberately update `PRIVACY_NOTICE_VERSION` in the shared package so newly saved records carry the applicable revision.
 
@@ -37,9 +45,9 @@ Run content tests, lint/typecheck and a build after edits. This is repository-ma
 
 ## Design reuse
 
-The reference is the actual `apps/web/src/app/globals.css` and the interview workspace, not the default Next.js starter assets. Marketing adapts the same light-only semantic colors: background `#f8faf9`, panel `#ffffff`, text `#2b3832`, muted `#626f68`, border `#e4e9e6`, accent `#496f5a`, soft `#f0f5f2`, hover `#f5f8f6`. It uses the same Segoe UI/system font stack, 10px controls, rounded surfaces, green focus ring, restrained line icons and wordmark treatment. The app's existing approved CSS mark may be reused; the Next/Vercel starter logos are not CareIQ assets.
+Marketing uses CareIQ’s lowercase blue wordmark, Caprasimo display type, Nunito Sans body type, white backgrounds, and Signal blue (`#0067E8`). Fonts and their OFL licenses are copied from `apps/web/public/brand/fonts/`; the wordmark comes from `apps/web/public/brand/little-hello/careiq-wordmark.png`. Assets are served locally from `apps/marketing/public/brand/` with no third-party font requests.
 
-These few primitives are intentionally adapted inside marketing, with source comments, to avoid risky changes to the staff UI. There are no cross-application imports. No real founder photograph or verified LinkedIn destination was supplied; the founder section works without them. The workflow is explicitly illustrative and has no live product data.
+The shared English/Spanish language provider and selector are retained. Marketing-specific styles stay in the marketing app. The fictional dashboard is static presentation, with no live patient data or simulated clickable controls. Optional founder LinkedIn, contact email, and demo application links remain configuration-driven.
 
 ## Build-time public configuration
 
@@ -125,9 +133,9 @@ DELETE FROM public.marketing_interview_requests WHERE id = $1::uuid;
 
 Do not paste untrusted email/name text into SQL or delete solely by a guess at identity. This table does not silently inherit patient/audit retention. A request's deletion removes its retry key; a later resubmission can create a new request. Hosted backups and any manual correspondence have separate handling that the owner must confirm before launch. No retention period or automated purge is invented by this implementation.
 
-## Separate Render Static Site
+## Existing Render Static Site
 
-Create a **new** Static Site; do not rename/move the current web/API services or domains. An optional un-applied template is `docs/deployment/marketing.render.yaml`.
+Deploy only the existing `careiq-marketing` Static Site (`srv-db096cdg1s2s73d3gng0`) in the Care IQ Labs workspace. Do not rename/move the web/API services or domains. `docs/deployment/marketing.render.yaml` remains an optional template for a new site; this release does not apply a Blueprint.
 
 - Repository root directory: leave unset (repository root).
 - Build: `pnpm install --frozen-lockfile && pnpm --filter @careiq/marketing... build`.
@@ -140,7 +148,7 @@ Create a **new** Static Site; do not rename/move the current web/API services or
 
 The export uses `trailingSlash: true`: `/privacy/` has its own `privacy/index.html`. Explicit rewrites for `/privacy` and `/privacy/` to `/privacy/index.html` are included in the template. Keep `404.html` at the publish root for a real custom not-found response. Do not add a blanket `/* → /index.html` SPA rewrite. Before launch, directly load both privacy URLs, refresh, and verify a random nonexistent path returns HTTP 404 with the custom page on Render; local export checks are not proof of the CDN configuration.
 
-Add `careiqlabs.com` as the custom domain for the new marketing site. Follow the exact DNS records shown by Render and verify TLS/domain status. Adding the apex first makes Render add/redirect the corresponding `www` domain to the apex; retain the apex canonical in the build. Do not alter unrelated app/API domains. DNS/deployment have not been performed by this implementation.
+Add `careiqlabs.com` as the custom domain for the new marketing site. Follow the exact DNS records shown by Render and verify TLS/domain status. Adding the apex first makes Render add/redirect the corresponding `www` domain to the apex; retain the apex canonical in the build. Do not alter unrelated app/API domains. Current deployment evidence is recorded in the November 15 verification record linked above.
 
 Keep staging and preview builds at `NEXT_PUBLIC_ALLOW_INDEXING=false`; use separate environment settings so previews never inherit production indexing. For a public production build, set `NEXT_PUBLIC_SITE_URL=https://careiqlabs.com` and only then enable indexing after launch checks. Inspect generated robots, sitemap and page metadata. Once the custom domain works, consider disabling the production site's default onrender.com alias to avoid an indexed duplicate; do not disable independent preview services.
 

@@ -20,6 +20,8 @@ const mime = {
   '.txt': 'text/plain',
   '.xml': 'application/xml',
   '.ico': 'image/x-icon',
+  '.png': 'image/png',
+  '.woff2': 'font/woff2',
 };
 createServer(async (req, res) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') {

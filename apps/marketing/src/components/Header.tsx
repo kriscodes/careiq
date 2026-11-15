@@ -52,11 +52,11 @@ export function Header({
           aria-label={copy.label}
           onClick={() => setOpen(false)}
         >
-          <Link href="/#focus">{copy.focus}</Link>
-          <Link href="/#founder">{copy.founder}</Link>
-          <Link href="/#questions">{copy.faq}</Link>
+          <Link href="/#features">{copy.features}</Link>
+          <Link href="/#how-it-works">{copy.howItWorks}</Link>
+          <Link href="/research/">{copy.research}</Link>
           {appUrl && <a href={appUrl}>{copy.application}</a>}
-          <Link className="cq-button cq-primary header-cta" href="/#interview-form">
+          <Link className="cq-button cq-primary header-cta" href="/research/#interview-form">
             {copy.cta}
             <Icon name="arrow" />
           </Link>
