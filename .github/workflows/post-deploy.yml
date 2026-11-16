@@ -1,0 +1,65 @@
+name: CareIQ post-deployment verification
+
+# This is post-deployment observation, never a prerequisite for starting a deploy.
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      application_sha:
+        description: Exact approved API and web commit SHA
+        type: string
+        required: true
+      marketing_sha:
+        description: Exact independently approved marketing commit SHA
+        type: string
+        required: true
+      mode:
+        description: Verify a deployment, or observe an already performed rollback
+        type: choice
+        options: [deployment, rollback]
+        default: deployment
+      previous_application_sha:
+        description: Previous API/web SHA, required only for rollback verification
+        type: string
+      previous_marketing_sha:
+        description: Previous marketing SHA, required only for rollback verification
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  deployed-smoke:
+    if: github.event_name == 'workflow_dispatch' || (github.event.deployment_status.state == 'success' && vars.CAREIQ_DEPLOYMENT_ENVIRONMENT != '' && github.event.deployment.environment == vars.CAREIQ_DEPLOYMENT_ENVIRONMENT)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.repository.default_branch }}
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Build manifests from immutable approved revisions
+        env:
+          APPLICATION_SHA: ${{ inputs.application_sha }}
+          MARKETING_SHA: ${{ inputs.marketing_sha || vars.CAREIQ_MARKETING_DEPLOYED_SHA }}
+          VERIFICATION_MODE: ${{ inputs.mode }}
+          PREVIOUS_APPLICATION_SHA: ${{ inputs.previous_application_sha }}
+          PREVIOUS_MARKETING_SHA: ${{ inputs.previous_marketing_sha }}
+          DEPLOYMENT_ENVIRONMENT: ${{ vars.CAREIQ_DEPLOYMENT_ENVIRONMENT }}
+        run: node scripts/release-manifest.mjs
+      - name: Verify exact versions, health, public protection and unsigned denials
+        env:
+          VERIFICATION_MODE: ${{ inputs.mode }}
+        run: |
+          for attempt in {1..10}; do
+            if [ "$VERIFICATION_MODE" = rollback ]; then
+              if node scripts/release-smoke.mjs --rollback "$RUNNER_TEMP/careiq-current-release.json" "$RUNNER_TEMP/careiq-previous-release.json"; then exit 0; fi
+            else
+              if node scripts/release-smoke.mjs "$RUNNER_TEMP/careiq-current-release.json"; then exit 0; fi
+            fi
+            if [ "$attempt" -lt 10 ]; then sleep 15; fi
+          done
+          exit 1

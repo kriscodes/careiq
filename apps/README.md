@@ -12,3 +12,4 @@ Applications may depend on shared packages:
 
 ```text
 apps/* → packages/*
+```

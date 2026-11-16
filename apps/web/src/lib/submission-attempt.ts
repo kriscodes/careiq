@@ -3,17 +3,32 @@ export function createSubmissionAttempt(makeKey: () => string = () => crypto.ran
   let previous: { payload: string; key: string } | undefined;
   let inFlight: Promise<void> | undefined;
   return {
-    get pending() { return inFlight !== undefined; },
+    get pending() {
+      return inFlight !== undefined;
+    },
     async submit(input: object, save: (key: string) => Promise<void>): Promise<void> {
-      if (inFlight) return inFlight;
+      if (inFlight) {
+        return inFlight;
+      }
       const payload = JSON.stringify(input);
-      if (!previous || previous.payload !== payload) previous = { payload, key: makeKey() };
+      if (!previous || previous.payload !== payload) {
+        previous = { payload, key: makeKey() };
+      }
       const key = previous.key;
       // Defer even a synchronous failure so the same lock covers every save.
-      const request = Promise.resolve().then(() => save(key)).then(() => { previous = undefined; });
+      const request = Promise.resolve()
+        .then(() => save(key))
+        .then(() => {
+          previous = undefined;
+        });
       inFlight = request;
-      try { await request; }
-      finally { if (inFlight === request) inFlight = undefined; }
+      try {
+        await request;
+      } finally {
+        if (inFlight === request) {
+          inFlight = undefined;
+        }
+      }
     },
   };
 }

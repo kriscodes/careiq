@@ -1,7 +1,4 @@
 
-### `.gitignore`
-
-```gitignore
 # Dependencies
 node_modules/
 
@@ -57,3 +54,7 @@ temp/
 # Python bytecode
 __pycache__/
 *.py[cod]
+
+# Build-specific public commit identity; regenerated before frontend builds.
+apps/web/public/.well-known/careiq-release.json
+apps/marketing/public/.well-known/careiq-release.json

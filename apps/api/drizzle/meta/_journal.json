@@ -344,6 +344,13 @@
       "when": 1793664000000,
       "tag": "0048_manager_activity",
       "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "7",
+      "when": 1793664000001,
+      "tag": "0049_managed_helper_ownership",
+      "breakpoints": true
     }
   ]
 }

@@ -10,9 +10,14 @@ export const NO_CAPABILITIES: PracticeCapabilities = {
 
 /** Only explicit server grants enable actions; old/malformed replies fail closed. */
 export function practiceCapabilities(value: unknown): PracticeCapabilities {
-  const input = value as Partial<Record<keyof PracticeCapabilities, { read?: unknown; create?: unknown }>> | null;
+  const input = value as Partial<
+    Record<keyof PracticeCapabilities, { read?: unknown; create?: unknown }>
+  > | null;
   return {
     patients: { read: input?.patients?.read === true, create: input?.patients?.create === true },
-    appointments: { read: input?.appointments?.read === true, create: input?.appointments?.create === true },
+    appointments: {
+      read: input?.appointments?.read === true,
+      create: input?.appointments?.create === true,
+    },
   };
 }

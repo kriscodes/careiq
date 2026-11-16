@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "description": "Existing tracked evidence at HEAD b7820b0. These exact paths may shrink, but may not grow. New logs and files over 1 MiB belong in CI artifacts.",
+  "files": {
+    "docs/verification/manager-team-activity/api-browser.log": 811,
+    "docs/verification/manager-team-activity/web-build.log": 1256
+  }
+}

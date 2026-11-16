@@ -1,0 +1,17 @@
+# Dependencies and generated output
+**/node_modules/
+**/dist/
+**/build/
+**/.next*/
+**/out/
+**/coverage/
+**/test-results/
+**/playwright-report/
+**/next-env.d.ts
+.local-review/
+# Generated migrations, lockfiles, public fixtures, and archived evidence
+**/drizzle/
+**/pnpm-lock.yaml
+**/public/
+docs/
+patches/

@@ -1,0 +1,80 @@
+{
+  "targets": [
+    {
+      "name": "api",
+      "directory": "apps/api",
+      "include": ["src/**/*.ts"],
+      "testExtension": ".ts",
+      "loader": "apps/api/node_modules/tsx/dist/loader.mjs",
+      "thresholds": {
+        "lines": 73,
+        "statements": 73,
+        "functions": 92,
+        "branches": 79
+      }
+    },
+    {
+      "name": "web",
+      "directory": "apps/web",
+      "include": ["src/**/*.ts", "src/**/*.tsx"],
+      "testExtension": ".ts",
+      "loader": "apps/web/node_modules/tsx/dist/loader.mjs",
+      "thresholds": {
+        "lines": 15,
+        "statements": 15,
+        "functions": 73,
+        "branches": 76
+      },
+      "scopes": [
+        {
+          "name": "application-logic",
+          "include": ["src/lib/**/*.ts"],
+          "thresholds": {
+            "lines": 80,
+            "statements": 80,
+            "functions": 85,
+            "branches": 85
+          }
+        }
+      ]
+    },
+    {
+      "name": "marketing",
+      "directory": "apps/marketing",
+      "include": ["src/**/*.ts", "src/**/*.tsx"],
+      "testExtension": ".ts",
+      "loader": "apps/marketing/node_modules/tsx/dist/loader.mjs",
+      "thresholds": {
+        "lines": 70,
+        "statements": 70,
+        "functions": 60,
+        "branches": 75
+      }
+    },
+    {
+      "name": "i18n",
+      "directory": "packages/i18n",
+      "include": ["**/*.ts"],
+      "testExtension": ".ts",
+      "loader": "apps/web/node_modules/tsx/dist/loader.mjs",
+      "thresholds": {
+        "lines": 93,
+        "statements": 93,
+        "functions": 100,
+        "branches": 71
+      }
+    },
+    {
+      "name": "interview-contract",
+      "directory": "packages/interview-contract",
+      "include": ["**/*.js"],
+      "testExtension": ".js",
+      "thresholds": {
+        "lines": 98,
+        "statements": 98,
+        "functions": 100,
+        "branches": 95
+      }
+    }
+  ]
+}

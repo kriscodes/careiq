@@ -1,0 +1,2356 @@
+{
+  "version": 1,
+  "recordedAt": "2026-11-03T06:55:03.755338+00:00",
+  "outcome": "fixed-locally",
+  "originalFindingCount": 65,
+  "originalRecord": "docs/verification/release-security-analysis.json",
+  "codeql": {
+    "version": "2.27.4",
+    "suite": "security-extended",
+    "reports": [
+      {
+        "scope": "candidate-final",
+        "language": "javascript",
+        "sha256": "31f1379e834b086847990205db1374e22525f7850434f150ac0cce0426ef17ec",
+        "resultCount": 0,
+        "analyzedFiles": 248
+      },
+      {
+        "scope": "candidate-final",
+        "language": "python",
+        "sha256": "8d8be61f2f126e2a3f681f87ebcb5e295482d58fb846319f25bb0ae8c18bec17",
+        "resultCount": 0,
+        "analyzedFiles": 1
+      },
+      {
+        "scope": "candidate-final",
+        "language": "actions",
+        "sha256": "a531acd12f4a2ad5b257178062c3c33149c3164bc26e21c504800aa87124620f",
+        "resultCount": 0,
+        "analyzedFiles": 4
+      },
+      {
+        "scope": "rollback-final",
+        "language": "javascript",
+        "sha256": "8d901c18bb7d46fbe2decb84104568fcd4a7a0e848d756e0bcf4f48692e4a21b",
+        "resultCount": 0,
+        "analyzedFiles": 223
+      },
+      {
+        "scope": "rollback-final",
+        "language": "python",
+        "sha256": "53dbd541a2f6f9069cf981c8a5d6ff965be1699ca3029b781cdb813121a14c58",
+        "resultCount": 0,
+        "analyzedFiles": 1
+      },
+      {
+        "scope": "rollback-final",
+        "language": "actions",
+        "sha256": "ab720a24ea09b5f96973f5281e42188b5f70bdf646b5fe4bfb38ff4acddebcea",
+        "resultCount": 0,
+        "analyzedFiles": 2
+      },
+      {
+        "scope": "final-tool-delta",
+        "language": "javascript",
+        "sha256": "c261f53150ac2303d169e295eb278e002cf6aaa42b2f34bf646b6c0e09988187",
+        "resultCount": 0,
+        "analyzedFiles": 4
+      }
+    ],
+    "gate": "passed",
+    "remainingFindings": 0,
+    "rulesDisabled": false,
+    "newSuppressions": false,
+    "coverage": [
+      {
+        "scope": "candidate-final",
+        "fileCount": 273,
+        "initialInventoryDigest": "ec11ec26e2ce683c3f0107129ffdfc6cbf736dc037eaaeae0af14f346cb17585",
+        "finalInventoryDigest": "30e87bd262ba9187f7e73fd06ba5250de4943e2724a3e4b0b70595558af5fe4b",
+        "changedSinceFullScan": [
+          {
+            "path": "scripts/prepare-rollback.mjs",
+            "previousSha256": "a5ffd46a8cbcbbbee6b4a57937737c8c2eecea6bf41966ff4dcd21b3c152a401",
+            "finalSha256": "ae160a0d84c4f42a9527fa807f700d43fd83d59f5ed1f226cba81bae25cf0e28",
+            "verifiedBy": "final-tool-delta"
+          }
+        ],
+        "allOtherSnapshotFilesUnchanged": true,
+        "finalFiles": [
+          {
+            "path": ".github/codeql-config.yml",
+            "sha256": "6f43fe42b214ab7894b9a61d84770924b9d140a296a898e7ab593da3bcb1de3c"
+          },
+          {
+            "path": ".github/workflows/ci.yml",
+            "sha256": "3ae78abee933177aad9d0cc6f900945b03d153168045d8e9bdbccd582b076139"
+          },
+          {
+            "path": ".github/workflows/post-deploy.yml",
+            "sha256": "0de2e2f07dfa8b2486224a7135ff7ac5e874b8d2ccde70532cf9c5da093f3091"
+          },
+          {
+            "path": ".github/workflows/readiness.yml",
+            "sha256": "048c970ed08c5086e02d6ca37929875e77df845aa732c444a096831c1f3cd08c"
+          },
+          {
+            "path": ".github/workflows/security-analysis.yml",
+            "sha256": "02ea4b54d3b664f6a9674482b4d30f926064ee9f127d829bc3cfacd6a4f39ead"
+          },
+          {
+            "path": "apps/api/package.json",
+            "sha256": "15c5900a15d5b6234f6b067861360ff5bcf372f78ac464902a5bd1dae2a2a525"
+          },
+          {
+            "path": "apps/api/src/account-restore.ts",
+            "sha256": "a03839c53d6b23e6a61ecc1f871f99057b0170491d4cdb0b7b5a8a969f7827b2"
+          },
+          {
+            "path": "apps/api/src/app.ts",
+            "sha256": "7f9810a8384348de3bca47be5a504c8b84ea0b2f62d740ededcbfe981787255b"
+          },
+          {
+            "path": "apps/api/src/availability.ts",
+            "sha256": "1c9f23c1a0b1f4b973bde0d3a245cf9e4d08bd014046a6e13508585a4a74dc4e"
+          },
+          {
+            "path": "apps/api/src/db/account-lifecycle-release-check.ts",
+            "sha256": "603249dbadd49d66c69c51679e8ee3f35add58fb905528bc0902e8ae156672c6"
+          },
+          {
+            "path": "apps/api/src/db/availability-release-check.ts",
+            "sha256": "b5027364db000cfba19d8e657708097df9b48417ad07a8c429b4db30c1bae71f"
+          },
+          {
+            "path": "apps/api/src/db/client.ts",
+            "sha256": "941215a5efd133fd7925a8186bc36577c96212b689389ceb05868b3f2866206e"
+          },
+          {
+            "path": "apps/api/src/db/connection.ts",
+            "sha256": "8472919d26a9441e1fab75f0327c93bbcf670e75ad1ab7b6fad952c8f1154489"
+          },
+          {
+            "path": "apps/api/src/db/forms-studio-release-check.ts",
+            "sha256": "32c685b6af734f71da33442ca82ef38818505ea24d7ab81e0bccf7bec6cf78fa"
+          },
+          {
+            "path": "apps/api/src/db/insurance-release-check.ts",
+            "sha256": "9355b50d9c76b1ddd529dbb0fe378908122df5ed70be61bae23a9bb80e7cf006"
+          },
+          {
+            "path": "apps/api/src/db/managed-owner-policy.ts",
+            "sha256": "c597272e41733f32de70e75ac5b7a437ab548199cab3c0c5e5cd6e53798c7ea3"
+          },
+          {
+            "path": "apps/api/src/db/managed-owner-release-check.ts",
+            "sha256": "e7b0dc26d6411169e6f54dd588fc9f8dfe45e46619218c90a9efeeedb2c9a3e8"
+          },
+          {
+            "path": "apps/api/src/db/migrate.ts",
+            "sha256": "9777e9ac20dc0cf2ddae5ee58ac3e9a141ad5bfce08cf32f15f581594fdaff2b"
+          },
+          {
+            "path": "apps/api/src/db/migration-safety.ts",
+            "sha256": "61091c9950d378482ea216c8cbd522d67218db6220a54b77e26a89dc59fe9c2e"
+          },
+          {
+            "path": "apps/api/src/db/notification-release-check.ts",
+            "sha256": "0e8ba7d270fe26d66c3cd11e1220820d476dc44406f7bd99b0d799dc42f74b0a"
+          },
+          {
+            "path": "apps/api/src/db/owner-access-release-check.ts",
+            "sha256": "9d27b6368bb2d8954858d186118567177e9960fb8650f6c440e9fb9d2b4d896e"
+          },
+          {
+            "path": "apps/api/src/db/pool.ts",
+            "sha256": "7d67244626307b88df0387cfbad453d85473c5f9f4d1d7a7fe0f28b2defc8d39"
+          },
+          {
+            "path": "apps/api/src/db/practice-transaction.ts",
+            "sha256": "16484059d7206056e3ce865c9871d71aa4fc589ea940d31112afc6d95d951046"
+          },
+          {
+            "path": "apps/api/src/db/reconcile-practices.ts",
+            "sha256": "d5b889f4fa90523132d6a37e488c47586584079e701d607dc73be57fa728f226"
+          },
+          {
+            "path": "apps/api/src/db/release-check.ts",
+            "sha256": "3f6f36ffd01a14d32c8385d030e7f847ce5fbb6019d4801d17518a16b4ed0cc1"
+          },
+          {
+            "path": "apps/api/src/db/runtime-pool-policy.ts",
+            "sha256": "67624284104211b930f8216189c06c779de88e4412e9e748182173c1394aa46f"
+          },
+          {
+            "path": "apps/api/src/db/schema/account-lifecycle.ts",
+            "sha256": "c0164e0d0dc3ae67bcb656337d5d7fab8cf9c6ab5f7262bfa182aa9686f63903"
+          },
+          {
+            "path": "apps/api/src/db/schema/appointments.ts",
+            "sha256": "65f289c5d4fcc3247569e68f1d5166923780b71501b4bb07696b08fdd318e512"
+          },
+          {
+            "path": "apps/api/src/db/schema/clinical-security.ts",
+            "sha256": "ca03d31e065b8f50ed8914890ee635f6d7e275556d8b3f93e8cd9bf58d9cfc73"
+          },
+          {
+            "path": "apps/api/src/db/schema/insurance.ts",
+            "sha256": "253622a116a558530f2ce0aeacbe96d92a58cae08b6f6538f3a7aabab9b3b4c4"
+          },
+          {
+            "path": "apps/api/src/db/schema/marketing-interview-requests.ts",
+            "sha256": "ead71f1eb868aa14494d25c1ec45170ae808622fb052b2036d8772c1176cdb2c"
+          },
+          {
+            "path": "apps/api/src/db/schema/onboarding-drafts.ts",
+            "sha256": "c6a86856b55e29e127e48d0d813aadb221d9f05c9afaeae45f03494498f9df2f"
+          },
+          {
+            "path": "apps/api/src/db/schema/owner-operator-access.ts",
+            "sha256": "f0cc292b3642cc2c50b70e607845ca4fee522e812a2511e730e215aed1d0d594"
+          },
+          {
+            "path": "apps/api/src/db/schema/paperwork.ts",
+            "sha256": "cf0087988da265cae7b07a45b3d9430a253f4d0c3f77145c6a600fed679488d3"
+          },
+          {
+            "path": "apps/api/src/db/schema/patient-delivery.ts",
+            "sha256": "1725dd4d6eb0f671adc736081b8c9c682ceb48661d8f3580077a3ab909964a61"
+          },
+          {
+            "path": "apps/api/src/db/schema/patients.ts",
+            "sha256": "271baf177e901dae6dc25bf9c3af1b7a1ab4231a6d6c17881f3255d29aadfe12"
+          },
+          {
+            "path": "apps/api/src/db/schema/portal-communication.ts",
+            "sha256": "ef6a8722885a408fa71ca0c72bc01e79e85d09bee50d2ef7a8b59e978c48db39"
+          },
+          {
+            "path": "apps/api/src/db/schema/practice-access.ts",
+            "sha256": "13a9f052d1c7659d5b9aa91e3f88c5dcd30d78d5c95ce73b53511ab25f5d964f"
+          },
+          {
+            "path": "apps/api/src/db/schema/practices.ts",
+            "sha256": "ec87713053683118e576c1e0dd7e425b6a0c080f59811fef6423da28bb3f8056"
+          },
+          {
+            "path": "apps/api/src/db/schema/staff-notifications.ts",
+            "sha256": "373c1239eae8c9bc723e3637ff922a64e5717736f35715cd06deff73ce339591"
+          },
+          {
+            "path": "apps/api/src/db/schema/workflow.ts",
+            "sha256": "b7ed065d7271cb64335ae02608fce7a20cc01f4158fa162460dfa70773876128"
+          },
+          {
+            "path": "apps/api/src/db/test-appointment-rls.ts",
+            "sha256": "86513a82a0a700cd8915e31575877982a2d9d2e1402753347310e1cd999a578b"
+          },
+          {
+            "path": "apps/api/src/db/test-patient-rls.ts",
+            "sha256": "0a183095f76f38dc879b34d3cc64fcd29a94ab2d728259207a73766b83938685"
+          },
+          {
+            "path": "apps/api/src/db/verify-release.ts",
+            "sha256": "3a4e45a3a21aca31f50c0e5d88d0c289d8a78fbfce035510162ba4632047df94"
+          },
+          {
+            "path": "apps/api/src/db/with-tenant.ts",
+            "sha256": "65d15b994fd3c48aa93b4ff5e5d2a749211ae71fc9493c687a2dab4c557ff122"
+          },
+          {
+            "path": "apps/api/src/db/workflow-release-check.ts",
+            "sha256": "a7ec703a08236cd7f2fb1f5edf30adb6b10abb172dce80e2d4e8399a4fdc88d5"
+          },
+          {
+            "path": "apps/api/src/index.ts",
+            "sha256": "dba7634341e725ae32a7c988cf97f7c70007f6b946e71d1810539c414847776a"
+          },
+          {
+            "path": "apps/api/src/logging.ts",
+            "sha256": "ecd02a7a2b0388c56440ff8b48a2e3a77b0140f08095a10b80895f7c2b9c2143"
+          },
+          {
+            "path": "apps/api/src/middleware/account-status.ts",
+            "sha256": "04af93cc19c447cb9f68305baa0499f92604c811155e4bab921aebbad19c21c8"
+          },
+          {
+            "path": "apps/api/src/middleware/api-rate-limit.ts",
+            "sha256": "077c52646d7f58bdf41907cd4a43a4963248f8da484b9c362817f962769fb98c"
+          },
+          {
+            "path": "apps/api/src/middleware/authentication.ts",
+            "sha256": "42a34f01d58513bd3d00f01d6186a33dbedb4e87dff56d22d0fc4be1dca16c19"
+          },
+          {
+            "path": "apps/api/src/middleware/interview-rate-limit.ts",
+            "sha256": "eb2a9e20653916697a0e59dbe0e4aba4a55d8aac84b605f98f9b56d803631eba"
+          },
+          {
+            "path": "apps/api/src/middleware/permissions.ts",
+            "sha256": "e31be87ab9d34dacf5fa2c0854f7ce2a79cacf144123d28964fcc61c6799113d"
+          },
+          {
+            "path": "apps/api/src/middleware/tenant-context.ts",
+            "sha256": "d5043a25c09fc2e4dc268d83f6dcc473cc671b3cea7b5967495b6844eef9cdc1"
+          },
+          {
+            "path": "apps/api/src/notifications/callback-configuration.ts",
+            "sha256": "10308a3db9529ebf4aae3e08715fadfdbcc37a9f1d569e34f2b6cba0a326ab8f"
+          },
+          {
+            "path": "apps/api/src/notifications/delivery-provider.ts",
+            "sha256": "e695d3c13f06bcecdfb0cf056782d4a2c363fea151213cb5d682b1544512d6b7"
+          },
+          {
+            "path": "apps/api/src/notifications/little-hello-copy.ts",
+            "sha256": "c7e550dfa1af8a2a856e61b2d654d3bf3f61ca70fa468ea407cb96cc204351ae"
+          },
+          {
+            "path": "apps/api/src/notifications/little-hello-email.ts",
+            "sha256": "1219dde405b20751cc6cddf846af88d83f4807c3f3faf20f42e119ba0053b1bb"
+          },
+          {
+            "path": "apps/api/src/notifications/patient-delivery-policy.ts",
+            "sha256": "321fc611d615c46294a96ca64ea38ed47c4e78bbd6a90af339f25d4fe00cf745"
+          },
+          {
+            "path": "apps/api/src/notifications/portal-preference-policy.ts",
+            "sha256": "5dc05d682588938bd5a9896dd35726307277dc8f15ddce203fa582cfa784ab5b"
+          },
+          {
+            "path": "apps/api/src/notifications/staff-notification-policy.ts",
+            "sha256": "8a7034b09a70f4ab270dbec2de6d3670e80333864f5ec5ae6a3fb918f2300050"
+          },
+          {
+            "path": "apps/api/src/notifications/worker.ts",
+            "sha256": "06c69b5d2883971095b8bc5d4d6eb3293ec2a5a32e2cb849ff5420ba61fd0290"
+          },
+          {
+            "path": "apps/api/src/production-config.ts",
+            "sha256": "9e7b9beed9a073dcf291384454fe1c75ecf226332155702d20fd4d08e75209a5"
+          },
+          {
+            "path": "apps/api/src/public-config.ts",
+            "sha256": "d4be2e0ae39d94e7a8ffd72e118c8a6be2f07acb1ad3fca7e75d2787279c2ba1"
+          },
+          {
+            "path": "apps/api/src/release-revision.ts",
+            "sha256": "33da53b760da1e7dc3ec66e7323f8fdf1dd27ca2bb1e5910e4c282f3fb29c8f2"
+          },
+          {
+            "path": "apps/api/src/routes/account-lifecycle.ts",
+            "sha256": "54af267ca742af39cb2cc7a11362539a0172c9e5fa85ea3df4f4f1820cd7ff89"
+          },
+          {
+            "path": "apps/api/src/routes/clinical-failure.ts",
+            "sha256": "85444a94b35c8bd3eda100197f0c8435ffb5c55d054d42a77c9a66e68b8608e7"
+          },
+          {
+            "path": "apps/api/src/routes/insurance.ts",
+            "sha256": "79bff0c4ef244347dda255e06a8fcad9147771f293d066f172a61ffa1b8b3615"
+          },
+          {
+            "path": "apps/api/src/routes/patient-delivery.ts",
+            "sha256": "0b6287dcdf72c31e8b848f1e00ce8271686297272f2b6ec481ce55a26c182e31"
+          },
+          {
+            "path": "apps/api/src/routes/patient-paperwork.ts",
+            "sha256": "c8fc7858e39c9d7835269876568449bbe92daefb8ad05bdc5ad29eee1a4ec46d"
+          },
+          {
+            "path": "apps/api/src/routes/portal-communication.ts",
+            "sha256": "3261e517972dc81003ddb09b7c71d3b8ab1043d3aa97b442fa0918776157bc17"
+          },
+          {
+            "path": "apps/api/src/routes/practice-access.ts",
+            "sha256": "6666b1739c2f29550250360609a91de574ef26b5e6220222c2afadb101e93fb7"
+          },
+          {
+            "path": "apps/api/src/routes/private-read.ts",
+            "sha256": "53af54334f0c7d199cd4e7583e1526ddc8000296ad4ce20a0da962147e5a55eb"
+          },
+          {
+            "path": "apps/api/src/routes/protected-audit.ts",
+            "sha256": "93750ec9d84eaedc02af93f9f9484851f67746c9a7604760e2d3cda9b83b8e8a"
+          },
+          {
+            "path": "apps/api/src/routes/public-interview-requests.ts",
+            "sha256": "9ccb8f2d2ca6e45dec4d32ea26d95bd742b635194d5dea8a7e100de42020bcf7"
+          },
+          {
+            "path": "apps/api/src/routes/staff-notifications.ts",
+            "sha256": "96e2423e87aca0805237b7002e3bea478615d78d5cca45de25a142be0d710ee0"
+          },
+          {
+            "path": "apps/api/src/routes/workflow.ts",
+            "sha256": "f9512ad3670f96e6aa5de616954baebd65c24c8a3d2d5343c08799b3cf34bfca"
+          },
+          {
+            "path": "apps/api/src/services/account-lifecycle.service.ts",
+            "sha256": "859db945174a008f3addc81d4b1d7745b07d6d9085f9c2a1b3b3b7f9769b9fae"
+          },
+          {
+            "path": "apps/api/src/services/account-restore-policy.ts",
+            "sha256": "221123d62bf0661035d447abee8367ac015f772ca135bba860cf497f4113a7d4"
+          },
+          {
+            "path": "apps/api/src/services/appointment.service.ts",
+            "sha256": "83b7ef0d11766a501db1bafda4f0a7b5d6ea7dfa518781b9d1272724200c1048"
+          },
+          {
+            "path": "apps/api/src/services/clerk-directory.ts",
+            "sha256": "2bcba99dbeb37b941878750ceb390f4aaf466b15c51ddf2b8f47d34449ebe4ab"
+          },
+          {
+            "path": "apps/api/src/services/clinical-security.ts",
+            "sha256": "85ef67741616b0b77125b0d7b9d259bd5a68e88ea0b5ef6f61f282ecc556210e"
+          },
+          {
+            "path": "apps/api/src/services/form-changes.service.ts",
+            "sha256": "5267674815d3f547b92a08af8099e63c850d8365db7dbdf1a077c6cb40523e1b"
+          },
+          {
+            "path": "apps/api/src/services/insurance.service.ts",
+            "sha256": "770c5c823791c19a6286b3186f4883d4ed1262a27a6de6e438add8958b3f20d1"
+          },
+          {
+            "path": "apps/api/src/services/interview-request.service.ts",
+            "sha256": "1d098a1efaf8eae39b13c682c7a31119d618481d0b9e751ed15395f6760fe49b"
+          },
+          {
+            "path": "apps/api/src/services/manager-activity.service.ts",
+            "sha256": "0bb337125b3a24541a160232db66b1648475d79a22ec3f60650ba5acfc810a09"
+          },
+          {
+            "path": "apps/api/src/services/onboarding-draft.ts",
+            "sha256": "d5df4c0fabc48d17af16d2de62a74f7d850f7452ecafe06f50532ae3c16f8da1"
+          },
+          {
+            "path": "apps/api/src/services/onboarding-state.service.ts",
+            "sha256": "bb14d4f1bdf6602d8b16d86b0b53fb71099d36c5b8b1080e75b989b6d350018d"
+          },
+          {
+            "path": "apps/api/src/services/owner-operator-access.ts",
+            "sha256": "1d99bce4265831408ab4ccea911d8bbf13b24b503c1e81e44bf96c3ad4053025"
+          },
+          {
+            "path": "apps/api/src/services/owner-operator-policy.ts",
+            "sha256": "df00486828bac39871be49adaba5e09824edfa393d85a4c27aff80678b6119b0"
+          },
+          {
+            "path": "apps/api/src/services/patient-delivery.service.ts",
+            "sha256": "cff4ba89322e730a003890c77799a7dca66f4b369a6826c1b05acc64a70f0454"
+          },
+          {
+            "path": "apps/api/src/services/patient-paperwork.service.ts",
+            "sha256": "4c1d5361a4731f15d04942d19cea1606df017cfe1fab457adefc266acdf7cf8e"
+          },
+          {
+            "path": "apps/api/src/services/patient.service.ts",
+            "sha256": "6acb52ff106b62439a1c4e01288d1d4008ae66db356889f1f67ed312cf600eb1"
+          },
+          {
+            "path": "apps/api/src/services/portal-admin.service.ts",
+            "sha256": "d20d5c4f49a1a4a5016bfcef7fe99fca6fff355302c6046430323685a8d8bff4"
+          },
+          {
+            "path": "apps/api/src/services/portal-communication.service.ts",
+            "sha256": "9c4422341e806e71b462ccc15c422f1e17e076830d9f76fa38afb282efb4f2ce"
+          },
+          {
+            "path": "apps/api/src/services/practice-access.service.ts",
+            "sha256": "bfca3cc2c23dc19b0be7fe5defea3f23f08d0b880022b77dc168baffa6708c81"
+          },
+          {
+            "path": "apps/api/src/services/practice-policy.ts",
+            "sha256": "8abaac6cf293c5afb8c568cf55aa9584f3d5dfb3113b7af5924dd2b1a8755d2c"
+          },
+          {
+            "path": "apps/api/src/services/practice-reconciliation.ts",
+            "sha256": "5c1ab3c93b8db942542802ef6e4d50e81b905460776bbb4084893fe1a70cebc6"
+          },
+          {
+            "path": "apps/api/src/services/practice.service.ts",
+            "sha256": "c7f3df091dab299991bca2bf16446623e24fb9ce91756fa038fe05b9ce39f871"
+          },
+          {
+            "path": "apps/api/src/services/protected-audit.service.ts",
+            "sha256": "999894e61abea00ef65afe57ea97682b5eb15a7fc58535b8bba08af7c729b8db"
+          },
+          {
+            "path": "apps/api/src/services/staff-notifications.service.ts",
+            "sha256": "403780f9345281785425648b710d7754fcf0845a5227eacc3da9cd487543f698"
+          },
+          {
+            "path": "apps/api/src/services/workflow-audit.ts",
+            "sha256": "0f8d1d3a74b206b0de2a5b8aae0d2542f7ed22a855a7c729b007d76080985820"
+          },
+          {
+            "path": "apps/api/src/services/workflow.service.ts",
+            "sha256": "aa291d3786cbbd4a64442a11c5394f40fdd20476484d41a636a79a19f0100c3b"
+          },
+          {
+            "path": "apps/api/src/types/express.d.ts",
+            "sha256": "86b1d93ce8bb14775afa809809090ad60b01d64e9051d8721ff43f6408ec68a3"
+          },
+          {
+            "path": "apps/api/src/validation.ts",
+            "sha256": "0f8399a8c66e06210ce0715928dd794bc917d07e4ed0e0c9c1abfef72d585e6f"
+          },
+          {
+            "path": "apps/api/src/workflow/availability.ts",
+            "sha256": "e5d32fffcbb1ee63fa2cd9c671138755b1785653c5abc3cc796f4008ecb8ecc8"
+          },
+          {
+            "path": "apps/api/src/workflow/forms.ts",
+            "sha256": "3723f685b35680c1d7b127f2ef6a3dc6f472e2ea3045b518106b2084b2bbb06d"
+          },
+          {
+            "path": "apps/api/src/workflow/insurance-policy.ts",
+            "sha256": "20bdd53a6cd4d0b79c80526e2f7366469ecaf723d871927f8708b20bdbad4a68"
+          },
+          {
+            "path": "apps/api/src/workflow/manager-activity-policy.ts",
+            "sha256": "b18fdfc7967d1f5830085aecd539d584c09f36aa99b2f3de14e2ccfbce911751"
+          },
+          {
+            "path": "apps/api/src/workflow/paperwork-policy.ts",
+            "sha256": "d3c9640445b66aa1cb86fe79c2ae5969b3b456fb2ee2fbfc6aea3019b3f45891"
+          },
+          {
+            "path": "apps/api/src/workflow/patient-eligibility.ts",
+            "sha256": "79cd0909aa23d83f66098e1340f7f3fb3fd030921bed54f744881e90d3906ec1"
+          },
+          {
+            "path": "apps/api/src/workflow/pdf-limits.ts",
+            "sha256": "a6c2c47de043499d6a1a4ee8cbb20d9b36292acac7b37a4ede67a2314d80cdc6"
+          },
+          {
+            "path": "apps/api/src/workflow/policy.ts",
+            "sha256": "adac0159fde851fac33b222b8de8f407e4dc095c4bdff2a54bcd6862909d2c6a"
+          },
+          {
+            "path": "apps/api/src/workflow/read-model.ts",
+            "sha256": "9c6f7c37cf4ab71e9c16ae09001366d1b64bafeb98ff5b627a8cf35d188e82bd"
+          },
+          {
+            "path": "apps/api/src/workflow/storage-config.ts",
+            "sha256": "0ff22f830d1551b5327d433181bf6b4cfc3fda40123ca40e92eb9537043a494f"
+          },
+          {
+            "path": "apps/api/src/workflow/storage.ts",
+            "sha256": "e416acff7c4d38d98c84a023055a75d38dacc6d80721d3a979ffc6cfa3fff082"
+          },
+          {
+            "path": "apps/api/src/workflow/transaction.ts",
+            "sha256": "8acf57787ea8fca84a5f1f16aa70110d241b407da4ffa9093df1f5c4e6392a79"
+          },
+          {
+            "path": "apps/marketing/package.json",
+            "sha256": "0822e5088dbfcdfb0526fcdcfac0e3e5f5954555c153f8184647f7637e1922ff"
+          },
+          {
+            "path": "apps/marketing/src/app/layout.tsx",
+            "sha256": "68923c2d785608597aee74f0614596620322539ecd2fc2d130f54f4be3bec45d"
+          },
+          {
+            "path": "apps/marketing/src/app/not-found.tsx",
+            "sha256": "f5169e796cebad7fdb6673fd66fecf24e9a57b472c2fa0511540c46320615a8c"
+          },
+          {
+            "path": "apps/marketing/src/app/page.tsx",
+            "sha256": "fce213cf0e05cb5e2d1c18cf2f51b39e9bfb16f0cee506b29f15f190ea14f6b9"
+          },
+          {
+            "path": "apps/marketing/src/app/privacy/page.tsx",
+            "sha256": "30c2290507dfe390aec88677f7a4314b99a5dc388972bb1dad4b1f5fd88de802"
+          },
+          {
+            "path": "apps/marketing/src/app/robots.ts",
+            "sha256": "1614e4848c45b4b8656b2e9df5bd24aab3c08db8d7bd31cc9c03e583f2f9319a"
+          },
+          {
+            "path": "apps/marketing/src/app/sitemap.ts",
+            "sha256": "0f74a7990a6152c0df30ab0eb0cca9e92bee5e88b84f6a159060c7c5dc8970d3"
+          },
+          {
+            "path": "apps/marketing/src/components/Brand.tsx",
+            "sha256": "8f317dca550025f47059a9a8ab64f6bf1e574095f8ec1a718111e58a6870784a"
+          },
+          {
+            "path": "apps/marketing/src/components/Footer.tsx",
+            "sha256": "82bf79915d68544484fa040a5466f5466fca8afcc06900a64bf8a0e54768985e"
+          },
+          {
+            "path": "apps/marketing/src/components/Header.tsx",
+            "sha256": "376473eac3380d52ede8fdb72e67315843c80dfd38c4a18506edc7d32cf9921c"
+          },
+          {
+            "path": "apps/marketing/src/components/Icon.tsx",
+            "sha256": "69083bcfb44d69e20952f074ba2e778793ca94385dce994b9a51fea06892d9d6"
+          },
+          {
+            "path": "apps/marketing/src/components/InterviewForm.tsx",
+            "sha256": "dd15375f703b4cec27375f9873930c6393956aa3c51122d88753f6ef4bb44b59"
+          },
+          {
+            "path": "apps/marketing/src/components/NotFoundContent.tsx",
+            "sha256": "21e1b05b74fc82e5f081b557e53c42c5e0482bcafc5bcb526f0155c26fad8ee4"
+          },
+          {
+            "path": "apps/marketing/src/components/PrivacyContent.tsx",
+            "sha256": "879a412238947553d56bc6ea2641f9d3230b5a05244cdaf1f55b9692e53dc70f"
+          },
+          {
+            "path": "apps/marketing/src/components/SiteShell.tsx",
+            "sha256": "1658500ba2dd679527cf7fa7b993565f42ccbb4e3b38e9eec17a6f5cc614df1d"
+          },
+          {
+            "path": "apps/marketing/src/content/content.ts",
+            "sha256": "bf18fec657fae974c536ac1737bddc4000a94968cbfad839f25897023b4e8e24"
+          },
+          {
+            "path": "apps/marketing/src/content/localized.tsx",
+            "sha256": "832715656d09c4bfe975d11ddee6af72e5fdaf350e840c4834c37a8d69f17c01"
+          },
+          {
+            "path": "apps/marketing/src/content/site-content.es.json",
+            "sha256": "4466bcda1a15e6debd1d08f5805f735af7b77bc80e72b1dc63fa19a4637d14e8"
+          },
+          {
+            "path": "apps/marketing/src/content/site-content.json",
+            "sha256": "f37bc19266164c623f39bf8b00effea534e94fd44e72de7676685cad803f4735"
+          },
+          {
+            "path": "apps/marketing/src/lib/config.ts",
+            "sha256": "ec1282beac706381aa4ec3f964f7b14557a135625eef9661f90a31bddcf0ec84"
+          },
+          {
+            "path": "apps/marketing/src/lib/site-config.ts",
+            "sha256": "4dc146a070d208e495a2d2c4b8d6f2da60494a7a0b6a37e7c545c767b9b410f5"
+          },
+          {
+            "path": "apps/marketing/src/lib/submission.ts",
+            "sha256": "39c11f91f23709e10a1fc4e46642e462cbeeae08422dc155e6fa60a9c075b06a"
+          },
+          {
+            "path": "apps/web/package.json",
+            "sha256": "a94b9282e0b55acdeade4d8263fb13fd53ea57ddb06627c8033bbe3ecc1ccaaf"
+          },
+          {
+            "path": "apps/web/src/app/audit/page.tsx",
+            "sha256": "fdab69cb11b8b2afe51fd229b192e7c1444dd4e89bcd65d5c587492c5b06e2ec"
+          },
+          {
+            "path": "apps/web/src/app/design-preview/page.tsx",
+            "sha256": "bfb01bb12467e6006de5ac2a366d21bd202c06754cf138c57a727d1dc499f420"
+          },
+          {
+            "path": "apps/web/src/app/error.tsx",
+            "sha256": "69b9b75b2cc0948119944ee6e4ad74d213cda8bef049455d5cefd9f3d3cdd2fc"
+          },
+          {
+            "path": "apps/web/src/app/global-error.tsx",
+            "sha256": "3fd36ffb67cee2d70ce2f82f8293e3a6b8753c07c9dbad4f19d8a4084c9f384b"
+          },
+          {
+            "path": "apps/web/src/app/join/page.tsx",
+            "sha256": "4ed31772341f8381506e4f190c8728c692f856df4167e960ed34930f30e15777"
+          },
+          {
+            "path": "apps/web/src/app/layout.tsx",
+            "sha256": "1be29a696797f6bc9459d24dc8c857bab053ba123b757b279d2aef9f3bd64134"
+          },
+          {
+            "path": "apps/web/src/app/page.tsx",
+            "sha256": "d7ef56e99cb4e5e56c381c24313297012753e51c637d73a89b8b7aae9f1326cd"
+          },
+          {
+            "path": "apps/web/src/app/patient-paperwork/page.tsx",
+            "sha256": "f03bf1a3a145c3b507bd02b7c8048b31a0801e1e3b45462ecb1ffa5465d13354"
+          },
+          {
+            "path": "apps/web/src/app/patient-workflow/page.tsx",
+            "sha256": "e9ef7df0c37d4e709d8291668edb3a63bc48f74c9f7d9361eb05bcd736badf34"
+          },
+          {
+            "path": "apps/web/src/app/session-tasks/page.tsx",
+            "sha256": "7a94829836e8f3546d11f680ef65d5af322ffcfc1f8f100654b3c171e2302955"
+          },
+          {
+            "path": "apps/web/src/app/sign-in/page.tsx",
+            "sha256": "6ebc5afbc91281369cf3ac2012f3d60af3b51825ffdd76d2d3b03a9f5d1cb8ec"
+          },
+          {
+            "path": "apps/web/src/app/sign-up/page.tsx",
+            "sha256": "7b707d9e8b2189e88192c4063d2e6b03dcd57033c2c096c43c837066736b0947"
+          },
+          {
+            "path": "apps/web/src/app/workflow-preview/page.tsx",
+            "sha256": "38b6b336ce169282ccb9600ac7f40bd8697ea3975f2b341f1af1a4bcfc2c3a1d"
+          },
+          {
+            "path": "apps/web/src/components/Appointments.tsx",
+            "sha256": "b67590e54d72ef797580f900d363b4bee2ff1fa4847c1a6344edbf2d86cec8cf"
+          },
+          {
+            "path": "apps/web/src/components/AuditConsole.tsx",
+            "sha256": "c7f3c37959bd4266593274f7ec437f6a09624067ab14eb92994247c1d5cb4d35"
+          },
+          {
+            "path": "apps/web/src/components/InterviewForms.tsx",
+            "sha256": "35076c3283d1842b7078dbcb697ae30b3278c1ac6c3ecb8f64f014a5df7ea308"
+          },
+          {
+            "path": "apps/web/src/components/InterviewIcon.tsx",
+            "sha256": "b48fa3d2026487cdf617840c16c00600d774c37fe4df87615b476b0fba80a927"
+          },
+          {
+            "path": "apps/web/src/components/InterviewModal.tsx",
+            "sha256": "64ba81db9a8a5c773d60b73149d54d158e9e8f9e8d61650fbf5beddc37b74b85"
+          },
+          {
+            "path": "apps/web/src/components/InterviewNotes.tsx",
+            "sha256": "08b18c9541b4c7f573065f105b99b6d91929cdb7d1863fd175d20ab8773e3eaf"
+          },
+          {
+            "path": "apps/web/src/components/Patients.tsx",
+            "sha256": "e7fdc1f82554bc1f44091cbc05d25e46aa5c45d563bb6c2be659f4f42a31c30a"
+          },
+          {
+            "path": "apps/web/src/components/PracticeAccess.tsx",
+            "sha256": "a1fee40190718cb0ca9347051999d032600809909220fc69781a0fb068a16bb6"
+          },
+          {
+            "path": "apps/web/src/components/PracticeSettings.tsx",
+            "sha256": "a56ff17706f05c3d27f69b2f8c09b0ca0e95bcdafa3d7d3244bbb535a4f1efdf"
+          },
+          {
+            "path": "apps/web/src/components/PracticeWorkspace.tsx",
+            "sha256": "010030f06ee03e582eb5aa8f039cba1bc48e06141a81aae56be519f578b31cc2"
+          },
+          {
+            "path": "apps/web/src/components/access/AccessLoading.tsx",
+            "sha256": "a53074afd48b409fc1e89fd4b62aec2dc68dbc3e4a7ca55598d3ae2e2fce789f"
+          },
+          {
+            "path": "apps/web/src/components/access/AccessShell.tsx",
+            "sha256": "4f019c9719df715409c80ba9113f9bc3248767b46eac06246450ba4b864e3765"
+          },
+          {
+            "path": "apps/web/src/components/access/AuditUnavailable.tsx",
+            "sha256": "30c9f04c0d96c318519ca4c3501ea72798bd99a07d0d2d412e29cb986cc1d4a9"
+          },
+          {
+            "path": "apps/web/src/components/access/AuthScreen.tsx",
+            "sha256": "b88907d853092c686914cc964032ecaf4f2e792132657e2ef3587e20ea68b877"
+          },
+          {
+            "path": "apps/web/src/components/access/DesignPreviewView.tsx",
+            "sha256": "bfd79459e39442a8daf5895097f6e3cc9d12b829ccce413900293a1ec9d0e53d"
+          },
+          {
+            "path": "apps/web/src/components/access/OwnerWorkspaceAccess.tsx",
+            "sha256": "716efcb18b2044556230d2c6ee50d6de47731dbaadf011c320cd10ea3482bf6c"
+          },
+          {
+            "path": "apps/web/src/components/access/OwnershipTransfer.tsx",
+            "sha256": "82c550ff26f78aa9a3015fa67f45ecae173a89451260e1f3d10e0dc0ea0d0f59"
+          },
+          {
+            "path": "apps/web/src/components/access/PersonalAccountSettings.tsx",
+            "sha256": "5bf04fd0671e73449b1883007a91bd1461885ce81d40ca1fd0a991b94115b686"
+          },
+          {
+            "path": "apps/web/src/components/access/PracticeHome.tsx",
+            "sha256": "a18133415289aab8215fd147a5dfbfee6258a5a81de2dcec2879b2a34deaa386"
+          },
+          {
+            "path": "apps/web/src/components/access/PracticeManagement.tsx",
+            "sha256": "6ea45eb2c429a388e1bda63043c68dab08067b1a0b9cfca94fabada5e34bc297"
+          },
+          {
+            "path": "apps/web/src/components/access/PracticeOnboarding.tsx",
+            "sha256": "f84147dc25012d06fd7cca958dad41c76d7f467f42ee9dc4c75a679905248341"
+          },
+          {
+            "path": "apps/web/src/components/access/SessionTasks.tsx",
+            "sha256": "a8d84d08867fe88619d61c247446298f4cbb1f5c0d927e8887ea2d514cd9bc3d"
+          },
+          {
+            "path": "apps/web/src/components/access/SignOutButton.tsx",
+            "sha256": "84b7394128614177ef12ec7c3f29a684d45a1f32877d848acbc4faab86be0183"
+          },
+          {
+            "path": "apps/web/src/components/access/Unavailable.tsx",
+            "sha256": "c698e96bdbe809b80f63799cb667b4ea7b9d47ca8431f9f43e92a21d2de9fb81"
+          },
+          {
+            "path": "apps/web/src/components/access/display.ts",
+            "sha256": "7b0bc0b0c68ea8c7131b57ff79ef9b543c1b1f9689e1c77325a18b35f49a2e2d"
+          },
+          {
+            "path": "apps/web/src/components/workflow/ApplicationFrame.tsx",
+            "sha256": "3589bff6c5dc5f78452704da33b2d6448aaab1d8e86fdc37dc24c6a899317975"
+          },
+          {
+            "path": "apps/web/src/components/workflow/AppointmentPlanner.tsx",
+            "sha256": "b5c7893dcfd03a412fa7eea0e38c4e6f7bdb778ad9eba139aad561896cd62562"
+          },
+          {
+            "path": "apps/web/src/components/workflow/AuthenticatedWorkflow.tsx",
+            "sha256": "4c0cb1f13a3f405851e593fdb4357077884c467fced09927e25e07d48efc4e30"
+          },
+          {
+            "path": "apps/web/src/components/workflow/CommunicationsWorkspace.tsx",
+            "sha256": "83e57435e308905fa793cff9abf99f6ac74bb122035538c2a32044ca1ebfd2b7"
+          },
+          {
+            "path": "apps/web/src/components/workflow/FormFields.tsx",
+            "sha256": "ec3d3a6348337d49f3ecc1055e15da853aac19b465550f439fee0050123a5cbf"
+          },
+          {
+            "path": "apps/web/src/components/workflow/FormsStudio.tsx",
+            "sha256": "39d1d7537d5081fe5aa0cb36482844e69f8f3f22399478d18cfb5ce4524114db"
+          },
+          {
+            "path": "apps/web/src/components/workflow/InsuranceWorkspace.tsx",
+            "sha256": "762dd7ad411f33a7548b73485f846fbaae0a614a65a6fc4c06f968cf16e62db1"
+          },
+          {
+            "path": "apps/web/src/components/workflow/ManagerActivity.tsx",
+            "sha256": "551c4487cb25088430b43e8457138f86f79682793e95bf7f9c6d031c7c20faac"
+          },
+          {
+            "path": "apps/web/src/components/workflow/NotificationInbox.tsx",
+            "sha256": "02cf5476742ecf5e7e89f8e3cfb0fd6470615401597e0e73d2a916d1c00a3401"
+          },
+          {
+            "path": "apps/web/src/components/workflow/PatientAccountCode.tsx",
+            "sha256": "8277bbdf9bb8fb7b02ccae09fcc571f1b0697bb2c2bd6fd079327a1e9a3d3680"
+          },
+          {
+            "path": "apps/web/src/components/workflow/PatientCommunicationChoices.tsx",
+            "sha256": "50598bc031ba3216efc14720082b9a443c3b9527b01100a227563315de96b01d"
+          },
+          {
+            "path": "apps/web/src/components/workflow/PatientForm.tsx",
+            "sha256": "c19e8680a86229014514dce12397f31574351bf156f35e8a0eb62745e923a902"
+          },
+          {
+            "path": "apps/web/src/components/workflow/PatientPaperworkLibrary.tsx",
+            "sha256": "dc4409c75eac974ae76b0ff7f925b9b78224f94c7ffd92cc1a968f641b427833"
+          },
+          {
+            "path": "apps/web/src/components/workflow/PatientWorkflow.tsx",
+            "sha256": "440d340fdf9e4efadfa835805eca809aca5e30cb8bb89375593ab98b085f7d00"
+          },
+          {
+            "path": "apps/web/src/components/workflow/PortalAccessManager.tsx",
+            "sha256": "ea4ecad11fe804b662161270ad9db2dd652472bd429778028f1543400eeb8256"
+          },
+          {
+            "path": "apps/web/src/components/workflow/StaffPaperwork.tsx",
+            "sha256": "03b7a69b0cbdec8cc12023aae72b2ee3387127950e234b821691a91231a8a085"
+          },
+          {
+            "path": "apps/web/src/components/workflow/StudioSelect.tsx",
+            "sha256": "33a687aea2f27162e6939f25b6433406dd03d894801b6eb8c354ca0e621caec8"
+          },
+          {
+            "path": "apps/web/src/components/workflow/TodayOperations.tsx",
+            "sha256": "103d6da1080853406953111424b6581c0dd5df147ef001b79ddd3d1b4edcc92c"
+          },
+          {
+            "path": "apps/web/src/components/workflow/WorkflowPreview.tsx",
+            "sha256": "4a53f59211be932052689ae83caa59a6ef1b31726dfe195d45305d395f181897"
+          },
+          {
+            "path": "apps/web/src/components/workflow/WorkflowSetup.tsx",
+            "sha256": "e7eacbb239a0d672d81ee635c0456f4465797650d907c99b179834c13444e876"
+          },
+          {
+            "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+            "sha256": "10e651829a88c93119e4733392047032b06eaa52763ff4aed6d23db255bed3af"
+          },
+          {
+            "path": "apps/web/src/components/workflow/communication-i18n.ts",
+            "sha256": "524dedd63251e35f23fbc6f21e5c3e694e0d2dfaf65e41cee38128e1b5101b6e"
+          },
+          {
+            "path": "apps/web/src/components/workflow/form-studio-model.ts",
+            "sha256": "f4d06eab777867b3ed76807b83e2cfe5e11a35aba6ccea1b99b8b0aa2c2de945"
+          },
+          {
+            "path": "apps/web/src/components/workflow/insurance-preview.ts",
+            "sha256": "bd1ce93c43ea7eaab0fd8a374b4400e74e6a295cae3c5c6f1eb3eea8b67077ab"
+          },
+          {
+            "path": "apps/web/src/components/workflow/manager-activity-preview.ts",
+            "sha256": "0a73e7d4252c7e92bd50a7fff82199b69b7d100e9d99ee8463ca52b4b25fe71e"
+          },
+          {
+            "path": "apps/web/src/components/workflow/patient-api.ts",
+            "sha256": "3e85fda6234ecae870658b1f5548aaeb46276253330b6fbf20cb8a9aa602ebb7"
+          },
+          {
+            "path": "apps/web/src/components/workflow/preview-adapter.ts",
+            "sha256": "89ec34b97af2b0e1d34626b7dc6b5df1db3213e8584cfdc6645f8caa6db1e37a"
+          },
+          {
+            "path": "apps/web/src/components/workflow/workflow-i18n.ts",
+            "sha256": "262b0ffb76e2530ffb8877b163f00fa455922750a177040f890e1d0aa30d1fb1"
+          },
+          {
+            "path": "apps/web/src/i18n/AccountLocaleBridge.tsx",
+            "sha256": "bc7d1e9d7bf369871a1d4a3e4b39cfc89f26e2519f4a68663417c98a5396ab42"
+          },
+          {
+            "path": "apps/web/src/i18n/LanguageSelector.tsx",
+            "sha256": "2244e003f5158f3729585273fff1485099c346264108fa32f2e6c16fe8d15bb1"
+          },
+          {
+            "path": "apps/web/src/i18n/LocaleRefresh.tsx",
+            "sha256": "ae6dc55063f4878b79dabe636d56adf71c37374f69e0554f97110ea5e7ded8c6"
+          },
+          {
+            "path": "apps/web/src/i18n/notice.ts",
+            "sha256": "adbadb5910bd41228a3e01fef52d0ba24dc7c7ea98b3d6804fb4e9a256580301"
+          },
+          {
+            "path": "apps/web/src/i18n/provider.tsx",
+            "sha256": "fe7a71a1ddda3c45e6b8252b8f47da51d56d7ba2e3bade1d3e7617bf65d91020"
+          },
+          {
+            "path": "apps/web/src/i18n/server.ts",
+            "sha256": "4a9612f1250d50d4aa7c18e4f902c8e50fe55f8d4b9f1077b63a209a1de31b01"
+          },
+          {
+            "path": "apps/web/src/lib/access-flow.ts",
+            "sha256": "6d1d5f3748fbdc2eec64a158bc46a4502c7eab96d3c0dbca93b613f7e00d36b2"
+          },
+          {
+            "path": "apps/web/src/lib/api/appointments.ts",
+            "sha256": "91c9ef49e5282c8061e9f7eebc8b6e48681709fd8fe910b0453843db38919e97"
+          },
+          {
+            "path": "apps/web/src/lib/api/client.ts",
+            "sha256": "bd2b0a32837571fceff8aea4ab51a9a8b26e149d9d47a739136faff9beb3cccf"
+          },
+          {
+            "path": "apps/web/src/lib/api/communications.ts",
+            "sha256": "1dcd8a3a05d3b9d4aea6e6e0cb587e5fc8c1ada6e241f2b4a76f1544ccc39f80"
+          },
+          {
+            "path": "apps/web/src/lib/api/insurance.ts",
+            "sha256": "638946ba1f7e6b67ba056cb700859764f711f60ea0087a66946a9c491eae683f"
+          },
+          {
+            "path": "apps/web/src/lib/api/pagination.ts",
+            "sha256": "c9fe10ce06bda52588a7e830ad0ab3bad4b6000148bb0b4840926a1384043de0"
+          },
+          {
+            "path": "apps/web/src/lib/api/patients.ts",
+            "sha256": "32c6c9fe362c9335aaa973e3912e8f1e5c857b17e053832eabe2d6027d3d92d5"
+          },
+          {
+            "path": "apps/web/src/lib/api/practice.ts",
+            "sha256": "2844b701c0100f7ebbaa2969b878c47aa7ad5dbcd6fda19e491c574f3507b487"
+          },
+          {
+            "path": "apps/web/src/lib/api/workflow.ts",
+            "sha256": "946e0e39898c6bf5fa667efaf99c1f382be04ac4369bad67f0e684302c461d02"
+          },
+          {
+            "path": "apps/web/src/lib/application-navigation.ts",
+            "sha256": "386c30811651e278afbef60576d0d74057d2fa84c8255ab6e7de97380242cfff"
+          },
+          {
+            "path": "apps/web/src/lib/appointment-calendar.ts",
+            "sha256": "273e6fa3cf950bfddcbe95010682b468b4f6fc547bddf645a9ef658dc0615d8a"
+          },
+          {
+            "path": "apps/web/src/lib/auth-errors.ts",
+            "sha256": "e5f612dab9a2057edc7d3497f9408e1fe2c05b2ff6f25f9a8d21dc0ad61b3b4f"
+          },
+          {
+            "path": "apps/web/src/lib/auth-intent.ts",
+            "sha256": "ce17e0e1ea1b575e3bf5b2dc6d582ba16260ddf8ea764a54aa38d2ce5ee78429"
+          },
+          {
+            "path": "apps/web/src/lib/auth-providers.ts",
+            "sha256": "23dce63bc7816d210d70c3d37772ae405fcfb74567fbc58ba7b359301f327182"
+          },
+          {
+            "path": "apps/web/src/lib/capabilities.ts",
+            "sha256": "3424bf3aa37801e6746d81f7220729d20b5021c71c52cd4cf6c0138979690299"
+          },
+          {
+            "path": "apps/web/src/lib/clerk-continuation.ts",
+            "sha256": "0a0195ea654f8bcc4d59bfa74c3fc36a776a017a675c8655165a4e339c8fe514"
+          },
+          {
+            "path": "apps/web/src/lib/interview-dates.ts",
+            "sha256": "d19cc29c16e30091aa4d41d8ea43f7f165f83429a5b7caa59be41a7ef5f1adfe"
+          },
+          {
+            "path": "apps/web/src/lib/owner-access.ts",
+            "sha256": "e0a603fce7400ce755eff6f1afc84c7187100c8d4cbf4ac3ca3fc4d46b488688"
+          },
+          {
+            "path": "apps/web/src/lib/submission-attempt.ts",
+            "sha256": "d87233654858123a7196c85fc39e18a6b88a1722f6d37ff550ebfa12c1f9c14f"
+          },
+          {
+            "path": "apps/web/src/lib/today-operations.ts",
+            "sha256": "3948b247a24e5e7db9b8cd8f87cf03562a20c16dc993605ec8f3b3174e24d208"
+          },
+          {
+            "path": "apps/web/src/lib/web-config.ts",
+            "sha256": "bbed46f32d096e0de39a2c441025f3f663c1ad470f93ae753e3886f85404be24"
+          },
+          {
+            "path": "apps/web/src/lib/workflow-dates.ts",
+            "sha256": "368c9eb415fa80915c27764773d83eb4a92d7cad85ad082944e6f76c6f0b76eb"
+          },
+          {
+            "path": "apps/web/src/proxy.ts",
+            "sha256": "24dfbc291ddadab23092d14f7e9e69ecca5aaf8afc38e31ace739aaffbb9c864"
+          },
+          {
+            "path": "package.json",
+            "sha256": "f2d9332b14c63b72a7478d92bd56e8a8bb17d7f4676a3b2153701b293ad0aaab"
+          },
+          {
+            "path": "packages/i18n/catalogs/en/access.json",
+            "sha256": "b5fe13a44ee77b96eb4ae1bc347fa4e9fee32198d87f1a04f354fb9793f95932"
+          },
+          {
+            "path": "packages/i18n/catalogs/en/common.json",
+            "sha256": "353cd04dbd44ae921cf82082f70314d9b109a71cdda0f464a7d24242882b4137"
+          },
+          {
+            "path": "packages/i18n/catalogs/en/errors.json",
+            "sha256": "27f589314a60ef7a3db3d3d218d9ef5df52714b17300429f5395e196b05980a3"
+          },
+          {
+            "path": "packages/i18n/catalogs/en/mobile.json",
+            "sha256": "b28e031ead56e842bcd8213c62b7da9ea6955eefd2ca5aefaa57df2cacdbea64"
+          },
+          {
+            "path": "packages/i18n/catalogs/en/workflow.json",
+            "sha256": "0f3fde2f484502631c1bd6450762118f1acffd92f48c697441e098b02084c2dd"
+          },
+          {
+            "path": "packages/i18n/catalogs/es/access.json",
+            "sha256": "d0acd68996da19826b8a61b0b3b7962619b59a1af28021f35a6060b7846f6467"
+          },
+          {
+            "path": "packages/i18n/catalogs/es/common.json",
+            "sha256": "fd1d75d32f49fc866e6024662426560fe6df71ada73f8bc2dc370b3969bbc69b"
+          },
+          {
+            "path": "packages/i18n/catalogs/es/errors.json",
+            "sha256": "a0facc2b011074bae31ece19741b233e48bcce37fc3a1559f12ce170a3658dc3"
+          },
+          {
+            "path": "packages/i18n/catalogs/es/mobile.json",
+            "sha256": "cd721316c6d265819feb38b1b7be9c3733607b730904153ba324003a815b4ca8"
+          },
+          {
+            "path": "packages/i18n/catalogs/es/workflow.json",
+            "sha256": "1754d1fe815243e45a8bfaae190b2e44bd49afe9da85e952eca0988f1a70226e"
+          },
+          {
+            "path": "packages/i18n/error-codes.ts",
+            "sha256": "1c2cfa6f2ef4e176c212d609f0655521203c8166e21a57699efbfa954c738aed"
+          },
+          {
+            "path": "packages/i18n/index.ts",
+            "sha256": "2e81b0bd09ae3ee749055603a3f65cbf0fc49dce10e2d2ea135e78500eba4f06"
+          },
+          {
+            "path": "packages/i18n/package.json",
+            "sha256": "5a19a61e1bcdb074929c03da29f8a7b6fd5e6d1cd4027218898c922b3f4fe70a"
+          },
+          {
+            "path": "packages/i18n/tsconfig.json",
+            "sha256": "a813cfe51e986d1c21bf4b06e9cac5fb1eaf5cb80dab53362581b2cf4955bb37"
+          },
+          {
+            "path": "packages/interview-contract/index.d.ts",
+            "sha256": "7789251fdf5e3d5fce26153df2a77fcd0cb3d8942317d1785e4695c03355248f"
+          },
+          {
+            "path": "packages/interview-contract/index.js",
+            "sha256": "58b801af5f79808bcf1dc9b1ef68d1e55c75c9934b6b3fd29263379e844daa1d"
+          },
+          {
+            "path": "packages/interview-contract/package.json",
+            "sha256": "2bdc001bdf9f5b10cb82c53f6192c1e8935b38f59e5175990c406510a151af46"
+          },
+          {
+            "path": "scripts/changed-coverage.mjs",
+            "sha256": "aaecd3888ae5f16383e48facb327e63dc74b647b06d5080fe6b954c17a1a5574"
+          },
+          {
+            "path": "scripts/check-repository.mjs",
+            "sha256": "1360f6094c02758721d3a80ca14781c478396361b1113e97dd0f20d21f88a99e"
+          },
+          {
+            "path": "scripts/coverage-policy.mjs",
+            "sha256": "960cf7137ff13c54f6028d55356bb7efacaba06d7b1e82b3028369ab8391b240"
+          },
+          {
+            "path": "scripts/coverage-test-reporter.mjs",
+            "sha256": "5c3b08f6b756af19e5c44727290e214851506ae377f1cbea6cbd91b8a47a6dca"
+          },
+          {
+            "path": "scripts/export-little-hello-emails.ts",
+            "sha256": "7ea0aafdef9ab4f9e23ef2af82974117cf8642f668d09398383178e5c03b0753"
+          },
+          {
+            "path": "scripts/generate-mobile-associations.mjs",
+            "sha256": "2025b6cd0c59c1965e04c9333e7c9bf9d35f43d34d4b30ccaa5fd8a008e71d04"
+          },
+          {
+            "path": "scripts/little-hello-clerk-copy.mjs",
+            "sha256": "eb5aba410adec3745d5edf49561bd4be815790f20d187156565872f90b150f98"
+          },
+          {
+            "path": "scripts/little-hello-clerk-emails.mjs",
+            "sha256": "b59378b4e5d0bf553944419e7ddc97b25145099709701768383da9bb3fe7c578"
+          },
+          {
+            "path": "scripts/local-review.py",
+            "sha256": "1902ff2802adfeb334b1b8e19e017b97bf43cc0fa8a9ed6a41a49f0052eb4414"
+          },
+          {
+            "path": "scripts/prepare-rollback.mjs",
+            "sha256": "ae160a0d84c4f42a9527fa807f700d43fd83d59f5ed1f226cba81bae25cf0e28"
+          },
+          {
+            "path": "scripts/release-manifest.mjs",
+            "sha256": "7b1461ef06d5d367c1fc918bf01c9066c4791ef4c44b7c85c23f5ad1fc5be44b"
+          },
+          {
+            "path": "scripts/release-metadata.mjs",
+            "sha256": "2be3eda333d9a418c737928a3792d35818c64de0191e869f91c40fd9d1332c33"
+          },
+          {
+            "path": "scripts/release-smoke.mjs",
+            "sha256": "00c566747ae766d9ce4d8c8f7a36eb1de831da4c551ce312bab23283076dc558"
+          },
+          {
+            "path": "scripts/secret-scan.mjs",
+            "sha256": "40d60bcb15a5a184f5dafb77a56156ca07cb90ae2ba13e27bae47d8c05a51ce9"
+          },
+          {
+            "path": "scripts/security-results.mjs",
+            "sha256": "49cf077afccfa90fff0c6866fc636e3c2131da09f5371eba008c2471b176e803"
+          },
+          {
+            "path": "scripts/test-coverage.mjs",
+            "sha256": "02422637cb950dcfdf551604aa62e50644b892a68788ac17db672b1e5a8c8d80"
+          },
+          {
+            "path": "scripts/test-managed-owner.mjs",
+            "sha256": "cb64ffe04ef96d5e95861cd03365e6dd7ccc12dcb3ab8cdf4f71fceeb53c3c11"
+          },
+          {
+            "path": "scripts/test-rollback.mjs",
+            "sha256": "2faac2577edf76f526254f789315a92a4a55ec0632811cc412445d6fee530185"
+          },
+          {
+            "path": "scripts/test-secret-scanner.mjs",
+            "sha256": "ae2b23132554e9bf9ade153c7f183983eed593a1df514559161f93ed6157f6a9"
+          },
+          {
+            "path": "scripts/verify-deployment-checks.mjs",
+            "sha256": "1bd3c948f6580cf5d8f7308e5dbd82907351e01c27ace8e851d009e5d0740281"
+          }
+        ],
+        "noUnscannedSourceAdditionsOrRemovals": true
+      },
+      {
+        "scope": "rollback-final",
+        "fileCount": 257,
+        "initialInventoryDigest": "bbdaab902b95cbf8440d39e0302e42bb2c39f9eeb527cb7fead8e397d86fc5e4",
+        "finalInventoryDigest": "b39d2eeca8d17bacaf2d4ff8c046ff46e045080308b853b14d09dcb6553fc253",
+        "changedSinceFullScan": [
+          {
+            "path": "package.json",
+            "previousSha256": "f14c27fa9e62095e70eae5dd734fe94692061661e01fa67654c21b245d7c245b",
+            "finalSha256": "f2d9332b14c63b72a7478d92bd56e8a8bb17d7f4676a3b2153701b293ad0aaab",
+            "verifiedBy": "final-tool-delta"
+          }
+        ],
+        "allOtherSnapshotFilesUnchanged": true,
+        "finalFiles": [
+          {
+            "path": ".github/workflows/ci.yml",
+            "sha256": "6eddf4caf33dc71e1483ea34004cdde47d359fcac6990b2f07e3c3dbe31dd64e"
+          },
+          {
+            "path": ".github/workflows/readiness.yml",
+            "sha256": "bbb726348a16f3f4a54246c12549dd7ef44c49fbf1e2b937698bba9b486af7d3"
+          },
+          {
+            "path": "apps/api/package.json",
+            "sha256": "15c5900a15d5b6234f6b067861360ff5bcf372f78ac464902a5bd1dae2a2a525"
+          },
+          {
+            "path": "apps/api/src/account-restore.ts",
+            "sha256": "676be5acaf28f732d07fb93681ddd9d41ac248dbd90d5054a1808a8c4c87dd72"
+          },
+          {
+            "path": "apps/api/src/app.ts",
+            "sha256": "7f9810a8384348de3bca47be5a504c8b84ea0b2f62d740ededcbfe981787255b"
+          },
+          {
+            "path": "apps/api/src/availability.ts",
+            "sha256": "73ad1baee3611dcc8856a98e62195b675736409861807be7060cd2d2a7281d0a"
+          },
+          {
+            "path": "apps/api/src/db/account-lifecycle-release-check.ts",
+            "sha256": "9ed6c9d8608a389fd9182fee9eb9906652ec6c28992d811d27939e39ce9e3940"
+          },
+          {
+            "path": "apps/api/src/db/availability-release-check.ts",
+            "sha256": "dd0811744978113ef768cb62207795f783b47d2706318787b2324dbc8e6d6afa"
+          },
+          {
+            "path": "apps/api/src/db/client.ts",
+            "sha256": "66dcb6f2346d213ed7f1963b1d26f6a4e6888c332b99459fb82982ad2a003d5f"
+          },
+          {
+            "path": "apps/api/src/db/connection.ts",
+            "sha256": "bf7678a108419c457c948bd0364b21f8332348adf9b58d0b337438a695408303"
+          },
+          {
+            "path": "apps/api/src/db/forms-studio-release-check.ts",
+            "sha256": "a907a4dae8bf847d5cacd04622974f9d4a20a3a42fbecd32569fbc66d6cd7dab"
+          },
+          {
+            "path": "apps/api/src/db/insurance-release-check.ts",
+            "sha256": "985a320f4b8b1bcea1d79cda0a81fd595e9df55023dffe6ed8e6ef9c06c3322a"
+          },
+          {
+            "path": "apps/api/src/db/managed-owner-policy.ts",
+            "sha256": "c597272e41733f32de70e75ac5b7a437ab548199cab3c0c5e5cd6e53798c7ea3"
+          },
+          {
+            "path": "apps/api/src/db/managed-owner-release-check.ts",
+            "sha256": "e7b0dc26d6411169e6f54dd588fc9f8dfe45e46619218c90a9efeeedb2c9a3e8"
+          },
+          {
+            "path": "apps/api/src/db/migrate.ts",
+            "sha256": "d0ddbb0b11b92c15d4aca5a115f5a45e6f7198fccabd7664ba58db5e56ede1bb"
+          },
+          {
+            "path": "apps/api/src/db/migration-safety.ts",
+            "sha256": "5a8a5dc6b17cb901349fe6bb44da0cefff8a16dedf8c4ce9595b40b0cdf34e94"
+          },
+          {
+            "path": "apps/api/src/db/notification-release-check.ts",
+            "sha256": "0e8ba7d270fe26d66c3cd11e1220820d476dc44406f7bd99b0d799dc42f74b0a"
+          },
+          {
+            "path": "apps/api/src/db/owner-access-release-check.ts",
+            "sha256": "20585234a1214d3cd1c2c7deb48869446e07d6fa7d8a378094f5579e04098308"
+          },
+          {
+            "path": "apps/api/src/db/pool.ts",
+            "sha256": "69b3909276e1686aacbab2bd49fc589d759108471bb9761b559af574282e12ff"
+          },
+          {
+            "path": "apps/api/src/db/practice-transaction.ts",
+            "sha256": "5b490dbe51b4d0fe7a0784d33d6d7a16ae239b956074cbb708140e3b4ca9e57b"
+          },
+          {
+            "path": "apps/api/src/db/reconcile-practices.ts",
+            "sha256": "9338428ed1119f1536013b05623db616501bb48a0cfb23a1fc7454156d72bce3"
+          },
+          {
+            "path": "apps/api/src/db/release-check.ts",
+            "sha256": "3f6f36ffd01a14d32c8385d030e7f847ce5fbb6019d4801d17518a16b4ed0cc1"
+          },
+          {
+            "path": "apps/api/src/db/runtime-pool-policy.ts",
+            "sha256": "4773245abe8f78eb0c2b897c35db0a215fdce48042d56bf980c52b72e4e9772a"
+          },
+          {
+            "path": "apps/api/src/db/schema/account-lifecycle.ts",
+            "sha256": "7f73f74f558bba112af094a5e0aa31db15f6f264c826dcfe1dbc4c109d5992db"
+          },
+          {
+            "path": "apps/api/src/db/schema/appointments.ts",
+            "sha256": "b2f99b2d2219e19936aef3cf48bf94096d4a94872881b634c338b4c6b9da9db8"
+          },
+          {
+            "path": "apps/api/src/db/schema/clinical-security.ts",
+            "sha256": "1037923919363025b074f1d3a28b380120b87fc66edff55cb511da5f866b87cc"
+          },
+          {
+            "path": "apps/api/src/db/schema/insurance.ts",
+            "sha256": "e730fd5bb06aba4a8c46c0018d56580d2ad187b3454b5d95c9ca498c5771635a"
+          },
+          {
+            "path": "apps/api/src/db/schema/marketing-interview-requests.ts",
+            "sha256": "acfcbc6b01b16a9b7c55804b405fc9e23628ee6fd0e5cfde7c8d519da0174a1c"
+          },
+          {
+            "path": "apps/api/src/db/schema/onboarding-drafts.ts",
+            "sha256": "46279dd3f4587ae1c6ad7a9f92a5210f296d8ae3932dfeb9230c85f89c2a4dba"
+          },
+          {
+            "path": "apps/api/src/db/schema/owner-operator-access.ts",
+            "sha256": "bc47f8cd9bebea710ce0f6561cc2aecb7a485d680fef5144ae8b648660a95f45"
+          },
+          {
+            "path": "apps/api/src/db/schema/paperwork.ts",
+            "sha256": "ec0133b66e9b4525be0d347d80b1349056a45a5a5d34414708067a5b24d5bc6f"
+          },
+          {
+            "path": "apps/api/src/db/schema/patient-delivery.ts",
+            "sha256": "864a539774ba361b0f3c99eeca9c6fde58cd2c4eeba4cfcdbcf8f374c79cdd1d"
+          },
+          {
+            "path": "apps/api/src/db/schema/patients.ts",
+            "sha256": "75ef9978dd68cc0638f85e09324cd667590cad123145844d5a137c61fb087974"
+          },
+          {
+            "path": "apps/api/src/db/schema/portal-communication.ts",
+            "sha256": "6f114d1bc950850a65a23b779c2a7c8ee005f6be1004116719dec08b1804ec08"
+          },
+          {
+            "path": "apps/api/src/db/schema/practice-access.ts",
+            "sha256": "592267e4ead998f186fe7022af24212f9e790bcf7ae644c3c38434c034132ba9"
+          },
+          {
+            "path": "apps/api/src/db/schema/practices.ts",
+            "sha256": "682a7af2b237dc0b103ffafc84322836f9db2384840ca8e983c04b95c38967eb"
+          },
+          {
+            "path": "apps/api/src/db/schema/staff-notifications.ts",
+            "sha256": "44958bfab9cac10e3f188712f71ac463408e4816feac9f851d7a3b36527c5ab2"
+          },
+          {
+            "path": "apps/api/src/db/schema/workflow.ts",
+            "sha256": "9fea9a043d47beb067045e743fd9baab423927f233e7a2ccb1113635e02da210"
+          },
+          {
+            "path": "apps/api/src/db/test-appointment-rls.ts",
+            "sha256": "2e2d3632157e795cb5bec855cc84f16035104a9b898a09926cf0e2a70c59113f"
+          },
+          {
+            "path": "apps/api/src/db/test-patient-rls.ts",
+            "sha256": "b7b0f0e0a7b367574cb6347ad95195508d1bfc0d15cbac0796e50317eabc1758"
+          },
+          {
+            "path": "apps/api/src/db/verify-release.ts",
+            "sha256": "63cf7a264e6330431f7851d96583331c41e0986c029acbf4e6002e61de8fec0c"
+          },
+          {
+            "path": "apps/api/src/db/with-tenant.ts",
+            "sha256": "65d15b994fd3c48aa93b4ff5e5d2a749211ae71fc9493c687a2dab4c557ff122"
+          },
+          {
+            "path": "apps/api/src/db/workflow-release-check.ts",
+            "sha256": "76d3d4a83854f98eb7affa18a073331d2bd8073bcebd7c53f8efd5240774ba64"
+          },
+          {
+            "path": "apps/api/src/index.ts",
+            "sha256": "15f93fce20d060bf2d940a6a23600b876ddd98e67b3dd11a3c778125aaebfb47"
+          },
+          {
+            "path": "apps/api/src/logging.ts",
+            "sha256": "c01e63240e8ed765e09504fdd3b94ce0a20e4a55d5188563401338724532db56"
+          },
+          {
+            "path": "apps/api/src/middleware/account-status.ts",
+            "sha256": "45eebf0722b697b7645ebd1f709db1e9e4c0e1c1cb2773801cf10b5274e7c073"
+          },
+          {
+            "path": "apps/api/src/middleware/api-rate-limit.ts",
+            "sha256": "077c52646d7f58bdf41907cd4a43a4963248f8da484b9c362817f962769fb98c"
+          },
+          {
+            "path": "apps/api/src/middleware/authentication.ts",
+            "sha256": "20e6fb79283770206ec6e37847e45cf9efe9ce2744bc60e553dadeffd15c4359"
+          },
+          {
+            "path": "apps/api/src/middleware/interview-rate-limit.ts",
+            "sha256": "cb60336d367cc1e60375ddaf707d93d988dd84b2bab542f3a3497b50ab9849f8"
+          },
+          {
+            "path": "apps/api/src/middleware/permissions.ts",
+            "sha256": "697e89538c6c8c14840231d16cfa7de6920e91aa1917ca79a319fdc73c912f23"
+          },
+          {
+            "path": "apps/api/src/middleware/tenant-context.ts",
+            "sha256": "d3ee267d9f46910c58e2e63b1b5eb41b6d0b4eeeb2de44cc83b7d87c3acdde12"
+          },
+          {
+            "path": "apps/api/src/notifications/callback-configuration.ts",
+            "sha256": "d6f87aeaa44e12152600ea4917b10b254c79b8f114c8c2959ef34a91900d1017"
+          },
+          {
+            "path": "apps/api/src/notifications/delivery-provider.ts",
+            "sha256": "e695d3c13f06bcecdfb0cf056782d4a2c363fea151213cb5d682b1544512d6b7"
+          },
+          {
+            "path": "apps/api/src/notifications/little-hello-copy.ts",
+            "sha256": "c6470d55395da8508167f137cbdfee7debe3a74ecd066ec5a6db2f2922a1c107"
+          },
+          {
+            "path": "apps/api/src/notifications/little-hello-email.ts",
+            "sha256": "726c67815c9772912063865b6298cdc67c3e3daa8359199c2485d8d8e93f8ca2"
+          },
+          {
+            "path": "apps/api/src/notifications/patient-delivery-policy.ts",
+            "sha256": "03e6b9bff97b03feb13e293840a12d7f27ff162c09227769b189665f9a0b965e"
+          },
+          {
+            "path": "apps/api/src/notifications/portal-preference-policy.ts",
+            "sha256": "042cf59d7c48187b92a592980be10b62186431e51fb27fc1415b6f9297a290e9"
+          },
+          {
+            "path": "apps/api/src/notifications/staff-notification-policy.ts",
+            "sha256": "30b4cdcca5a692b557b73afa978d707fc7a500138497f0943cdfdaccefae43d6"
+          },
+          {
+            "path": "apps/api/src/notifications/worker.ts",
+            "sha256": "216fdee6253ef81510c55aa98472570331c473028b26df85f92b7474a63166e9"
+          },
+          {
+            "path": "apps/api/src/production-config.ts",
+            "sha256": "bc5af79ac5bf01fe6dcf2ad5b6ccb0e7f57e99e1c61034f5690731e48ac89b91"
+          },
+          {
+            "path": "apps/api/src/public-config.ts",
+            "sha256": "9ae14ba4eb97dc3855f282ead67981a973552454bd57a64aeac979e54afd8230"
+          },
+          {
+            "path": "apps/api/src/release-revision.ts",
+            "sha256": "33da53b760da1e7dc3ec66e7323f8fdf1dd27ca2bb1e5910e4c282f3fb29c8f2"
+          },
+          {
+            "path": "apps/api/src/routes/account-lifecycle.ts",
+            "sha256": "eb3a1396fd7e82fa82df4ef6510e6f6a7f795cc19033c14008498376bb84ec72"
+          },
+          {
+            "path": "apps/api/src/routes/clinical-failure.ts",
+            "sha256": "85444a94b35c8bd3eda100197f0c8435ffb5c55d054d42a77c9a66e68b8608e7"
+          },
+          {
+            "path": "apps/api/src/routes/insurance.ts",
+            "sha256": "9dc31fd75c29ca1b98a1b1397e3f6af74faaf281981c6a7267bd338b27f1d781"
+          },
+          {
+            "path": "apps/api/src/routes/patient-delivery.ts",
+            "sha256": "0b6287dcdf72c31e8b848f1e00ce8271686297272f2b6ec481ce55a26c182e31"
+          },
+          {
+            "path": "apps/api/src/routes/patient-paperwork.ts",
+            "sha256": "d2f57b3ad351151c73c73217ff7dd0fbccc9aba7c6cc8d3cecc790a78ead8271"
+          },
+          {
+            "path": "apps/api/src/routes/portal-communication.ts",
+            "sha256": "3b59efe3de5e65684731a61f55fab36e8897e1eb6a34ac550373e896cfd12020"
+          },
+          {
+            "path": "apps/api/src/routes/practice-access.ts",
+            "sha256": "eac329e96b15b169c1cbd6d95feee7a3578c13bf8a44646f2491dd02e8adb5b3"
+          },
+          {
+            "path": "apps/api/src/routes/private-read.ts",
+            "sha256": "53af54334f0c7d199cd4e7583e1526ddc8000296ad4ce20a0da962147e5a55eb"
+          },
+          {
+            "path": "apps/api/src/routes/protected-audit.ts",
+            "sha256": "26880ed7840531b965d01f30aa3299b7b84f47123bfc093b8cafe7ede61e2e3d"
+          },
+          {
+            "path": "apps/api/src/routes/public-interview-requests.ts",
+            "sha256": "5cdaeca7f5476aa4129e7f5db8cf967b269003d72b5a53e7c98091dab228adf4"
+          },
+          {
+            "path": "apps/api/src/routes/staff-notifications.ts",
+            "sha256": "54b8bed096ed1a2a22b75a401e8b781757d071654afc935cce5f7d84b3f4f68e"
+          },
+          {
+            "path": "apps/api/src/routes/workflow.ts",
+            "sha256": "f9512ad3670f96e6aa5de616954baebd65c24c8a3d2d5343c08799b3cf34bfca"
+          },
+          {
+            "path": "apps/api/src/services/account-lifecycle.service.ts",
+            "sha256": "13da1b5456c99e706f72c3b5e29e0bdaa9a007027ca868192f8bf66e94d7ad71"
+          },
+          {
+            "path": "apps/api/src/services/account-restore-policy.ts",
+            "sha256": "645212c117f35d42d786980e0a5f77b3ad5347b895411adb3da718deb8acbdea"
+          },
+          {
+            "path": "apps/api/src/services/appointment.service.ts",
+            "sha256": "83b7ef0d11766a501db1bafda4f0a7b5d6ea7dfa518781b9d1272724200c1048"
+          },
+          {
+            "path": "apps/api/src/services/clerk-directory.ts",
+            "sha256": "aff48f60667323bb900c561504cb3af31015a7a809ddefa76a717cd4e3279ec9"
+          },
+          {
+            "path": "apps/api/src/services/clinical-security.ts",
+            "sha256": "85ef67741616b0b77125b0d7b9d259bd5a68e88ea0b5ef6f61f282ecc556210e"
+          },
+          {
+            "path": "apps/api/src/services/form-changes.service.ts",
+            "sha256": "5267674815d3f547b92a08af8099e63c850d8365db7dbdf1a077c6cb40523e1b"
+          },
+          {
+            "path": "apps/api/src/services/insurance.service.ts",
+            "sha256": "5ed3d3747e1693cef5da64fca7e9927cf5c4a61ce11b51adf5d42c09d51dd5a0"
+          },
+          {
+            "path": "apps/api/src/services/interview-request.service.ts",
+            "sha256": "5d5a6d4f94d487f1d1c1ba03091f9d16e11e1d1ab0e5513b58cdff22bf290f54"
+          },
+          {
+            "path": "apps/api/src/services/manager-activity.service.ts",
+            "sha256": "f86827b871fde655e2f0e39bb84e4d37bb698f0ef89a38aef4af7d8778d48054"
+          },
+          {
+            "path": "apps/api/src/services/onboarding-draft.ts",
+            "sha256": "2b199b3ee1e4ae135159831ab1666170cadb18403da2af932b74a2b458f40b24"
+          },
+          {
+            "path": "apps/api/src/services/onboarding-state.service.ts",
+            "sha256": "a3fe3dc05b785a3a0c68d0c50d24198c2f97b4f84e7adfa6a38ca385a7707d45"
+          },
+          {
+            "path": "apps/api/src/services/owner-operator-access.ts",
+            "sha256": "507aa58aa586bda0d49b5fadc6e4adb0077420e848027cb102d0817220a6f458"
+          },
+          {
+            "path": "apps/api/src/services/owner-operator-policy.ts",
+            "sha256": "ee8e4c9e53d2fc6ffded8b1061bf0391f1d468b43149475bf565a3963d352768"
+          },
+          {
+            "path": "apps/api/src/services/patient-delivery.service.ts",
+            "sha256": "d41b8eac0253dc7a84f0ca52b7647825c884b465e89ceaed0bbeb95fbff9552d"
+          },
+          {
+            "path": "apps/api/src/services/patient-paperwork.service.ts",
+            "sha256": "9401095d236580fe0f477a15ed85f2394a6d70ba838920a1f5883aa3b021a0c2"
+          },
+          {
+            "path": "apps/api/src/services/patient.service.ts",
+            "sha256": "f0bddabedc921e42d9fab273bdb2b2ec151d255260996974a3cc1771bff01718"
+          },
+          {
+            "path": "apps/api/src/services/portal-admin.service.ts",
+            "sha256": "f8061c30d7cb2ef31c342a52d8dbaf4bb1cad7fc0b6fc256cffe17e10f357077"
+          },
+          {
+            "path": "apps/api/src/services/portal-communication.service.ts",
+            "sha256": "eb220f062782c217641b95943f770dc18755e3416daeb08b5efde607921147de"
+          },
+          {
+            "path": "apps/api/src/services/practice-access.service.ts",
+            "sha256": "0a0ff267e93e9065f6205b2eac15e361826d8c514cf223b6124075330fedf051"
+          },
+          {
+            "path": "apps/api/src/services/practice-policy.ts",
+            "sha256": "942d9a3311b889bad7bf0c6cc5f70846d88b2dc7d3e8b422461be8978d2c9b82"
+          },
+          {
+            "path": "apps/api/src/services/practice-reconciliation.ts",
+            "sha256": "e698d219f0f9a6be3ec08d28af524e3227a59c2d8f1963a3a479fd729f6080ef"
+          },
+          {
+            "path": "apps/api/src/services/practice.service.ts",
+            "sha256": "008a8c505bdb6ea75cc8182131b1c3dfa73cb8d2749e24bf8984034235a33103"
+          },
+          {
+            "path": "apps/api/src/services/protected-audit.service.ts",
+            "sha256": "efd473ac8a5f8e690f5d23a3ee1be4f977f6006f117a872b66f9c4f7d90410b4"
+          },
+          {
+            "path": "apps/api/src/services/staff-notifications.service.ts",
+            "sha256": "a725221a510182c054af1729df149ec566f764475697a1d97c853516a44848b7"
+          },
+          {
+            "path": "apps/api/src/services/workflow-audit.ts",
+            "sha256": "1e3d5249eb03a4797f6ba04266a569ea71f8911e600356a1bb7a64e56e6fa7e3"
+          },
+          {
+            "path": "apps/api/src/services/workflow.service.ts",
+            "sha256": "5e793aa8817d643a8116ee2bda42e6863b1779ed5efd759774645f060bcedbe7"
+          },
+          {
+            "path": "apps/api/src/types/express.d.ts",
+            "sha256": "64c2d98eb59da0ab4d681804d632d01bd1157965f77a5e6f83abc6e6dd52c36d"
+          },
+          {
+            "path": "apps/api/src/validation.ts",
+            "sha256": "e830e0fa6a34b210aaedcddbfddceafed39bed121bcd4d9adbfbd4fbd0791fbc"
+          },
+          {
+            "path": "apps/api/src/workflow/availability.ts",
+            "sha256": "7344b72bb54f81e0da64fa77f2ae7274759c5fed6b284fafbaf20f74ddfe7e0c"
+          },
+          {
+            "path": "apps/api/src/workflow/forms.ts",
+            "sha256": "cad55c91b40f47865d4a37fec8a541521149e4c85f74ca9027f0137168432cc3"
+          },
+          {
+            "path": "apps/api/src/workflow/insurance-policy.ts",
+            "sha256": "40316478c2d7d4a7285b5724aa4dab3ee3d830f032c406ed9c10ca7042a4b323"
+          },
+          {
+            "path": "apps/api/src/workflow/manager-activity-policy.ts",
+            "sha256": "499ffef32aa6275190aaf3f8d3aa064c67db4d0722de4fe62952b114374ed562"
+          },
+          {
+            "path": "apps/api/src/workflow/paperwork-policy.ts",
+            "sha256": "d3c9640445b66aa1cb86fe79c2ae5969b3b456fb2ee2fbfc6aea3019b3f45891"
+          },
+          {
+            "path": "apps/api/src/workflow/patient-eligibility.ts",
+            "sha256": "5f5857b4dabe3efe77a4e41396c5967c7df6b5ff5186ca51a8704042daf60997"
+          },
+          {
+            "path": "apps/api/src/workflow/pdf-limits.ts",
+            "sha256": "92dbf8dc233e7abdf2fbf31a867f96adb668fda994253fdda0f8dcae63ecae43"
+          },
+          {
+            "path": "apps/api/src/workflow/policy.ts",
+            "sha256": "2d3e281041a6dc55989b85d32ed59416c8102f884592d6a01f6735276b84c1db"
+          },
+          {
+            "path": "apps/api/src/workflow/read-model.ts",
+            "sha256": "c4e80d7c2e7d4841e13a53e0c2b73f543b6ee78da1cc2880793fbc754f7c73a4"
+          },
+          {
+            "path": "apps/api/src/workflow/storage-config.ts",
+            "sha256": "55c2df7b88068d27412ce402f6741d9b5de5c3bbdd0544a991a0110839f0f899"
+          },
+          {
+            "path": "apps/api/src/workflow/storage.ts",
+            "sha256": "7c024f7f04a8c77195f6c5421ab1d2653cd84a28a4a1b7bbe21f71d46cd4f78d"
+          },
+          {
+            "path": "apps/api/src/workflow/transaction.ts",
+            "sha256": "64bb6f4f36a48c04a6401f850d013d1ecbe47a08ce50d5252c27ca31db4c99ed"
+          },
+          {
+            "path": "apps/marketing/package.json",
+            "sha256": "238b57647c5aef55f0df13349b12582618ee6d5a1ca1e3aeca3ac4af346aa6f9"
+          },
+          {
+            "path": "apps/marketing/src/app/layout.tsx",
+            "sha256": "f1366fd98bb41dc73f6c0cf918056c625b54fa54d65cf6152f33e472720916dc"
+          },
+          {
+            "path": "apps/marketing/src/app/not-found.tsx",
+            "sha256": "5809e20efc9a3f3e360606146a9284c0dfdb44cd5b1c78537b17b693c1f978f5"
+          },
+          {
+            "path": "apps/marketing/src/app/page.tsx",
+            "sha256": "ee3964f26f2e4ca28af45b8978410f94c4a364e731f3f992795896971a31a536"
+          },
+          {
+            "path": "apps/marketing/src/app/privacy/page.tsx",
+            "sha256": "99282e5e4db68fc7974b3d5f17e144fc5368f6e0b14a5a1d3f6dcf9021686956"
+          },
+          {
+            "path": "apps/marketing/src/app/robots.ts",
+            "sha256": "8c5c7a8b9243783efcee69dfa4cbb381bca2530ee2e3600e74b6b485a5a6f4a1"
+          },
+          {
+            "path": "apps/marketing/src/app/sitemap.ts",
+            "sha256": "136b3007e0d948243f2cd0b3d336e5fdcbe8399a2cfa7daa67b7fd4d33ef3449"
+          },
+          {
+            "path": "apps/marketing/src/components/Brand.tsx",
+            "sha256": "16ad4ecfe5515897b8585b5ebc06a9d4881f4e3c8edf9381e801aa7bb270a364"
+          },
+          {
+            "path": "apps/marketing/src/components/Footer.tsx",
+            "sha256": "40741e39bec4651cf6b5a643db5ba7afb07fb0a880d973b4949c1ca3cb7fb4e5"
+          },
+          {
+            "path": "apps/marketing/src/components/Header.tsx",
+            "sha256": "b4336d43f6fba3e12033e411ab94d1651cf244c13fcd04eae2b1291a69bb864a"
+          },
+          {
+            "path": "apps/marketing/src/components/Icon.tsx",
+            "sha256": "698ee5c01b6550ce845185a236c680f13aadf66afdb1397af650c4d4237ae389"
+          },
+          {
+            "path": "apps/marketing/src/components/InterviewForm.tsx",
+            "sha256": "745df48883557feee9b498644f337d1b27ca7ec7e433c3d9f0471840f191ccd3"
+          },
+          {
+            "path": "apps/marketing/src/components/NotFoundContent.tsx",
+            "sha256": "3dd510db7f239ff266e0d3cac8fb53948e75b7ca2a72f10074b8589a9cfddf7a"
+          },
+          {
+            "path": "apps/marketing/src/components/PrivacyContent.tsx",
+            "sha256": "128bbac76c89511739cd80e723a76928fc0a3429295210bd6f483ed44f7a7be2"
+          },
+          {
+            "path": "apps/marketing/src/components/SiteShell.tsx",
+            "sha256": "b6e1556ef1beef02fe4dab715856b76de8a19f3e591772ddc99e8b8f466a08fa"
+          },
+          {
+            "path": "apps/marketing/src/content/content.ts",
+            "sha256": "c020c78a210c0048abc38ae53ceeeb0e5292c0cc74e3777ec4a91a3318c7204c"
+          },
+          {
+            "path": "apps/marketing/src/content/localized.tsx",
+            "sha256": "5b559b4756b994676bd6145b4a8d65453c777f70575f470dac4d3f8814ea3b2e"
+          },
+          {
+            "path": "apps/marketing/src/content/site-content.es.json",
+            "sha256": "391898a086d7cdf74aa1a475a1037d698e42af32fc9afc27825474448853e069"
+          },
+          {
+            "path": "apps/marketing/src/content/site-content.json",
+            "sha256": "bbbff8a032ba0f39a2068f10b46076c78b66b32fa9bed071450517a7225ca16f"
+          },
+          {
+            "path": "apps/marketing/src/lib/config.ts",
+            "sha256": "20edb21fdf0e97d1f6230e74c1bf0eda9c864d058df23c1a91ba80a081c63fea"
+          },
+          {
+            "path": "apps/marketing/src/lib/site-config.ts",
+            "sha256": "d825daf4d2dbf2eed002a9cc1ba3a8ce1cb9470849f7ec2e04737a2e819adbb9"
+          },
+          {
+            "path": "apps/marketing/src/lib/submission.ts",
+            "sha256": "52ec9cb454ce0ca372d7225887f2f3fad41cf324b7e94dd931d2bdcd71c45444"
+          },
+          {
+            "path": "apps/web/package.json",
+            "sha256": "a94b9282e0b55acdeade4d8263fb13fd53ea57ddb06627c8033bbe3ecc1ccaaf"
+          },
+          {
+            "path": "apps/web/src/app/audit/page.tsx",
+            "sha256": "f13d3cac6d24b1e3b6b556614832a86ec2c041c5e76ca3d3a1e8ab12bacacd5f"
+          },
+          {
+            "path": "apps/web/src/app/design-preview/page.tsx",
+            "sha256": "e51174398bcf40f657de9712f1158a95c2bcfb3719a0d6c49039671d737dbcd2"
+          },
+          {
+            "path": "apps/web/src/app/error.tsx",
+            "sha256": "8ffe81a15c6ec21956228d1e70dd51b1849ef3b5e19cc0242b584116004a2050"
+          },
+          {
+            "path": "apps/web/src/app/global-error.tsx",
+            "sha256": "71bee9b776d60647f98d054608546a40058f95d0253a86818c13bbe68ed89c6f"
+          },
+          {
+            "path": "apps/web/src/app/join/page.tsx",
+            "sha256": "adfb7ed46076a1b7fbed269d71b3a74a25608c99252fb99fe0ddcc70d5bfc601"
+          },
+          {
+            "path": "apps/web/src/app/layout.tsx",
+            "sha256": "8246ff48fc494a8d5bc041d031827f3b566a21300ed43a9d24ed5300e8a103d0"
+          },
+          {
+            "path": "apps/web/src/app/page.tsx",
+            "sha256": "be6e90abbc93d5d97eb75b23d51522af723b2d854b6d585c3092018743d1c700"
+          },
+          {
+            "path": "apps/web/src/app/patient-paperwork/page.tsx",
+            "sha256": "0b50245ea4ae3e76e60c12fd85ae475fbe0575c372b0bf726f3ed6db37d1b0df"
+          },
+          {
+            "path": "apps/web/src/app/patient-workflow/page.tsx",
+            "sha256": "795c7a31d45691d6608450a67b65827ee6bdd08c1be2db64f3daa7376e1208d3"
+          },
+          {
+            "path": "apps/web/src/app/session-tasks/page.tsx",
+            "sha256": "ee2a74f72926b2f5aac92e9451abc8b4e82e0c690ccb6ed323b298dd7f954436"
+          },
+          {
+            "path": "apps/web/src/app/sign-in/page.tsx",
+            "sha256": "f7e00f20dcee326a585fd6aacb22ea8aa32a1375f00f8b02ac63804a9c718de8"
+          },
+          {
+            "path": "apps/web/src/app/sign-up/page.tsx",
+            "sha256": "8b5109a2b48c7b496d7490d09b3ea10ea5f0916a8998ca934bdbbe5323526c55"
+          },
+          {
+            "path": "apps/web/src/app/workflow-preview/page.tsx",
+            "sha256": "7d49c6e74f0505a5163abfecf24c29cf02a1b02840f99b4e536e32a8238bddf9"
+          },
+          {
+            "path": "apps/web/src/components/Appointments.tsx",
+            "sha256": "c5aeecf3e9fc973ca04a8321de5ce2151085be346ae098d35ac7151324edc4a8"
+          },
+          {
+            "path": "apps/web/src/components/AuditConsole.tsx",
+            "sha256": "78776cff6aed3b93bd0626eff6ba61818458a5e2d84981b6f6853743016c9fc5"
+          },
+          {
+            "path": "apps/web/src/components/InterviewForms.tsx",
+            "sha256": "d8e23588ddd922e4102479ef10fdafcee34dbb23688459270014867d940393ae"
+          },
+          {
+            "path": "apps/web/src/components/InterviewIcon.tsx",
+            "sha256": "ca2543bbc212669364cf4f3f365a0cd3ef2ee9d703b2b5b56891bbdfd97fff87"
+          },
+          {
+            "path": "apps/web/src/components/InterviewModal.tsx",
+            "sha256": "b7e977e26972d97ada7b4206ecb5855589682e45b820ce70f36df66551c2603e"
+          },
+          {
+            "path": "apps/web/src/components/InterviewNotes.tsx",
+            "sha256": "5e96b3c6dadbeea31f8a6e7b84e90e7342b58c933b62f33e5149014d1a5d85d1"
+          },
+          {
+            "path": "apps/web/src/components/Patients.tsx",
+            "sha256": "9324ffe2513996d64d0e6e8648d11a12975b6fa6dfbadd515d40583071f8163f"
+          },
+          {
+            "path": "apps/web/src/components/PracticeAccess.tsx",
+            "sha256": "af97e40c94012c61922c8313fc3f2dc47a60336c298c5a61ca1c8f57b004e74c"
+          },
+          {
+            "path": "apps/web/src/components/PracticeSettings.tsx",
+            "sha256": "818bbac72978c11033f895b4813aedb6027437b087d0bc2dd1d0b0c9b0a6844c"
+          },
+          {
+            "path": "apps/web/src/components/PracticeWorkspace.tsx",
+            "sha256": "64d8fbdb2a6786fbb41ba6ea9abb809a4b80590465347076b3d16bbcc58250fa"
+          },
+          {
+            "path": "apps/web/src/components/access/AccessLoading.tsx",
+            "sha256": "952ad0dd5e9871aeb4ed9780baeb9ec6fab0656e4092998e8c71f5766362de69"
+          },
+          {
+            "path": "apps/web/src/components/access/AccessShell.tsx",
+            "sha256": "f364df968f8c560bbbb9a4e2d6b290e934476256fdaa127e3a64736767451903"
+          },
+          {
+            "path": "apps/web/src/components/access/AuditUnavailable.tsx",
+            "sha256": "46ed95057d0647cf8da6782584cdddb50b598781298138f6dc65aa5628362a61"
+          },
+          {
+            "path": "apps/web/src/components/access/AuthScreen.tsx",
+            "sha256": "0174bd88b1ba92469067aaa86ffbb4c96a0f2e8a34f3589fbaa38365e31b97b2"
+          },
+          {
+            "path": "apps/web/src/components/access/DesignPreviewView.tsx",
+            "sha256": "5a45067e7445e2c7c8e11c3e7b0d1168c85563372222d6aaa193a33571d016b1"
+          },
+          {
+            "path": "apps/web/src/components/access/OwnerWorkspaceAccess.tsx",
+            "sha256": "c90f9ab815b3042c92ea3ae74045324b39c118e45bc147f7d9ad8e706ae9035e"
+          },
+          {
+            "path": "apps/web/src/components/access/OwnershipTransfer.tsx",
+            "sha256": "e590c7b7137b178498b23399c33bc990a6c83289fee389e456934586c4f45c49"
+          },
+          {
+            "path": "apps/web/src/components/access/PersonalAccountSettings.tsx",
+            "sha256": "9fa5373c1af35ddd1f5ee63169e08cbed88399ec8c66e5588162922a6b456dc7"
+          },
+          {
+            "path": "apps/web/src/components/access/PracticeHome.tsx",
+            "sha256": "30fb8f426950d8405c5cd7e9b706a0e7106b396b7c11eebd8ec3fe850a017e55"
+          },
+          {
+            "path": "apps/web/src/components/access/PracticeManagement.tsx",
+            "sha256": "a4ba711697bb32d7a44d5287d8e2504bc31309d71d5d338884f8cd68e6439f1a"
+          },
+          {
+            "path": "apps/web/src/components/access/PracticeOnboarding.tsx",
+            "sha256": "7790f5e32372bf644d85a7bd86fdd7152b415c8ee007c1c8fb08651615174521"
+          },
+          {
+            "path": "apps/web/src/components/access/SessionTasks.tsx",
+            "sha256": "185753627da3c395559aa2f986e734e619dbb5e9ddeaeb8112d45036b641c295"
+          },
+          {
+            "path": "apps/web/src/components/access/SignOutButton.tsx",
+            "sha256": "2ef075a9f14cf8d5e7f2aaa67ff0e51b839ad508e5daa4b912bca6810ddf1463"
+          },
+          {
+            "path": "apps/web/src/components/access/Unavailable.tsx",
+            "sha256": "63bb6b2a64f86c4de6b5f354d85392732be41374658157f3959dcd6cfa6426a3"
+          },
+          {
+            "path": "apps/web/src/components/access/display.ts",
+            "sha256": "79a67b3e4505c85655541122b24657f62b497933acbffc069b99bd64f8f5934b"
+          },
+          {
+            "path": "apps/web/src/components/workflow/ApplicationFrame.tsx",
+            "sha256": "bda9e87f2e724d98516971e0977d252d52225a479eb65b9ba70b093133ceaab7"
+          },
+          {
+            "path": "apps/web/src/components/workflow/AppointmentPlanner.tsx",
+            "sha256": "d5eafae3ce8434b865ae5cb8367545db04be08316ac05ef11ca0d1db0a0462e3"
+          },
+          {
+            "path": "apps/web/src/components/workflow/AuthenticatedWorkflow.tsx",
+            "sha256": "1bf10a89b8e2ee3db7d8a097e0dba83b996113e10746efedb8e7fa2797be1d0e"
+          },
+          {
+            "path": "apps/web/src/components/workflow/CommunicationsWorkspace.tsx",
+            "sha256": "326f5658c151c3c122bab8854203e7b53bd5ecf4c8ae1b689c8aeb9d1445dab9"
+          },
+          {
+            "path": "apps/web/src/components/workflow/FormFields.tsx",
+            "sha256": "b79401886e38818542365fa76ae6586748d8b1471d4f6bf9a2526f5f7a40c3a0"
+          },
+          {
+            "path": "apps/web/src/components/workflow/FormsStudio.tsx",
+            "sha256": "4f9d82165a10b9fab07a6a9504a56ec9c008ef84738e458d57e456e3024f2b30"
+          },
+          {
+            "path": "apps/web/src/components/workflow/InsuranceWorkspace.tsx",
+            "sha256": "2ef10004dab3af8e19456d1c38acc2c97eb725641c9f0c05c553dd615e70fb7f"
+          },
+          {
+            "path": "apps/web/src/components/workflow/ManagerActivity.tsx",
+            "sha256": "7b4ddda9bca95956874611172459aa648a41a4927ab30fe8ac56a7d79aec7fa0"
+          },
+          {
+            "path": "apps/web/src/components/workflow/NotificationInbox.tsx",
+            "sha256": "10f87a92399ceb6d42335e688d0fa6bfe1c827702f0460737e5461468d7c3d95"
+          },
+          {
+            "path": "apps/web/src/components/workflow/PatientAccountCode.tsx",
+            "sha256": "3fea244eff0423301fd1bf3ebd86853ee286c2b80b8a08b49bd9b7f974cac369"
+          },
+          {
+            "path": "apps/web/src/components/workflow/PatientCommunicationChoices.tsx",
+            "sha256": "86803b421d5140c8ee63e3836726a2a9798c30337747dafae82bceff8c0aec73"
+          },
+          {
+            "path": "apps/web/src/components/workflow/PatientForm.tsx",
+            "sha256": "ccf6ab4cc073ed16ec52ee291d56b250314b47a0fbcc8216c60c99eed25a7c3d"
+          },
+          {
+            "path": "apps/web/src/components/workflow/PatientPaperworkLibrary.tsx",
+            "sha256": "07fa748d84e35d4e300b51753dfac07d7968b3d929d16343d7a9c438b391f5d2"
+          },
+          {
+            "path": "apps/web/src/components/workflow/PatientWorkflow.tsx",
+            "sha256": "e9f54474a7b47162056c1dd5da105c5632d118fed7fcd52ed4dc9b8bb99c2de1"
+          },
+          {
+            "path": "apps/web/src/components/workflow/PortalAccessManager.tsx",
+            "sha256": "76dc279724add7b10ae7a9fc8dd8dea2f6f0340e31e6c48b56a8a0b67e250499"
+          },
+          {
+            "path": "apps/web/src/components/workflow/StaffPaperwork.tsx",
+            "sha256": "8fb9d3d014a86f418b9fc4e3c2af92080675745122fe1624f835207030faebcc"
+          },
+          {
+            "path": "apps/web/src/components/workflow/StudioSelect.tsx",
+            "sha256": "c545ddf02f4f24013c2fa1657f916e87946e493c35417333121561d9e7f2e362"
+          },
+          {
+            "path": "apps/web/src/components/workflow/TodayOperations.tsx",
+            "sha256": "c125a77167be0acaae7d07114bd785ccdd46fe4b3aba6e3c9e9c90a1e741070c"
+          },
+          {
+            "path": "apps/web/src/components/workflow/WorkflowPreview.tsx",
+            "sha256": "1941758cec35076f0a037b329192e1ffe17310ab1f646dd7bb0e115a953d334c"
+          },
+          {
+            "path": "apps/web/src/components/workflow/WorkflowSetup.tsx",
+            "sha256": "26f5bb320d4a805a839781e34ee4981efa63ba721a350d2c1c1b0d127d1ce3eb"
+          },
+          {
+            "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+            "sha256": "f69959e08867e9c569682b4c2e631517d2ddaef6aa44148cf4504199adb2b24f"
+          },
+          {
+            "path": "apps/web/src/components/workflow/communication-i18n.ts",
+            "sha256": "24c90cdf93b7fca28a909f8543cb24c1013799b9d2bf3029ad357da4ad2910f4"
+          },
+          {
+            "path": "apps/web/src/components/workflow/form-studio-model.ts",
+            "sha256": "3b7d3524b3cee60104f3e734b66848488380e2e961592055de8c0e1fb2190817"
+          },
+          {
+            "path": "apps/web/src/components/workflow/insurance-preview.ts",
+            "sha256": "0fe1a12ef2099e42006b3cfc26f2850b7c0207a767bc36f5dbfc0b38e165a345"
+          },
+          {
+            "path": "apps/web/src/components/workflow/manager-activity-preview.ts",
+            "sha256": "5d570cc60e9d15487dfd973a0c0d49f2e42d91c4f8e4115fe184fe12bc5dd9c8"
+          },
+          {
+            "path": "apps/web/src/components/workflow/patient-api.ts",
+            "sha256": "11b24d5ce7b3cb2c2d771b9083c84af8c667f1c3f3b0a484bddaa04a46a74415"
+          },
+          {
+            "path": "apps/web/src/components/workflow/preview-adapter.ts",
+            "sha256": "89ec34b97af2b0e1d34626b7dc6b5df1db3213e8584cfdc6645f8caa6db1e37a"
+          },
+          {
+            "path": "apps/web/src/components/workflow/workflow-i18n.ts",
+            "sha256": "270b059b5467f12a16d1cdf9b1fc6a7c8a45b681bc139bcfd2e51fedcc80ff9d"
+          },
+          {
+            "path": "apps/web/src/i18n/AccountLocaleBridge.tsx",
+            "sha256": "2ec05c4c723527d009e3c811c4677e606269b8a220ddc2b7d368eb79b771747a"
+          },
+          {
+            "path": "apps/web/src/i18n/LanguageSelector.tsx",
+            "sha256": "19cd5b62f037b97c28ad48db077e75867435a410d4f637b7b76507ac409e56f2"
+          },
+          {
+            "path": "apps/web/src/i18n/LocaleRefresh.tsx",
+            "sha256": "81310b525208847cb1d367fc8b281284e52fce46a3014dce1221edc18669ec20"
+          },
+          {
+            "path": "apps/web/src/i18n/notice.ts",
+            "sha256": "83d3044bbc94e58690fe6ad75cd4389791573651e4a2b8df2871840e370705ac"
+          },
+          {
+            "path": "apps/web/src/i18n/provider.tsx",
+            "sha256": "0833bbb22806784bcdd800504d24ba66e4d83103c1d62cd02e939769131fb801"
+          },
+          {
+            "path": "apps/web/src/i18n/server.ts",
+            "sha256": "a82dd7493a341fc56a36c083c94d44413dc7cfe5be619725f8a60b05b62ac2ab"
+          },
+          {
+            "path": "apps/web/src/lib/access-flow.ts",
+            "sha256": "f6ff11282a998417dac80e4bd197cad9bdbb7bdd5e8b2e0fa9c5475d45061e51"
+          },
+          {
+            "path": "apps/web/src/lib/api/appointments.ts",
+            "sha256": "e3d42e6d64a5f878d361d4b5b51dc4680b1be143ac6a48d3d3b1df5528549cb1"
+          },
+          {
+            "path": "apps/web/src/lib/api/client.ts",
+            "sha256": "bd2b0a32837571fceff8aea4ab51a9a8b26e149d9d47a739136faff9beb3cccf"
+          },
+          {
+            "path": "apps/web/src/lib/api/communications.ts",
+            "sha256": "e7dd727901118eef7aad9f2bd4b98c9a75a7e63452866938d5a3f42a4df4fc19"
+          },
+          {
+            "path": "apps/web/src/lib/api/insurance.ts",
+            "sha256": "1359f9fcf21e9b70efe248e1b056c5644b80e7618056ae7a49e5830fd92f56c5"
+          },
+          {
+            "path": "apps/web/src/lib/api/pagination.ts",
+            "sha256": "1e7b28e22250c1b99f8ebd4e6e3e74e235dda16617f1786e517e7727175c3fd3"
+          },
+          {
+            "path": "apps/web/src/lib/api/patients.ts",
+            "sha256": "402926f8c4d724f3befed2eb5d4a7d9e95cfcf7912b71fd25093b06a2146a12e"
+          },
+          {
+            "path": "apps/web/src/lib/api/practice.ts",
+            "sha256": "02370922ce214b9457860f0fffc721e63f62cb27d10f6dd6b4a48cde2cd94483"
+          },
+          {
+            "path": "apps/web/src/lib/api/workflow.ts",
+            "sha256": "946e0e39898c6bf5fa667efaf99c1f382be04ac4369bad67f0e684302c461d02"
+          },
+          {
+            "path": "apps/web/src/lib/application-navigation.ts",
+            "sha256": "4a112cc670dc24392034ce5b41a2ea53c585b3030add35bd464a77749e9b21ed"
+          },
+          {
+            "path": "apps/web/src/lib/appointment-calendar.ts",
+            "sha256": "3757eef59fbde702057d87b0497ca408b89f08d97406316d13e30cebf8706c7c"
+          },
+          {
+            "path": "apps/web/src/lib/auth-errors.ts",
+            "sha256": "c70f0cbe0e85a6d5d3b30dbe1a95ece9988150a2b8cf2da8b62eb554490c6180"
+          },
+          {
+            "path": "apps/web/src/lib/auth-intent.ts",
+            "sha256": "25ed41ac7ea1c220c439339ad727fac2eeea464a0f6af6eb003d82a8cc5e6a77"
+          },
+          {
+            "path": "apps/web/src/lib/auth-providers.ts",
+            "sha256": "9766f804f853e492770592f0d43137b9227c2c02c55132fd6ebf9407b05e8c5b"
+          },
+          {
+            "path": "apps/web/src/lib/capabilities.ts",
+            "sha256": "1c1ea4aa268f3d796d6848097b9a8dbf389f156e8696cf18ac226f2b439693ce"
+          },
+          {
+            "path": "apps/web/src/lib/clerk-continuation.ts",
+            "sha256": "61accac80cb37422fe8e525e2cedd67e8c2f80d6ca5366d7d900c8c7455c94ac"
+          },
+          {
+            "path": "apps/web/src/lib/interview-dates.ts",
+            "sha256": "10492c4d50640bdb89836c29cd13fb22b38f12d55f8f06d15396c867e3c65b1f"
+          },
+          {
+            "path": "apps/web/src/lib/owner-access.ts",
+            "sha256": "65255189d262a9ad89b8e61b17e2a79a3da5d824a3dfbcf61e2b8ceecbe37ecc"
+          },
+          {
+            "path": "apps/web/src/lib/submission-attempt.ts",
+            "sha256": "7885fff693b0603f1f06e24c0b28ede1a7f016100c7ed464e366b9fea61118d1"
+          },
+          {
+            "path": "apps/web/src/lib/today-operations.ts",
+            "sha256": "77bd16e5136bd1aee5b39977a0c08674c1c7186c0b626fe97a7f12cbe8f28793"
+          },
+          {
+            "path": "apps/web/src/lib/web-config.ts",
+            "sha256": "d372e22e20268c8bb58c5468b7c3158701b3e412476e26491ed4376161ecff60"
+          },
+          {
+            "path": "apps/web/src/lib/workflow-dates.ts",
+            "sha256": "cf881bca6208a647d000d5b1c2213c9460b5a1451831c86ecf17860861aeeb0f"
+          },
+          {
+            "path": "apps/web/src/proxy.ts",
+            "sha256": "95fabded5b1bd641f8e001ef624ea3abdc22d531b016332c60e93ffd4be7bea4"
+          },
+          {
+            "path": "package.json",
+            "sha256": "f2d9332b14c63b72a7478d92bd56e8a8bb17d7f4676a3b2153701b293ad0aaab"
+          },
+          {
+            "path": "packages/i18n/catalogs/en/access.json",
+            "sha256": "b5fe13a44ee77b96eb4ae1bc347fa4e9fee32198d87f1a04f354fb9793f95932"
+          },
+          {
+            "path": "packages/i18n/catalogs/en/common.json",
+            "sha256": "353cd04dbd44ae921cf82082f70314d9b109a71cdda0f464a7d24242882b4137"
+          },
+          {
+            "path": "packages/i18n/catalogs/en/errors.json",
+            "sha256": "27f589314a60ef7a3db3d3d218d9ef5df52714b17300429f5395e196b05980a3"
+          },
+          {
+            "path": "packages/i18n/catalogs/en/mobile.json",
+            "sha256": "b28e031ead56e842bcd8213c62b7da9ea6955eefd2ca5aefaa57df2cacdbea64"
+          },
+          {
+            "path": "packages/i18n/catalogs/en/workflow.json",
+            "sha256": "0f3fde2f484502631c1bd6450762118f1acffd92f48c697441e098b02084c2dd"
+          },
+          {
+            "path": "packages/i18n/catalogs/es/access.json",
+            "sha256": "d0acd68996da19826b8a61b0b3b7962619b59a1af28021f35a6060b7846f6467"
+          },
+          {
+            "path": "packages/i18n/catalogs/es/common.json",
+            "sha256": "fd1d75d32f49fc866e6024662426560fe6df71ada73f8bc2dc370b3969bbc69b"
+          },
+          {
+            "path": "packages/i18n/catalogs/es/errors.json",
+            "sha256": "a0facc2b011074bae31ece19741b233e48bcce37fc3a1559f12ce170a3658dc3"
+          },
+          {
+            "path": "packages/i18n/catalogs/es/mobile.json",
+            "sha256": "cd721316c6d265819feb38b1b7be9c3733607b730904153ba324003a815b4ca8"
+          },
+          {
+            "path": "packages/i18n/catalogs/es/workflow.json",
+            "sha256": "1754d1fe815243e45a8bfaae190b2e44bd49afe9da85e952eca0988f1a70226e"
+          },
+          {
+            "path": "packages/i18n/error-codes.ts",
+            "sha256": "3c0ff592d71663d4ca4f4f106d901b69f83871c2e504cc6fa6e7106570347a06"
+          },
+          {
+            "path": "packages/i18n/index.ts",
+            "sha256": "659990ef80d9b3813f432673319d9b5183c2ba031bf9deb404d46d14a76005a6"
+          },
+          {
+            "path": "packages/i18n/package.json",
+            "sha256": "1d1d631aef70473a40717512869dc5bc81ddade21167ad86aa7f782cf2b347f6"
+          },
+          {
+            "path": "packages/i18n/tsconfig.json",
+            "sha256": "a813cfe51e986d1c21bf4b06e9cac5fb1eaf5cb80dab53362581b2cf4955bb37"
+          },
+          {
+            "path": "packages/interview-contract/index.d.ts",
+            "sha256": "f0470a06fb0008e68e509f522145cc9274ea5bc7f9c7ec41d117d7252544a1f5"
+          },
+          {
+            "path": "packages/interview-contract/index.js",
+            "sha256": "08bdc18bd56c72ca1c9510e453b3cd21d6fe118c981e012df7ef22d7769e91c6"
+          },
+          {
+            "path": "packages/interview-contract/package.json",
+            "sha256": "49427c3f240570e33e4cd934995da76df6969f85bd64994d9003ece61edd121b"
+          },
+          {
+            "path": "scripts/export-little-hello-emails.ts",
+            "sha256": "081f68a017f265dfeb1ca2e17dee870a6aff1c18acddcca0ea8752396f5e09de"
+          },
+          {
+            "path": "scripts/generate-mobile-associations.mjs",
+            "sha256": "ff4742025df6cdcc775f05218e2fd03299f83ca77ee63d124fe69315b042f7f2"
+          },
+          {
+            "path": "scripts/little-hello-clerk-copy.mjs",
+            "sha256": "ec8d641644eeb43ea8391f37ebf340d23b3de1152dc9ea16d78f6020c25ad80e"
+          },
+          {
+            "path": "scripts/little-hello-clerk-emails.mjs",
+            "sha256": "fac3ca97276461411f1097b98c4699d7ca9f59f299e79210531c3ddd1f98b75a"
+          },
+          {
+            "path": "scripts/local-review.py",
+            "sha256": "1902ff2802adfeb334b1b8e19e017b97bf43cc0fa8a9ed6a41a49f0052eb4414"
+          },
+          {
+            "path": "scripts/release-metadata.mjs",
+            "sha256": "2be3eda333d9a418c737928a3792d35818c64de0191e869f91c40fd9d1332c33"
+          },
+          {
+            "path": "scripts/verify-deployment-checks.mjs",
+            "sha256": "1bd3c948f6580cf5d8f7308e5dbd82907351e01c27ace8e851d009e5d0740281"
+          }
+        ],
+        "noUnscannedSourceAdditionsOrRemovals": true
+      }
+    ],
+    "deltaInventory": [
+      {
+        "path": "scripts/prepare-rollback.mjs",
+        "sha256": "ae160a0d84c4f42a9527fa807f700d43fd83d59f5ed1f226cba81bae25cf0e28"
+      },
+      {
+        "path": "scripts/test-rollback.mjs",
+        "sha256": "2faac2577edf76f526254f789315a92a4a55ec0632811cc412445d6fee530185"
+      },
+      {
+        "path": "scripts/release-metadata.mjs",
+        "sha256": "2be3eda333d9a418c737928a3792d35818c64de0191e869f91c40fd9d1332c33"
+      },
+      {
+        "path": "scripts/verify-deployment-checks.mjs",
+        "sha256": "1bd3c948f6580cf5d8f7308e5dbd82907351e01c27ace8e851d009e5d0740281"
+      },
+      {
+        "path": "package.json",
+        "sha256": "f2d9332b14c63b72a7478d92bd56e8a8bb17d7f4676a3b2153701b293ad0aaab"
+      },
+      {
+        "path": "pnpm-workspace.yaml",
+        "sha256": "2110e862f004ca3c2db303c9b98950239f112a33ad0dc12a117cc5d57632538d"
+      }
+    ],
+    "scopeNote": "Production app/shared source and delivery scripts/workflows; tests, dependencies and generated builds excluded. Full scans are combined with a full security-extended rescan of the final four release-tool files and matching root dependency metadata. Hash comparisons cover every other original snapshot file."
+  },
+  "candidateVerification": {
+    "applicationTests": 626,
+    "apiTests": 474,
+    "webTests": 133,
+    "componentBrowserTests": 245,
+    "restrictedApiBrowserTests": 3,
+    "freshManagedOwnerApiTests": 474,
+    "upgradeManagedOwnerApiTests": 474,
+    "changedCoverage": {
+      "covered": 2425,
+      "executable": 2557,
+      "percent": 94.84,
+      "minimum": 80
+    },
+    "lint": "passed",
+    "strictTypes": "passed",
+    "productionDependencyAudit": "passed",
+    "secretScan": "passed",
+    "secretScannerNegativeFixture": "passed",
+    "toolingTests": 112
+  },
+  "rollback": {
+    "directory": ".tmp/rollback/49e8726d-1702-42fa-a680-904ff114d9bb",
+    "baselineCommit": "7d2cabe4b48d4e4d2aa8006a7bb253c539d79d12",
+    "sourceDigest": "25918c84654457a16a3ac32d5e66121c85edcbf2c4efcce7ccc2364d00435057",
+    "buildDigest": "3672dc2722fa5794812f6193e8c6a8ddab9d6108c5e913e463eff02a58d96d0f",
+    "revisionIsGitCommit": false,
+    "deployable": false,
+    "apiTests": {
+      "tests": 474,
+      "failed": 0,
+      "passed": 474,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "topLevel": 228,
+      "suites": 0,
+      "success": true
+    },
+    "webTests": 133,
+    "checks": [
+      "archived API and aligned web production builds pass",
+      "unmodified deployed baseline rejects the 50-entry ledger and new helper policy inventory",
+      "archived API suite plus explicit security regressions passes without skips; aligned web unit suite passes",
+      "actual production API starts against all 50 entries with restricted runtime and verified TLS",
+      "health is ready and unsigned account access is denied",
+      "corrupted private-helper policy prevents actual production startup",
+      "altered migration ledger prevents the real migration runner from proceeding",
+      "fallback restarts after restored boundaries; synthetic data and all 50 ledger entries remain identical"
+    ],
+    "comparisonWithScannedArtifact": {
+      "version": 1,
+      "scannedSourceArtifact": "/Users/kristian/Documents/Server/CareIQ/.tmp/rollback/95ac0224-8724-43c1-aee3-b69c2bae84a4",
+      "scannedSourceDigest": "968ec801306219965f8bd18ebb6d4469fd0d981097d0d18af754b0283a7b5b18",
+      "finalArtifact": "/Users/kristian/Documents/Server/CareIQ/.tmp/rollback/49e8726d-1702-42fa-a680-904ff114d9bb",
+      "finalSourceDigest": "25918c84654457a16a3ac32d5e66121c85edcbf2c4efcce7ccc2364d00435057",
+      "unchangedProductionSqlAndBuildHooks": true,
+      "differences": [
+        {
+          "path": "apps/api/tests/api-security.test.ts",
+          "scannedSha256": "beb77d4336489b0a54e3c44ef62a99496040f1bad64ee195a38e019db4d2ecff",
+          "finalSha256": "3562f114e302d9ca8abe25d49555f0d5d6998029a71e1fefbf332c2bcaf3cb6f",
+          "matchesCurrentCanonical": true
+        },
+        {
+          "path": "apps/api/tests/public-interview-requests.test.ts",
+          "scannedSha256": "260ec3fc1f44f693405e5a67d0b276792da17349d39359bbc87ee52f619e61b0",
+          "finalSha256": "2763d08a8b9fce2d4b69406a88efb5dd62e4502e2e854301d61d811b54671711",
+          "matchesCurrentCanonical": true
+        },
+        {
+          "path": "apps/api/tests/workflow-openapi.test.ts",
+          "scannedSha256": "17c7c51bf2d59f525367637aea723d1d61b288092dc6ca2814046d50fdea98fc",
+          "finalSha256": "1f42bf791b4a6b607e68a9bb0ec9b91ea7c6f5462ad4dd6ebe3da29ca819ceb7",
+          "matchesCurrentCanonical": true
+        },
+        {
+          "path": "apps/web/tests/workflow-api.test.ts",
+          "scannedSha256": "09ac2d5cc7e8f85002e8be6b29533d84ae5ff7eab51e514e5611b5701575b422",
+          "finalSha256": "2363678bf75a81e935953e4e76c16d6107e46d1c333f0b65c5afc3577396c8df",
+          "matchesCurrentCanonical": true
+        },
+        {
+          "path": "package.json",
+          "scannedSha256": "f14c27fa9e62095e70eae5dd734fe94692061661e01fa67654c21b245d7c245b",
+          "finalSha256": "f2d9332b14c63b72a7478d92bd56e8a8bb17d7f4676a3b2153701b293ad0aaab",
+          "matchesCurrentCanonical": true
+        },
+        {
+          "path": "pnpm-workspace.yaml",
+          "scannedSha256": "569f58dc31e0cf7b9474fadf533a657625ccd6e4bea813a26a0bff28f55673e0",
+          "finalSha256": "2110e862f004ca3c2db303c9b98950239f112a33ad0dc12a117cc5d57632538d",
+          "matchesCurrentCanonical": true
+        }
+      ],
+      "securityEvidenceGuide": "docs/verification/rollback-security-remediation-2026-11-02.md",
+      "deployable": false
+    },
+    "boundary": "Local production-mode compatibility/restart proof only; no candidate-to-fallback provider transition, hosted database restore, recovery timing or deployment approval."
+  },
+  "remainingReleaseAcceptance": [
+    "Publish reviewed immutable commits and receive all seven required GitHub checks for each deployed revision.",
+    "Reconcile fallback repository CI with the current required workflows before publishing it.",
+    "Verify post-deployment event activation and run an authorized staging rollback/recovery drill."
+  ]
+}

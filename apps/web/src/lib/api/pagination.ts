@@ -1,4 +1,4 @@
-import { apiRequest } from "./client";
+import { apiRequest } from './client';
 
 type ListPage<T> = {
   data: T[];
@@ -6,17 +6,27 @@ type ListPage<T> = {
 };
 
 /** Preserve complete directory/calendar behavior while each server query is bounded. */
-export async function getAllPages<T extends { id: string }>(path: string, token: string, signal?: AbortSignal): Promise<T[]> {
+export async function getAllPages<T extends { id: string }>(
+  path: string,
+  token: string,
+  signal?: AbortSignal,
+): Promise<T[]> {
   const records = new Map<string, T>();
   let offset = 0;
   while (true) {
-    const page = await apiRequest<ListPage<T>>(`${path}?limit=100&offset=${offset}`, token, { signal });
-    for (const record of page.data) records.set(record.id, record);
+    const page = await apiRequest<ListPage<T>>(`${path}?limit=100&offset=${offset}`, token, {
+      signal,
+    });
+    for (const record of page.data) {
+      records.set(record.id, record);
+    }
     // Older API versions have no pagination metadata.
-    if (!page.meta?.hasMore) return [...records.values()];
+    if (!page.meta?.hasMore) {
+      return [...records.values()];
+    }
     const next = page.meta.nextOffset;
     if (!Number.isSafeInteger(next) || next === null || next <= offset) {
-      throw new Error("CareIQ returned an invalid page of records. Please refresh and try again.");
+      throw new Error('CareIQ returned an invalid page of records. Please refresh and try again.');
     }
     offset = next;
   }

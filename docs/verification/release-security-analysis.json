@@ -1,0 +1,768 @@
+{
+  "recordedAt": "2026-11-03T03:43:29.911370+00:00",
+  "scope": "Local working-tree production application source, shared packages and delivery scripts/workflows; excludes test directories, dependencies and generated builds.",
+  "source": {
+    "gitHead": "b7820b0c9108d4c78d9e82b9158b54c9de764909",
+    "uncommittedChangesIncluded": true,
+    "initialFileCount": 278,
+    "initialInventorySha256": "4294b795f268f39064940a07793ecb03919d5c9ed64998f2367594cf684b8a5c",
+    "followup": {
+      "path": "scripts/test-managed-owner.mjs",
+      "sha256": "40f3a0f7778904d5e80b7d507dffef184b0f9db430552708510c9b597ffd9d95",
+      "change": "Clears inherited optional CAREIQ_AUDIT_DATABASE_URL for isolated managed-owner runner.",
+      "verification": "Focused security-extended CodeQL rerun on the final standalone script passed."
+    },
+    "allOtherSnapshotFilesUnchangedAtInitialScan": true,
+    "status": "Historical pre-repair source inventory. Later ownership-repair source changes are covered by managedOwnerRepairFollowup."
+  },
+  "codeql": {
+    "version": "2.27.4",
+    "bundleSha256": "d5940b767427f113705aca401c7c09cf7af8cedb82fdad8a170c9d964b3a699b",
+    "suite": "security-extended",
+    "analyzedFiles": {
+      "javascriptTypescript": 242,
+      "python": 1,
+      "actions": 4,
+      "focusedFinalRunnerRescan": 1
+    },
+    "reports": [
+      {
+        "scope": "actions",
+        "sha256": "cc55ce3cf2be165521c79a88e9f5ea54e5dad67dec4ebe9d2fdfcea0823ab6ac",
+        "resultCount": 0
+      },
+      {
+        "scope": "javascript",
+        "sha256": "dd568fb84f1c2eeca71a83f2037a26681dcab1ee8ec8e1b442fec36ea0fd096d",
+        "resultCount": 65
+      },
+      {
+        "scope": "python",
+        "sha256": "1c3f4404c472baeeb3b3b697f2555562c563ecbb33db0974a6d58dd5cd88991e",
+        "resultCount": 0
+      },
+      {
+        "scope": "careiq-codeql-managed-owner",
+        "sha256": "1699cc4b1837f11f75e4ccd5dae0b1772d588aea19ff5c664b219ce5746412c5",
+        "resultCount": 0
+      }
+    ],
+    "findingsByRule": {
+      "js/sensitive-get-query": 8,
+      "js/missing-rate-limiting": 52,
+      "js/clear-text-storage-of-sensitive-data": 1,
+      "js/type-confusion-through-parameter-tampering": 3,
+      "js/remote-property-injection": 1
+    },
+    "gateExitCode": 1,
+    "gateResult": "blocked",
+    "findings": [
+      {
+        "rule": "js/sensitive-get-query",
+        "path": "apps/api/src/routes/patient-delivery.ts",
+        "line": 99,
+        "securitySeverity": "6.5"
+      },
+      {
+        "rule": "js/sensitive-get-query",
+        "path": "apps/api/src/routes/patient-delivery.ts",
+        "line": 99,
+        "securitySeverity": "6.5"
+      },
+      {
+        "rule": "js/sensitive-get-query",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 185,
+        "securitySeverity": "6.5"
+      },
+      {
+        "rule": "js/sensitive-get-query",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 185,
+        "securitySeverity": "6.5"
+      },
+      {
+        "rule": "js/sensitive-get-query",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 186,
+        "securitySeverity": "6.5"
+      },
+      {
+        "rule": "js/sensitive-get-query",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 186,
+        "securitySeverity": "6.5"
+      },
+      {
+        "rule": "js/sensitive-get-query",
+        "path": "apps/api/src/workflow/availability.ts",
+        "line": 31,
+        "securitySeverity": "6.5"
+      },
+      {
+        "rule": "js/sensitive-get-query",
+        "path": "apps/api/src/workflow/availability.ts",
+        "line": 33,
+        "securitySeverity": "6.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/app.ts",
+        "line": 379,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/app.ts",
+        "line": 385,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/patient-delivery.ts",
+        "line": 91,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/patient-delivery.ts",
+        "line": 108,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/patient-delivery.ts",
+        "line": 116,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/patient-delivery.ts",
+        "line": 122,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/insurance.ts",
+        "line": 157,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/patient-delivery.ts",
+        "line": 128,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/patient-delivery.ts",
+        "line": 136,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/insurance.ts",
+        "line": 170,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/insurance.ts",
+        "line": 185,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/insurance.ts",
+        "line": 201,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/patient-delivery.ts",
+        "line": 169,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/patient-delivery.ts",
+        "line": 171,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/insurance.ts",
+        "line": 219,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/insurance.ts",
+        "line": 230,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/insurance.ts",
+        "line": 242,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/patient-delivery.ts",
+        "line": 199,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/insurance.ts",
+        "line": 255,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/insurance.ts",
+        "line": 269,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/insurance.ts",
+        "line": 279,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/insurance.ts",
+        "line": 294,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/insurance.ts",
+        "line": 309,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/insurance.ts",
+        "line": 324,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/patient-delivery.ts",
+        "line": 355,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/patient-delivery.ts",
+        "line": 356,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/staff-notifications.ts",
+        "line": 108,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/staff-notifications.ts",
+        "line": 120,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/staff-notifications.ts",
+        "line": 127,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/staff-notifications.ts",
+        "line": 133,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/staff-notifications.ts",
+        "line": 141,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/staff-notifications.ts",
+        "line": 146,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/staff-notifications.ts",
+        "line": 151,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/staff-notifications.ts",
+        "line": 159,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 252,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 255,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 257,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 299,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 326,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 380,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 413,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 432,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 448,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 467,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 492,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 501,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 668,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 694,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 738,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 762,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 787,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/missing-rate-limiting",
+        "path": "apps/api/src/routes/workflow.ts",
+        "line": 812,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/clear-text-storage-of-sensitive-data",
+        "path": "apps/web/src/components/workflow/preview-adapter.ts",
+        "line": 420,
+        "securitySeverity": "7.5"
+      },
+      {
+        "rule": "js/type-confusion-through-parameter-tampering",
+        "path": "apps/api/src/notifications/delivery-provider.ts",
+        "line": 290,
+        "securitySeverity": "9.8"
+      },
+      {
+        "rule": "js/type-confusion-through-parameter-tampering",
+        "path": "apps/api/src/services/form-changes.service.ts",
+        "line": 153,
+        "securitySeverity": "9.8"
+      },
+      {
+        "rule": "js/type-confusion-through-parameter-tampering",
+        "path": "apps/api/src/workflow/paperwork-policy.ts",
+        "line": 133,
+        "securitySeverity": "9.8"
+      },
+      {
+        "rule": "js/remote-property-injection",
+        "path": "apps/api/src/notifications/delivery-provider.ts",
+        "line": 299,
+        "securitySeverity": "7.5"
+      }
+    ],
+    "disposition": "Unresolved scanner candidates, not independently confirmed exploitability. No baseline suppression or rule disabling added."
+  },
+  "gitleaks": {
+    "version": "8.30.1",
+    "availableGitHistory": "passed",
+    "candidateWorkingTree": "passed",
+    "syntheticCredentialFixture": "rejected as expected",
+    "output": "Only redacted finding locations; no source or report uploaded."
+  },
+  "tests": {
+    "releaseToolTests": {
+      "passed": 8,
+      "failed": 0
+    },
+    "apiRevisionAndSecurityTests": {
+      "passed": 19,
+      "failed": 0
+    },
+    "apiTestTypecheck": "passed",
+    "releaseToolEslint": "passed"
+  },
+  "hostedVerification": {
+    "deploymentPerformed": false,
+    "smokePassed": false,
+    "providerRollbackPerformed": false,
+    "databaseRollbackPerformed": false,
+    "automaticEventIntegrationVerified": false,
+    "githubDeploymentListing": "Empty list on read-only inspection; provider event activation is unverified.",
+    "repositoryMappingVariablesConfigured": false,
+    "loopbackVersionRollbackDrill": "passed"
+  },
+  "remainingAcceptance": [
+    "Triage or remediate the 65 CodeQL findings before release.",
+    "Run all required GitHub checks successfully on the exact candidate commit; local verification does not supply hosted required-check statuses.",
+    "Deploy revision metadata on each separately approved branch.",
+    "Verify provider deployment_status events and configure repository mapping variables, or invoke the manual workflow.",
+    "Perform and record a controlled staging provider rollback exercise, including database compatibility assessment.",
+    "Prepare and test a migration-50-compatible rollback artifact or forward fix; an old binary rollback is not established."
+  ],
+  "baselineRecordStatus": "Historical broad source scan before the approved managed-owner repair; the focused follow-up below covers the changed verifier family and upgrade runner. The 65 baseline findings remain unresolved and release-blocking.",
+  "managedOwnerRepairFollowup": {
+    "recordedAt": "2026-11-03T04:11:03.903812+00:00",
+    "analysis": "CodeQL 2.27.4 JavaScript/TypeScript security-extended; all analysis local, no source/report uploads.",
+    "scans": [
+      {
+        "scope": "repair",
+        "analyzedJavaScriptTypeScriptFiles": 23,
+        "sourceFileCount": 26,
+        "inventorySha256": "8923a04e71f9d9427357352a3f0fc98fd8e8d45e5a84682d6544d9c98dd384e6",
+        "reportSha256": "10d44ddbfd05579c74ab883f757c728b7503e327406fffda0f8c3a80bda0bc54",
+        "findings": 0,
+        "sourceChangesCoveredByFinalRescan": [
+          "apps/api/src/db/managed-owner-release-check.ts"
+        ],
+        "files": [
+          {
+            "path": "apps/api/package.json",
+            "sha256": "cd03a6ebb69792b0b4a7f66504addb29b24b1049dd7a6d477a03aa47855111fe"
+          },
+          {
+            "path": "apps/api/src/db/account-lifecycle-release-check.ts",
+            "sha256": "603249dbadd49d66c69c51679e8ee3f35add58fb905528bc0902e8ae156672c6"
+          },
+          {
+            "path": "apps/api/src/db/availability-release-check.ts",
+            "sha256": "b5027364db000cfba19d8e657708097df9b48417ad07a8c429b4db30c1bae71f"
+          },
+          {
+            "path": "apps/api/src/db/client.ts",
+            "sha256": "941215a5efd133fd7925a8186bc36577c96212b689389ceb05868b3f2866206e"
+          },
+          {
+            "path": "apps/api/src/db/connection.ts",
+            "sha256": "8472919d26a9441e1fab75f0327c93bbcf670e75ad1ab7b6fad952c8f1154489"
+          },
+          {
+            "path": "apps/api/src/db/forms-studio-release-check.ts",
+            "sha256": "32c685b6af734f71da33442ca82ef38818505ea24d7ab81e0bccf7bec6cf78fa"
+          },
+          {
+            "path": "apps/api/src/db/insurance-release-check.ts",
+            "sha256": "9355b50d9c76b1ddd529dbb0fe378908122df5ed70be61bae23a9bb80e7cf006"
+          },
+          {
+            "path": "apps/api/src/db/managed-owner-policy.ts",
+            "sha256": "c597272e41733f32de70e75ac5b7a437ab548199cab3c0c5e5cd6e53798c7ea3"
+          },
+          {
+            "path": "apps/api/src/db/managed-owner-release-check.ts",
+            "sha256": "09633294842dd6a6198f9cc8196e5768a5980211eae8981f987c0c3bffe59ef4"
+          },
+          {
+            "path": "apps/api/src/db/migrate.ts",
+            "sha256": "9777e9ac20dc0cf2ddae5ee58ac3e9a141ad5bfce08cf32f15f581594fdaff2b"
+          },
+          {
+            "path": "apps/api/src/db/migration-safety.ts",
+            "sha256": "61091c9950d378482ea216c8cbd522d67218db6220a54b77e26a89dc59fe9c2e"
+          },
+          {
+            "path": "apps/api/src/db/notification-release-check.ts",
+            "sha256": "0e8ba7d270fe26d66c3cd11e1220820d476dc44406f7bd99b0d799dc42f74b0a"
+          },
+          {
+            "path": "apps/api/src/db/owner-access-release-check.ts",
+            "sha256": "9d27b6368bb2d8954858d186118567177e9960fb8650f6c440e9fb9d2b4d896e"
+          },
+          {
+            "path": "apps/api/src/db/pool.ts",
+            "sha256": "7d67244626307b88df0387cfbad453d85473c5f9f4d1d7a7fe0f28b2defc8d39"
+          },
+          {
+            "path": "apps/api/src/db/practice-transaction.ts",
+            "sha256": "16484059d7206056e3ce865c9871d71aa4fc589ea940d31112afc6d95d951046"
+          },
+          {
+            "path": "apps/api/src/db/reconcile-practices.ts",
+            "sha256": "d5b889f4fa90523132d6a37e488c47586584079e701d607dc73be57fa728f226"
+          },
+          {
+            "path": "apps/api/src/db/release-check.ts",
+            "sha256": "3f6f36ffd01a14d32c8385d030e7f847ce5fbb6019d4801d17518a16b4ed0cc1"
+          },
+          {
+            "path": "apps/api/src/db/runtime-pool-policy.ts",
+            "sha256": "67624284104211b930f8216189c06c779de88e4412e9e748182173c1394aa46f"
+          },
+          {
+            "path": "apps/api/src/db/test-appointment-rls.ts",
+            "sha256": "86513a82a0a700cd8915e31575877982a2d9d2e1402753347310e1cd999a578b"
+          },
+          {
+            "path": "apps/api/src/db/test-patient-rls.ts",
+            "sha256": "0a183095f76f38dc879b34d3cc64fcd29a94ab2d728259207a73766b83938685"
+          },
+          {
+            "path": "apps/api/src/db/verify-release.ts",
+            "sha256": "3a4e45a3a21aca31f50c0e5d88d0c289d8a78fbfce035510162ba4632047df94"
+          },
+          {
+            "path": "apps/api/src/db/with-tenant.ts",
+            "sha256": "65d15b994fd3c48aa93b4ff5e5d2a749211ae71fc9493c687a2dab4c557ff122"
+          },
+          {
+            "path": "apps/api/src/db/workflow-release-check.ts",
+            "sha256": "a7ec703a08236cd7f2fb1f5edf30adb6b10abb172dce80e2d4e8399a4fdc88d5"
+          },
+          {
+            "path": "apps/api/tsconfig.json",
+            "sha256": "3cf69bdc71fc8cf38001eb1c29032652d147a8e1d23f7e27ee2a4b1e6c0af90c"
+          },
+          {
+            "path": "package.json",
+            "sha256": "f2d9332b14c63b72a7478d92bd56e8a8bb17d7f4676a3b2153701b293ad0aaab"
+          },
+          {
+            "path": "scripts/test-managed-owner.mjs",
+            "sha256": "cb64ffe04ef96d5e95861cd03365e6dd7ccc12dcb3ab8cdf4f71fceeb53c3c11"
+          }
+        ]
+      },
+      {
+        "scope": "repair-final",
+        "analyzedJavaScriptTypeScriptFiles": 3,
+        "sourceFileCount": 3,
+        "inventorySha256": "7871317e13233d26db4d33fbf4de1a700821acfd76e22a8ad961601778276090",
+        "reportSha256": "b2aaae7d0f3ddf3a3c28353c0f866825096471870aa31794346a65c56b76f1c1",
+        "findings": 0,
+        "sourceChangesCoveredByFinalRescan": [],
+        "files": [
+          {
+            "path": "apps/api/src/db/managed-owner-release-check.ts",
+            "sha256": "e7b0dc26d6411169e6f54dd588fc9f8dfe45e46619218c90a9efeeedb2c9a3e8"
+          },
+          {
+            "path": "apps/api/src/db/managed-owner-policy.ts",
+            "sha256": "c597272e41733f32de70e75ac5b7a437ab548199cab3c0c5e5cd6e53798c7ea3"
+          },
+          {
+            "path": "apps/api/src/db/migration-safety.ts",
+            "sha256": "61091c9950d378482ea216c8cbd522d67218db6220a54b77e26a89dc59fe9c2e"
+          }
+        ]
+      }
+    ],
+    "migrationSha256": "7de11385f22d8f4da502fb46aab62583b02f96b9a0e59a604a3cebe216162cf8",
+    "manualSecurityReview": {
+      "scope": "13 historical helper bodies, additive ownership/ACL/RLS migration, role/ownership/function/grant/policy verifier and trusted API portal context boundary. SQL migration was manually reviewed; CodeQL does not establish SQL/RLS correctness.",
+      "blockingFindingsRemaining": 0,
+      "resolvedReviewIssues": [
+        "Narrowed audit patient lookup to exact token patient or authorized clinical scope; rejected same-location cross-patient audit attribution.",
+        "Corrected the generated patients identity predicate to patients.id.",
+        "Rejected duplicate canonical ACL entries instead of allowing them to mask missing expected grants.",
+        "Enforced exact current-database function OIDs as the only owned objects through pg_shdepend plus independent function inventory."
+      ],
+      "verifiedInvariants": [
+        "Five NOLOGIN, non-superuser, non-BYPASSRLS helper roles with no parent memberships and no runtime assumption.",
+        "Only migration table owner can hold administrative helper membership, with inheritance and SET ROLE disabled.",
+        "Original raw bodies, default arguments, function execution configuration and exact 13-function inventory are pinned.",
+        "Exact explicit ACLs, effective table/column privileges and role-specific policies checked before excluding them from legacy checks.",
+        "Token bootstrap and receipts require live token/grant/session binding; patient mutation bodies bind exact request/patient/practice/location.",
+        "Portal database context trusts verified API subject/session; SQL does not cryptographically authenticate a fabricated session for a known bound subject."
+      ],
+      "focusedDatabaseRegressionEvidence": "61 focused catalog/runtime cases passed. Full fresh-database and preserved-data upgrade rehearsals each passed 464 API tests with no failures, skips or TODOs; see docs/verification/managed-owner-repair-2026-11-02.md."
+    },
+    "originalFunctionBodyHashes": [
+      {
+        "signature": "audit.record_event(jsonb,jsonb,jsonb)",
+        "sourceMigration": "0023_workflow-context-guards.sql",
+        "bodySha256": "d42d3de9f8c5b55156f0bd83c97fe458240f58aea8292a1cd033c8a447afe902"
+      },
+      {
+        "signature": "public.careiq_form_completion_guard()",
+        "sourceMigration": "0028_patient-paperwork.sql",
+        "bodySha256": "87f6149c037506b2b477dce9b3ffb14c9a57882171f2659a694b5be9a9761dc6"
+      },
+      {
+        "signature": "public.careiq_form_signer_authorized(uuid)",
+        "sourceMigration": "0032_location-calendar-eligibility.sql",
+        "bodySha256": "0d3b17800f43052d0d897fc92863009a96587c63f393d090f410613f7dfe507c"
+      },
+      {
+        "signature": "public.careiq_patient_close_request(text)",
+        "sourceMigration": "0022_workflow-patient-collection.sql",
+        "bodySha256": "b5f362a0674d8500716d4f197b65f76119b1e3dc28bc9c4c92e788f9d02b9477"
+      },
+      {
+        "signature": "public.careiq_patient_fulfill_item(uuid,uuid)",
+        "sourceMigration": "0033_patient-fulfillment-purpose.sql",
+        "bodySha256": "c6e0fc38cea52f8e21e81e3da9fee5e00bf69241de052b4fc38851d05a88ddad"
+      },
+      {
+        "signature": "public.careiq_publish_completed_paperwork(uuid,uuid,boolean)",
+        "sourceMigration": "0042_paperwork_publication_permission.sql",
+        "bodySha256": "2c4f9f01c41c9b9ce0b3a09a5bc9bf82e60f84a403f3d0843326b1f92b792789"
+      },
+      {
+        "signature": "public.careiq_communication_profile_changed()",
+        "sourceMigration": "0041_patient_communication_preferences.sql",
+        "bodySha256": "ed270666b7bfa523a38224d2e965444062bd0d104a18d965b4422bf380d3e0e7"
+      },
+      {
+        "signature": "public.careiq_portal_communication_choices(uuid,jsonb,bigint,text,text,uuid,text)",
+        "sourceMigration": "0041_patient_communication_preferences.sql",
+        "bodySha256": "91577b191bf9a25859561e56883b451d2538ac0bd284fb6e319009a9f1c2ca97"
+      },
+      {
+        "signature": "public.careiq_portal_paperwork(uuid,boolean,timestamp with time zone,uuid)",
+        "sourceMigration": "0032_location-calendar-eligibility.sql",
+        "bodySha256": "b081c28993f4b786f6aea0406acddcbea62ea5c113676cc50fec15f21d997db9"
+      },
+      {
+        "signature": "public.careiq_delivery_destination_suppressed(text,text,text)",
+        "sourceMigration": "0039_notification_delivery.sql",
+        "bodySha256": "67670b1c29820500a6084fa4936fe66b7f4389373f6ab76a8df17cef57e11908"
+      },
+      {
+        "signature": "public.careiq_patient_command_receipt(text,text)",
+        "sourceMigration": "0034_patient-request-link-audit.sql",
+        "bodySha256": "0b95b4b4f0846f8fddc39272b78f74ac49b476182a7e7b1ee47507bae16aac4f"
+      },
+      {
+        "signature": "public.careiq_patient_completion_receipt(text)",
+        "sourceMigration": "0034_patient-request-link-audit.sql",
+        "bodySha256": "e69e71376d4c571967845e33262a8c4174d244ed6348a1f03a9be6acea0484cc"
+      },
+      {
+        "signature": "public.careiq_resolve_patient_access(text,boolean)",
+        "sourceMigration": "0019_workflow-foundation.sql",
+        "bodySha256": "42b40650a22dd7baabae1539f7188f02dd68d6d45465f6671c2ef58032f889e7"
+      }
+    ],
+    "rollbackCompatibility": {
+      "preRepairBinaryVerified": false,
+      "status": "Pre-repair 49-entry migration runner and strict old policy verifier reject the migration-50 schema. Prepare a tested migration-50-compatible rollback artifact or a forward fix before hosted promotion.",
+      "hostedRollbackPerformed": false
+    },
+    "references": [
+      "https://www.postgresql.org/docs/18/role-membership.html",
+      "https://www.postgresql.org/docs/18/ddl-rowsecurity.html"
+    ],
+    "localAcceptance": {
+      "freshManagedOwnerApiTests": {
+        "passed": 464,
+        "failed": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "preservedDataUpgradeApiTests": {
+        "passed": 464,
+        "failed": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "ordinaryWorkspaceTests": {
+        "passed": 614,
+        "failed": 0,
+        "skipped": 0
+      },
+      "changedLineCoverage": {
+        "covered": 2155,
+        "total": 2276,
+        "percent": 94.68
+      },
+      "evidence": "docs/verification/managed-owner-repair-2026-11-02.md",
+      "source": "Final runs reported by the parent and dedicated implementation/coverage agents."
+    }
+  },
+  "securityRemediationFollowup": {
+    "date": "2026-11-02",
+    "record": "docs/verification/release-security-remediation.json",
+    "report": "docs/verification/rollback-security-remediation-2026-11-02.md",
+    "originalFindings": 65,
+    "remainingLocalCodeqlFindings": 0,
+    "candidateAndFallbackGates": "passed",
+    "deploymentStatus": "Local only; immutable-commit CI and hosted recovery acceptance remain required."
+  }
+}

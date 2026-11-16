@@ -1,6 +1,6 @@
-import { apiRequest } from "./client";
-import { getAllPages } from "./pagination";
-import { clinicalPath } from "./practice";
+import { apiRequest } from './client';
+import { getAllPages } from './pagination';
+import { clinicalPath } from './practice';
 
 export type Patient = {
   id: string;
@@ -23,7 +23,7 @@ type PatientResponse = {
 };
 
 export async function getPatients(token: string, locationId?: string, signal?: AbortSignal) {
-  return getAllPages<Patient>(clinicalPath("patients", locationId), token, signal);
+  return getAllPages<Patient>(clinicalPath('patients', locationId), token, signal);
 }
 
 export async function createPatient(
@@ -33,16 +33,12 @@ export async function createPatient(
   locationId?: string,
   signal?: AbortSignal,
 ) {
-  const response = await apiRequest<PatientResponse>(
-    clinicalPath("patients", locationId),
-    token,
-    {
-      method: "POST",
-      signal,
-      headers: { "Idempotency-Key": idempotencyKey },
-      body: JSON.stringify(input),
-    },
-  );
+  const response = await apiRequest<PatientResponse>(clinicalPath('patients', locationId), token, {
+    method: 'POST',
+    signal,
+    headers: { 'Idempotency-Key': idempotencyKey },
+    body: JSON.stringify(input),
+  });
 
   return response.data;
 }
