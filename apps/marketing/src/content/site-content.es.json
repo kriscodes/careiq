@@ -1,34 +1,53 @@
 {
-  "brand": { "product": "CareIQ", "business": "CareIQ Labs", "homeLabel": "Inicio de CareIQ Labs" },
+  "brand": {
+    "product": "CareIQ",
+    "business": "CareIQ Labs",
+    "homeLabel": "Inicio de CareIQ Labs"
+  },
   "navigation": {
     "focus": "Nuestro enfoque",
     "founder": "El fundador",
     "faq": "Preguntas",
-    "cta": "Comparta su experiencia",
-    "application": "Abrir CareIQ",
+    "cta": "Conversemos",
+    "application": "Abrir demostración",
     "openMenu": "Abrir navegación",
     "closeMenu": "Cerrar navegación",
     "label": "Navegación principal",
-    "skip": "Saltar al contenido"
+    "skip": "Saltar al contenido",
+    "features": "Funciones",
+    "howItWorks": "Cómo funciona",
+    "research": "Investigación"
   },
   "hero": {
-    "eyebrow": "Diseñado con cuidado. Empezando por usted.",
-    "headline": "Un camino más sencillo de la solicitud de un paciente nuevo a una cita programada.",
-    "description": "CareIQ es un producto de software en fase inicial que explora cómo las consultas médicas independientes pueden simplificar la admisión, el seguimiento de documentos y la coordinación de citas.",
-    "supporting": "Estamos hablando con responsables de consultas, personal de recepción y propietarios para comprender qué genera trabajo adicional y qué les resultaría útil.",
-    "primaryCta": "Comparta su experiencia",
-    "secondaryCta": "Qué estamos explorando",
-    "stageNote": "Actualmente en desarrollo. No se requiere compromiso de compra ni información de pacientes."
+    "eyebrow": "Investigación de CareIQ",
+    "headline": "Creado con quienes conocen el trabajo.",
+    "description": "Conversamos con equipos de consultorios independientes para entender los pequeños detalles que facilitan el día y los que lo complican.",
+    "supporting": "Médicos, personal de enfermería, asistentes médicos, recepción y gerentes: su experiencia puede ayudar a dar forma a CareIQ.",
+    "primaryCta": "Solicitar una conversación",
+    "secondaryCta": "Explorar el producto",
+    "stageNote": "CareIQ está en desarrollo y actualmente es una demostración con datos sintéticos. Sin obligación de compra."
   },
   "workflow": {
     "eyebrow": "Los pasos intermedios",
     "heading": "Una solicitud. Muchos pasos conectados.",
     "description": "Exploramos cómo se conectan estos pasos en el trabajo cotidiano de una consulta.",
     "steps": [
-      { "title": "Solicitud nueva", "description": "Un primer punto de contacto" },
-      { "title": "Datos de admisión", "description": "La información necesaria para empezar" },
-      { "title": "Seguimiento", "description": "Los documentos que siguen pendientes" },
-      { "title": "Coordinación de citas", "description": "El camino hacia una cita programada" }
+      {
+        "title": "Solicitud nueva",
+        "description": "Un primer punto de contacto"
+      },
+      {
+        "title": "Datos de admisión",
+        "description": "La información necesaria para empezar"
+      },
+      {
+        "title": "Seguimiento",
+        "description": "Los documentos que siguen pendientes"
+      },
+      {
+        "title": "Coordinación de citas",
+        "description": "El camino hacia una cita programada"
+      }
     ],
     "caption": "Flujo de trabajo ilustrativo · no es una captura del producto"
   },
@@ -68,7 +87,7 @@
   "interview": {
     "eyebrow": "Ayude a definir el siguiente paso",
     "heading": "Una conversación sobre su trabajo cotidiano.",
-    "description": "Si trabaja en una consulta médica independiente, me gustaría conocer cómo gestiona hoy su equipo la admisión y las citas.",
+    "description": "Cuéntenos cómo su equipo maneja las citas, los formularios, el seguimiento del seguro y la coordinación entre personas.",
     "details": [
       {
         "title": "Aproximadamente 20 minutos",
@@ -76,7 +95,7 @@
       },
       {
         "title": "Su perspectiva importa",
-        "description": "Para propietarios, responsables de consultas y personal de recepción."
+        "description": "Para médicos, personal de enfermería, asistentes médicos, recepción, gerentes y propietarios."
       },
       {
         "title": "Sin obligación de compra",
@@ -103,8 +122,8 @@
       "practice_owner": "Propietario de la consulta",
       "practice_manager": "Responsable de la consulta",
       "administrative_staff": "Personal de recepción o administración",
-      "provider": "Profesional de atención médica",
-      "other": "Otra"
+      "provider": "Médico / profesional clínico",
+      "other": "Enfermería / asistente médico / otro"
     },
     "emailHelp": "Use el correo en el que desea recibir nuestra respuesta. También puede usar una dirección personal.",
     "patientWarning": "No incluya nombres de pacientes, expedientes ni otros datos que permitan identificarlos.",
@@ -150,11 +169,11 @@
     "items": [
       {
         "question": "¿Quién debería participar?",
-        "answer": "Propietarios, responsables y personal de recepción o administración de consultas médicas independientes, especialmente equipos de aproximadamente 2 a 10 profesionales. También son bienvenidos los profesionales con una perspectiva sobre la admisión y la programación de citas."
+        "answer": "Son bienvenidos médicos, personal de enfermería, asistentes médicos, recepción, gerentes y propietarios de consultorios médicos independientes."
       },
       {
         "question": "¿CareIQ ya está disponible?",
-        "answer": "CareIQ está actualmente en desarrollo. Estamos aprendiendo de los equipos de las consultas antes de definir el producto y no ofrecemos un producto terminado para comprar."
+        "answer": "CareIQ está en desarrollo y actualmente es una demostración con datos sintéticos. Sin obligación de compra. No está listo para atender pacientes reales ni para uso en producción."
       },
       {
         "question": "¿Es una llamada de ventas?",
@@ -171,18 +190,20 @@
     ]
   },
   "footer": {
-    "description": "Un punto de partida más cuidado para los flujos de trabajo de las consultas.",
-    "stage": "Actualmente en desarrollo.",
+    "description": "Herramientas para el trabajo que acompaña la atención.",
+    "stage": "En desarrollo · Demostración con datos sintéticos",
     "privacy": "Privacidad",
     "contact": "Contacto",
     "copyright": "CareIQ Labs. Todos los derechos reservados."
   },
   "seo": {
-    "homeTitle": "CareIQ Labs | Un camino más sencillo de la solicitud a la cita",
-    "homeDescription": "CareIQ explora formas más sencillas de gestionar la admisión, el seguimiento de documentos y la coordinación de citas en consultas independientes. Comparta su experiencia en una entrevista.",
+    "homeTitle": "CareIQ | El trabajo que acompaña la atención",
+    "homeDescription": "Conozca CareIQ: un producto en desarrollo para equipos de consultorios independientes que reúne citas, formularios y seguimiento. Demostración con datos sintéticos.",
     "privacyTitle": "Aviso de privacidad del sitio web | CareIQ Labs",
     "privacyDescription": "Cómo trata CareIQ Labs los datos de contacto enviados para solicitar una entrevista sobre sus necesidades.",
-    "notFoundTitle": "Página no encontrada | CareIQ Labs"
+    "notFoundTitle": "Página no encontrada | CareIQ Labs",
+    "researchTitle": "Investigación con equipos médicos | CareIQ Labs",
+    "researchDescription": "Ayude a dar forma a CareIQ. Comparta su experiencia con las citas, los formularios y el trabajo en equipo. Sin datos de pacientes ni obligación de compra."
   },
   "privacy": {
     "eyebrow": "Su información",

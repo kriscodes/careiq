@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { useSiteContent } from '../content/localized';
 import { siteConfig } from '../lib/site-config';
 import { Brand } from './Brand';
@@ -14,6 +15,8 @@ export function Footer() {
             <p>{content.footer.description}</p>
           </div>
           <div className="footer-links">
+            <Link href="/#features">{content.navigation.features}</Link>
+            <Link href="/research/">{content.navigation.research}</Link>
             <a href="/privacy/">{content.footer.privacy}</a>
             {siteConfig.contactEmail && (
               <a href={`mailto:${siteConfig.contactEmail}`}>{content.footer.contact}</a>

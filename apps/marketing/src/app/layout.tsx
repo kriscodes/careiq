@@ -4,6 +4,7 @@ import { SiteShell } from '../components/SiteShell';
 import { content } from '../content/content';
 import { siteConfig } from '../lib/site-config';
 import './globals.css';
+import './product.css';
 import '../../../../packages/i18n/web.css';
 
 export const metadata: Metadata = {

@@ -13,6 +13,9 @@ export interface SiteContent {
     | 'faq'
     | 'cta'
     | 'application'
+    | 'features'
+    | 'howItWorks'
+    | 'research'
     | 'openMenu'
     | 'closeMenu'
     | 'label'
@@ -68,7 +71,13 @@ export interface SiteContent {
   faq: TextFields<'eyebrow' | 'heading'> & { items: { question: string; answer: string }[] };
   footer: TextFields<'description' | 'stage' | 'privacy' | 'contact' | 'copyright'>;
   seo: TextFields<
-    'homeTitle' | 'homeDescription' | 'privacyTitle' | 'privacyDescription' | 'notFoundTitle'
+    | 'homeTitle'
+    | 'homeDescription'
+    | 'researchTitle'
+    | 'researchDescription'
+    | 'privacyTitle'
+    | 'privacyDescription'
+    | 'notFoundTitle'
   >;
   privacy: TextFields<
     | 'eyebrow'

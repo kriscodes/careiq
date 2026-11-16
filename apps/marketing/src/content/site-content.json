@@ -1,34 +1,53 @@
 {
-  "brand": { "product": "CareIQ", "business": "CareIQ Labs", "homeLabel": "CareIQ Labs home" },
+  "brand": {
+    "product": "CareIQ",
+    "business": "CareIQ Labs",
+    "homeLabel": "CareIQ Labs home"
+  },
   "navigation": {
     "focus": "Our focus",
     "founder": "The founder",
     "faq": "Questions",
-    "cta": "Share your experience",
-    "application": "Open CareIQ",
+    "cta": "Talk with us",
+    "application": "Open demo",
     "openMenu": "Open navigation",
     "closeMenu": "Close navigation",
     "label": "Main navigation",
-    "skip": "Skip to content"
+    "skip": "Skip to content",
+    "features": "Features",
+    "howItWorks": "How it works",
+    "research": "Research"
   },
   "hero": {
-    "eyebrow": "Thoughtfully built. Starting with you.",
-    "headline": "A simpler path from new-patient request to scheduled appointment.",
-    "description": "CareIQ is an early-stage software product exploring how independent medical practices can simplify intake, paperwork follow-up, and scheduling coordination.",
-    "supporting": "We’re speaking with practice managers, front-desk staff, and practice owners to understand what creates extra work—and what would actually help.",
-    "primaryCta": "Share your experience",
-    "secondaryCta": "What we’re exploring",
-    "stageNote": "Currently in development. No purchase commitment or patient information required."
+    "eyebrow": "CareIQ research",
+    "headline": "Built with the people who know the work.",
+    "description": "We’re speaking with independent practice teams to understand the small, important details that make a day run smoothly—and the ones that get in the way.",
+    "supporting": "Doctors, nurses, medical assistants, front-desk staff, and practice managers: your experience can help shape CareIQ.",
+    "primaryCta": "Request a conversation",
+    "secondaryCta": "Explore the product",
+    "stageNote": "CareIQ is in development and currently for demonstration with synthetic data. No purchase obligation."
   },
   "workflow": {
     "eyebrow": "The moments between",
     "heading": "One request. Many moving parts.",
     "description": "We’re exploring how these steps connect in everyday practice.",
     "steps": [
-      { "title": "New request", "description": "An initial point of contact" },
-      { "title": "Intake information", "description": "The details needed to get started" },
-      { "title": "Follow-up", "description": "The paperwork still outstanding" },
-      { "title": "Scheduling coordination", "description": "Finding the way to an appointment" }
+      {
+        "title": "New request",
+        "description": "An initial point of contact"
+      },
+      {
+        "title": "Intake information",
+        "description": "The details needed to get started"
+      },
+      {
+        "title": "Follow-up",
+        "description": "The paperwork still outstanding"
+      },
+      {
+        "title": "Scheduling coordination",
+        "description": "Finding the way to an appointment"
+      }
     ],
     "caption": "Illustrative workflow · not a product screenshot"
   },
@@ -68,7 +87,7 @@
   "interview": {
     "eyebrow": "Help shape what comes next",
     "heading": "A conversation about your everyday work.",
-    "description": "If you work in an independent medical practice, I’d like to hear how your team handles intake and scheduling today.",
+    "description": "Tell us how your team handles scheduling, paperwork, insurance follow-up, and the handoffs in between.",
     "details": [
       {
         "title": "Approximately 20 minutes",
@@ -76,7 +95,7 @@
       },
       {
         "title": "Your perspective matters",
-        "description": "For practice owners, practice managers, and front-desk staff."
+        "description": "For doctors, nurses, medical assistants, front-desk staff, practice managers, and owners."
       },
       {
         "title": "No purchase obligation",
@@ -103,8 +122,8 @@
       "practice_owner": "Practice owner",
       "practice_manager": "Practice manager",
       "administrative_staff": "Front-desk / administrative staff",
-      "provider": "Provider",
-      "other": "Other"
+      "provider": "Doctor / clinician",
+      "other": "Nurse / medical assistant / other"
     },
     "emailHelp": "Use the email where you’d like to hear from us. Personal email addresses are welcome.",
     "patientWarning": "Please do not include patient names, records, or other identifying information.",
@@ -150,11 +169,11 @@
     "items": [
       {
         "question": "Who should participate?",
-        "answer": "Practice owners, practice managers, and front-desk or administrative staff at independent medical practices—especially teams with approximately 2–10 providers. Providers with a perspective on intake and scheduling are welcome, too."
+        "answer": "Doctors, nurses, medical assistants, front-desk staff, practice managers, and owners at independent medical practices are all welcome."
       },
       {
         "question": "Is CareIQ already available?",
-        "answer": "CareIQ is currently in development. We’re learning from practice teams before finalizing the product, and we’re not offering a finished product for purchase."
+        "answer": "CareIQ is in development and currently for demonstration with synthetic data. No purchase obligation. It is not ready for real patient care or production use."
       },
       {
         "question": "Is this a sales call?",
@@ -171,18 +190,20 @@
     ]
   },
   "footer": {
-    "description": "A more thoughtful starting point for practice workflows.",
-    "stage": "Currently in development.",
+    "description": "Thoughtful tools for the work around care.",
+    "stage": "In development · Demonstration with synthetic data",
     "privacy": "Privacy",
     "contact": "Contact",
     "copyright": "CareIQ Labs. All rights reserved."
   },
   "seo": {
-    "homeTitle": "CareIQ Labs | A simpler path from request to appointment",
-    "homeDescription": "CareIQ is exploring simpler intake, paperwork follow-up, and scheduling coordination for independent practices. Share your experience in a discovery interview.",
+    "homeTitle": "CareIQ | Care for the work around care",
+    "homeDescription": "Meet CareIQ: a product in development for independent medical practice teams, bringing appointments, paperwork, visit readiness, and follow-up into focus. Synthetic-data demonstration only.",
     "privacyTitle": "Website privacy notice | CareIQ Labs",
     "privacyDescription": "How CareIQ Labs handles contact details submitted to request a discovery interview.",
-    "notFoundTitle": "Page not found | CareIQ Labs"
+    "notFoundTitle": "Page not found | CareIQ Labs",
+    "researchTitle": "Practice team research | CareIQ Labs",
+    "researchDescription": "Help shape CareIQ. Share your experience of scheduling, paperwork, and practice teamwork in a research conversation. No patient information or purchase obligation."
   },
   "privacy": {
     "eyebrow": "Your information",

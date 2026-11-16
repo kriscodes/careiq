@@ -5,6 +5,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return siteConfig.allowIndexing
     ? [
         { url: `${siteConfig.siteUrl}/`, priority: 1 },
+        { url: `${siteConfig.siteUrl}/research/`, priority: 0.7 },
         { url: `${siteConfig.siteUrl}/privacy/`, priority: 0.3 },
       ]
     : [];
