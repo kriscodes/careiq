@@ -290,7 +290,11 @@ test('secure request handoff is encrypted and bound to one intent', () => {
   assert.equal(sealed.includes('synthetic-secret'), false);
   assert.equal(openRequestLink(sealed, 'intent-one', security), link);
   assert.throws(() => openRequestLink(sealed, 'intent-two', security));
-  assert.throws(() => openRequestLink(sealed.slice(0, -2) + 'xx', 'intent-one', security));
+  const [iv, tag, ciphertext] = sealed.split('.');
+  const changedCiphertext = (ciphertext[0] === 'A' ? 'B' : 'A') + ciphertext.slice(1);
+  assert.throws(() =>
+    openRequestLink([iv, tag, changedCiphertext].join('.'), 'intent-one', security),
+  );
 });
 test('patient URLs stay on the fixed first party HTTPS origin', () => {
   assert.equal(
