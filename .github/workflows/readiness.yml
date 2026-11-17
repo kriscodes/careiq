@@ -4,7 +4,7 @@ on:
   pull_request:
   merge_group:
   push:
-    branches: [main, 'codex/deploy-marketing', 'release/**']
+    branches: [main, staging, 'codex/deploy-marketing', 'release/**']
   workflow_dispatch:
     inputs:
       coverage_base_sha:

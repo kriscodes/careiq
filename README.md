@@ -126,3 +126,5 @@ The [CI](.github/workflows/ci.yml) and [readiness](.github/workflows/readiness.y
 Release engineering references: [code quality and release checks](docs/code-quality.md), [exact-commit release gates and smoke verification](docs/deployment/release-verification.md), [managed-owner database repair](docs/verification/managed-owner-repair-2026-11-02.md), [migration-50 rollback build](docs/deployment/local-rollback.md), and [security remediation verification](docs/verification/rollback-security-remediation-2026-11-02.md).
 
 CareIQ is developed around complete vertical workflows. Architectural decisions are recorded where they affect data boundaries, API contracts, or operating behavior; product details evolve through discovery and review.
+
+Staging setup and promotion: [docs/deployment/STAGING.md](docs/deployment/STAGING.md).

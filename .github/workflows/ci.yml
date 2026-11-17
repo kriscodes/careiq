@@ -2,7 +2,7 @@ name: CareIQ checks
 
 on:
   push:
-    branches: [main, dev, 'codex/**', 'release/**']
+    branches: [main, staging, dev, 'codex/**', 'release/**']
   pull_request:
   merge_group:
 

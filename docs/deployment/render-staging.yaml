@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=https://render.com/schema/render.yaml.json
-# Read staging-rollback.md for initialization and deployment evidence before applying.
+# Prepared for review only: branch promotion and marketing staging are not applied.
+# Read STAGING.md and staging-rollback.md before changing the existing staging Blueprint.
 # Adopt only database dpg-dbl9tgegekts73fos8qg-a after its initialization is verified.
 # autoDeployTrigger: off does not prevent Render's initial deployment on creation.
 # Use only the confirmed Care IQ Labs workspace; these names must not match production.
@@ -29,11 +30,23 @@ projects:
             name: careiq-staging-api
             runtime: node
             repo: https://github.com/kriscodes/careiq
-            branch: release/migration-50-fallback-2026-11-03
+            branch: staging
             region: virginia
             plan: 0.5c-512mb
             numInstances: 1
-            autoDeployTrigger: off
+            autoDeployTrigger: checksPass
+            buildFilter:
+              paths:
+                - apps/api/**
+                - packages/**
+                - scripts/**
+                - package.json
+                - pnpm-lock.yaml
+                - pnpm-workspace.yaml
+                - .nvmrc
+                - .npmrc
+                - tsconfig*.json
+                - docs/deployment/render-staging.yaml
             buildCommand: pnpm install --frozen-lockfile && pnpm --filter ./apps/api build
             # This is only private-volume provisioning. Migrations run separately.
             startCommand: >-
@@ -75,7 +88,7 @@ projects:
               - key: DATABASE_POOL_MAX
                 value: '5'
               - key: CORS_ORIGINS
-                value: https://staging.careiqlabs.com
+                value: https://staging.careiqlabs.com,https://marketing-staging.careiqlabs.com
               - key: TRUSTED_PROXY_CIDRS
                 value: ''
               - key: CLERK_PUBLISHABLE_KEY
@@ -116,11 +129,23 @@ projects:
             name: careiq-staging-web
             runtime: node
             repo: https://github.com/kriscodes/careiq
-            branch: release/migration-50-fallback-2026-11-03
+            branch: staging
             region: virginia
             plan: 0.5c-512mb
             numInstances: 1
-            autoDeployTrigger: off
+            autoDeployTrigger: checksPass
+            buildFilter:
+              paths:
+                - apps/web/**
+                - packages/**
+                - scripts/**
+                - package.json
+                - pnpm-lock.yaml
+                - pnpm-workspace.yaml
+                - .nvmrc
+                - .npmrc
+                - tsconfig*.json
+                - docs/deployment/render-staging.yaml
             buildCommand: pnpm install --frozen-lockfile && pnpm --filter ./apps/web build
             startCommand: pnpm --filter ./apps/web start
             healthCheckPath: /
@@ -143,3 +168,59 @@ projects:
                 value: ''
               - key: NEXT_PUBLIC_INTERVIEW_MODE
                 value: 'false'
+
+          - type: web
+            name: careiq-staging-marketing
+            runtime: static
+            repo: https://github.com/kriscodes/careiq
+            branch: staging
+            autoDeployTrigger: checksPass
+            buildCommand: pnpm install --frozen-lockfile && pnpm --filter @careiq/marketing... build
+            staticPublishPath: apps/marketing/out
+            buildFilter:
+              paths:
+                - apps/marketing/**
+                - packages/**
+                - scripts/**
+                - package.json
+                - pnpm-lock.yaml
+                - pnpm-workspace.yaml
+                - .nvmrc
+                - .npmrc
+                - tsconfig*.json
+                - docs/deployment/render-staging.yaml
+            domains:
+              - marketing-staging.careiqlabs.com
+            envVars:
+              - key: NODE_VERSION
+                value: 22.23.4
+              - key: SKIP_INSTALL_DEPS
+                value: 'true'
+              - key: NEXT_TELEMETRY_DISABLED
+                value: '1'
+              - key: NEXT_PUBLIC_SITE_URL
+                value: https://marketing-staging.careiqlabs.com
+              - key: NEXT_PUBLIC_ALLOW_INDEXING
+                value: 'false'
+              - key: NEXT_PUBLIC_API_URL
+                value: https://api-staging.careiqlabs.com
+              - key: NEXT_PUBLIC_APP_URL
+                value: https://staging.careiqlabs.com
+              # Research submissions and contact actions stay closed in the initial staging build.
+              - key: NEXT_PUBLIC_PRIVACY_EMAIL
+                value: ''
+              - key: NEXT_PUBLIC_CONTACT_EMAIL
+                value: ''
+            headers:
+              - path: /*
+                name: X-Robots-Tag
+                value: noindex, nofollow, noarchive
+              - path: /*
+                name: X-Content-Type-Options
+                value: nosniff
+              - path: /*
+                name: X-Frame-Options
+                value: DENY
+              - path: /*
+                name: Referrer-Policy
+                value: no-referrer
