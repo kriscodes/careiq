@@ -39,3 +39,7 @@ Use the custom staging domains for end-to-end checks. `onrender.com` aliases are
 ## Initial staging branch validation
 
 The release branch is reconciled onto `79f53275a29e676ec660f239c591906151b4e93f`; only the six staging configuration/documentation files were applied. There is no API runtime or migration diff from the existing staging fallback. The first branch push supplies an all-zero `before` SHA: CI now explicitly compares that event with the fetched default branch, while retaining the supplied base for ordinary pushes, PRs, merge groups, and manual runs. Coverage thresholds remain unchanged.
+
+## Dependency audit during activation
+
+The initial `e887993` audit reported GHSA-mfr8-8qww-v76h and GHSA-vc7v-qv4w-wrv8 in Next.js 16.4.1. Both frontend packages and their lint configuration are now pinned to 16.4.5. pnpm resolved the lockfile from cached registry metadata; package installation cannot complete offline because the new tarballs are unavailable locally. The ordinary frozen-install, security audit, builds, and full test gates must pass remotely before deployment. No audit exception or coverage threshold was relaxed.
