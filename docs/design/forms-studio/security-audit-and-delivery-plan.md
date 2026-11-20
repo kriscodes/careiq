@@ -100,7 +100,7 @@ Protect answers, signatures, identity/authority documents, IP/device evidence wh
 
 External providers that create, receive, maintain or transmit ePHI need appropriate agreement and safeguards under the actual relationship; HHS notes that a cloud provider storing encrypted ePHI can still be a business associate even without the decryption key. A signed BAA and encryption do not alone satisfy every obligation. [HHS cloud guidance](https://www.hhs.gov/hipaa/for-professionals/special-topics/health-information-technology/cloud-computing/index.html).
 
-Use synthetic fixtures for designs, tests and previews. No real patient records, signing links, provider credentials or signature images belong in Notion design pages, issue bodies, screenshots or public preview assets. A reusable template source is patient-free practice content; an uploaded completed patient form must never become a shared template accidentally.
+Use synthetic fixtures for designs, tests and previews. No real patient records, signing links, provider credentials or signature images belong in shared design pages, issue bodies, screenshots or public preview assets. A reusable template source is patient-free practice content; an uploaded completed patient form must never become a shared template accidentally.
 
 ## Email operational controls
 
@@ -111,8 +111,6 @@ Use synthetic fixtures for designs, tests and previews. No real patient records,
 5. Persist each actual call and uncertain result. If the provider outcome is ambiguous, reconcile/query before retry; if impossible, retain `unknown` and staff follow-up. Record provider acceptance separately from delivery.
 6. Verify signed callbacks, deduplicate and preserve all delivery/bounce/complaint events. Suppress future automatic attempts after permanent rejection and create actionable staff work; never move a completed document back to unsigned.
 7. The app displays the exact completed copy even if email fails. Staff see notification state and can initiate an authorized resend or alternative channel. Patient-specific unencrypted attachment requests follow a separate approved access process and risk acknowledgement.
-
-Receipt safeguards and alternative communication choices matter even with a minimal email. [HHS email guidance](https://www.hhs.gov/hipaa/for-professionals/faq/does-hipaa-permit-health-care-providers-to-use-email-to-discuss-health-issues-with-patients/index.html). No live email or provider configuration is performed by this task.
 
 ## Acceptance criteria
 
@@ -171,7 +169,3 @@ Use these as child tasks under the existing Forms/Documents workflow epic. All n
 | Complete cross-platform and production acceptance | To do | P0; all security prerequisites | Browser/accessibility/EN-ES scenarios plus physical iOS/Android and intended-environment release evidence |
 
 A future certificate-based PDF-signature component is a separate scoped item only if the policy matrix requires it. The existing appended electronic signing record is not relabeled as certificate signing.
-
-## Local design verification
-
-This task produces design documents only. Verify their links, source baseline, lifecycle/endpoint/table consistency and status labels before handoff. Application tests, production security validation, live sends, hosted migrations and code changes are outside this task and remain unperformed.

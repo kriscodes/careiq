@@ -3,7 +3,7 @@
   "title": "CareIQ patient delivery and staff notifications — screen inventory",
   "date": "2026-10-18",
   "status": "proposed designs; no application integration or provider activation",
-  "canonical_repository": "/Users/kristian/Documents/Server/CareIQ",
+  "canonical_repository": ".",
   "prototype_source": "prototype/app.js",
   "coverage_definitions": {
     "drawn": "Reviewable local page/dialog/state exists; production behavior is not implied.",
@@ -62,15 +62,15 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
           "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/FormsStudio.tsx",
+          "path": "apps/web/src/components/workflow/FormsStudio.tsx",
           "anchor": "prepareRequest and signing/secure-copy settings"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "path": "apps/web/src/lib/api/workflow.ts",
           "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
         }
       ],
@@ -110,15 +110,15 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PortalAccessManager.tsx",
+          "path": "apps/web/src/components/workflow/PortalAccessManager.tsx",
           "anchor": "existing independently verified account binding"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/StaffPaperwork.tsx",
+          "path": "apps/web/src/components/workflow/StaffPaperwork.tsx",
           "anchor": "paperwork/patients/{id} copies and notifications"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "path": "apps/web/src/lib/api/workflow.ts",
           "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
         }
       ],
@@ -160,15 +160,15 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
           "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/FormsStudio.tsx",
+          "path": "apps/web/src/components/workflow/FormsStudio.tsx",
           "anchor": "prepareRequest and signing/secure-copy settings"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "path": "apps/web/src/lib/api/workflow.ts",
           "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
         }
       ],
@@ -207,15 +207,15 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
           "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/StaffPaperwork.tsx",
+          "path": "apps/web/src/components/workflow/StaffPaperwork.tsx",
           "anchor": "paperwork/patients/{id} copies and notifications"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "path": "apps/web/src/lib/api/workflow.ts",
           "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
         }
       ],
@@ -258,15 +258,15 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
           "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/StaffPaperwork.tsx",
+          "path": "apps/web/src/components/workflow/StaffPaperwork.tsx",
           "anchor": "paperwork/patients/{id} copies and notifications"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "path": "apps/web/src/lib/api/workflow.ts",
           "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
         }
       ],
@@ -306,15 +306,15 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
           "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/StaffPaperwork.tsx",
+          "path": "apps/web/src/components/workflow/StaffPaperwork.tsx",
           "anchor": "paperwork/patients/{id} copies and notifications"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "path": "apps/web/src/lib/api/workflow.ts",
           "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
         }
       ],
@@ -354,15 +354,15 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
           "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/StaffPaperwork.tsx",
+          "path": "apps/web/src/components/workflow/StaffPaperwork.tsx",
           "anchor": "paperwork/patients/{id} copies and notifications"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PortalAccessManager.tsx",
+          "path": "apps/web/src/components/workflow/PortalAccessManager.tsx",
           "anchor": "existing independently verified account binding"
         }
       ],
@@ -401,15 +401,15 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/FormsStudio.tsx",
+          "path": "apps/web/src/components/workflow/FormsStudio.tsx",
           "anchor": "prepareRequest and signing/secure-copy settings"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
           "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "path": "apps/web/src/lib/api/workflow.ts",
           "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
         }
       ],
@@ -455,19 +455,19 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/StaffPaperwork.tsx",
+          "path": "apps/web/src/components/workflow/StaffPaperwork.tsx",
           "anchor": "paperwork/patients/{id} copies and notifications"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientPaperworkLibrary.tsx",
+          "path": "apps/web/src/components/workflow/PatientPaperworkLibrary.tsx",
           "anchor": "authenticated released exact-version copies"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientWorkflow.tsx",
+          "path": "apps/web/src/components/workflow/PatientWorkflow.tsx",
           "anchor": "request-only public workflow, terminal and completion states"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/FormsStudio.tsx",
+          "path": "apps/web/src/components/workflow/FormsStudio.tsx",
           "anchor": "prepareRequest and signing/secure-copy settings"
         }
       ],
@@ -503,15 +503,15 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/FormsStudio.tsx",
+          "path": "apps/web/src/components/workflow/FormsStudio.tsx",
           "anchor": "prepareRequest and signing/secure-copy settings"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientWorkflow.tsx",
+          "path": "apps/web/src/components/workflow/PatientWorkflow.tsx",
           "anchor": "request-only public workflow, terminal and completion states"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientPaperworkLibrary.tsx",
+          "path": "apps/web/src/components/workflow/PatientPaperworkLibrary.tsx",
           "anchor": "authenticated released exact-version copies"
         }
       ],
@@ -542,15 +542,15 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientWorkflow.tsx",
+          "path": "apps/web/src/components/workflow/PatientWorkflow.tsx",
           "anchor": "request-only public workflow, terminal and completion states"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientPaperworkLibrary.tsx",
+          "path": "apps/web/src/components/workflow/PatientPaperworkLibrary.tsx",
           "anchor": "authenticated released exact-version copies"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "path": "apps/web/src/lib/api/workflow.ts",
           "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
         }
       ],
@@ -595,15 +595,15 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientWorkflow.tsx",
+          "path": "apps/web/src/components/workflow/PatientWorkflow.tsx",
           "anchor": "request-only public workflow, terminal and completion states"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientPaperworkLibrary.tsx",
+          "path": "apps/web/src/components/workflow/PatientPaperworkLibrary.tsx",
           "anchor": "authenticated released exact-version copies"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PortalAccessManager.tsx",
+          "path": "apps/web/src/components/workflow/PortalAccessManager.tsx",
           "anchor": "existing independently verified account binding"
         }
       ],
@@ -634,15 +634,15 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PortalAccessManager.tsx",
+          "path": "apps/web/src/components/workflow/PortalAccessManager.tsx",
           "anchor": "existing independently verified account binding"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientPaperworkLibrary.tsx",
+          "path": "apps/web/src/components/workflow/PatientPaperworkLibrary.tsx",
           "anchor": "authenticated released exact-version copies"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/PatientWorkflow.tsx",
+          "path": "apps/web/src/components/workflow/PatientWorkflow.tsx",
           "anchor": "request-only public workflow, terminal and completion states"
         }
       ],
@@ -674,7 +674,7 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
           "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
         }
       ],
@@ -708,11 +708,11 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
           "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "path": "apps/web/src/lib/api/workflow.ts",
           "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
         }
       ],
@@ -754,15 +754,15 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
           "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "path": "apps/web/src/lib/api/workflow.ts",
           "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/InsuranceWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/InsuranceWorkspace.tsx",
           "anchor": "follow-up owner/due fields; requires separately reviewed typed subject adapter"
         }
       ],
@@ -797,11 +797,11 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
           "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "path": "apps/web/src/lib/api/workflow.ts",
           "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
         }
       ],
@@ -836,15 +836,15 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
           "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "path": "apps/web/src/lib/api/workflow.ts",
           "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/InsuranceWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/InsuranceWorkspace.tsx",
           "anchor": "follow-up owner/due fields; requires separately reviewed typed subject adapter"
         }
       ],
@@ -879,15 +879,15 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
           "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/InsuranceWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/InsuranceWorkspace.tsx",
           "anchor": "follow-up owner/due fields; requires separately reviewed typed subject adapter"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "path": "apps/web/src/lib/api/workflow.ts",
           "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
         }
       ],
@@ -924,15 +924,15 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
           "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/InsuranceWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/InsuranceWorkspace.tsx",
           "anchor": "follow-up owner/due fields; requires separately reviewed typed subject adapter"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "path": "apps/web/src/lib/api/workflow.ts",
           "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
         }
       ],
@@ -967,7 +967,7 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
           "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
         }
       ],
@@ -1019,7 +1019,7 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "path": "apps/web/src/lib/api/workflow.ts",
           "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
         }
       ],
@@ -1052,11 +1052,11 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
           "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "path": "apps/web/src/lib/api/workflow.ts",
           "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
         }
       ],
@@ -1099,15 +1099,15 @@
       ],
       "canonical_integration_points": [
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/WorkflowWorkspace.tsx",
+          "path": "apps/web/src/components/workflow/WorkflowWorkspace.tsx",
           "anchor": "workflow navigation/topbar, create request, RequestCards, work assignment"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/components/workflow/StaffPaperwork.tsx",
+          "path": "apps/web/src/components/workflow/StaffPaperwork.tsx",
           "anchor": "paperwork/patients/{id} copies and notifications"
         },
         {
-          "path": "/Users/kristian/Documents/Server/CareIQ/apps/web/src/lib/api/workflow.ts",
+          "path": "apps/web/src/lib/api/workflow.ts",
           "anchor": "location scope, concurrencyOf, idempotency and access-denied handling"
         }
       ],
@@ -1154,7 +1154,7 @@
     "workflow-audit.md",
     "backend-design.md",
     "prototype/app.js",
-    "/Users/kristian/Documents/Server/CareIQ/AGENTS.md"
+    "AGENTS.md"
   ],
   "api_scope_note": "proposed-api.yaml contains only routes explicitly named in backend-design.md section 8, including lookup-only reconciliation, atomic queued-intent cancellation and patient account communication preferences. Provider admin setup, contact verification, portal binding and source-work commands reuse existing or separately reviewed contracts; none is invented by this outline."
 }

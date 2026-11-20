@@ -1,6 +1,6 @@
 # CareIQ Labs marketing website
 
-The public site is `apps/marketing`; the authenticated product remains `apps/web`. The existing Express API owns database access. Read [ADR-016](decisions/016-public-marketing-interviews.md) for the public/tenant boundary and [marketing verification](marketing-verification.md) for actual checks and remaining evidence.
+The public site is `apps/marketing`; the authenticated product remains `apps/web`. The existing Express API owns database access.
 
 ## Start locally
 
@@ -160,4 +160,4 @@ Optional founder photo, LinkedIn and public application link are not blockers. N
 
 ## October 2026 security rollout
 
-The intended monitored address is `kristian@careiqlabs.com`; the owner must still set up/test it before enabling intake. The API security release also requires migration0015 and checked clinical-runtime grants. Follow [security hardening](security-hardening.md) and [current release status](deployment/security-release-status.md) for the combined production rollout. The custom apex/www now work over HTTPS; this does not prove that intake is enabled.
+The intended monitored address is `kristian@careiqlabs.com`; the owner must still set up/test it before enabling intake. The API security release also requires migration0015 and checked clinical-runtime grants. The custom apex/www now work over HTTPS; this does not prove that intake is enabled.

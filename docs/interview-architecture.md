@@ -111,7 +111,7 @@ Run `pnpm typecheck`, `pnpm lint`, `pnpm test`, and `pnpm build` after integrati
 
 For the browser, verify sign-in, organization switching, patient creation/search, scheduling, persistence, pending/error states, timezone display, centered dialogs, and keyboard behavior. For hosting, additionally confirm build-time public API/Clerk settings, permitted web origins, Clerk domains/redirects, migration state, `/health`, and the runtime database role, then repeat the authenticated two-practice walkthrough.
 
-The [verification record](verification.md) separates the earlier database baseline from checks on this design integration. Type checks, lint, API unit tests, and the production build passed; signed-in browser and hosted acceptance remain pending. Record later results with the environment and date. Neither the v0.1 label nor successful builds establish production readiness or healthcare compliance.
+Type checks, lint, API unit tests, and the production build passed; signed-in browser and hosted acceptance remain pending. Record later results with the environment and date. Neither the v0.1 label nor successful builds establish production readiness or healthcare compliance.
 
 ## Architecture decision references
 

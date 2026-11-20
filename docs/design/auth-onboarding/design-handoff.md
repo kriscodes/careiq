@@ -81,7 +81,7 @@ Practice creation is idempotent and may partially complete across providers. Pen
 
 Clear protected records and clinical drafts on sign-out, identity/practice/location changes and access loss. On foreground/resume, show an access check before protected rendering. Token persistence does not grant offline authorization.
 
-Implementation update — October 6, 2026: the canonical web and Expo iOS/Android clients now implement branded authentication, three-step setup, persistent actor drafts and the access states described here. The API enforces controlled provisioning, optional invitations, pending enrollment, explicit location assignments and safe reconciliation. See [implementation](../../auth-onboarding.md) and [verification](../../auth-onboarding-verification.md) for current results. Hosted activation, live delivery and installed-device verification remain separate.
+Implementation update — October 6, 2026: the canonical web and Expo iOS/Android clients now implement branded authentication, three-step setup, persistent actor drafts and the access states described here. The API enforces controlled provisioning, optional invitations, pending enrollment, explicit location assignments and safe reconciliation. Hosted activation, live delivery and installed-device verification remain separate.
 
 ## Implementation acceptance and sources
 
