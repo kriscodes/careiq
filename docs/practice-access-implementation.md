@@ -70,11 +70,9 @@ Existing practices remain in legacy mode during expansion. A closed location nam
 
 The database activation guard requires an explicit transaction-local rollout-review flag and validates activation prerequisites. Runtime credentials cannot change the authorization mode. Once location mode is enabled, returning to broad legacy access is blocked; suspend the practice or fix the location-aware release instead.
 
-Run migrations as an explicit deployment step with migration credentials. Use the restricted runtime role for the application. This task does not execute migrations against a hosted environment or change live Clerk configuration.
-
 ## Mobile boundary and product backlog
 
-`apps/mobile` is the Expo iOS/Android foundation: native navigation, setup, secure optional Clerk provider and a public health check. It shares the workspace and API boundary, with app-specific native components. It has no protected clinical flow yet. See [mobile development](mobile-development.md) and the [original scaffold review](mobile-bootstrap-review.md).
+`apps/mobile` is the Expo iOS/Android foundation: native navigation, setup, secure optional Clerk provider and a public health check. It shares the workspace and API boundary, with app-specific native components. It has no protected clinical flow yet.
 
 The largest planned features are:
 
@@ -85,8 +83,6 @@ The largest planned features are:
 5. Claim preparation, submission, acknowledgments and status/retry handling.
 6. Scheduling with provider/location availability and conflict prevention.
 7. iOS/Android access to the first selected staff workflow.
-
-The scheduling baseline already creates and lists appointments. Availability, conflict prevention, insurance, documents and claims are roadmap work, not completed features in this change. The [Notion Software Kanban](https://app.notion.com/p/d71076cec86e49648cf1be0db9288a17?v=3eee97848806818d8cc6000c4148e153) tracks their acceptance criteria and dependencies.
 
 ## Verification
 

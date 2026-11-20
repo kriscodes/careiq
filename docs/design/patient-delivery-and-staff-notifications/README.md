@@ -13,6 +13,6 @@ Included:
 
 Start with [design-handoff.md](design-handoff.md), then [backend-design.md](backend-design.md). The API proposal and data changes have not been integrated or migrated. Provider choice, sender registration, credentials, actual sending and native push remain implementation/activation work.
 
-The canonical source baseline is `/Users/kristian/Documents/Server/CareIQ`; older project mirrors are reference material. This package preserves all application source files and synced project files.
+The canonical source baseline is the repository root; older project mirrors are reference material. This package preserves all application source files and synced project files.
 
 To serve the review locally, run `python3 -m http.server 4189 --bind 127.0.0.1` in this folder and open `http://127.0.0.1:4189/prototype/`. No dependency installation is needed for the design itself.

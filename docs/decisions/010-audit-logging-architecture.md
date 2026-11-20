@@ -421,12 +421,10 @@ Application Intent
         ▼
    audit.changes
 
-
 Actual Database Mutation
         │
         ▼
 audit.database_records
-
 
         └───────┬───────┘
                 │
@@ -643,18 +641,15 @@ Regular User
     │
     └── No direct audit access
 
-
 Practice Administrator
     │
     └── Customer-facing activity history
         for the authorized Practice
 
-
 Platform Administrator
     │
     └── Platform administration
         without automatic unrestricted audit access
-
 
 Audit Administrator
     │

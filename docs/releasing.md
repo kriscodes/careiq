@@ -11,9 +11,6 @@ Keep these records together:
 | `CHANGELOG.md` | Newest-first version index and an Unreleased section for completed changes. |
 | `docs/releases/X.Y.Z.md` | Detailed scope, evidence, known limitations and deployment notes for one version. |
 | Git tag `vX.Y.Z` and GitHub release | Fixed source snapshot and a short summary linking to the detailed note. |
-| Notion: Software Project → Version Notes | One short blurb per version, with date, stage and links to the repository notes and GitHub release. |
-
-Notion is the readable index. Keep technical details and validation evidence in the repository so they can be reviewed with the code. Release status and deployment status are separate facts.
 
 ## Version numbering
 
@@ -28,12 +25,11 @@ Notion is the readable index. Keep technical details and validation evidence in 
 1. **As work merges:** add concise completed changes to Unreleased and link relevant PRs/evidence. Keep proposed work in the backlog.
 2. **Once a week:** review interview feedback, merged work and open defects; decide whether there is a useful increment to release. This is a working convention, not a scheduled automation or promise to ship weekly.
 3. **At a meaningful demo or delivery milestone:** complete the checklist and cut a version. Release urgent fixes when ready instead of waiting for the weekly review.
-4. **On the same day as release:** add the Notion blurb and verified repository links. Update deployment evidence only after checking the actual environment.
 5. **After feedback:** turn findings into scoped backlog items for the next cycle.
 
 ## Current repository scope
 
-Native mobile was separated on October18,2026 for a future repository. Current root versions/checks cover API, web, marketing and shared packages; no native build or mobile repository is created by a CareIQ release here. Preserve website association/native API compatibility and keep native access gated until its later release acceptance. Use the single root workspace/lock and a clean reviewed install. Current production/full-development audit distinctions, retained vendor limits and actual checks are recorded in [mobile separation verification](verification/mobile-separation-2026-10-18/README.md). A passing local production audit does not replace the separate hosted/provider/backup/operating checklist.
+Native mobile was separated on October18,2026 for a future repository. Current root versions/checks cover API, web, marketing and shared packages; no native build or mobile repository is created by a CareIQ release here. Preserve website association/native API compatibility and keep native access gated until its later release acceptance. Use the single root workspace/lock and a clean reviewed install. A passing local production audit does not replace the separate hosted/provider/backup/operating checklist.
 
 ## Release checklist
 
@@ -45,10 +41,7 @@ Native mobile was separated on October18,2026 for a future repository. Current r
 - [ ] Run the required repository CI and relevant acceptance checks. Database tests and migration rehearsal use a disposable database. Record skipped checks and why; do not report inherited evidence as newly run.
 - [ ] Merge the reviewed release PR into `main` after the checks pass. Confirm the target commit and that no unrelated changes entered the release.
 - [ ] Create an annotated `vX.Y.Z` tag on the exact merged release commit and push that tag. Publish a GitHub release with the same version and a link to the detailed notes at that tag.
-- [ ] Add one row to Notion **Software Project → Version Notes**, newest first: version, date, stage, one- or two-sentence blurb, full notes and GitHub release links. Verify both links.
 - [ ] If deploying, follow the documented migration/backup steps and verify each component and its commit. Record hosted smoke results and remaining controls separately.
-
-## Notion blurb pattern
 
 > **vX.Y.Z — Release name** · YYYY-MM-DD · Stage. One sentence describing the user-visible outcome. One sentence stating a material limitation when needed. **Full notes:** link to `docs/releases/X.Y.Z.md` at the release tag. **Release:** link to the GitHub release.
 
