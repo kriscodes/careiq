@@ -6,7 +6,7 @@ A release is eligible only when the required checks succeed for its exact commit
 
 API and web share one approved full 40-character Git SHA. Marketing is deployed from its independent branch and must have its own explicitly approved SHA. Never derive the expected marketing SHA from the API, a mutable branch tip, or a health response being checked.
 
-`pnpm release:verify-checks <full-sha>` verifies the required GitHub Actions checks for a candidate. Render builds additionally run `scripts/verify-deployment-checks.mjs --render-build` against `RENDER_GIT_COMMIT` before building. A missing, pending, failed, cancelled or skipped required check blocks the build. The ruleset for `main` and `codex/deploy-marketing` requires the seven named checks with no bypass; Render's three services are configured to deploy after CI checks pass. Repository build hooks take effect only after this change reaches the deployed branch. Pushes to existing `release/**` branches run all seven required checks against that exact branch commit before promotion; pull-request merge checks alone do not approve a different commit.
+`pnpm release:verify-checks <full-sha>` verifies the required GitHub Actions checks for a candidate. Render builds additionally run `scripts/verify-deployment-checks.mjs --render-build` against `RENDER_GIT_COMMIT` before building. A missing, pending, failed, cancelled or skipped required check blocks the build. Production changes require all seven named checks. Render services deploy after CI checks pass. Pushes to existing `release/**` branches run all seven required checks against that exact branch commit before promotion; pull-request merge checks alone do not approve a different commit.
 
 The API adds a public `revision` field to `/health`. Web and marketing serve `/.well-known/careiq-release.json`, generated during each package build by `scripts/release-metadata.mjs`. The generated JSON contains only service name and full commit SHA and is ignored by Git. Direct `next build` calls must first run `pnpm release:metadata`, as the CI workflows do.
 
@@ -50,7 +50,7 @@ The currently hosted services cannot satisfy the new revision checks until the m
 
 Before deployment, retain the approved candidate manifest and the previous known-good manifest. Verify that the previous binaries remain compatible with the current database schema. A code rollback does not undo a database migration and this tool never restores, drops or migrates data.
 
-The ownership repair adds `0049_managed_helper_ownership.sql` as the **50th journal entry**. A pre-repair API binary is not an established rollback target for that database. Static review confirms two incompatibilities: its migration runner rejects a ledger longer than its 49-entry manifest, and its production startup verifier rejects the new private-policy inventory. The local synthetic A-to-B-to-A smoke fixture does not exercise either condition. A compatible local fallback is now prepared and rehearsed in the [rollback guide](local-rollback.md), with its [final security and build evidence](../verification/rollback-security-remediation-2026-11-02.md). Before hosted promotion, publish an immutable approved fallback revision, satisfy its exact-commit checks, and complete the staging recovery drill. The [isolated staging and provider rollback runbook](staging-rollback.md) records the separate infrastructure, operator access and fallback-to-candidate drill procedure. Keep the strict verifier intact; do not remove policies, edit historical ledger entries or weaken verification to make an old binary start. No older hosted binary has been restarted against the repaired schema in this work.
+The ownership repair adds `0049_managed_helper_ownership.sql` as the **50th journal entry**. A pre-repair API binary is not an established rollback target for that database. Static review confirms two incompatibilities: its migration runner rejects a ledger longer than its 49-entry manifest, and its production startup verifier rejects the new private-policy inventory. The local synthetic A-to-B-to-A smoke fixture does not exercise either condition. Before hosted promotion, publish an immutable approved fallback revision, satisfy its exact-commit checks, and complete the staging recovery drill. The [isolated staging and provider rollback runbook](staging-rollback.md) records the separate infrastructure, operator access and fallback-to-candidate drill procedure. Keep the strict verifier intact; do not remove policies, edit historical ledger entries or weaken verification to make an old binary start. No older hosted binary has been restarted against the repaired schema in this work.
 
 If smoke checks fail, an authorized operator must choose and perform the provider rollback for the affected services. The tool does not initiate rollback. Then run the workflow in `rollback` mode with explicit current and previous application/marketing SHAs, or:
 
@@ -62,8 +62,21 @@ This verifies the prior revisions and all smoke checks on the same service origi
 
 ## Current local evidence and remaining release acceptance
 
-The [final remediation record](../verification/rollback-security-remediation-2026-11-02.md) and [machine-readable evidence](../verification/release-security-remediation.json) supersede the original 65-finding blocker. Full candidate and fallback CodeQL analyses, plus the final release-tool delta rescan, report zero findings; the unchanged gate passes. The [initial scan record](../verification/release-security-analysis.json) is retained as history, with its 65 original results intact. No rule was disabled and no finding was silently baselined.
+Full candidate and fallback CodeQL analyses, plus the final release-tool delta rescan, report zero findings; the unchanged gate passes. No rule was disabled and no finding was silently baselined.
 
 The final candidate passes 626 application/shared tests, 245 component browser cases, three restricted-owner real-API browser cases, strict typechecking, lint and all coverage floors. Changed-code coverage is 94.84%, above 80%. The separate fallback passes its 474 API and 133 web tests, real package builds, production startup over verified TLS, strict policy/ledger rejection, restart and synthetic data preservation. Its source/output hashes and exact differences from the scanned artifact are bound in the final evidence.
 
 These are local results. Required workflows/build hooks still need publication and successful checks on the exact real commits selected for deployment. The fallback's historical repository CI must be reconciled with the current seven required checks before promotion. Automatic provider post-deployment event wiring and a hosted staging rollback/recovery drill remain unverified. The fallback has a synthetic local fixture identity and is not an approved deployment revision. No hosted migration, rollout, rollback or recovery-time claim is made.
+
+## Environments
+
+| Service | Branch | Render URL |
+| --- | --- | --- |
+| careiq-staging-marketing | `staging` | https://careiq-staging-marketing.onrender.com |
+| careiq-staging-web | `staging` | https://careiq-staging-web.onrender.com |
+| careiq-staging-api | `staging` | https://careiq-staging-api.onrender.com |
+| careiq-marketing | `release/marketing-product-first-2026-11-15` | https://careiq-marketing.onrender.com |
+| careiq-web | `main` | https://careiq-web.onrender.com |
+| careiq-api | `main` | https://careiq-api-7ssz.onrender.com |
+
+Production and staging use separate services. Keep staging credentials and data isolated. Run CI on each release candidate, verify the deployed source revision and health endpoints, and retain the previous working deployment for recovery. Documentation-only commits can be excluded by build filters; deploy the checked revision manually when a rebuild is required.

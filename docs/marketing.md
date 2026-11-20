@@ -1,14 +1,12 @@
 # CareIQ Labs marketing website
 
-The public site is `apps/marketing`; the authenticated product remains `apps/web`. The existing Express API owns database access. Read [ADR-016](decisions/016-public-marketing-interviews.md) for the public/tenant boundary and [marketing verification](marketing-verification.md) for actual checks and remaining evidence.
+The public site is `apps/marketing`; the authenticated product remains `apps/web`. The existing Express API owns database access.
 
 ## Product-first marketing release
 
 The homepage introduces CareIQ to doctors, nurses, medical assistants, front-desk staff, practice managers, and owners of independent medical practices. Features and the visit workflow are the primary content; “Explore CareIQ” leads to the feature overview. “Talk with us” leads to the research interview request at `/research/#interview-form`. Research questions, founder background, FAQ, and the unchanged interview form now live at `/research/`. Existing homepage interview/research anchors forward to their new locations after hydration.
 
-The visual reference is the [Notion product-first design](https://app.notion.com/p/419e9784880681919e7ed25b0f6abbb3). CareIQ remains in development, for demonstration with synthetic data. The dashboard is explicitly fictional and illustrative. Insurance observations and follow-up are manual; planned integrations, automated verification, and production readiness are not represented as available.
-
-Success for this release means a visitor can identify who CareIQ is for, understand its current demo scope, and reach the interview form and privacy notice. No conversion-rate or customer-outcome claim is made. See the [November 15 verification record](verification/marketing-product-first-2026-11-15.md) for checks and deployment evidence.
+Success for this release means a visitor can identify who CareIQ is for, understand its current demo scope, and reach the interview form and privacy notice. No conversion-rate or customer-outcome claim is made.
 
 ## Start locally
 
@@ -168,4 +166,4 @@ Optional founder photo, LinkedIn and public application link are not blockers. N
 
 ## October 2026 security rollout
 
-The intended monitored address is `kristian@careiqlabs.com`; the owner must still set up/test it before enabling intake. The API security release also requires migration0015 and checked clinical-runtime grants. Follow [security hardening](security-hardening.md) and [current release status](deployment/security-release-status.md) for the combined production rollout. The custom apex/www now work over HTTPS; this does not prove that intake is enabled.
+The intended monitored address is `kristian@careiqlabs.com`; the owner must still set up/test it before enabling intake. The API security release also requires migration0015 and checked clinical-runtime grants. The custom apex/www now work over HTTPS; this does not prove that intake is enabled.

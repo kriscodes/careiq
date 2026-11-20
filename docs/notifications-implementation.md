@@ -2,8 +2,6 @@
 
 This implementation connects committed paperwork requests and completed copies to a durable delivery queue, adds patient communication choices, and supplies a staff inbox for assignments, ownership changes and overdue work. External delivery and the background worker default to disabled. Implementation or a successful local test does not activate a sender or establish production acceptance.
 
-See the [design handoff](design/patient-delivery-and-staff-notifications/design-handoff.md), [existing workflow guide](workflow-implementation.md) and [API production release guide](api-production-release.md). The actual API paths below follow the application's explicit location context; they differ from some paths proposed in the design handoff.
-
 The existing patient and staff email paths now include Little hello HTML with plain-text fallbacks. See [Little hello emails](little-hello-emails.md) for the reusable authentication catalog, image configuration and separate Clerk template activation. No new authentication send events are enabled.
 
 ## Application and API boundaries
@@ -22,7 +20,7 @@ Patient choice contexts are derived from current authenticated adult-self portal
 
 ## Durable delivery and recovery
 
-Migrations `0039_notification_delivery`, `0040_staff_notifications` and `0041_patient_communication_preferences` add endpoints and append-only permissions, delivery intents and attempt facts, callback receipts, destination suppression/release evidence, reminder policies, staff events/receipts/email batches, exact read-all snapshots and helper-only portal preference records. Existing unavailable delivery attempts remain historical facts; no migration infers permission or delivery from an address. Additive migration `0042_paperwork_publication_permission` corrects an ambiguous permission-column reference without changing prior SQL or consent rules. See [PR #11 check repairs](verification/pr-11-ci/README.md).
+Migrations `0039_notification_delivery`, `0040_staff_notifications` and `0041_patient_communication_preferences` add endpoints and append-only permissions, delivery intents and attempt facts, callback receipts, destination suppression/release evidence, reminder policies, staff events/receipts/email batches, exact read-all snapshots and helper-only portal preference records. Existing unavailable delivery attempts remain historical facts; no migration infers permission or delivery from an address. Additive migration `0042_paperwork_publication_permission` corrects an ambiguous permission-column reference without changing prior SQL or consent rules.
 
 Request creation/reissue and intent creation share the existing transaction and audit/outbox foundation. A queued intent is not a provider attempt. Request links are encrypted using AES-256-GCM with intent-bound authenticated data; ordinary outbox payloads contain identifiers. Dispatch rechecks current endpoint/version, purpose permission, provider suppression, adult-self eligibility, request generation, expiry and remaining action. Completed-copy notices remain pinned to the released exact library version and portal grant; notice failure does not remove the copy.
 
@@ -78,7 +76,7 @@ Resend signatures use the exact raw request, signed event ID/timestamp and a fiv
 
 Use the repository's supported Node and pnpm versions. Relevant validation commands are `pnpm --filter @careiq/api typecheck`, `pnpm --filter @careiq/api test`, `pnpm --filter @careiq/api db:verify`, the web tests/browser checks and the root `release:check` suite. Database tests require an explicitly supplied loopback `TEST_DATABASE_URL` whose database is exactly `careiq_test`; release verification uses the separately configured restricted runtime `DATABASE_URL`. Never point destructive tests or replay at hosted development data.
 
-Local tests can verify queue/receipt logic, authorization, schema constraints, synthetic provider behavior and browser flows. They do not establish real sender activation, carrier behavior, provider contract approval, installed-device acceptance or a hosted migration result. Store actual run records under `docs/verification/`; this guide itself is not a record of tests or live sends. See the [Communication Choices idle-state fix and local verification](verification/communication-choices-loading-fix-2026-11-02.md) for the patient-selection loading behavior.
+Local tests can verify queue/receipt logic, authorization, schema constraints, synthetic provider behavior and browser flows. They do not establish real sender activation, carrier behavior, provider contract approval, installed-device acceptance or a hosted migration result. Retain execution results in CI artifacts or private operational records.
 
 To pause external operations, disable the global delivery gate and/or worker scheduling while retaining callback enrollment for receipt ingestion. Keep in-app work and completed-copy access available. Investigate unknown sends against the original provider reference before any manual replacement. Key rotation, repaired portal identity and destination replacement require explicit reviewed migration/authority decisions; the current implementation does not provide a multi-key rotation or identity-transfer shortcut.
 
