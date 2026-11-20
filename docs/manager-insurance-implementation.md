@@ -32,8 +32,6 @@ The browser receives a fresh organization-scoped token. Changes of organization/
 
 ## Audit actions
 
-See [the audit review](manager-insurance-audit-review.md) for the gap analysis and implemented catalog. The service reuses the protected audit writer and independent database mutation capture. It does not treat a client timeline as the audit authority.
-
 Successful business events and their patient/appointment/case/evidence references commit atomically with the domain change and retry receipt. Database triggers independently record mutation evidence. Failed, denied and rolled-back commands use a separate capture transaction. If required capture is unavailable, protected data/actions are withheld with an unavailable response.
 
 Audit details retain actor, trusted scope, server time, request, transaction, outcome, reason, affected references, revisions and classified changed fields. Member identifiers, payer/source references and benefit values stay out of routine logs and ordinary activity. Safe clinical activity shows only permitted business events; it does not expose denials, command internals or raw database evidence.
@@ -48,6 +46,6 @@ Applied migration files are unchanged. The release verifier checks the new table
 
 ## Verification and remaining activation
 
-Verification records and synthetic screenshots are under [manager and insurance verification](verification/manager-insurance/README.md). The implemented database/API tests cover actual persistence, tenant/location separation, immutable evidence, corrections, concurrent revisions, retry receipts, audit failure rollback and safe projections. Browser tests cover the rendered workflow and permission states; the real API/browser harness remains isolated from live identities and payer systems.
+The implemented database/API tests cover actual persistence, tenant/location separation, immutable evidence, corrections, concurrent revisions, retry receipts, audit failure rollback and safe projections. Browser tests cover the rendered workflow and permission states; the real API/browser harness remains isolated from live identities and payer systems.
 
 This work is local only. No commit, remote push, hosted deployment or hosted database migration is included. Live payer selection/credentials/callbacks, production migration/role validation, external identity/browser acceptance, approved freshness/retention policy and broader operational exports remain separately reviewed work. The current member/reference fields are protected clinical PostgreSQL data; this change does not introduce or claim a new envelope-encryption service, claims engine or independent identity verification.

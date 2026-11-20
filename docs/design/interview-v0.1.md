@@ -83,7 +83,6 @@ These are checks to perform and record, not claims that they have passed.
 - [ ] Date/week navigation, search, empty states, and detail selection work with actual records.
 - [ ] Timezone labels match displayed and submitted dates, including days near a UTC date boundary.
 - [ ] Practice switching clears previous data and ignores stale responses; A/B isolation is demonstrated in both directions.
-- [x] Type checks, lint, API unit tests, and production build pass for the final integrated change; see [verification](../verification.md) for limits.
 - [ ] Signed-in browser and hosted smoke checks are recorded separately from compile-time checks.
 
 ## Reference material
