@@ -4,7 +4,7 @@ on:
   pull_request:
   merge_group:
   push:
-    branches: [main, 'codex/deploy-marketing', 'release/**']
+    branches: [main, staging, 'codex/deploy-marketing', 'release/**']
   workflow_dispatch:
     inputs:
       coverage_base_sha:
@@ -37,7 +37,7 @@ jobs:
     env:
       CI: true
       CAREIQ_BUILD_REVISION: ${{ github.sha }}
-      COVERAGE_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before || inputs.coverage_base_sha }}
+      COVERAGE_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || (github.event.before != '0000000000000000000000000000000000000000' && github.event.before) || (github.event_name == 'push' && github.event.created && format('origin/{0}', github.event.repository.default_branch)) || inputs.coverage_base_sha }}
       DATABASE_URL: postgresql://careiq_ci:disposable_ci_only@127.0.0.1:5432/careiq_test
       TEST_DATABASE_URL: postgresql://careiq_ci:disposable_ci_only@127.0.0.1:5432/careiq_test
       DATABASE_SSL_MODE: disable
