@@ -110,7 +110,7 @@ Executed locally with synthetic fixtures and mocked provider calls:
 - Provider exporter/installer: 16 tests passed, including offline defaults, variable/action preservation, source drift, wrong instance, backup failure, partial apply and delivery-setting preservation.
 - All 56 branded examples were rendered in installed Chrome at 320 px with the computer theme emulated as dark. Backgrounds stayed white, no horizontal overflow occurred and both real brand images loaded. Desktop verification and representative mobile screenshots were inspected locally under `.local-review/little-hello-email-branded/`.
 
-The final isolated loopback run passed all 20 patient/staff delivery worker tests, including assertions that the actual mocked email-provider payload contains white, light-only HTML without patient identifiers; SMS has no HTML. The full workspace suite passed 440 tests. See the [final verification record](verification/little-hello-2026-10-21/README.md). Those initial local checks did not exercise a real Clerk instance, provider template acceptance, test-inbox delivery, sender DNS or Gmail/Apple Mail/Outlook rendering. The later October 22 hosted results are recorded below. Local rendering checks do not enable delivery or representative access.
+The final isolated loopback run passed all 20 patient/staff delivery worker tests, including assertions that the actual mocked email-provider payload contains white, light-only HTML without patient identifiers; SMS has no HTML. The full workspace suite passed 440 tests. Those initial local checks did not exercise a real Clerk instance, provider template acceptance, test-inbox delivery, sender DNS or Gmail/Apple Mail/Outlook rendering. The later October 22 hosted results are recorded below. Local rendering checks do not enable delivery or representative access.
 
 ## Reviewed hosted authentication layouts
 
@@ -130,4 +130,4 @@ The layout uses white canvas/cards, explicit light-only metadata, readable Georg
 
 Provider previews use Clerk’s fictional sample data. They establish rendering, variable expansion and layout—not live code validity, successful authentication or mail-client acceptance. Use the [manual authentication walkthrough](qa-auth-manual-checks.md) for the remaining five-persona sign-in/reset checks. Keep verification codes and new passwords private.
 
-The [October 22 hosted activation record](verification/hosted-auth-emails-2026-10-22.md) confirms the 16 Development updates, unchanged settings/unrelated templates, expanded previews, white-layout checks and fresh branded owner reset receipt. Complete sign-in/reset and actual mail-client acceptance remain tracked separately in the walkthrough.
+Complete sign-in/reset and actual mail-client acceptance remain tracked separately in the walkthrough.

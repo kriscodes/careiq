@@ -25,4 +25,4 @@ Verified on Node 22.23.2 / pnpm 11.22.0:
 - Existing security/backport integrity and exploit regressions: 16 passed.
 - Raw production audit: exit 1, two high registry findings for the existing node-forge and braces backports; zero critical, moderate, low, or informational findings. This remains an unresolved independent release gate, as explained in [the security version notes](next-october-2026.md).
 
-All-platform export verification is recorded in the [workflow implementation guide](../workflow-implementation.md). No native projects were regenerated, no deployment performed, and no remote build initiated by this patch alignment.
+No native projects were regenerated, no deployment performed, and no remote build initiated by this patch alignment.

@@ -8,7 +8,7 @@ This proposal does not change application code, migrations, provider configurati
 
 ## Existing foundation and proposed extensions
 
-The canonical working checkout is `/Users/kristian/Documents/Server/CareIQ`. Its [local implementation record](/Users/kristian/Documents/Server/CareIQ/docs/workflow-implementation.md), [runtime contract](/Users/kristian/Documents/Server/CareIQ/docs/design/workflow/runtime-contract.md) and [workflow schema](/Users/kristian/Documents/Server/CareIQ/apps/api/src/db/schema/workflow.ts) supersede older project-mirror implementation notes for this feature.
+The canonical working checkout is the repository root. Its [local implementation record](../workflow/runtime-contract.md), [runtime contract](../workflow/runtime-contract.md) and [workflow schema](../../../apps/api/src/db/schema/workflow.ts) supersede older project-mirror implementation notes for this feature.
 
 | Area | Existing local foundation | Proposed work |
 | --- | --- | --- |
