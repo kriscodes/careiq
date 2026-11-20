@@ -26,7 +26,7 @@ Local application servers use the database selected by `DATABASE_URL`; local ser
 
 ## Mobile development
 
-Mobile is separated from the active checkout; no mobile install/build/test/preview command remains in this workspace. A verified owner-only source handoff is preserved outside it for a future repository. See [mobile separation](mobile-separation.md). Web-hosted association preparation remains under `web:associations`, `web:associations:check` and `web:associations:test` for future approved clients. Backend native authentication stays gated.
+Mobile is separated from the active checkout; no mobile install/build/test/preview command remains in this workspace. A verified owner-only source handoff is preserved outside it for a future repository. Web-hosted association preparation remains under `web:associations`, `web:associations:check` and `web:associations:test` for future approved clients. Backend native authentication stays gated.
 
 ## Configuration
 
@@ -43,7 +43,7 @@ Mobile is separated from the active checkout; no mobile install/build/test/previ
 
 Next.js embeds `NEXT_PUBLIC_*` values during the build. Rebuild after changing them. Configure Clerk domains and redirect URLs for the hosted web address. Keep secrets in ignored local files or hosting environment settings.
 
-The interview flag controls local reviewer tools. Production always disables the reviewer panel and design gallery. It is not a mock-data mode; application actions still use the configured API/database. See [current production-readiness checks](production-readiness.md).
+The interview flag controls local reviewer tools. Production always disables the reviewer panel and design gallery. It is not a mock-data mode; application actions still use the configured API/database.
 
 ## Checks
 
@@ -108,14 +108,8 @@ The static architecture panel is implemented in the separate interview reviewer 
 
 The [v0.1 design specification](design/interview-v0.1.md) includes visual and keyboard acceptance checks. The [interview architecture notes](interview-architecture.md) map the explanation to source files and document scope limits. Browser-local timezone labels must match displayed and submitted appointment dates. Patient search and date navigation operate on the current practice's loaded records.
 
-The security baseline adds admin/member authorization, durable clinical retry keys and append-only audit metadata. The subsequent [local workflow implementation](workflow-implementation.md) includes provider availability/conflict checks, protected audit review and database mutation evidence; [Forms Studio](forms-studio-implementation.md) adds guided patient paperwork. External EHR integrations and the documented delivery/storage/scanning/operating acceptance remain open. See [security hardening](security-hardening.md) for the historical baseline and [release status](deployment/security-release-status.md) for recorded activation evidence. Local builds and unit tests do not establish production readiness or healthcare compliance. Record checks for the final integrated build in [verification](verification.md); previous results do not certify subsequent changes.
-
-## Public marketing application
-
-See [marketing setup, content, API contract and launch guide](marketing.md) and [marketing verification](marketing-verification.md). `pnpm --filter @careiq/marketing dev` runs on port 3002 independently of Clerk, the API and database. Its static build publishes `apps/marketing/out`; the interview form posts to the existing API only when configured. Migration 0014 and checked runtime-role membership are prerequisites for enabling submissions.
+The security baseline adds admin/member authorization, durable clinical retry keys and append-only audit metadata. External EHR integrations and the documented delivery/storage/scanning/operating acceptance remain open. Local builds and unit tests do not establish production readiness or healthcare compliance.
 
 ## Practice/location implementation
 
 The [ADR-017 implementation guide](practice-access-implementation.md) documents owner eligibility, Clerk role configuration, invitation handling, the migration gate, and web/mobile boundaries. Migration 0016 expands the schema while keeping existing practices in legacy mode; never enable location mode by assigning every staff member every location. New practices require an approved founding identity and use location mode from creation. `/api/v1/me` now reads context without provisioning. Use the API environment example for the new server-only configuration.
-
-October 18 PR #10 integration preserves both CI workflows: `CareIQ checks` runs on PRs and pushes to `main`, `dev` and `codex/**`; `CareIQ readiness checks` also supports manual dispatch. Neither deploys the application. Their database checks use disposable PostgreSQL, builds use reserved configuration fixtures, and raw audit failures remain visible. See [post-merge verification](verification/pr-10-main-2026-10-18/README.md).

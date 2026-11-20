@@ -1,6 +1,6 @@
 # CareIQ Architecture
 
-Implementation status: the current local web/API slice includes clinical scheduling/patient/document workflows, guided Forms Studio/patient paperwork, protected audit review and transaction-scoped tenant/location controls. Native mobile source is preserved outside this checkout for a later repository; server/native compatibility gates remain. Hosted activation and operating acceptance remain separate. See [workflow implementation](workflow-implementation.md), [Forms Studio](forms-studio-implementation.md), [mobile separation](mobile-separation.md) and [deployment history](deployment/security-release-status.md).
+Implementation status: the current local web/API slice includes clinical scheduling/patient/document workflows, guided Forms Studio/patient paperwork, protected audit review and transaction-scoped tenant/location controls. Native mobile source is preserved outside this checkout for a later repository; server/native compatibility gates remain. Hosted activation and operating acceptance remain separate.
 
 This document provides a high-level view of the CareIQ platform architecture.
 
@@ -84,7 +84,7 @@ Engineering and product decisions live under `docs`.
 
 ## Mobile foundation and practice/location model
 
-Native mobile source was removed from this active workspace and preserved locally for a separate repository to be created later. API, web and marketing remain in this repository. The existing gated native authentication and web-hosted app-link contract remain server/web responsibilities. Shared localization remains here for web and is included in the recovery snapshot. See [ADR-018](decisions/018-mobile-repository-separation.md) and [the handoff guide](mobile-separation.md); the earlier mobile design/development records are historical inputs for future standalone setup.
+Native mobile source was removed from this active workspace and preserved locally for a separate repository to be created later. API, web and marketing remain in this repository. The existing gated native authentication and web-hosted app-link contract remain server/web responsibilities. Shared localization remains here for web and is included in the recovery snapshot.
 
 [ADR-017](decisions/017-practice-location-membership-model.md) establishes one Practice per Clerk Organization, CareIQ Locations beneath it, and explicit location access constrained by fresh Clerk membership and permissions. Pending invitees receive no clinical access until an owner confirms assignments. The implementation extends ADR-004/005/007 with controlled onboarding, web settings, location-scoped clinical endpoints, audit/retry scope and forced RLS. Existing ADR-013 remains the accepted storage decision.
 

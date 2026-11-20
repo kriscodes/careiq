@@ -58,3 +58,14 @@ __pycache__/
 # Build-specific public commit identity; regenerated before frontend builds.
 apps/web/public/.well-known/careiq-release.json
 apps/marketing/public/.well-known/careiq-release.json
+
+# Local tooling and working records
+[Aa][Gg][Ee][Nn][Tt].md
+[Aa][Gg][Ee][Nn][Tt][Ss].md
+[Cc][Ll][Aa][Uu][Dd][Ee].md
+.agents/
+.claude/
+.codex/
+.openai/
+docs/verification/
+docs/reviews/
