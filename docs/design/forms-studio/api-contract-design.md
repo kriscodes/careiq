@@ -4,7 +4,7 @@ Design proposal · October 17, 2026 · No endpoints implemented by this design a
 
 Extend the canonical local workflow API rather than creating a parallel forms backend. Existing staff routes use `S = /api/v1/locations/{locationId}/workflow`. Existing restricted patient routes use `P = /api/v1/patient-workflows`. Proposed persistent patient-library routes use `A = /api/v1/patient-portal`, with a separate authenticated principal and explicit patient/document authorization.
 
-Existing endpoint status below refers to the [canonical local runtime contract](/Users/kristian/Documents/Server/CareIQ/docs/design/workflow/runtime-contract.md), not hosted activation. The design adds schema-v2 capabilities behind an explicit feature gate and client capability negotiation; existing one-signer v1 requests preserve their semantics.
+Existing endpoint status below refers to the [canonical local runtime contract](../workflow/runtime-contract.md), not hosted activation. The design adds schema-v2 capabilities behind an explicit feature gate and client capability negotiation; existing one-signer v1 requests preserve their semantics.
 
 ## Common contract
 

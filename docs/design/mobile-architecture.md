@@ -1,8 +1,8 @@
 # CareIQ mobile architecture and bootstrap proposal
 
-> October18,2026: native mobile source is no longer active in this checkout. A verified private handoff is preserved for a separate repository to be created later. Mobile commands/results below describe the earlier combined workspace; standalone setup and acceptance remain future work. See [separation and recovery](../mobile-separation.md).
+Native mobile source is maintained separately from the API, web, and marketing workspace.
 
-Current implementation note (October 6, 2026): the Expo client now implements authentication, onboarding drafts and practice/location access states locally. Historical bootstrap/proposal sections below describe sequencing, not the current completion status. See [authentication and onboarding](../auth-onboarding.md) and [current verification](../auth-onboarding-verification.md). No native release or remote deployment was performed.
+Current implementation note (October 6, 2026): the Expo client now implements authentication, onboarding drafts and practice/location access states locally. Historical bootstrap/proposal sections below describe sequencing, not the current completion status. No native release or remote deployment was performed.
 
 **Status:** Proposed for review. The bootstrap is authorized; product workflows and production release remain future work.
 
@@ -184,8 +184,6 @@ Before clinical mobile work, add React Native component tests for session/contex
 ## 11. Local setup and next review decisions
 
 The companion [mobile development guide](../mobile-development.md) contains the exact scripts implemented by the scaffold. The intended workflow is root `pnpm install`, copy the mobile environment example into an ignored local file, start the API if testing health, then start Expo from the mobile workspace. Developers can inspect both bootstrap routes before configuring Clerk.
-
-Native setup still requires a compatible Node/pnpm installation, Xcode and an installed simulator runtime for local iOS builds, or Android Studio/JDK/SDK and an emulator for Android. EAS builds additionally require an Expo account/project and signing setup. Device distribution and stores require the applicable Apple/Google developer accounts. Verify the current toolchain and account requirements when provisioning them; no accounts or paid services are created by this task.
 
 Review these decisions next:
 

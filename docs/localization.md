@@ -32,4 +32,4 @@ Shared styling is in `packages/i18n/web.css`. Native `<select>` controls retain 
 
 Run `pnpm --filter @careiq/i18n test`, web/mobile/marketing typechecks, lint and unit tests, and `PLAYWRIGHT_CHANNEL=chrome pnpm --filter web test:browser`. New browser cases cover preference persistence, patient/staff separation, form preservation, native dropdown spacing/keyboard behavior and account-write ordering. Work remains local to this checkout; no deployment is part of this change.
 
-Completed checks and screenshots are recorded in [the October 17 verification](verification/i18n-2026-10-17/README.md). Physical iOS/Android device acceptance remains open.
+Physical iOS/Android device acceptance remains open.

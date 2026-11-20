@@ -19,4 +19,4 @@ The owner requested that mobile leave this repository now, with a separate mobil
 
 The current repository no longer builds or releases native mobile. Mobile work is preserved and recoverable, but there is no new repository, standalone installable project, signing identity or native release. A future repository needs mobile-only manifests/lock, deliberate shared localization/contracts ownership and independent native/provider/device acceptance.
 
-The server/database contract and clinical security boundaries are unchanged. No schema migration is introduced. Repository separation does not certify hosted identity, operating controls, or arbitrary bundled third-party code. Current source, dependency, artifact and test boundaries are recorded in the [separation guide](../mobile-separation.md) and [verification](../verification/mobile-separation-2026-10-18/README.md).
+The server/database contract and clinical security boundaries are unchanged. No schema migration is introduced. Repository separation does not certify hosted identity, operating controls, or arbitrary bundled third-party code.
