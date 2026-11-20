@@ -1,8 +1,6 @@
 # CareIQ Labs marketing website
 
-The public site is `apps/marketing`; the authenticated product remains `apps/web`. The existing Express API owns database access. Read [ADR-016](decisions/016-public-marketing-interviews.md) for the public/tenant boundary and [marketing verification](marketing-verification.md) for actual checks and remaining evidence.
-
-October 26 runtime and dependency patches: [marketing security verification](verification/marketing-security-2026-10-26.md).
+The public site is `apps/marketing`; the authenticated product remains `apps/web`. The existing Express API owns database access.
 
 ## Start locally
 

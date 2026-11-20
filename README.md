@@ -246,13 +246,13 @@ Formal compliance requirements and controls will evolve as the product approache
 ## Documentation
 
 * [Public marketing website](docs/marketing.md)
-* [Marketing verification](docs/marketing-verification.md)
+
 * [Product Vision](docs/product-vision.md)
 * [Architecture](docs/architecture.md)
 * [v0.1 — Interview Design](docs/design/interview-v0.1.md)
 * [Interview architecture notes](docs/interview-architecture.md)
 * [Development](docs/development.md)
-* [Verification record](docs/verification.md)
+
 * [Architecture Decision Records](docs/decisions)
 
 ## Project Philosophy

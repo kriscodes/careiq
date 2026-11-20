@@ -6,7 +6,7 @@ This is a dependency-only marketing rollout. It adds no database migration and d
 
 ## Keep intake and indexing disabled
 
-Preserve `NEXT_PUBLIC_ALLOW_INDEXING=false`, leave `NEXT_PUBLIC_PRIVACY_EMAIL` unset, and keep the API's `INTERVIEW_REQUESTS_ENABLED=false`. The proposed `kristian@careiqlabs.com` mailbox has not been verified. This release does not configure that mailbox or satisfy the remaining intake schema, grants, API/CORS/proxy, and hosted submission prerequisites in [marketing launch status](marketing-launch-status.md).
+Preserve `NEXT_PUBLIC_ALLOW_INDEXING=false`, leave `NEXT_PUBLIC_PRIVACY_EMAIL` unset, and keep the API's `INTERVIEW_REQUESTS_ENABLED=false`. The proposed `kristian@careiqlabs.com` mailbox has not been verified.
 
 ## Verification
 

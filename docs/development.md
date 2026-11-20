@@ -100,8 +100,4 @@ The static architecture panel is implemented in the separate interview reviewer 
 
 The [v0.1 design specification](design/interview-v0.1.md) includes visual and keyboard acceptance checks. The [interview architecture notes](interview-architecture.md) map the explanation to source files and document scope limits. Browser-local timezone labels must match displayed and submitted appointment dates. Patient search and date navigation operate on the current practice's loaded records.
 
-Live tracing, role-specific authorization, provider availability/conflict prevention, audit history, clinical workflows, and EHR integrations are not implemented by this slice. Local builds and unit tests do not establish production readiness or healthcare compliance. Record checks for the final integrated build in [verification](verification.md); previous results do not certify subsequent changes.
-
-## Public marketing application
-
-See [marketing setup, content, API contract and launch guide](marketing.md) and [marketing verification](marketing-verification.md). `pnpm --filter @careiq/marketing dev` runs on port 3002 independently of Clerk, the API and database. Its static build publishes `apps/marketing/out`; the interview form posts to the existing API only when configured. Migration 0014 and checked runtime-role membership are prerequisites for enabling submissions.
+Live tracing, role-specific authorization, provider availability/conflict prevention, audit history, clinical workflows, and EHR integrations are not implemented by this slice. Local builds and unit tests do not establish production readiness or healthcare compliance.
