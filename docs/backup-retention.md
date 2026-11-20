@@ -66,9 +66,8 @@ Approved deletions must cover production data, caches, exports and applicable co
 - Mailbox setup/testing: confirmed by owner.
 - Market and PHI scope: California/greater Los Angeles, including minors, real identifiable patient operations.
 - Periods and operational schedule: proposed, awaiting adoption and customer/legal validation.
-- Native backup/restore: a fresh October 3 export was restored in network-isolated PostgreSQL 18.6; tenant totals, forced RLS, migration replay and runtime grants were checked. Production migrations through 0015 and the restricted runtime login are deployed. See [release evidence](deployment/security-release-status.md).
 - Render Hobby and HIPAA-disabled status: verified. Applicable signed BAAs, independent backup storage, scheduling, alerts and expiration: incomplete. No AWS account currently exists.
 - Automatic retention deletion, legal-hold workflow, complete customer export and restore/deletion replay: not implemented by the security release.
 - Interview intake/indexing: remain disabled until the separate launch checklist is completed.
 
-Review this procedure with California healthcare counsel and the first customer before real-patient onboarding, especially provider-specific/minor rules, Medi-Cal timing and CareIQ's custodian responsibilities. Then implement and test the approved lifecycle rather than treating this document as evidence of enforcement. See [security rollout status](deployment/security-release-status.md) and [hardening runbook](security-hardening.md).
+Review this procedure with California healthcare counsel and the first customer before real-patient onboarding, especially provider-specific/minor rules, Medi-Cal timing and CareIQ's custodian responsibilities. Then implement and test the approved lifecycle rather than treating this document as evidence of enforcement.

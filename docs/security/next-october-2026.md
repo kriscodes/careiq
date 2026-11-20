@@ -29,6 +29,6 @@ Verification after installation on Node 22.23.2 / pnpm 11.22.0:
 
 The remaining registry findings are [node-forge GHSA-86w9-cpqp-85rv](https://github.com/advisories/GHSA-86w9-cpqp-85rv) and [braces GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm). Their reviewed backports pass the local regression suite, but the published versions remain flagged, so the independent raw-audit release gate stays unresolved. No advisory ignore was added.
 
-`minimumReleaseAgeStrict: true` and all existing exact exceptions remain unchanged; this update needed no new exception. The lockfile change from the pre-update workspace is confined to Next, its matching `@next` packages, ESLint configuration, and the Clerk peer-resolution metadata. Backport files and integrity manifest are unchanged. Production builds and final HTTP checks are recorded in the [workflow verification guide](../workflow-implementation.md).
+`minimumReleaseAgeStrict: true` and all existing exact exceptions remain unchanged; this update needed no new exception. The lockfile change from the pre-update workspace is confined to Next, its matching `@next` packages, ESLint configuration, and the Clerk peer-resolution metadata. Backport files and integrity manifest are unchanged.
 
 No deployment or external repository changes are part of this update.
