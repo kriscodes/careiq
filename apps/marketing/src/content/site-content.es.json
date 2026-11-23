@@ -234,7 +234,7 @@
       {
         "heading": "Almacenamiento del navegador y datos operativos",
         "paragraphs": [
-          "Este sitio web no incorpora herramientas de análisis, píxeles publicitarios, grabación de sesiones, herramientas de boletines ni programación de citas integrada. El formulario no escribe sus datos en localStorage ni los incluye en las direcciones de las páginas; mantiene los valores introducidos en la página actual mientras vuelve a intentarlo.",
+          "Este sitio web no incorpora píxeles publicitarios, grabación de sesiones, herramientas de boletines ni programación de citas integrada. El formulario no escribe sus datos en localStorage ni los incluye en las direcciones de las páginas; mantiene los valores introducidos en la página actual mientras vuelve a intentarlo.",
           "Los servicios de alojamiento y de red pueden procesar datos técnicos de las solicitudes, como direcciones IP, marcas de tiempo e información del navegador. La API usa datos de las solicitudes para protegerse frente a usos indebidos. El registro de la aplicación está diseñado para excluir el contenido de este formulario. Esto no garantiza que la infraestructura no genere registros ni cookies."
         ]
       },
@@ -245,6 +245,16 @@
         ]
       }
     ],
+    "analytics": {
+      "heading": "Analítica del sitio web",
+      "description": "Cuando está habilitado, Studio Insights mide las visitas, el tiempo de actividad y los hitos de desplazamiento en páginas públicas. Usa un identificador aleatorio del navegador que cambia cada día y puede registrar una categoría general de procedencia. No lee ni envía respuestas del formulario de entrevistas, identificadores de cuentas ni direcciones web completas. Los eventos se conservan durante 180 días. Tu preferencia se aplica a este sitio web en este navegador.",
+      "disabled": "La analítica está deshabilitada en este entorno.",
+      "browserBlocked": "La configuración de privacidad de tu navegador bloquea la analítica del sitio web.",
+      "excluded": "Tu navegador está excluido de la analítica del sitio web.",
+      "included": "Tu navegador permite la analítica del sitio web.",
+      "exclude": "Excluir mis visitas",
+      "include": "Permitir la analítica"
+    },
     "contactHeading": "Preguntas sobre privacidad o solicitudes de eliminación",
     "contactText": "Envíe su solicitud por correo electrónico a la dirección que aparece a continuación. Si es posible, use la dirección que indicó en el formulario para que podamos identificar la solicitud y no envíe información de pacientes.",
     "contactUnavailable": "El formulario de solicitud de entrevista no está disponible actualmente. Si ya ha intercambiado correos con Kristian sobre una entrevista, puede responder a ese mensaje con una pregunta sobre privacidad o una solicitud de eliminación.",
