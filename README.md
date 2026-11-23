@@ -41,7 +41,7 @@ Three decisions shape the implementation:
 | [Database-enforced tenant isolation](docs/decisions/007-multi-tenant-data-isolation.md)             | Combine explicit application scoping with transaction-local PostgreSQL RLS and a restricted runtime role. This adds policy, migration, and integration-test complexity in exchange for a second enforcement boundary. |
 | [External identity, domain authorization](docs/decisions/017-practice-location-membership-model.md) | Map Clerk organizations to practices and narrow access through explicit permissions and location assignments. Identity, membership, and application resource access remain distinct concerns.                         |
 
-[Architecture overview](docs/architecture.md) · [All architecture decisions](docs/decisions) · [Runtime API contract](docs/design/workflow/runtime-contract.md) · [OpenAPI definitions](docs/api/workflow.openapi.json)
+[Architecture overview](docs/architecture.md) · [Studio Insights analytics](docs/studio-insights.md) · [All architecture decisions](docs/decisions) · [Runtime API contract](docs/design/workflow/runtime-contract.md) · [OpenAPI definitions](docs/api/workflow.openapi.json)
 
 ## Run locally
 

@@ -234,7 +234,7 @@
       {
         "heading": "Browser storage and operational data",
         "paragraphs": [
-          "This website does not add analytics, advertising pixels, session replay, newsletter tools, or embedded scheduling. The form does not write your details to localStorage or place them in page addresses; it keeps entered values in the current page while you retry.",
+          "This website does not add advertising pixels, session replay, newsletter tools, or embedded scheduling. The form does not write your details to localStorage or place them in page addresses; it keeps entered values in the current page while you retry.",
           "Hosting and network services may process technical request data, such as IP addresses, timestamps, and browser information. The API uses request information for abuse protection. Its application logging is designed to exclude the contents of this form. This is not a promise that infrastructure produces no logs or cookies."
         ]
       },
@@ -245,6 +245,16 @@
         ]
       }
     ],
+    "analytics": {
+      "heading": "Website analytics",
+      "description": "When enabled, Studio Insights measures visits, active time, and scroll milestones on public pages. It uses a random browser identifier that changes daily and may record a broad referral source. It does not read or send interview form entries, account identifiers, or full URLs. Events are retained for 180 days. Your preference applies to this website in this browser.",
+      "disabled": "Analytics is disabled for this deployment.",
+      "browserBlocked": "Your browser’s privacy setting blocks website analytics.",
+      "excluded": "Your browser is excluded from website analytics.",
+      "included": "Your browser allows website analytics.",
+      "exclude": "Exclude my visits",
+      "include": "Allow analytics"
+    },
     "contactHeading": "Privacy questions or deletion requests",
     "contactText": "Email the address below with your request. Please use the address you submitted where possible so we can identify the request, and do not send patient information.",
     "contactUnavailable": "The interview-request form is currently unavailable. If you have already corresponded with Kristian about a discovery interview, you can reply to that email with a privacy question or deletion request.",

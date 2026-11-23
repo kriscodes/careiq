@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { StudioInsights } from '../components/StudioInsights';
+import { studioInsightsConfiguredOrigin } from '../../../../packages/studio-insights/collector';
 import type { ReactNode } from 'react';
 import { SiteShell } from '../components/SiteShell';
 import { content } from '../content/content';
@@ -33,6 +35,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
+        {studioInsightsConfiguredOrigin() && <StudioInsights />}
         <SiteShell>{children}</SiteShell>
       </body>
     </html>
