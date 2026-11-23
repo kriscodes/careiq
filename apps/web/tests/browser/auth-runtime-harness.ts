@@ -25,6 +25,7 @@ export async function authRuntimeHarness() {
       nodePaths: [resolve(web, 'node_modules')],
       define: {
         'process.env.NODE_ENV': '"test"',
+        'process.env.NEXT_PUBLIC_STUDIO_INSIGHTS_ORIGIN': 'undefined',
         'process.env.NEXT_PUBLIC_CAREIQ_AUTH_PROVIDERS': 'window.__careiqAuthProviderConfig',
       },
       alias: {

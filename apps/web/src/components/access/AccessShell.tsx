@@ -14,6 +14,7 @@ import {
   type InputHTMLAttributes,
 } from 'react';
 import { InterviewIcon, type InterviewIconName } from '../InterviewIcon';
+import { studioInsightsConfiguredOrigin } from '../../../../../packages/studio-insights/collector';
 
 export function AccessHeading({
   title,
@@ -50,6 +51,7 @@ export function AccessShell({
   account,
   centered = false,
   embedded = false,
+  showAnalyticsPreference = true,
 }: {
   children: ReactNode;
   step?: 1 | 2 | 3;
@@ -57,8 +59,9 @@ export function AccessShell({
   account?: ReactNode;
   centered?: boolean;
   embedded?: boolean;
+  showAnalyticsPreference?: boolean;
 }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const help = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLButtonElement>(null);
   const Content = embedded ? 'section' : 'main';
@@ -156,6 +159,11 @@ export function AccessShell({
               ? t('access.copy.your_practice_one_step_at_a_time')
               : t('access.copy.a_little_more_room_to_care')}
           </span>
+          {showAnalyticsPreference && studioInsightsConfiguredOrigin() && (
+            <Link className="cq-a-link" href="/analytics-privacy">
+              {locale === 'es' ? 'Preferencias de analítica' : 'Analytics preferences'}
+            </Link>
+          )}
           <span>careiq</span>
         </footer>
       )}

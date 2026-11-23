@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { StudioInsights } from '../components/StudioInsights';
+import { studioInsightsConfiguredOrigin } from '../../../../packages/studio-insights/collector';
 import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
 import './access.css';
@@ -32,6 +34,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={directionOf(locale)}>
       <body>
+        {studioInsightsConfiguredOrigin() && <StudioInsights />}
         <I18nProvider initialLocale={locale}>
           <LocaleRefresh />
           {configured ? (
