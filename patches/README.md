@@ -2,7 +2,7 @@
 
 The mobile application has been preserved outside this checkout for a future separate repository. Its original lockfile, workspace policy, complete security tests and patches were SHA-256 verified before removal. The active API/web/marketing workspace keeps the braces backport because Next's development-only lint graph still requires it. The raw complete audit remains visible; no advisory is ignored. Forge, query-string/decoder and xcode/uuid controls now belong to the preserved mobile handoff.
 
-Current controls cover retained braces integrity/exploit/compatibility cases, sharp decoding, Drizzle's scoped published esbuild fix and its real loopback CORS/Host behavior, plus a lockfile boundary check against mobile reintroduction. See [mobile separation dependency evidence](../docs/verification/mobile-separation-2026-10-18/dependencies.md). The historical pre-separation record below is retained unchanged; its two-HIGH and 22-test statements describe that earlier workspace.
+Current controls cover retained braces integrity/exploit/compatibility cases, sharp decoding, Drizzle's scoped published esbuild fix and its real loopback CORS/Host behavior, plus a lockfile boundary check against mobile reintroduction. The historical pre-separation record below is retained unchanged; its two-HIGH and 22-test statements describe that earlier workspace.
 
 ---
 
@@ -22,12 +22,10 @@ Scoped published overrides also select uuid 11.1.1 for xcode 3.0.1 (its v4 calle
 
 Install with the pinned Node/pnpm and `pnpm install --frozen-lockfile`. An altered patch or installed file fails the integrity check. Remove a backport only after a published reviewed replacement fixes the relevant advisory, its actual caller compatibility passes, the lockfile is refreshed and the raw audit passes. Do not fabricate the not-yet-published node-forge 1.4.1 or braces 3.0.4 versions.
 
-See [production readiness](../docs/production-readiness.md). No package was published and no remote workflow was run by this local change.
-
 The October 16 Next.js update is documented in [security version notes](../docs/security/next-october-2026.md). Existing backports remain unchanged.
 
 The subsequent SDK57 patch alignment and Doctor results are recorded in [Expo patch verification](../docs/security/expo-sdk57-patches-2026-10-16.md); supply-chain policy and these backports remain unchanged.
 
-The October 18 hardening pass moved the braces AST guard into each walker so direct submodule imports receive the same limits as root APIs; actual micromatch and Expo signing callers resolve the reviewed patched copies. Fresh public registry metadata still lists node-forge 1.4.0 and braces 3.0.3 as latest, with neither advisory threshold version published. Both raw audit scopes remain failing; see [dependency release evidence](../docs/verification/release-hardening-2026-10-18/dependencies-audit.json). No advisory is waived.
+The October 18 hardening pass moved the braces AST guard into each walker so direct submodule imports receive the same limits as root APIs; actual micromatch and Expo signing callers resolve the reviewed patched copies. Fresh public registry metadata still lists node-forge 1.4.0 and braces 3.0.3 as latest, with neither advisory threshold version published. No advisory is waived.
 
 The full development audit also identified the legacy Drizzle loader's esbuild 0.18.20. A parent-scoped override selects the genuine published 0.25.12 already used directly by Drizzle. Source review confirms the legacy loader uses transformation APIs; sync/async TypeScript, source maps, real server CORS/Host controls and the Drizzle migration check verify compatibility. This removes the development-only moderate finding without altering the production audit gate. [Upstream advisory](https://github.com/advisories/GHSA-67mh-4wv8-2f99).
