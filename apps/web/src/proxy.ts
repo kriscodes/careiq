@@ -4,6 +4,8 @@ import { clerkMiddleware } from '@clerk/nextjs/server';
 import { NextResponse, type NextRequest, type NextFetchEvent } from 'next/server';
 import { normalizeClerkContinuation } from '@/lib/clerk-continuation';
 import { designPreviewEnabled, isDesignPreviewPath } from '@/lib/web-config';
+import { studioInsightsConfiguredOrigin } from '../../../packages/studio-insights/collector';
+
 const apiOrigin = (() => {
   try {
     return process.env.NEXT_PUBLIC_API_URL
@@ -19,7 +21,9 @@ const clerkProxy = clerkMiddleware({
         contentSecurityPolicy: {
           strict: true,
           directives: {
-            'connect-src': apiOrigin ? [apiOrigin] : [],
+            'connect-src': [apiOrigin, studioInsightsConfiguredOrigin()].filter(
+              (origin): origin is string => Boolean(origin),
+            ),
             'img-src': ['data:'],
             'frame-ancestors': ["'none'"],
             'object-src': ["'none'"],
