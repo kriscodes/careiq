@@ -1,8 +1,46 @@
 'use client';
 import Link from 'next/link';
+import { useSyncExternalStore } from 'react';
+import {
+  analyticsPreference,
+  setAnalyticsOptOut,
+  studioInsightsConfiguredOrigin,
+  subscribeToAnalyticsPreference,
+} from '../../../../packages/studio-insights/collector';
 import { PRIVACY_NOTICE_VERSION } from '@careiq/interview-contract';
 import { useSiteContent } from '../content/localized';
 import { siteConfig } from '../lib/site-config';
+function AnalyticsPreferences({
+  copy,
+}: {
+  copy: ReturnType<typeof useSiteContent>['privacy']['analytics'];
+}) {
+  const preference = useSyncExternalStore(
+    subscribeToAnalyticsPreference,
+    analyticsPreference,
+    () => null,
+  );
+  const excluded = preference === 'excluded';
+  return (
+    <section id="website-analytics">
+      <h2>{copy.heading}</h2>
+      <p>{copy.description}</p>
+      {!studioInsightsConfiguredOrigin() ? (
+        <p>{copy.disabled}</p>
+      ) : preference === 'browser-blocked' ? (
+        <p>{copy.browserBlocked}</p>
+      ) : preference ? (
+        <>
+          <p role="status">{excluded ? copy.excluded : copy.included}</p>
+          <button className="cq-button" type="button" onClick={() => setAnalyticsOptOut(!excluded)}>
+            {excluded ? copy.include : copy.exclude}
+          </button>
+        </>
+      ) : null}
+    </section>
+  );
+}
+
 export function PrivacyContent() {
   const content = useSiteContent();
   return (
@@ -25,6 +63,7 @@ export function PrivacyContent() {
             ))}
           </section>
         ))}
+        <AnalyticsPreferences copy={content.privacy.analytics} />
         <section className="privacy-contact">
           <h2>{content.privacy.contactHeading}</h2>
           {siteConfig.privacyEmail ? (

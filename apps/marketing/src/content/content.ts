@@ -88,7 +88,19 @@ export interface SiteContent {
     | 'contactText'
     | 'contactUnavailable'
     | 'back'
-  > & { sections: { heading: string; paragraphs: string[] }[] };
+  > & {
+    sections: { heading: string; paragraphs: string[] }[];
+    analytics: TextFields<
+      | 'heading'
+      | 'description'
+      | 'disabled'
+      | 'browserBlocked'
+      | 'excluded'
+      | 'included'
+      | 'exclude'
+      | 'include'
+    >;
+  };
   notFound: TextFields<'eyebrow' | 'heading' | 'description' | 'cta'>;
 }
 

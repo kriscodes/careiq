@@ -33,8 +33,11 @@ test('CareIQ analytics emits safe records and keeps preferences local', async (c
   process.env[setting] = collector;
   const { observeStudioPage, setAnalyticsOptOut, analyticsPreference, studioInsightsOrigin } =
     await import('../../../packages/studio-insights/collector');
-  if (previousSetting === undefined) delete process.env[setting];
-  else process.env[setting] = previousSetting;
+  if (previousSetting === undefined) {
+    delete process.env[setting];
+  } else {
+    process.env[setting] = previousSetting;
+  }
 
   const requests: CapturedRequest[] = [];
   const page = Object.assign(new EventTarget(), {
@@ -71,8 +74,11 @@ test('CareIQ analytics emits safe records and keeps preferences local', async (c
   }
   context.after(() => {
     for (const [key, descriptor] of Object.entries(descriptors)) {
-      if (descriptor) Object.defineProperty(globalThis, key, descriptor);
-      else Reflect.deleteProperty(globalThis, key);
+      if (descriptor) {
+        Object.defineProperty(globalThis, key, descriptor);
+      } else {
+        Reflect.deleteProperty(globalThis, key);
+      }
     }
   });
   let now = Date.parse('2026-11-22T19:00:00Z');
