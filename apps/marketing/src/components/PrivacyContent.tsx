@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { useSyncExternalStore } from 'react';
+import React from 'react';
 import {
   analyticsPreference,
   setAnalyticsOptOut,
@@ -15,7 +15,7 @@ function AnalyticsPreferences({
 }: {
   copy: ReturnType<typeof useSiteContent>['privacy']['analytics'];
 }) {
-  const preference = useSyncExternalStore(
+  const preference = React.useSyncExternalStore(
     subscribeToAnalyticsPreference,
     analyticsPreference,
     () => null,
