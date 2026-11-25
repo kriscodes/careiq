@@ -1,8 +1,8 @@
 # Mobile development
 
-> October18,2026: native mobile source is no longer active in this checkout. A verified private handoff is preserved for a separate repository to be created later. Mobile commands/results below describe the earlier combined workspace; standalone setup and acceptance remain future work. See [separation and recovery](mobile-separation.md).
+Native mobile source is maintained separately from the API, web, and marketing workspace.
 
-`apps/mobile` is the `@careiq/mobile` iOS/Android application. It uses Expo SDK 57, React Native 0.86.3, React 19.2.3 and Expo Router. Review the [mobile architecture proposal](design/mobile-architecture.md) before extending the scaffold. The practice/location model is specified in [ADR-017](decisions/017-practice-location-membership-model.md); the current authentication/onboarding implementation follows that access model. See [authentication and onboarding](auth-onboarding.md) for the implemented API and UI flows.
+`apps/mobile` is the `@careiq/mobile` iOS/Android application. It uses Expo SDK 57, React Native 0.86.3, React 19.2.3 and Expo Router. Review the [mobile architecture proposal](design/mobile-architecture.md) before extending the scaffold. The practice/location model is specified in [ADR-017](decisions/017-practice-location-membership-model.md); the current authentication/onboarding implementation follows that access model.
 
 The installed Clerk native module requires **iOS 17 or later**. Its Expo plugin sets the deployment target and Android packaging settings; Apple sign-in capability is explicitly disabled until an authentication flow is selected. Expo SDK 57 requires Xcode 26.4 or later for local iOS builds.
 
@@ -113,8 +113,6 @@ pnpm mobile:export
 
 `mobile:doctor` needs network access for dependency metadata and Expo diagnostics.
 
-See the [current mobile production-readiness record](mobile-production-readiness.md) for verified checks and remaining native acceptance. The [bootstrap review](mobile-bootstrap-review.md) records historical October 4 findings; use current repository audit results for dependency status.
-
 An export is **not an installable app binary**. Passing these checks does not establish that Xcode/Gradle compilation, device networking or native authentication works. Complete simulator/emulator and physical-device checks before enabling native production access. Record actual verification results in the change summary; this guide lists commands, not a completed test record.
 
 After shared-package or root-workspace changes, also run the repository checks described in [development](development.md). Keep the Next.js web build and API tests passing independently of mobile.
@@ -156,7 +154,7 @@ Before a production build, confirm store ownership, signing custody, identifiers
 ## Installed-device acceptance before release
 
 1. Review the [mobile architecture](design/mobile-architecture.md) and ADR-017, including practice-wide versus location-scoped permissions and invitation assignment timing.
-2. Verify the implemented native Clerk sign-in/session flow on installed devices. Browser authorized parties remain derived from exact web `CORS_ORIGINS`; the separately gated native policy is documented in [authentication and onboarding](auth-onboarding.md). Verify actual native token `azp` behavior before enabling that gate. Do not remove existing verification or treat CORS as native authorization.
+2. Verify the implemented native Clerk sign-in/session flow on installed devices. Verify actual native token `azp` behavior before enabling that gate. Do not remove existing verification or treat CORS as native authorization.
 3. Validate the implemented membership/location API contract and server-side authorization with synthetic users before exposing location-scoped records. Selecting a location on a device does not grant access.
 4. Configure invitation handoff, authentication callbacks, iOS Universal Links and Android App Links with owned domains and tested cold/warm app behavior. A custom URL scheme alone does not establish invitation security.
 5. Exercise sign-out, session expiry, account/practice/location switching, app backgrounding and rejected access on both platforms. Verify token-cache cleanup and clear any in-memory data for the previous context.

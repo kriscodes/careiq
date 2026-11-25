@@ -4,7 +4,7 @@ October 18, 2026 · Implementation proposal · Responsive web and patient mobile
 
 Patient requests, reminders and completed-copy notices need a reliable path from a committed workflow event to a permitted recipient and a truthful delivery outcome. Staff need an inbox for assignments, changes in work ownership and overdue work, with actions that open the current authorized record. The designs share delivery infrastructure while preserving separate patient access, staff authorization and source-work status.
 
-The [interactive prototype](prototype/index.html) contains ten primary views, request review and delivery dialogs, email/SMS previews, patient access and communication choices, staff alert detail, and recovery states. The synthetic clock is October 19, 2026 at 8:30 AM Pacific Time. The [backend design](backend-design.md), [proposed API](proposed-api.yaml), [screen inventory](screen-inventory.json), [source audit](workflow-audit.md) and [acceptance checklist](acceptance-checklist.md) complete the implementation handoff.
+The [interactive prototype](prototype/index.html) contains ten primary views, request review and delivery dialogs, email/SMS previews, patient access and communication choices, staff alert detail, and recovery states. The synthetic clock is October 19, 2026 at 8:30 AM Pacific Time.
 
 ## Product boundaries
 

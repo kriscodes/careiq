@@ -3,7 +3,7 @@ name: CareIQ security analysis
 on:
   pull_request:
   push:
-    branches: [main, dev, 'codex/**', 'release/**']
+    branches: [main, staging, dev, 'codex/**', 'release/**']
   merge_group:
   schedule:
     - cron: '17 14 * * 1'
