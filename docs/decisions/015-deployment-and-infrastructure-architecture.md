@@ -809,13 +809,11 @@ Development
     ├── Development Database
     └── Development Storage
 
-
 Staging
     │
     ├── Staging Applications
     ├── Staging Database
     └── Staging Storage
-
 
 Production
     │

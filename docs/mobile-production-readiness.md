@@ -1,8 +1,6 @@
 # Mobile production readiness
 
-> October18,2026: native mobile source is no longer active in this checkout. A verified private handoff is preserved for a separate repository to be created later. Mobile commands/results below describe the earlier combined workspace; standalone setup and acceptance remain future work. See [separation and recovery](mobile-separation.md).
-
-October 16 workflow implementation and verification are recorded in [the workflow review guide](workflow-implementation.md) and [current verification](verification/workflow/verification.md). Earlier results below remain historical.
+Native mobile source is maintained separately from the API, web, and marketing workspace.
 
 Date: 2026-10-06. Scope: local changes and verification in the canonical CareIQ checkout. No native release, hosted configuration, signing operation, account registration or deployment was performed. The API native-client gate remains disabled pending installed-device acceptance.
 
@@ -125,8 +123,6 @@ After review, the same command without `--output-dir` targets the checkout's `ap
 ```sh
 node scripts/generate-mobile-associations.mjs
 ```
-
-Missing/partial/malformed metadata fails before creating the destination. Existing different association files are preserved before either output is written; stage a reviewed replacement in a separate directory instead of overwriting unrelated app associations. Matching generated files are idempotent. Diagnostic output never echoes supplied metadata, fingerprints or credential-shaped values. No owner metadata was supplied or written to the web public directory during this task.
 
 AASA matches exactly `/join`, including its query parameters. The production/preview Android HTTPS intent filter now uses exact `android:path="/join"`, verified in Expo introspection and the generated native manifest; `/join-other` and descendants do not match this filter. Standard Android `assetlinks.json` delegates site/app ownership; the native intent filter restricts the invitation path. Configure website association responses on the same HTTPS host, then complete the real signing/domain and cold/warm installed-device acceptance described above. The custom authentication callback scheme is unchanged.
 

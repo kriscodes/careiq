@@ -9,10 +9,6 @@ An independent product and engineering project by [Kristian Salmeron](https://kr
 
 **Active development · Synthetic/demo use only**
 
-![CareIQ patient directory in a synthetic local preview](docs/verification/patient-row-spacing-2026-11-02/desktop.png)
-
-_Synthetic local verification capture · November 2, 2026. [Scope and verification](docs/verification/patient-row-spacing-2026-11-02.md)._
-
 [Workflow scope](#workflow-scope) · [Architecture](#architecture) · [Run locally](#run-locally) · [Quality checks](#quality-checks) · [Current status](#current-status)
 
 ## Workflow scope
@@ -24,7 +20,7 @@ The current web/API implementation covers:
 - Manual insurance observations, corrections, and follow-up assignments.
 - Manager team activity, staff notifications, and protected audit review.
 
-The initial audience is practices with approximately 2–10 providers. CareIQ supports the operational workflows surrounding existing clinical systems; external EHR integration and broader automation remain separate product work. See the [product vision](docs/product-vision.md) and [workflow implementation guide](docs/workflow-implementation.md) for scope and activation boundaries.
+The initial audience is practices with approximately 2–10 providers. CareIQ supports the operational workflows surrounding existing clinical systems; external EHR integration and broader automation remain separate product work.
 
 ## Architecture
 
@@ -98,31 +94,19 @@ pnpm build
 
 `pnpm release:check` validates the test database target before running release checks. It includes component browser scenarios, browser workflows through the real API and restricted database, dependency regression checks, and the production dependency audit.
 
-The [CI](.github/workflows/ci.yml) and [readiness](.github/workflows/readiness.yml) workflows also replay migrations on disposable PostgreSQL and build with reserved configuration fixtures. They do not deploy the application. Use [GitHub Actions](https://github.com/kriscodes/careiq/actions) for current run results; dated verification reports describe the revisions and acceptance boundaries they actually checked.
+The [CI](.github/workflows/ci.yml) and [readiness](.github/workflows/readiness.yml) workflows also replay migrations on disposable PostgreSQL and build with reserved configuration fixtures. They do not deploy the application. Use [GitHub Actions](https://github.com/kriscodes/careiq/actions) for current run results.
 
 ## Current status
 
-| Surface                             | Recorded status                                                                                                                                                                                                                                                                                                        |
-| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Current `main`                      | Active development of the web/API workflows described above. [Implementation and review](docs/workflow-implementation.md)                                                                                                                                                                                              |
-| Latest tagged release               | [v0.1.0 — Interview baseline](docs/releases/0.1.0.md), October 3, 2026. The tag is a named baseline and does not represent all subsequent work on `main`.                                                                                                                                                              |
-| Last documented hosted verification | [November 2, 2026](docs/verification/e2e-release-2026-11-02.md): API and web deployed at `7d2cabe`; 17 public HTTP smoke checks passed in that recorded review. This is dated evidence, not a new live check.                                                                                                          |
-| Remaining acceptance                | Authenticated hosted workflows, provider/device activation, older managed-owner workflow paths, and operating requirements retain the limits in the [release verification report](docs/verification/e2e-release-2026-11-02.md#known-limits-retained) and [owner checklist](docs/security/owner-security-checklist.md). |
-| Usage boundary                      | Synthetic/demo use only. Local safeguards and passing automated checks do not establish readiness for real patient production use.                                                                                                                                                                                     |
-
-[Version history](CHANGELOG.md) · [Release process](docs/releasing.md) · [Deployment evidence](docs/deployment/security-release-status.md)
+CareIQ is in development. Demonstrations use synthetic records. Provider integrations, authenticated hosted workflows, and operational readiness require their own acceptance checks before real patient use.
 
 ## Documentation
 
-| Area                        | Start here                                                                                                                                                                                     |
-| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Product and workflows       | [Product vision](docs/product-vision.md), [workflow implementation](docs/workflow-implementation.md), [Forms Studio and paperwork](docs/forms-studio-implementation.md)                        |
-| Staff operations            | [Manager and manual insurance verification](docs/manager-insurance-implementation.md), [team activity](docs/manager-team-activity.md), [notifications](docs/notifications-implementation.md)   |
-| Engineering                 | [Architecture](docs/architecture.md), [ADRs](docs/decisions), [API contract](docs/design/workflow/runtime-contract.md)                                                                         |
-| Development                 | [Setup and deployment](docs/development.md), [isolated local review](docs/local-review.md), [authentication and onboarding](docs/auth-onboarding.md)                                           |
-| Verification and operations | [November 2 release verification](docs/verification/e2e-release-2026-11-02.md), [security hardening](docs/security-hardening.md), [owner checklist](docs/security/owner-security-checklist.md) |
-| Historical context          | [Development history and earlier verification references](docs/development-history.md), [mobile separation](docs/mobile-separation.md)                                                         |
-
-Release engineering references: [code quality and release checks](docs/code-quality.md), [exact-commit release gates and smoke verification](docs/deployment/release-verification.md), [managed-owner database repair](docs/verification/managed-owner-repair-2026-11-02.md), [migration-50 rollback build](docs/deployment/local-rollback.md), and [security remediation verification](docs/verification/rollback-security-remediation-2026-11-02.md).
+| Area             | Start here                                                                                                                                                                                   |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Development      | [Development guide](docs/development.md), [local environment](docs/local-review.md)                                                                                                          |
+| Operations       | [Release checks](docs/deployment/release-verification.md), [security hardening](docs/security-hardening.md), [owner checklist](docs/security/owner-security-checklist.md)                    |
+| Staff operations | [Manager and manual insurance verification](docs/manager-insurance-implementation.md), [team activity](docs/manager-team-activity.md), [notifications](docs/notifications-implementation.md) |
+| Engineering      | [Architecture](docs/architecture.md), [ADRs](docs/decisions), [API contract](docs/design/workflow/runtime-contract.md)                                                                       |
 
 CareIQ is developed around complete vertical workflows. Architectural decisions are recorded where they affect data boundaries, API contracts, or operating behavior; product details evolve through discovery and review.
